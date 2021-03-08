@@ -1,9 +1,0 @@
-﻿<UXML
-	xmlns:ui="UnityEngine.UIElements"
-	xmlns:uie="UnityEditor.UIElements"
->
-	<ui:VisualElement>
-		<ui:TextField name="entity-field" value="" text="Entity" style="flex-grow:1;"/>
-		<ui:ScrollView name="entity-container" style="flex-grow:1;"/>
-	</ui:VisualElement>
-</UXML>
