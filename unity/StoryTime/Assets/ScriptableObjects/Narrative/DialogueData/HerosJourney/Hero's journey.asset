@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0c95ea65afc4205abe815c53ab7b378, type: 3}
+  m_Name: Hero's journey
+  m_EditorClassIdentifier: 
+  id: 0
+  tableName: stories
+  linkedColumn: parentId
+  dropdownColumn: title
+  linkID: 4294967295
+  tasks:
+  - {fileID: 11400000, guid: 5ae2524dae1989845bd9e597cd44dded, type: 2}
+  - {fileID: 11400000, guid: 91bce9334da216a4ca215fdb10e5ce3c, type: 2}
+  - {fileID: 11400000, guid: eb45733045acb3143b75b27e1ff9e0fa, type: 2}
+  actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
+  title: Hero's journey
+  description: The hero will start on his first journey
+  characterName: 
+  characterID: 4294967295
+  parentId: 4294967295
+  childId: 0
+  typeId: 0

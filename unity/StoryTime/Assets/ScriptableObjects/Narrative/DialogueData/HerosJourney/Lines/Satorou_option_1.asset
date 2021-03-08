@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d72c565eb44184bf707c2a57eeb737, type: 3}
+  m_Name: Satorou_option_1
+  m_EditorClassIdentifier: 
+  id: 1
+  tableName: dialogueOptions
+  linkedColumn: 
+  dropdownColumn: text
+  linkID: 4294967295
+  ChildId: 4294967295
+  ParentID: 1
+  Text: 'No I can''t. '
+  NextDialogue: {fileID: 0}
+  dialogueChoiceEvent: {fileID: 0}
+  ActionType: 0

@@ -1,0 +1,18 @@
+﻿<UXML xmlns:ui="UnityEngine.UIElements"
+	  xmlns:uie="UnityEditor.UIElements"
+>
+	<ui:Box class="row-element" style="flex-grow:1">
+		<ui:VisualElement style="flex-grow:1;">
+			<ui:Label name="row-text-label" class="row-label"/>
+			<ui:Foldout text="Settings" value="false">
+				<ui:VisualElement>
+					<uie:ObjectField style="flex-grow:1;" name="row-object-field" tooltip="Script to load the row in with" label="Base Table Script" class="unity-property-field-input" allow-scene-objects="false"/>
+				</ui:VisualElement>
+				<ui:VisualElement style="flex-direction: row;align-self:flex-end">
+					<ui:Button text="Create table Data" name="btn-create-asset"/>
+					<ui:Button text="Refresh" name="btn-refresh"/>
+				</ui:VisualElement>
+			</ui:Foldout>
+		</ui:VisualElement>
+	</ui:Box>
+</UXML>

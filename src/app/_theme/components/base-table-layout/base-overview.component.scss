@@ -1,0 +1,23 @@
+@import '../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	ul {
+		background: nb-theme(background-basic-color-1);
+		border: 1px solid nb-theme(background-basic-color-2);
+		-webkit-box-shadow: nb-theme(shadow); // 0 6px 12px rgba(0, 0, 0, 0.175);
+		box-shadow: nb-theme(shadow); // 0 6px 12px rgba(0, 0, 0, 0.175);
+		color: nb-theme(text-basic-color);
+		li {
+			margin: 0;
+			padding: 0.25rem 0.5rem;
+			&:hover {
+				// background: nb-theme();
+				//color: nb-theme(color-primary-default);
+			}
+			&.dropdown-divider:hover {
+				background: inherit;
+				color: inherit;
+			}
+		}
+	}
+}

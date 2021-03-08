@@ -1,0 +1,40 @@
+<nb-card status="primary" size="giant" class="minWidth">
+	<nb-card-header>
+		Load story
+	</nb-card-header>
+	<nb-card-body class="d-flex flex-row">
+		<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let story of stories | async; let i = index"> <!-- | timeSlice:7" -->
+			<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5); max-height: 80%" (click)="onStoryClicked($event, i, story);">
+				<nb-card-body class="d-flex flex-column">
+					<div class="d-flex flex-row">
+						<div class="my-2">
+							<ngx-avatar [name]="getTitle(i)" [initialsSize]="3" [round]="false" [cornerRadius]="5" ></ngx-avatar>
+						</div>
+						<div class="btn-group align-self-start ml-auto"> <!-- dropdown -->
+							<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+							        class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic"
+							       > <!--  [nbContextMenu]="getCardOption(project.id)" nbContextMenuTag="open-project-menu" -->
+								<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+								<!-- <i class="fas fa-ellipsis-h text-basic"></i>-->
+							</button>
+						</div>
+					</div>
+					<div class="">
+						<h5>{{ getTitle(i) }}</h5>
+					</div>
+					<div class="">
+						<p>{{ Project.metadata.description }}</p>
+					</div>
+					<div class="d-flex flex-row flex-grow-1">
+						<div  class="align-self-end member" *ngFor="let member of Project.members | keyvalue; let index = i;">
+							<ngx-avatar [name]="member.key" [round]="true" [size]="33"></ngx-avatar>
+						</div>
+					</div>
+				</nb-card-body>
+			</nb-card>
+		</div>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton fullWidth status="primary" (click)="Ref.close()">Close form</button>
+	</nb-card-footer>
+</nb-card>

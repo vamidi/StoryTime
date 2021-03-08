@@ -1,0 +1,102 @@
+<div class="row">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-lg-12">
+		<nb-card>
+			<nb-card-header>
+				<h4>Node Editor - {{ title }}</h4>
+				<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info"><i class="edit-column nb-edit"></i></button>
+				<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="loadStory()">Load</button>
+				<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="saveStory()">Save</button>
+				<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="newStory()">New</button>
+			</nb-card-header>
+		</nb-card>
+	</div>
+	<div class="wrapper">
+		<div class="side-panel" #sidePanel>
+			<nb-card class="h-100">
+				<nb-card-header>{{ nodeTitle }}</nb-card-header>
+				<nb-card-body>
+					<!-- previous connection -->
+					<div *ngIf="nonStartNode" class="form-group {{ textQuestion.groupCss }}">
+						<label class="formHeading d-flex" for="{{ textQuestion.key }}--textbox" *ngIf="textQuestion">
+							<span class="flex-grow-1">{{ textQuestion.text }}</span>
+						</label>
+						<input id="{{ textQuestion.key }}--textbox"
+						       [type]="textQuestion.hidden ? 'hidden' : textQuestion.controlType"
+						       [value]="textQuestion.value"
+						       [placeholder]="textQuestion.text"
+						       [name]="textQuestion.name"
+						       [readOnly]="textQuestion.readOnly"
+						       [attr.disabled]="textQuestion.disabled ? '' : null"
+						       nbInput
+						       fullWidth
+						/>
+					</div>
+
+					<!-- character id -->
+					<div class="form-group {{ charTextQuestion.groupCss }}">
+						<label class="formHeading d-flex" for="{{ charTextQuestion.key }}--textbox" *ngIf="charTextQuestion">
+							<span class="flex-grow-1">{{ charTextQuestion.text }}</span>
+						</label>
+						<input id="{{ charTextQuestion.key }}--textbox"
+						       [type]="charTextQuestion.hidden ? 'hidden' : charTextQuestion.controlType"
+						       [value]="charTextQuestion.value"
+						       [placeholder]="charTextQuestion.text"
+						       [name]="charTextQuestion.name"
+						       [readOnly]="charTextQuestion.readOnly"
+						       [attr.disabled]="charTextQuestion.disabled ? '' : null"
+						       nbInput
+						       fullWidth
+						/>
+					</div>
+
+					<div class="form-group {{ listQuestion.groupCss }}">
+						<label class="formHeading d-flex" for="{{ listQuestion.key }}--dropdown">
+							<span class="flex-grow-1">{{ listQuestion.text }}</span>
+							<nb-icon icon="plus-outline" (click)="edit(true)"></nb-icon>
+							<nb-icon icon="edit-outline" (click)="edit()"></nb-icon>
+						</label>
+						<nb-select
+							#selectComponent
+							id="{{ listQuestion.key }}--dropdown"
+							fullWidth
+							[placeholder]="listQuestion.placeholder"
+							[selected]="listQuestion.value"
+							[disabled]="listQuestion.disabled || editMode"
+							[attr.disabled]="listQuestion.disabled ? '' : null"
+							[hidden]="listQuestion.hidden"
+							(selectedChange)="onSelect($event)">
+							<nb-option *ngIf="relationDropDown" [value]="defaultValue">None</nb-option>
+							<nb-option *ngFor="let o of listQuestion.options$ | async" [disabled]="o.disabled"
+							           [value]="o.value">{{ o.key }}</nb-option>
+						</nb-select>
+					</div>
+
+					<div class="form-group {{ textAreaQuestion.groupCss }}" *ngIf="editMode">
+						<label class="formHeading" for="{{ textAreaQuestion.key }}--area">{{ textAreaQuestion.text }}</label>
+						<textarea id="{{ textAreaQuestion.key }}--area" nbInput fullWidth
+						          [name]="textAreaQuestion.name"
+						          [value]="textAreaQuestion.value"
+						          (change)="setDialogue = $event">
+						</textarea>
+						<button nbButton status="info" class="mt-2 mr-2" (click)="cancelEdit()">Cancel</button>
+						<button nbButton status="success" class="mt-2" (click)="updateDialogue()">{{ insertDialogueText }}</button>
+					</div>
+
+					<div class="form-group" *ngIf="CurrentNode && CurrentNode.name === 'Dialogue' && !editMode">
+						<button nbButton fullWidth status="primary" class="mt-2 flex-grow-1" (click)="addOption()">Add Options</button>
+					</div>
+
+					<ng-container #overViewContainer></ng-container>
+
+				</nb-card-body>
+			</nb-card>
+		</div>
+		<div #nodeEditor class="node-editor"></div>
+	</div>
+	<div class="col-md-12">
+
+	</div>
+</div>

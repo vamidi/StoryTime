@@ -1,0 +1,83 @@
+@import '../../../_theme/styles/themes';
+
+:host /deep/ ng2-st-tbody-edit-delete,
+:host /deep/ ng2-st-tbody-custom {
+	display: flex !important;
+	height: 0 !important;
+}
+
+@include nb-install-component() {
+
+	.show-grid {
+		.row {
+			margin: -0.5rem;
+		}
+
+		div[class^=col-] {
+			padding: 0.5rem;
+			box-sizing: border-box;
+
+			div {
+				text-align: center;
+				background-color: nb-theme(background-basic-color-2);
+				padding: 0.75rem 0.25rem;
+				border-radius: 0.25rem;
+			}
+		}
+	}
+
+	.grid-h {
+		margin-top: 1.5rem;
+
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+
+	.table-responsive {
+		margin-top: 1rem;
+	}
+
+	h6.header {
+		padding: 1rem 1.25rem;
+		color: #1a2138;
+		font-family: Open Sans, sans-serif;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		line-height: 1.5rem;
+	}
+
+	nb-layout-column {
+		padding: 0 1.25rem 0.75rem;
+	}
+
+	ngx-node-inspector {
+		position: absolute;
+		z-index: 1;
+		min-width: 550px;
+		left: 2vh;
+		bottom: 3vh;
+	}
+
+	ul {
+		-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		color: nb-theme(color-basic-100);
+		li {
+			margin: 0;
+			padding: 0.25rem 0.5rem;
+			&:hover {
+				background: nb-theme(color-primary-default);
+				color: nb-theme(color-basic-hover);
+			}
+			&.dropdown-divider:hover {
+				background: inherit;
+				color: inherit;
+			}
+		}
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+}

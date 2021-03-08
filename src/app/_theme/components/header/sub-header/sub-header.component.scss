@@ -1,0 +1,25 @@
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '../../../styles/themes';
+
+@include nb-install-component() {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+
+	flex-direction: row;
+	align-items: center;
+
+	.header-container {
+		display: flex;
+		align-items: center;
+		.action {
+			margin-right: 15px;  /* and that, will result in a 10px gap */
+
+			// dont margin the last two items
+			&:nth-last-child(3), &:last-child {
+				margin: 0;
+			}
+		}
+	}
+}

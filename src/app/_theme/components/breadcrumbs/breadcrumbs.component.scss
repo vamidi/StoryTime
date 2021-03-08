@@ -1,0 +1,13 @@
+@import '../../../_theme/styles/themes';
+
+.breadcrumb {
+	background-color: transparent;
+	margin-bottom: 0;
+}
+.breadcrumb a {
+	cursor: pointer;
+	color: nb-theme(link-text-color) !important;
+}
+.breadcrumb a:hover {
+	color: nb-theme(link-text-hover-color) !important;
+}

@@ -1,0 +1,118 @@
+<nb-card status="primary" size="giant">
+	<nb-card-header>
+		{{ source.title }}
+	</nb-card-header>
+	<nb-card-body>
+		<nb-tabset fullWidth>
+			<nb-tab tabTitle="Project Settings">
+				<div class="as-form">
+					<!-- general info
+						(re)name of the project
+
+					-->
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
+						<p>* {{ source.requiredText }}</p>
+						<p> Columns</p>
+						<!--
+										<ngx-checkbox-field *ngFor="let column of getColumns() | keyvalue;  let i = index"
+											[key]="column.key"
+											[text]="'Hide/Unhide - ' + column.value.title"
+											[value]="column.value.hidden"
+											(onToggleEvent)="OnToggle($event)">
+										</ngx-checkbox-field>
+						-->
+					</ngx-dynamic-form>
+				</div>
+			</nb-tab>
+			<nb-tab tabTitle="User Permissions" *ngIf="isAdmin">
+				<div class="row">
+					<nb-accordion multi>
+						<nb-accordion-item *ngFor="let invite of invites; let i = index;">
+							<nb-accordion-item-header>
+								<div class="d-flex align-items-center flex-row w-100">
+									<div class="d-flex">
+										<ngx-avatar [name]="invite.displayName" [round]="true" [cornerRadius]="25" class="mr-3"></ngx-avatar>
+										<div>
+											<h4>{{ invite.displayName }}</h4>
+											<p>{{ invite.email }}</p>
+										</div>
+									</div>
+									<div class="ml-auto mr-4">
+										<button nbButton ghost status="danger">Remove team member</button>
+										<button nbButton status="basic" (click)="save(i)">Save Changes</button>
+									</div>
+								</div>
+							</nb-accordion-item-header>
+							<nb-accordion-item-body>
+								<nb-alert outline="basic" class="flex-row mb-4" *ngIf="invite.pending">
+									<nb-icon icon="info-outline" class="mr-3"></nb-icon>
+									<p class="m-0"><span class="font-weight-bold">Invite pending.</span> Team member has yet to accept invitation into project.</p>
+								</nb-alert>
+								<div class="d-flex">
+									<div class="mr-3"><nb-toggle status="basic" [checked]="hasRole(['admin'], invite.roles)"></nb-toggle></div>
+									<div>
+										<h6>Administrator</h6>
+										<p>Somebody that has the same abilities as the super, except they can't rename/delete project</p>
+									</div>
+								</div>
+								<div class="d-flex">
+									<div class="mr-3"><nb-toggle status="basic" [checked]="hasRole(['editor'], invite.roles)"></nb-toggle></div>
+									<div>
+										<h6>Editor</h6>
+										<p>Somebody who can publish and manage tables including the tables of other users</p>
+									</div>
+								</div>
+
+								<div class="d-flex">
+									<div class="mr-3"><nb-toggle status="basic" [checked]="hasRole(['author'], invite.roles)"></nb-toggle></div>
+									<div>
+										<h6>Author</h6>
+										<p>Somebody who can publish and manage their own tables</p>
+									</div>
+								</div>
+
+								<div class="d-flex">
+									<div class="mr-3"><nb-toggle status="basic" [checked]="hasRole(['contributor'], invite.roles)"></nb-toggle></div>
+									<div>
+										<h6>Contributor</h6>
+										<p>Somebody who can write and manage their own tables but cannot publish them</p>
+									</div>
+								</div>
+
+								<div class="d-flex">
+									<div class="mr-3"><nb-toggle status="basic" [checked]="hasRole(['reader'], invite.roles)"></nb-toggle></div>
+									<div>
+										<h6>Reader</h6>
+										<p>Somebody who can only read a project and is not able to adjust things.</p>
+									</div>
+								</div>
+							</nb-accordion-item-body>
+						</nb-accordion-item>
+						<nb-accordion-item *ngFor="let member of revisions | ngxKeyValue">
+							<nb-accordion-item-header>
+								<p><!-- Member name --></p>
+							</nb-accordion-item-header>
+							<nb-accordion-item-body>
+								<div class="row">
+									<div class="col col-lg-12">
+										<h5>Old Value:</h5>
+										<div *ngFor="let value of member.value.oldValue | keyvalue">
+											<pre [style.background-color]="member.value.oldValue[value.key] !== member.value.newValue[value.key] ? 'indianred': ''">{{ value.key }} {{ value.value }}</pre>
+										</div>
+										<button type="button" nbButton status="Danger" (click)="revert(member.value)"> Revoke </button>
+									</div>
+								</div>
+							</nb-accordion-item-body>
+						</nb-accordion-item>
+					</nb-accordion>
+					<div class="mt-4 clearfix">
+						<button nbButton status="primary" (click)="inviteMember()">Invite</button>
+					</div>
+				</div>
+			</nb-tab>
+		</nb-tabset>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+	</nb-card-footer>
+</nb-card>

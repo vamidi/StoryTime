@@ -1,0 +1,32 @@
+<div class="header-container">
+	<nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+		<nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+	</nb-select>
+</div>
+
+<div class="header-container">
+	<nb-actions size="small">
+
+		<nb-action class="control-item">
+			<nb-search type="rotate-layout"></nb-search>
+		</nb-action>
+		<nb-action class="control-item" icon="info-outline" (click)="openChangeLog()"></nb-action>
+		<nb-action class="user-action">
+			<nb-notifications
+				#cdire=ngxContextMenu
+				[ngxContextMenu]="userNotifications$ | async"
+				[badgeText]="userNotificationsLen"
+				nbContextMenuClass="cdk-overlay-notifications"
+				nbContextMenuTag="context-notifications-menu"
+				badgeStatus="primary">
+			</nb-notifications>
+		</nb-action>
+		<nb-action class="user-action" *nbIsGranted="['view', 'user']">
+			<nb-user [nbContextMenu]="userMenu"
+					 [onlyPicture]="userPictureOnly"
+					 [name]="user?.metadata?.displayName"
+					 [picture]="user?.metadata?.photoURL">
+			</nb-user>
+		</nb-action>
+	</nb-actions>
+</div>

@@ -1,0 +1,11 @@
+@import '../../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	.alert {
+		list-style: none;
+
+		&.danger {
+			background-color: #f8d7da;
+		}
+	}
+}

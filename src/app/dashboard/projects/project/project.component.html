@@ -1,0 +1,160 @@
+<div class="row" *ngIf="gridMode">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+
+	<!-- START MODULES -->
+
+	<div class="col-lg-12">
+		<h1>Modules</h1>
+	</div>
+
+	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-header>
+				Character Editor
+			</nb-card-header>
+			<nb-card-body>
+				<p>Inside this module you can adjust settings such as stats, classes etc</p>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor()">
+			<nb-card-header>
+				Story Editor
+			</nb-card-header>
+			<nb-card-body>
+				<p>Inside this module you are able to view the story of different character and adjust them accordingly.</p>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-header>
+				Quest Editor
+			</nb-card-header>
+			<nb-card-body>
+				<p>In this module you can create or change existing quests.</p>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-header>
+				Dialogue Editor
+			</nb-card-header>
+			<nb-card-body>
+				<p>Inside this module you are able to changes dialogues of characters through the Node editor.</p>
+			</nb-card-body>
+		</nb-card>
+	</div>
+
+	<!-- END MODULES -->
+
+	<div class="col-lg-12">
+		<h1>Tables</h1>
+	</div>
+
+	<!-- Tables from the last 7 days -->
+
+	<div class="col-lg-12">
+		<h6 class="text-hint">From last 7 days</h6>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngIf="isAdmin">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+<!--			<button nbButton fullWidth status="primary" (click)="open()"><span>Add new Table </span><nb-icon icon="plus"></nb-icon></button>-->
+				<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="insertTable()">
+					<i class="add-column nb-plus text-basic"></i>
+				</button>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let table of tablesService | timeSlice:7" type="button">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onTableClicked($event, table);">
+			<nb-card-header>
+				<div class="d-flex flex-row">
+					<div>
+						<h5 class="d-inline-block">{{ getTitle(table.metadata.title) }}</h5>
+					</div>
+					<div class="btn-group align-self-start ml-auto" dropdown>
+						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+						        class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic"
+						        [nbContextMenu]="getCardOption(table.id)" nbContextMenuTag="open-table-menu">
+							<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+							<!--							<i class="fas fa-ellipsis-h text-basic"></i>-->
+						</button>
+					</div>
+				</div>
+			</nb-card-header>
+			<nb-card-body>
+				{{ table.metadata.description }}
+			</nb-card-body>
+		</nb-card>
+	</div>
+
+	<!-- Rest of the tables -->
+	<div class="col-lg-12">
+		<h6 class="text-hint">Previous 30 days</h6>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let table of tablesService | orderBy: 'asc': 'title'">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onTableClicked($event, table);">
+			<nb-card-header>
+				<div class="d-flex flex-row">
+					<div>
+						<h5 class="d-inline-block">{{ getTitle(table.metadata.title) }}</h5>
+					</div>
+					<div class="btn-group align-self-start ml-auto" dropdown>
+						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+						        class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic"
+						        [nbContextMenu]="getCardOption(table.id)" nbContextMenuTag="open-table-menu">
+							<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+							<!--							<i class="fas fa-ellipsis-h text-basic"></i>-->
+						</button>
+					</div>
+				</div>
+			</nb-card-header>
+			<nb-card-body>
+				{{ table.metadata.description }}
+			</nb-card-body>
+		</nb-card>
+	</div>
+</div>
+<div class="row" *ngIf="!gridMode">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-md-12">
+		<nb-card>
+			<nb-card-header>
+				<div class="container col-md-12">
+					<div class="row mx-lg-n12">
+						<div class="col-4 py-3 px-lg-3">
+							<h4>Tables</h4>
+						</div>
+					</div>
+				</div>
+			</nb-card-header>
+			<nb-card-body>
+				<div class="container col-md-12" *ngIf="!isDeleted">
+					<div class="row mx-lg-n6 ml-4" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="insertTable(0)"><i class="add-column nb-plus"></i></button>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="insertTable(1)"><i class="edit-column nb-edit"></i></button>
+						<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" (click)="insertTable(2)"><i class="delete-column nb-trash"></i></button>
+					</div>
+				</div>
+				<ng2-smart-table *ngIf="!isDeleted"
+								 #smartTableComponent
+								 [settings]="settings" [source]="source"
+								 (createConfirm)="onCreateConfirm($event)"
+								 (editConfirm)="onEditConfirm($event)"
+								 (deleteConfirm)="onDeleteConfirm($event)"
+				                 (onColumnOrderChanged)="onColumnOrderChange($event)"
+				></ng2-smart-table>
+				<!--				<button type="submit" nbButton (click)="open()">{{ AddButtonTitle }}</button>-->
+			</nb-card-body>
+		</nb-card>
+	</div>
+</div>
+

@@ -1,0 +1,20 @@
+@import '../../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	nb-card {
+		min-width: 700px;
+		max-width: 1000px;
+		max-height: 800px;
+	}
+
+	nb-tabset
+	{
+		nb-tab {
+			padding: 1rem;
+
+			nb-accordion {
+				width: 100%;
+			}
+		}
+	}
+}

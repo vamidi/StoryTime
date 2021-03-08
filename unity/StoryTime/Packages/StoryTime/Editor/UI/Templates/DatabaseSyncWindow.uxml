@@ -1,0 +1,36 @@
+<UXML
+	xmlns:ui="UnityEngine.UIElements"
+	xmlns:uie="UnityEditor.UIElements"
+>
+	<!-- TODO make toolbar for different settings -->
+    <!-- <uie:Toolbar style="flex-direction: row;">
+		<uie:ToolbarToggle text="New Table Collection" name="new-table-tab" />
+        <uie:ToolbarSpacer style="flex-grow: 1;"/>
+    </uie:Toolbar> -->
+	<ui:VisualElement>
+		<ui:Label text="Database settings"/>
+		<uie:ObjectField
+			label="Loaded config" tooltip="The config we need to load." name="config-field" class="unity-property-field-input" binding-path="config" allow-scene-objects="false"/>
+		/>
+	</ui:VisualElement>
+	<ui:VisualElement name="rowSettings" style="display:none">
+		<ui:TextField label="Database URL" tooltip="The database url to Firebase." name="database-url-field" text="[YOUR_FIREBASE_DATABASE_URL]" class="unity-property-field-input" binding-path="databaseURL" />
+		<ui:TextField label="Project ID" tooltip="The Project id we need to fetch data from." name="project-url-field" text="[YOUR_PROJECT_ID]" class="unity-property-field-input" binding-path="projectID" />
+		<ui:TextField label="Email" tooltip="E-Mail we need to login in to access data from the database." name="email-field" text="[YOUR_FIREBASE_EMAIL_LOGIN]" class="unity-property-field-input" binding-path="email" />
+		<ui:TextField label="Password" tooltip="Password we need to use to login into Firebase." name="password-field" password="true" class="unity-property-field-input" binding-path="password" />
+		<ui:TextField label="Data Path" tooltip="Folder to save the incoming data to." name="data-path-field" class="unity-property-field-input" binding-path="dataPath" readonly="true"/>
+		<ui:Button label="Save Asset" name="btn-save" class="unity-property-button-input" text="Save Asset"/>
+		<ui:Button label="Data path" name="btn-choose-path" class="unity-property-button-input" text="Choose data path"/>
+	</ui:VisualElement>
+	<ui:VisualElement style="margin-top: 10px;">
+		<ui:Label text="Dialogue settings"/>
+		<uie:ObjectField
+			label="Loaded dialogue config" tooltip="The config we need to load." name="dialogue-config-field" class="unity-property-field-input" binding-path="config" allow-scene-objects="false"/>
+	</ui:VisualElement>
+	<ui:VisualElement name="dialogueSettings" style="display:none">
+		<uie:ObjectField label="Dialogue Font" tooltip="The standard font we use for the dialogue" name="dialogue-font-field" binding-path="font"/>
+	</ui:VisualElement>
+	<DatabaseSync.UI.ListViewTables name="tables-view-panel" style="flex-grow: 1;"/>
+</UXML>
+
+

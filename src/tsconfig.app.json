@@ -1,0 +1,37 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "../out-tsc/app",
+		"baseUrl": "./",
+		"paths": {
+			"@angular/*": [
+				"../node_modules/@angular/*"
+			],
+			"@nebular/*": [
+				"../node_modules/@nebular/*"
+			],
+			"@app-theme/*": [
+				"app/_theme/*"
+			],
+			"@app-core/*": [
+				"app/_core/*"
+			],
+			"@app-dashboard/*": [
+				"app/dashboard/*"
+			]
+		}
+	},
+	"angularCompilerOptions": {
+		"enableIvy": false
+	},
+	"exclude": [
+		"test.ts",
+		"**/*.spec.ts",
+		"../node_modules/@nebular/**/*.spec.ts"
+	],
+	"include": [
+		"../src/*.ts",
+		"../src/**/*.ts",
+		"../node_modules/@nebular/**/*.ts"
+	]
+}

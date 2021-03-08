@@ -1,0 +1,40 @@
+@import './themes';
+
+@mixin nb-overrides()
+{
+	nb-select
+	{
+		&.size-medium button {
+
+			nb-icon {
+				right: 0.41rem !important;
+			}
+		}
+	}
+
+	.select-button {
+		white-space: pre-wrap!important;
+	}
+
+	.table {
+		width: inherit;
+	}
+
+	.cdk-overlay-notifications {
+		nb-context-menu {
+			padding: 15px 20px;
+			ul {
+				li {
+					display: flex;
+					align-items: baseline;
+					padding: 15px;
+					a {
+						.menu-title {
+							flex: auto;
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,74 @@
+@import 'vars'
+
+.socket.output
+	background: #fff!important
+
+.node
+	background: $node-color
+	border: 1px solid $node-border-color
+	// border-radius: 2px
+	cursor: pointer
+	max-width: $node-width
+	height: auto
+	box-sizing: content-box
+	box-shadow: 4px 5px 9px $node-box-shadow-color
+	border-radius: 0.8rem
+	position: relative
+	user-select: none
+	&.edit
+		max-width: inherit
+	&:hover
+		background: lighten($node-color,4%)
+	&.selected
+		background: $node-color-selected
+		border: 5px solid $node-border-color-selected
+		box-shadow: 0 0 9px $node-box-shadow-color-selected
+	.title
+		color: white
+		font-family: sans-serif
+		font-size: 18px
+		padding: 20px
+		border-top: 1px solid $node-border-color
+		border-radius: 0.8rem 0.8rem 0 0
+		text-align: left
+		font-weight: 700
+		overflow: hidden
+		background: #2ecc71
+	.content
+		display: table
+		width: 100%
+		.column
+			display: table-cell
+			vertical-align: top
+			white-space: nowrap
+			&:last-child
+				background-color: #2b2b2b
+				padding-left: 20px
+				border-bottom-right-radius: 0.8rem
+			&:not(:last-child)
+				padding-right: 20px
+				border-right: 1.5px solid $node-border-color
+				border-bottom-left-radius: 0.8rem
+			.output
+				text-align: right
+			//background: #fff!important
+			.input
+				text-align: left
+			.input-title,.output-title
+				vertical-align: middle
+				color: white
+				display: inline-block
+				font-family: sans-serif
+				font-size: 14px
+				margin: $socket-margin 0
+				line-height: $socket-size
+				&[hidden]
+					display: none
+			.input-control
+				z-index: 1
+				width: calc(100% - #{$socket-size + 2*$socket-margin})
+				vertical-align: middle
+				display: inline-block
+			.control
+				padding: $socket-margin $socket-size/2 + $socket-margin
+

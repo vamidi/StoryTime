@@ -1,0 +1,22 @@
+<nb-card status="primary">
+	<nb-card-header>
+		{{ source.title }}
+	</nb-card-header>
+	<nb-card-body>
+		<div class="d-flex my-2">
+			<div class="d-flex align-items-center item bg-primary w-25 mr-2 px-2" *ngFor="let option of selectedOptions; let i = index">
+				<p class="m-0 text-alternate">{{ option.displayName }}</p>
+				<button nbButton ghost status="basic" class="ml-auto text-white" (click)="removeMember(i)">
+					<nb-icon icon="close-outline"></nb-icon>
+				</button>
+			</div>
+		</div>
+		<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source">
+			<ngx-text-field #memberTextField></ngx-text-field>
+		</ngx-dynamic-form>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+		<ngx-button-field #submitQuestion (onSubmitFunc)="onSendForm()"></ngx-button-field>
+	</nb-card-footer>
+</nb-card>

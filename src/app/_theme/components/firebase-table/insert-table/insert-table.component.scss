@@ -1,0 +1,58 @@
+@import '../../../../_theme/styles/themes';
+
+@include nb-install-component()
+{
+	.alert {
+		list-style: none;
+
+		&.danger {
+			background-color: #dc3545;
+		}
+	}
+
+	.alert-danger {
+		background-color: #dc3545;
+	}
+
+	nb-card {
+		min-width: 600px;
+		max-width: 1000px;
+		max-height: 800px;
+	}
+
+	nb-card-body {
+		display: block;
+
+		button {
+			width: 100%;
+			margin-bottom: 2rem;
+			display: block;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		> * {
+			margin-top: 1rem;
+		}
+	}
+
+	.dismiss {
+		color: gray;
+	}
+
+	.full-name-inputs,
+	.validation-checkboxes {
+		display: flex;
+		margin: 0 -0.5rem;
+
+		> * {
+			margin: 0 0.5rem;
+		}
+	}
+
+	.checkbox-radio {
+		display: flex;
+	}
+}

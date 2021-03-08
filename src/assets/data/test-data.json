@@ -1,0 +1,70 @@
+{
+	"id": "demo@0.2.0",
+	"nodes": {
+		"1": {
+			"id": 1,
+			"data": {
+				"id": 8,
+				"characterId": 1,
+				"deleted": false,
+				"nextId": 9007199254740991,
+				"parentId": 0,
+				"text": "I lost my doll somewhere in junkyard, but I can't find it anymore. Can you help me",
+				"tstamp": 1581435050,
+				"headColor": "#e67e22",
+				"rowData": {}
+			},
+			"inputs": {},
+			"outputs": {
+				"dialogueOut": {
+					"connections": [
+						{
+							"node": 2,
+							"input": "dialogueIn",
+							"data": {}
+						}
+					]
+				}
+			},
+			"position": [
+				80,
+				200
+			],
+			"name": "Start"
+		},
+		"2": {
+			"id": 2,
+			"data": {
+				"headColor": "#bdc3c7",
+				"DialogueOut": {
+					"dialogueId": 9,
+					"text": "Great! Anyways, I best head back inside now before they run off with my wolf pelt!",
+					"characterId": 1,
+					"nextId": 8
+				},
+				"rowData": {}
+			},
+			"inputs": {
+				"dialogueIn": {
+					"connections": [
+						{
+							"node": 1,
+							"output": "dialogueOut",
+							"data": {}
+						}
+					]
+				}
+			},
+			"outputs": {
+				"dialogueOut": {
+					"connections": []
+				}
+			},
+			"position": [
+				595.777782188438,
+				173.33335905559838
+			],
+			"name": "Dialogue"
+		}
+	}
+}

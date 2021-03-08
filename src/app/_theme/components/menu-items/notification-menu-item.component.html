@@ -1,0 +1,84 @@
+<span *ngIf="menuItem.group">
+  <nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	{{ menuItem.title }}
+</span>
+<a class="p-0" style="min-width: 77%" *ngIf="menuItem.link && !menuItem.url && !menuItem.children && !menuItem.group && !menuItem.onIconSuffixClick"
+   [routerLink]="menuItem.link"
+   [queryParams]="menuItem.queryParams"
+   [fragment]="menuItem.fragment"
+   [skipLocationChange]="menuItem.skipLocationChange"
+   [attr.target]="menuItem.target"
+   [attr.title]="menuItem.title"
+   [class.active]="menuItem.selected"
+   (mouseenter)="onHoverItem(menuItem)"
+   (click)="onItemClick(menuItem);">
+	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	<span class="menu-title">{{ menuItem.title }}</span>
+	<nb-icon *ngIf="menuItem.canFavorite" class="menu-icon right" config="star-outline"></nb-icon>
+</a>
+<a class="p-0" style="min-width: 77%" *ngIf="menuItem.link && !menuItem.url && !menuItem.children && !menuItem.group && menuItem.onIconSuffixClick"
+   [attr.target]="menuItem.target"
+   [attr.title]="menuItem.title"
+   [class.active]="menuItem.selected"
+   (click)="$event.preventDefault(); onItemClick(menuItem)"
+   (mouseenter)="onHoverItem(menuItem)"
+   href="javascript:void(0);">
+	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	<span class="menu-title" (click)="navigate(menuItem);">{{ menuItem.title }}</span>
+	<nb-icon *ngIf="menuItem.canFavorite" class="menu-icon right" config="star-outline"></nb-icon>
+	<nb-icon *ngIf="menuItem.iconSuffix && menuItem.onIconSuffixClick" class="menu-icon right" [config]="menuItem.iconSuffix" (click)="$event.preventDefault();menuItem.onIconSuffixClick()"></nb-icon>
+</a>
+<a class="p-0" style="min-width: 77%" *ngIf="menuItem.url && !menuItem.children && !menuItem.link && !menuItem.group"
+   [attr.href]="menuItem.url"
+   [attr.target]="menuItem.target"
+   [attr.title]="menuItem.title"
+   [class.active]="menuItem.selected"
+   (mouseenter)="onHoverItem(menuItem)"
+   (click)="onSelectItem(menuItem)">
+	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	<span class="menu-title">{{ menuItem.title }}</span>
+</a>
+<a class="p-0" style="min-width: 77%" *ngIf="!menuItem.children && !menuItem.link && !menuItem.url && !menuItem.group"
+   [attr.target]="menuItem.target"
+   [attr.title]="menuItem.title"
+   [class.active]="menuItem.selected"
+   (mouseenter)="onHoverItem(menuItem)"
+   (click)="$event.preventDefault(); onItemClick(menuItem);">
+	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	<ngx-avatar class="mr-2" name="Pixian Website Redesign" [round]="true" cornerRadius="0" size="30"></ngx-avatar>
+	<span class="menu-title text-break">{{ menuItem.title }}</span>
+</a>
+<div class="d-flex justify-content-between w-100" *ngIf="menuItem?.data?.pending">
+	<button nbButton shape="round" size="small" status="basic" (click)="onAcceptClicked(menuItem?.data)"><nb-icon icon="checkmark-outline"></nb-icon></button>
+	<button nbButton shape="round" size="small" status="basic"><nb-icon icon="close-outline"></nb-icon></button>
+</div>
+
+<!-- TODO see if we need children inside this container
+<a *ngIf="menuItem.children"
+   (click)="$event.preventDefault(); onToggleSubMenu(menuItem);"
+   [attr.target]="menuItem.target"
+   [attr.title]="menuItem.title"
+   [class.active]="menuItem.selected"
+   (mouseenter)="onHoverItem(menuItem)"
+   href="#">
+	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
+	<span class="menu-title">{{ menuItem.title }}</span>
+	<nb-icon class="expand-state" [icon]="getExpandStateIcon()" pack="nebular-essentials"></nb-icon>
+</a>
+<ul *ngIf="menuItem.children"
+    [class.collapsed]="!(menuItem.children && menuItem.expanded)"
+    [class.expanded]="menuItem.expanded"
+    [@toggle]="toggleState"
+    class="menu-items">
+	<ng-container *ngFor="let item of menuItem.children">
+		<li ngxNotifyMenuItem *ngIf="!item.hidden"
+		    [menuItem]="item"
+		    [class.menu-group]="item.group"
+		    (hoverItem)="onHoverItem($event)"
+		    (toggleSubMenu)="onToggleSubMenu($event)"
+		    (selectItem)="onSelectItem($event)"
+		    (itemClick)="onItemClick($event)"
+		    class="menu-item">
+		</li>
+	</ng-container>
+</ul> -->

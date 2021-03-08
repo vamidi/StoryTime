@@ -1,0 +1,12 @@
+diff --git a/node_modules/ng2-completer/src/modules/ng2-completer.module.d.ts b/node_modules/ng2-completer/src/modules/ng2-completer.module.d.ts
+index f1dd11a..860a84c 100644
+--- a/node_modules/ng2-completer/src/modules/ng2-completer.module.d.ts
++++ b/node_modules/ng2-completer/src/modules/ng2-completer.module.d.ts
+@@ -1,5 +1,5 @@
+ import { ModuleWithProviders } from "@angular/core";
+ export declare class Ng2CompleterModule {
+-    static forRoot(): ModuleWithProviders;
+-    static forChild(): ModuleWithProviders;
++    static forRoot(): ModuleWithProviders<Ng2CompleterModule>;
++    static forChild(): ModuleWithProviders<Ng2CompleterModule>;
+ }

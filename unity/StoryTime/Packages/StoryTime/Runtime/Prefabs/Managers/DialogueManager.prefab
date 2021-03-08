@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7653655626251791715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3760742727708246479}
+  - component: {fileID: 7847411383363821247}
+  m_Layer: 0
+  m_Name: DialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3760742727708246479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7653655626251791715}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.22044373, y: 1.3826127, z: 0.4986444}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7847411383363821247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7653655626251791715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ace904baee21f44adb9710bb5948c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 95f209c7ec262ac47954fd0dcb6ff9e0, type: 2}
+  gameCam: {fileID: 0}
+  dialogueCam: {fileID: 0}
+  targetGroup: {fileID: 0}
+  startStoryEvent: {fileID: 11400000, guid: 1dafebf8ffa94d14cb84dfa1290f7581, type: 2}
+  makeDialogueChoiceEvent: {fileID: 11400000, guid: 7fb2fbdd616312641b0c9e9357294c44,
+    type: 2}
+  startTransformDialogue: {fileID: 11400000, guid: 20882f855bf38c8498571e8ea0479453,
+    type: 2}
+  openUIDialogueEvent: {fileID: 11400000, guid: 10e76ab2424f6b741a8269b1576b5108,
+    type: 2}
+  showChoicesUIEvent: {fileID: 11400000, guid: ac2f2063026405543b1396308624f775, type: 2}
+  continueWithTask: {fileID: 11400000, guid: 776fce244873b5f499a5a86e99f8f2b0, type: 2}
+  closeDialogueUIEvent: {fileID: 11400000, guid: cbd4abfb8d701dc479f2506c899ce498,
+    type: 2}
+  closeChoiceUIEvent: {fileID: 11400000, guid: cc667a3eb43ab1d498a3f6217e8885c5, type: 2}
+  dialogueEvent: {fileID: 11400000, guid: 0cf8ed5b07386b54d876842c88e40a0e, type: 2}
+  revealer: {fileID: 0}

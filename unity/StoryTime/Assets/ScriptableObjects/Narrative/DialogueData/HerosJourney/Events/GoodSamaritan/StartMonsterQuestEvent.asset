@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 146302e8ba8c460285a5a26bc19a98ec, type: 3}
+  m_Name: StartMonsterQuestEvent
+  m_EditorClassIdentifier: 
+  eventName: 1
+  value: {fileID: 11400000, guid: 70e84c7e296ecde4cab81ec1b4501876, type: 2}

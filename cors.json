@@ -1,0 +1,8 @@
+[
+	{
+		"source": "buas-prototype-dev.appspot.com",
+		"origin": ["*"],
+		"method": ["GET"],
+		"maxAgeSeconds": 3600
+	}
+]

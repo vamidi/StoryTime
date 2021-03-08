@@ -1,0 +1,33 @@
+<div class="header-container">
+	<h6>{{ title }}</h6>
+</div>
+
+<div class="header-container">
+	<!-- Add Project btn -->
+	<button nbButton status="primary" class="action" (click)="insertProject()">{{ addTitle }}</button>
+
+	<!-- Sort projects by -->
+	<nb-select selected='none' status="basic" style="margin-right: 15px">
+		<nb-option value='none'>Sort by:</nb-option>
+	</nb-select>
+
+	<!-- Select which projects to show -->
+	<nb-select selected='none' status="basic" style="margin-right: 15px">
+		<nb-option value='none'>My Projects</nb-option>
+	</nb-select>
+
+	<!-- Project layout -->
+	<button style="border-radius: 0.25rem 0 0 0.25rem" nbButton [status]="gridMode ? 'basic' : 'primary'" (click)="toggleViewMode(false)" class="action">
+		<nb-icon icon="list-outline"></nb-icon>
+	</button>
+
+	<!-- Project layout -->
+	<button style="border-radius: 0 0.25rem 0.25rem 0" nbButton [status]="gridMode ? 'primary' : 'basic'" (click)="toggleViewMode(true)" class="action">
+		<nb-icon icon="grid-outline"></nb-icon>
+	</button>
+
+	<!-- project settings -->
+	<button nbButton [status]="'basic'" (click)="openSettings()">
+		<nb-icon icon="settings-outline"></nb-icon>
+	</button>
+</div>

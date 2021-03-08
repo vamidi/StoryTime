@@ -1,0 +1,31 @@
+<nb-card status="primary" size="large">
+	<nb-card-header>
+		{{ source.title }}
+	</nb-card-header>
+	<nb-card-body>
+		<div class="as-form">
+			<ngx-dynamic-form [source]="source" [showLabels]="true">
+<!--				<p>* {{ insertFormContainer.required_text }}</p>-->
+				<ngx-text-field #textQuestion></ngx-text-field>
+
+				<div *ngIf="experimental">
+					<!-- <ngx-text-field #defTextQuestion type="text" text="Default value" name="default_value" errorText="Insert default value" value="" [required]="true"></ngx-text-field>
+					<ngx-dropdown-field *ngIf="behaviourType !== 2 && relationSelect"
+					                    #defListQuestion
+					                    value="Text" text="Type" name="default_type"
+					                    errorText="Choose an option"
+					                    (onSelectFunc)="onListSelected($event)" [required]="true">
+					</ngx-dropdown-field> -->
+				</div>
+				<ngx-dropdown-field #listQuestion (onSelectFunc)="this.onListSelected($event)"></ngx-dropdown-field>
+			</ngx-dynamic-form>
+
+<!--			<ngx-form (onSendForm)="onSendForm()" [container]="insertFormContainer"></ngx-form>-->
+		</div>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+		<ngx-button-field #submitQuestion (onSubmitFunc)="onSendForm()"></ngx-button-field>
+		<ngx-checkbox-field #checkboxQuestion>s</ngx-checkbox-field>
+	</nb-card-footer>
+</nb-card>

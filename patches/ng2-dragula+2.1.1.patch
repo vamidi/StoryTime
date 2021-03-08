@@ -1,0 +1,10 @@
+diff --git a/node_modules/ng2-dragula/dist/components/dragula.module.d.ts b/node_modules/ng2-dragula/dist/components/dragula.module.d.ts
+index cb73222..72abc23 100644
+--- a/node_modules/ng2-dragula/dist/components/dragula.module.d.ts
++++ b/node_modules/ng2-dragula/dist/components/dragula.module.d.ts
+@@ -1,4 +1,4 @@
+ import { ModuleWithProviders } from '@angular/core';
+ export declare class DragulaModule {
+-    static forRoot(): ModuleWithProviders;
++    static forRoot(): ModuleWithProviders<DragulaModule>;
+ }

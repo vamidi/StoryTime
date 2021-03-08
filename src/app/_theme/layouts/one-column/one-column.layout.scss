@@ -1,0 +1,154 @@
+@import '../../styles/themes';
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+
+@include nb-install-component()
+{
+	.menu-sidebar {
+		&.left {
+			border-right: 1px solid rgba(188, 197, 214, 0.5);
+		}
+		&.right {
+			border-left: 1px solid rgba(188, 197, 214, 0.5);
+		}
+	}
+
+	.menu-sidebar ::ng-deep .scrollable {
+		padding-top: nb-theme(layout-padding-top);
+	}
+
+	::ng-deep nb-layout-header {
+		&.nb-layout-sub-header {
+			border-bottom: 1px solid rgba(188, 197, 214, 0.5);
+		}
+		nav {
+			box-shadow: none;
+			border-style: solid;
+			border-width: 0.5px 0.5px 0 0.5px;
+			border-color: rgba(44, 51, 73, 0.1);
+		}
+	}
+
+	.menu-sidebar ::ng-deep .main-container-fixed {
+		top: 0;
+	}
+
+	.menu-sidebar.compacted ::ng-deep .scrollable [nbButton].appearance-filled.size-medium {
+		margin: -3.75rem -0.75rem -1.25rem;
+		width: 2.5rem;
+		position: relative;
+		& span {
+			display: none;
+		}
+		& nb-icon svg {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	}
+
+	.logo-container {
+		display: flex;
+		align-items: center;
+		width: calc(#{nb-theme(sidebar-width) + 5rem} - #{nb-theme(header-padding)});
+	}
+
+	.header-container {
+		display: flex;
+		align-items: center;
+		width: auto;
+
+		.sidebar-toggle {
+			@include nb-rtl(padding-left, 1.25rem);
+			@include nb-ltr(padding-right, 1.25rem);
+			text-decoration: none;
+			color: nb-theme(text-hint-color);
+
+			nb-icon {
+				font-size: 1.75rem;
+			}
+		}
+
+		.logo {
+			font-size: 1.5rem;
+			@include nb-rtl(border-left, 1px solid nb-theme(divider-color));
+			@include nb-ltr(border-right, 1px solid nb-theme(divider-color));
+			white-space: nowrap;
+			text-decoration: none;
+		}
+	}
+
+	#close {
+		color: nb-theme(text-hint-color);
+	}
+
+	.overlay {
+		position: absolute;
+		min-height: 100%;
+		max-height: 91.8vh;
+		background: none;
+		z-index: 98;
+		padding: 0;
+		top: 0;
+		left: 0;
+
+		&.open {
+			width: 100%;
+			background: rgba(0, 0, 0, .2);
+		}
+	}
+
+	#project-list {
+		width: 250px;
+		min-height: 100%;
+		max-height: 91.8vh;
+		background: white;
+		top: 0;
+		left: 0;
+		z-index: 99;
+		box-shadow: 10px 5px 10px 0 rgba(44, 51, 73, 0.1);
+		border: 1px solid #e4e9f2;
+		border-radius: 0 10px 0 0;
+		overflow-y: scroll;
+
+		@include nb-scrollbars(
+				nb-theme(card-scrollbar-color),
+				nb-theme(card-scrollbar-background-color),
+				nb-theme(card-scrollbar-width));
+
+		//transition: max-width 0.1s ease-in;
+		transition: transform 0.2s ease-out;
+		transform: scaleX(0);
+		transform-origin: 0 50%;
+
+		padding:0!important;
+
+		&.open {
+			transform: scaleX(1);
+			padding: inherit!important;
+		}
+
+		.project {
+			clear: both;
+			height: 50px;
+			border: 1px solid #e4e9f2;
+			justify-content: space-evenly;
+			border-radius: 5px;
+			margin: 25px 0;
+
+			ngx-avatar {
+				border: 1px solid #e4e9f2;
+				border-radius: 5px;
+			}
+
+			p {
+				margin: 0;
+			}
+
+			span, nb-icon {
+				font-size: 12px;
+				color: nb-theme(text-hint-color);
+			}
+		}
+	}
+}

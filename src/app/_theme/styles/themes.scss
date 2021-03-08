@@ -1,0 +1,437 @@
+// @nebular theming framework
+@import '~@nebular/theme/styles/theming';
+// @nebular out of the box themes
+@import '~@nebular/theme/styles/themes';
+
+$nb-themes: nb-register-theme((
+	layout-padding-top: 1.25rem,
+	menu-item-icon-margin: 0 0.5rem 0 0,
+	card-height-tiny: 13.5rem,
+	card-height-small: 21.1875rem,
+	card-height-medium: 28.875rem,
+	card-height-large: 36.5625rem,
+	card-height-giant: 44.25rem,
+	card-margin-bottom: 1.875rem,
+	card-header-with-select-padding-top: 0.5rem,
+	card-header-with-select-padding-bottom: 0.5rem,
+	card-border-width: 0,
+	select-min-width: 6rem,
+	slide-out-background: #f7f9fc,
+	slide-out-shadow-color: 0 4px 14px 0 #8f9bb3,
+	slide-out-shadow-color-rtl: 0 4px 14px 0 #8f9bb3,
+	layout-padding: 1.25rem 1.25rem 0.75rem,
+
+	snackbar-border-style: toastr-border-style,
+	snackbar-border-width: toastr-border-width,
+	snackbar-border-radius: toastr-border-radius,
+	snackbar-padding: toastr-padding,
+	snackbar-shadow: toastr-shadow,
+
+	snackbar-text-font-family : toastr-text-font-family,
+	snackbar-text-font-size : text-subtitle-font-size,
+	snackbar-text-font-weight : toastr-text-font-weight,
+	snackbar-text-line-height : toastr-text-line-height,
+	snackbar-title-text-font-family : toastr-title-text-font-family,
+	snackbar-title-text-font-size : toastr-title-text-font-size,
+	snackbar-title-text-font-weight : toastr-title-text-font-weight,
+	snackbar-title-text-line-height : toastr-title-text-line-height,
+
+	snackbar-basic-background-color: background-alternative-color-1,
+	snackbar-basic-border-color: border-alternative-color-1,
+	snackbar-basic-text-color: text-alternate-color,
+	snackbar-icon-basic-background-color: toastr-icon-basic-background-color,
+	snackbar-icon-basic-color: toastr-icon-basic-color,
+	snackbar-destroyable-basic-hover-background-color: background-alternative-color-2,
+	snackbar-destroyable-basic-hover-border-color: border-alternative-color-2,
+
+	snackbar-primary-background-color: toastr-primary-background-color,
+	snackbar-primary-border-color: toastr-primary-border-color,
+	snackbar-primary-text-color: toastr-primary-text-color,
+	snackbar-icon-primary-background-color: toastr-icon-primary-background-color,
+	snackbar-icon-primary-color: toastr-icon-primary-color,
+	snackbar-destroyable-primary-hover-background-color: toastr-destroyable-primary-hover-background-color,
+	snackbar-destroyable-primary-hover-border-color: toastr-destroyable-primary-hover-border-color,
+
+	snackbar-success-background-color: toastr-success-background-color,
+	snackbar-success-border-color: toastr-success-border-color,
+	snackbar-success-text-color: toastr-success-text-color,
+	snackbar-icon-success-background-color: toastr-icon-success-background-color,
+	snackbar-icon-success-color: toastr-icon-success-color,
+	snackbar-destroyable-success-hover-background-color: toastr-destroyable-success-hover-background-color,
+	snackbar-destroyable-success-hover-border-color: toastr-destroyable-success-hover-border-color,
+
+	snackbar-info-background-color: toastr-info-background-color,
+	snackbar-info-border-color: toastr-info-border-color,
+	snackbar-info-text-color: toastr-info-text-color,
+	snackbar-icon-info-background-color: toastr-icon-info-background-color,
+	snackbar-icon-info-color: toastr-icon-info-color,
+	snackbar-destroyable-info-hover-background-color: toastr-destroyable-info-hover-background-color,
+	snackbar-destroyable-info-hover-border-color: toastr-destroyable-info-hover-border-color,
+
+	snackbar-warning-background-color: toastr-warning-background-color,
+	snackbar-warning-border-color: toastr-warning-border-color,
+	snackbar-warning-text-color: toastr-warning-text-color,
+	snackbar-icon-warning-background-color: toastr-icon-warning-background-color,
+	snackbar-icon-warning-color: toastr-icon-warning-color,
+	snackbar-destroyable-warning-hover-background-color: toastr-destroyable-warning-hover-background-color,
+	snackbar-destroyable-warning-hover-border-color: toastr-destroyable-warning-hover-border-color,
+
+	snackbar-danger-background-color: toastr-danger-background-color,
+	snackbar-danger-border-color: toastr-danger-border-color,
+	snackbar-danger-text-color: toastr-danger-text-color,
+	snackbar-icon-danger-background-color: toastr-icon-danger-background-color,
+	snackbar-icon-danger-color: toastr-icon-danger-color,
+	snackbar-destroyable-danger-hover-background-color: toastr-destroyable-danger-hover-background-color,
+	snackbar-destroyable-danger-hover-border-color: toastr-destroyable-danger-hover-border-color,
+
+	snackbar-control-background-color: toastr-control-background-color,
+	snackbar-control-border-color: toastr-control-border-color,
+	snackbar-control-text-color: toastr-control-text-color,
+	snackbar-icon-control-background-color: toastr-icon-control-background-color,
+	snackbar-icon-control-color: toastr-icon-control-color,
+	snackbar-destroyable-control-hover-background-color: toastr-destroyable-control-hover-background-color,
+	snackbar-destroyable-control-hover-border-color: toastr-destroyable-control-hover-border-color,
+
+	context-menu-min-width: 15rem,
+	context-menu-max-width: 22rem,
+), default, default);
+
+$nb-themes: nb-register-theme((
+	layout-padding-top: 1.25rem,
+	menu-item-icon-margin: 0 0.5rem 0 0,
+	card-height-tiny: 13.5rem,
+	card-height-small: 21.1875rem,
+	card-height-medium: 28.875rem,
+	card-height-large: 36.5625rem,
+	card-height-giant: 44.25rem,
+	card-margin-bottom: 1.875rem,
+	card-header-with-select-padding-top: 0.5rem,
+	card-header-with-select-padding-bottom: 0.5rem,
+	card-border-width: 0,
+	select-min-width: 6rem,
+	slide-out-background: #252547,
+	slide-out-shadow-color: 2px 0 3px #29157a,
+	slide-out-shadow-color-rtl: -2px 0 3px #29157a,
+	layout-padding: 1.25rem 1.25rem 0.75rem,
+
+	snackbar-border-style: toastr-border-style,
+	snackbar-border-width: toastr-border-width,
+	snackbar-border-radius: toastr-border-radius,
+	snackbar-padding: toastr-padding,
+	snackbar-shadow: toastr-shadow,
+
+	snackbar-text-font-family : toastr-text-font-family,
+	snackbar-text-font-size : text-subtitle-font-size,
+	snackbar-text-font-weight : toastr-text-font-weight,
+	snackbar-text-line-height : toastr-text-line-height,
+	snackbar-title-text-font-family : toastr-title-text-font-family,
+	snackbar-title-text-font-size : toastr-title-text-font-size,
+	snackbar-title-text-font-weight : toastr-title-text-font-weight,
+	snackbar-title-text-line-height : toastr-title-text-line-height,
+
+	snackbar-basic-background-color: background-alternative-color-1,
+	snackbar-basic-border-color: border-alternative-color-1,
+	snackbar-basic-text-color: text-alternate-color,
+	snackbar-icon-basic-background-color: toastr-icon-basic-background-color,
+	snackbar-icon-basic-color: toastr-icon-basic-color,
+	snackbar-destroyable-basic-hover-background-color: background-alternative-color-2,
+	snackbar-destroyable-basic-hover-border-color: border-alternative-color-2,
+
+	snackbar-primary-background-color: toastr-primary-background-color,
+	snackbar-primary-border-color: toastr-primary-border-color,
+	snackbar-primary-text-color: toastr-primary-text-color,
+	snackbar-icon-primary-background-color: toastr-icon-primary-background-color,
+	snackbar-icon-primary-color: toastr-icon-primary-color,
+	snackbar-destroyable-primary-hover-background-color: toastr-destroyable-primary-hover-background-color,
+	snackbar-destroyable-primary-hover-border-color: toastr-destroyable-primary-hover-border-color,
+
+	snackbar-success-background-color: toastr-success-background-color,
+	snackbar-success-border-color: toastr-success-border-color,
+	snackbar-success-text-color: toastr-success-text-color,
+	snackbar-icon-success-background-color: toastr-icon-success-background-color,
+	snackbar-icon-success-color: toastr-icon-success-color,
+	snackbar-destroyable-success-hover-background-color: toastr-destroyable-success-hover-background-color,
+	snackbar-destroyable-success-hover-border-color: toastr-destroyable-success-hover-border-color,
+
+	snackbar-info-background-color: toastr-info-background-color,
+	snackbar-info-border-color: toastr-info-border-color,
+	snackbar-info-text-color: toastr-info-text-color,
+	snackbar-icon-info-background-color: toastr-icon-info-background-color,
+	snackbar-icon-info-color: toastr-icon-info-color,
+	snackbar-destroyable-info-hover-background-color: toastr-destroyable-info-hover-background-color,
+	snackbar-destroyable-info-hover-border-color: toastr-destroyable-info-hover-border-color,
+
+	snackbar-warning-background-color: toastr-warning-background-color,
+	snackbar-warning-border-color: toastr-warning-border-color,
+	snackbar-warning-text-color: toastr-warning-text-color,
+	snackbar-icon-warning-background-color: toastr-icon-warning-background-color,
+	snackbar-icon-warning-color: toastr-icon-warning-color,
+	snackbar-destroyable-warning-hover-background-color: toastr-destroyable-warning-hover-background-color,
+	snackbar-destroyable-warning-hover-border-color: toastr-destroyable-warning-hover-border-color,
+
+	snackbar-danger-background-color: toastr-danger-background-color,
+	snackbar-danger-border-color: toastr-danger-border-color,
+	snackbar-danger-text-color: toastr-danger-text-color,
+	snackbar-icon-danger-background-color: toastr-icon-danger-background-color,
+	snackbar-icon-danger-color: toastr-icon-danger-color,
+	snackbar-destroyable-danger-hover-background-color: toastr-destroyable-danger-hover-background-color,
+	snackbar-destroyable-danger-hover-border-color: toastr-destroyable-danger-hover-border-color,
+
+	snackbar-control-background-color: toastr-control-background-color,
+	snackbar-control-border-color: toastr-control-border-color,
+	snackbar-control-text-color: toastr-control-text-color,
+	snackbar-icon-control-background-color: toastr-icon-control-background-color,
+	snackbar-icon-control-color: toastr-icon-control-color,
+	snackbar-destroyable-control-hover-background-color: toastr-destroyable-control-hover-background-color,
+	snackbar-destroyable-control-hover-border-color: toastr-destroyable-control-hover-border-color,
+
+	context-menu-min-width: 15rem,
+	context-menu-max-width: 22rem,
+
+), cosmic, cosmic);
+
+$nb-themes: nb-register-theme((
+	layout-padding-top: 1.25rem,
+	menu-item-icon-margin: 0 0.5rem 0 0,
+	card-height-tiny: 13.5rem,
+	card-height-small: 21.1875rem,
+	card-height-medium: 28.875rem,
+	card-height-large: 36.5625rem,
+	card-height-giant: 44.25rem,
+	card-margin-bottom: 1.875rem,
+	card-header-with-select-padding-top: 0.5rem,
+	card-header-with-select-padding-bottom: 0.5rem,
+	card-border-width: 0,
+	select-min-width: 6rem,
+	slide-out-background: linear-gradient(270deg, #edf1f7 0%, #e4e9f2 100%),
+	slide-out-shadow-color: 0 4px 14px 0 #8f9bb3,
+	slide-out-shadow-color-rtl: 0 4px 14px 0 #8f9bb3,
+	layout-padding: 1.25rem 1.25rem 0.75rem,
+
+	snackbar-border-style: toastr-border-style,
+	snackbar-border-width: toastr-border-width,
+	snackbar-border-radius: toastr-border-radius,
+	snackbar-padding: toastr-padding,
+	snackbar-shadow: toastr-shadow,
+
+	snackbar-text-font-family : toastr-text-font-family,
+	snackbar-text-font-size : text-subtitle-font-size,
+	snackbar-text-font-weight : toastr-text-font-weight,
+	snackbar-text-line-height : toastr-text-line-height,
+	snackbar-title-text-font-family : toastr-title-text-font-family,
+	snackbar-title-text-font-size : toastr-title-text-font-size,
+	snackbar-title-text-font-weight : toastr-title-text-font-weight,
+	snackbar-title-text-line-height : toastr-title-text-line-height,
+
+	snackbar-basic-background-color: background-alternative-color-1,
+	snackbar-basic-border-color: border-alternative-color-1,
+	snackbar-basic-text-color: text-alternate-color,
+	snackbar-icon-basic-background-color: toastr-icon-basic-background-color,
+	snackbar-icon-basic-color: toastr-icon-basic-color,
+	snackbar-destroyable-basic-hover-background-color: background-alternative-color-2,
+	snackbar-destroyable-basic-hover-border-color: border-alternative-color-2,
+
+	snackbar-primary-background-color: toastr-primary-background-color,
+	snackbar-primary-border-color: toastr-primary-border-color,
+	snackbar-primary-text-color: toastr-primary-text-color,
+	snackbar-icon-primary-background-color: toastr-icon-primary-background-color,
+	snackbar-icon-primary-color: toastr-icon-primary-color,
+	snackbar-destroyable-primary-hover-background-color: toastr-destroyable-primary-hover-background-color,
+	snackbar-destroyable-primary-hover-border-color: toastr-destroyable-primary-hover-border-color,
+
+	snackbar-success-background-color: toastr-success-background-color,
+	snackbar-success-border-color: toastr-success-border-color,
+	snackbar-success-text-color: toastr-success-text-color,
+	snackbar-icon-success-background-color: toastr-icon-success-background-color,
+	snackbar-icon-success-color: toastr-icon-success-color,
+	snackbar-destroyable-success-hover-background-color: toastr-destroyable-success-hover-background-color,
+	snackbar-destroyable-success-hover-border-color: toastr-destroyable-success-hover-border-color,
+
+	snackbar-info-background-color: toastr-info-background-color,
+	snackbar-info-border-color: toastr-info-border-color,
+	snackbar-info-text-color: toastr-info-text-color,
+	snackbar-icon-info-background-color: toastr-icon-info-background-color,
+	snackbar-icon-info-color: toastr-icon-info-color,
+	snackbar-destroyable-info-hover-background-color: toastr-destroyable-info-hover-background-color,
+	snackbar-destroyable-info-hover-border-color: toastr-destroyable-info-hover-border-color,
+
+	snackbar-warning-background-color: toastr-warning-background-color,
+	snackbar-warning-border-color: toastr-warning-border-color,
+	snackbar-warning-text-color: toastr-warning-text-color,
+	snackbar-icon-warning-background-color: toastr-icon-warning-background-color,
+	snackbar-icon-warning-color: toastr-icon-warning-color,
+	snackbar-destroyable-warning-hover-background-color: toastr-destroyable-warning-hover-background-color,
+	snackbar-destroyable-warning-hover-border-color: toastr-destroyable-warning-hover-border-color,
+
+	snackbar-danger-background-color: toastr-danger-background-color,
+	snackbar-danger-border-color: toastr-danger-border-color,
+	snackbar-danger-text-color: toastr-danger-text-color,
+	snackbar-icon-danger-background-color: toastr-icon-danger-background-color,
+	snackbar-icon-danger-color: toastr-icon-danger-color,
+	snackbar-destroyable-danger-hover-background-color: toastr-destroyable-danger-hover-background-color,
+	snackbar-destroyable-danger-hover-border-color: toastr-destroyable-danger-hover-border-color,
+
+	snackbar-control-background-color: toastr-control-background-color,
+	snackbar-control-border-color: toastr-control-border-color,
+	snackbar-control-text-color: toastr-control-text-color,
+	snackbar-icon-control-background-color: toastr-icon-control-background-color,
+	snackbar-icon-control-color: toastr-icon-control-color,
+	snackbar-destroyable-control-hover-background-color: toastr-destroyable-control-hover-background-color,
+	snackbar-destroyable-control-hover-border-color: toastr-destroyable-control-hover-border-color,
+
+	context-menu-min-width: 15rem,
+	context-menu-max-width: 22rem,
+), corporate, corporate);
+
+$nb-themes: nb-register-theme((
+	layout-padding-top: 1.25rem,
+	menu-item-icon-margin: 0 0.5rem 0 0,
+	card-height-tiny: 13.5rem,
+	card-height-small: 21.1875rem,
+	card-height-medium: 28.875rem,
+	card-height-large: 36.5625rem,
+	card-height-giant: 44.25rem,
+	card-margin-bottom: 1.875rem,
+	card-header-with-select-padding-top: 0.5rem,
+	card-header-with-select-padding-bottom: 0.5rem,
+	card-border-width: 0,
+	select-min-width: 6rem,
+	slide-out-background: linear-gradient(270deg, #34495e 0%, #2c3e50 100%),
+	//sidebar-background-color: #2c3e50,
+	slide-out-shadow-color: 0 4px 14px 0 #8f9bb3,
+	slide-out-shadow-color-rtl: 0 4px 14px 0 #8f9bb3,
+	layout-padding: 1.25rem 1.25rem 0.75rem,
+
+	color-primary-default: #ffffff,
+
+	background-basic-color-1: #2b2f33,
+	background-basic-color-2: #2b2f33,
+	background-basic-color-3: #212529,
+	background-basic-color-4: #212529,
+
+	divider-color: rgba(188, 197, 214, 0.5),
+	menu-item-divider-color: rgba(188, 197, 214, 0.5),
+
+	background-primary-color-1: #2b2f33,
+
+	//
+	menu-text-color: #fff,
+	menu-item-active-background-color: color-primary-500,
+	menu-item-icon-active-color: color-primary-500,
+	menu-item-active-text-color: color-primary-500,
+
+	// Button changes
+
+	// Primary
+	button-filled-primary-background-color: color-primary-500,
+	button-filled-primary-border-color: color-primary-500,
+
+	// List changes
+
+	// Basic
+	select-outline-basic-background-color: #212529,
+	select-outline-basic-border-color: rgba(188, 197, 214, 0.5),
+	select-outline-basic-text-color: #ffffff,
+
+	// Primary
+	select-outline-primary-background-color: #212529,
+	select-outline-primary-border-color: rgba(188, 197, 214, 0.5),
+	select-outline-primary-text-color: #ffffff,
+
+	// Cards
+	card-header-primary-background-color: color-primary-500,
+
+	// Checkboxes
+	checkbox-basic-checked-background-color: color-primary-500,
+
+	// Input
+	input-basic-background-color: #212529,
+	input-basic-border-color: 1px solid rgba(188, 197, 214, 0.5),
+
+	// Stepper
+	stepper-step-index-completed-background-color: color-primary-500,
+
+	// Toastr
+	toastr-primary-background-color: color-primary-500,
+	toastr-primary-border-color: rgba(188, 197, 214, 0.5),
+
+	//select-filled-primary-background-color: #212529,
+	//select-filled-primary-border-color: rgba(188, 197, 214, 0.5),
+	//select-filled-primary-text-color: #ffffff,
+
+	// snackbar style changes
+
+	snackbar-border-style: toastr-border-style,
+	snackbar-border-width: toastr-border-width,
+	snackbar-border-radius: toastr-border-radius,
+	snackbar-padding: toastr-padding,
+	snackbar-shadow: toastr-shadow,
+
+	snackbar-text-font-family : toastr-text-font-family,
+	snackbar-text-font-size : text-subtitle-font-size,
+	snackbar-text-font-weight : toastr-text-font-weight,
+	snackbar-text-line-height : toastr-text-line-height,
+	snackbar-title-text-font-family : toastr-title-text-font-family,
+	snackbar-title-text-font-size : toastr-title-text-font-size,
+	snackbar-title-text-font-weight : toastr-title-text-font-weight,
+	snackbar-title-text-line-height : toastr-title-text-line-height,
+
+	snackbar-basic-background-color: background-alternative-color-1,
+	snackbar-basic-border-color: border-alternative-color-1,
+	snackbar-basic-text-color: text-alternate-color,
+	snackbar-icon-basic-background-color: toastr-icon-basic-background-color,
+	snackbar-icon-basic-color: toastr-icon-basic-color,
+	snackbar-destroyable-basic-hover-background-color: background-alternative-color-2,
+	snackbar-destroyable-basic-hover-border-color: border-alternative-color-2,
+
+	snackbar-primary-background-color: toastr-primary-background-color,
+	snackbar-primary-border-color: toastr-primary-border-color,
+	snackbar-primary-text-color: toastr-primary-text-color,
+	snackbar-icon-primary-background-color: toastr-icon-primary-background-color,
+	snackbar-icon-primary-color: toastr-icon-primary-color,
+	snackbar-destroyable-primary-hover-background-color: toastr-destroyable-primary-hover-background-color,
+	snackbar-destroyable-primary-hover-border-color: toastr-destroyable-primary-hover-border-color,
+
+	snackbar-success-background-color: toastr-success-background-color,
+	snackbar-success-border-color: toastr-success-border-color,
+	snackbar-success-text-color: toastr-success-text-color,
+	snackbar-icon-success-background-color: toastr-icon-success-background-color,
+	snackbar-icon-success-color: toastr-icon-success-color,
+	snackbar-destroyable-success-hover-background-color: toastr-destroyable-success-hover-background-color,
+	snackbar-destroyable-success-hover-border-color: toastr-destroyable-success-hover-border-color,
+
+	snackbar-info-background-color: toastr-info-background-color,
+	snackbar-info-border-color: toastr-info-border-color,
+	snackbar-info-text-color: toastr-info-text-color,
+	snackbar-icon-info-background-color: toastr-icon-info-background-color,
+	snackbar-icon-info-color: toastr-icon-info-color,
+	snackbar-destroyable-info-hover-background-color: toastr-destroyable-info-hover-background-color,
+	snackbar-destroyable-info-hover-border-color: toastr-destroyable-info-hover-border-color,
+
+	snackbar-warning-background-color: toastr-warning-background-color,
+	snackbar-warning-border-color: toastr-warning-border-color,
+	snackbar-warning-text-color: toastr-warning-text-color,
+	snackbar-icon-warning-background-color: toastr-icon-warning-background-color,
+	snackbar-icon-warning-color: toastr-icon-warning-color,
+	snackbar-destroyable-warning-hover-background-color: toastr-destroyable-warning-hover-background-color,
+	snackbar-destroyable-warning-hover-border-color: toastr-destroyable-warning-hover-border-color,
+
+	snackbar-danger-background-color: toastr-danger-background-color,
+	snackbar-danger-border-color: toastr-danger-border-color,
+	snackbar-danger-text-color: toastr-danger-text-color,
+	snackbar-icon-danger-background-color: toastr-icon-danger-background-color,
+	snackbar-icon-danger-color: toastr-icon-danger-color,
+	snackbar-destroyable-danger-hover-background-color: toastr-destroyable-danger-hover-background-color,
+	snackbar-destroyable-danger-hover-border-color: toastr-destroyable-danger-hover-border-color,
+
+	snackbar-control-background-color: toastr-control-background-color,
+	snackbar-control-border-color: toastr-control-border-color,
+	snackbar-control-text-color: toastr-control-text-color,
+	snackbar-icon-control-background-color: toastr-icon-control-background-color,
+	snackbar-icon-control-color: toastr-icon-control-color,
+	snackbar-destroyable-control-hover-background-color: toastr-destroyable-control-hover-background-color,
+	snackbar-destroyable-control-hover-border-color: toastr-destroyable-control-hover-border-color,
+
+	context-menu-min-width: 15rem,
+	context-menu-max-width: 22rem,
+), dark, dark);

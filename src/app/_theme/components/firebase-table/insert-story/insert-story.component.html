@@ -1,0 +1,51 @@
+<nb-card status="primary" size="giant">
+	<nb-card-body>
+		<nb-stepper #stepper [linear]="true">
+			<nb-step #charStepper label="Character">
+				<ngx-dynamic-form #charFormComponent [source]="charSource" [showLabels]="true"> <!-- (onSendForm)="onSendForm()" -->
+					<ngx-dropdown-field #characterList [relationDropDown]="true" [enableIcon]="true" [labelIcon]="'plus-outline'"></ngx-dropdown-field>
+					<ngx-text-field #characterName
+					(onPrimaryClick)="insertCharacter()"
+					(onCancelClick)="cancelInsertCharacter()"
+					[showButtons]="true"
+					[successText]="'Insert'"
+					[cancelText]="'Cancel'">
+					</ngx-text-field>
+					<ngx-button-field #charStepBtn [ghost]="false"></ngx-button-field>
+				</ngx-dynamic-form>
+			</nb-step>
+
+			<nb-step #storyStepper label="Story">
+				<ngx-dynamic-form #storyFormComponent [source]="storySource" [showLabels]="true"> <!-- (onSendForm)="onSendForm()" -->
+					<ngx-text-field #storyTitle></ngx-text-field>
+					<ngx-text-field #storyDescription></ngx-text-field>
+					<ngx-text-field #storyCharacter></ngx-text-field>
+					<ngx-button-field #storyStepBtn [ghost]="false"></ngx-button-field>
+				</ngx-dynamic-form>
+			</nb-step>
+			<nb-step #dialogueStepper label="Dialogue">
+				<ngx-dynamic-form #dialogueFormComponent [source]="dialogueSource" [showLabels]="true">
+					<ngx-dropdown-field #dialogueList [relationDropDown]="true" [enableIcon]="true" [labelIcon]="'plus-outline'"></ngx-dropdown-field>
+					<ngx-text-field #dialogueText
+					                (onPrimaryClick)="insertDialogue()"
+					                (onCancelClick)="cancelDialogueCreation()"
+					                [showButtons]="true"
+					                [successText]="'Insert'"
+					                [cancelText]="'Cancel'">
+					</ngx-text-field>
+					<ngx-button-field #dialogueStepBtn [ghost]="false"></ngx-button-field>
+				</ngx-dynamic-form>
+			</nb-step>
+			<nb-step [hidden]="true">
+				<div class="step-container">
+					<h3>Story Generated!</h3>
+					<button nbButton status="success" class="mr-2" (click)="dismiss()">Close</button><!-- TODO TIMER {{ timer}} -->
+					<button nbButton status="info" (click)="stepper.reset()">New story</button>
+				</div>
+			</nb-step>
+		</nb-stepper>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton fullWidth status="danger" (click)="Ref.close()">Close form</button>
+	</nb-card-footer>
+</nb-card>

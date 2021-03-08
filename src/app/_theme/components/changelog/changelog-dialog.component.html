@@ -1,0 +1,328 @@
+<nb-card status="primary">
+	<nb-card-header>Release notes {{ appVersion }} - {{ appName }}</nb-card-header>
+	<nb-card-body>
+		<h4>Welcome to Story Time!</h4>
+
+		<p class="my-3"><b style="color: #e74c3c;">Please fill in a bug request when something is not working in our <a href="https://discord.gg/SgJ8X5s" target="_blank">Discord.</a></b></p>
+
+		<ngx-changelog-menu [items]="versions | async"></ngx-changelog-menu>
+
+		<h5>2019.3.1f3 (06-23-2020)</h5>
+
+		<ul>
+			<li>
+				Tables
+				<ul>
+					<li>Bold non-closing tags are now replaced with actual closing tags without touching the actual data.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Fixed not able to insert relations in certain columns.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.3.1f2 (06-22-2020)</h5>
+
+		<ul>
+			<li>
+				Fixes
+				<ul>
+					<li>Fixed not able to insert relations in certain columns.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.3.1f1 (06-19-2020)</h5>
+
+		<ul>
+			<li>
+				Forms
+				<ul>
+					<li>Forms have been updated across the application.</li>
+					<li>Forms have better value evaluations. These changes increases stability when pushing data to the database.</li>
+					<li>We try to give more feedback when something is wrong inside a form.</li>
+				</ul>
+			</li>
+			<li>
+				Toggle view
+				<ul>
+					<li>In the new overview is not the possibility added to toggle between grid or list view.</li>
+				</ul>
+			</li>
+			<li>
+				UI
+				<ul>
+					<li>UI changes</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Additional Bug fixes</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.2.4f3 (05-28-2020)</h5>
+		<ul>
+			<li>
+				Back to work!
+				<ul>
+					<li>You will now return where you left of once logged out.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Fixed not able to add multiple items in the new table overview page.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.2.4f2 (05-26-2020)</h5>
+		<ul>
+			<li>
+				Fixes
+				<ul>
+					<li>Fixed when you edit an item in the new dialogues/quests page.</li>
+					<li>When you open the edit menu it won't show up a bunch of dialogs elements anymore</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.2.4f1 (05-20-2020)</h5>
+		<ul>
+			<li>
+				Recent items
+				<ul>
+					<li>In the navbar you can now see your recent table pages chosen, for quicker access.</li>
+					<li>User preferences saves now also the recent items for use on refreshing of the dashboard.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Fixed finding relation data for each table in the new dialogues/quests page.</li>
+					<li>Content shift glitch fixed when you select an item in the modal.</li>
+					<li>Fixed where rows were being override by a new insert</li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.2.3f1 (05-15-2020)</h5>
+		<ul>
+			<li>
+				Dialogues / Quests
+				<ul>
+					<li>
+						Dialogues and quests pages have numbers now to see what id you are using
+						when working with child items.
+					</li>
+					<li>Dialogues have more child in one pages now. Dialogue options is now added as well for better overview.</li>
+					<li>Reverted that you were not able to set nextId to a dialogue that didn't belong to the same story.</li>
+					<li>Date of creation now added to the new overview page.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Html field weren't rendering and therefore you couldn't make new quests with descriptions</li>
+					<li><b>Quests and Story (from the dialogues/quests page) edit is WIP!.</b></li>
+				</ul>
+			</li>
+		</ul>
+
+		<h5>2019.2.2f2 (05-08-2020)</h5>
+		<ul>
+			<li>
+				Fixes
+				<ul>
+					<li>Quests page showing the wrong tasks.</li>
+					<li>Dialogues page showing the wrong dialogues that belonged to a story.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<!-- 2019.2.2f1 -->
+
+		<h5>2019.2.2f1 (05-08-2020)</h5>
+		<ul>
+			<li>
+				Pages
+				<ul>
+					<li>Quests have a different layout now.</li>
+					<li>Dialogues have a different layout now</li>
+				</ul>
+			</li>
+			<li>
+				Tables
+				<ul>
+					<li>Tasks are now only showed based on quest chosen.</li>
+					<li>Dialogues are now filtered based on the story</li>
+				</ul>
+			</li>
+			<li>
+				Node editor
+				<ul>
+					<li>Nodes have two states now. Normal and edit mode.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Bug fixes.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<!-- 2019.2.1f2 -->
+
+		<h5>2019.2.1f2 (04-01-2020)</h5>
+		<ul>
+			<li>
+				Columns
+				<ul>
+					<li>You can now finally create relation ship data dynamically!</li>
+					<li>You can now also hover over the column to see where it is related to.</li>
+				</ul>
+			</li>
+			<li>
+				Tables
+				<ul>
+					<li>You can now hide certain columns of the table while browsing through the data.</li>
+				</ul>
+			</li>
+			<li>
+				Libraries
+				<ul>
+					<li>You can now undo/redo actions you created in the node editor.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>Fix for not sending timestamp when inserting data through the dialog window.</li>
+				</ul>
+			</li>
+		</ul>
+
+		<!-- 2019.2.1f1 -->
+
+		<h5>2019.2.1f1</h5>
+		<ul>
+			<li>
+				Node editor
+				<ul>
+					<li>User is now able to change the start node.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>
+						Node Editor
+						<ul>
+							<li>Unknown insert of header color of the nodes because it exists in the data. moved it to meta data.</li>
+						</ul>
+					</li>
+					<li>
+						Columns
+						<ul>
+							<li>When a relations was found it could not generate numeric columns. which resulted in the column act as a string field.</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<!-- 2020.2.0 -->
+		<h5>2019.2.0 - The backpacker's first obstacle (02-25-2020)</h5>
+		<ul>
+			<li>
+				API
+				<ul>
+					We are now using Lumen as a new API backend for unreal. this gives more stability and security.
+				</ul>
+			</li>
+			<li>
+				Authentication
+				<ul>
+					<li>Stabilities features added to improve authentication factor of the app.</li>
+				</ul>
+			</li>
+			<li>
+				Node editor
+				<ul>
+					<li>Full pages have been added now for the node editor. We have a full page node editor with the dialogue of the character.</li>
+					<li>
+						Nodes CSS revamped.
+						<ul>
+							<li>Dialogues nodes</li>
+							<li>Connect, add, remove</li>
+							<li>Dialogue option nodes</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				Backend
+				<ul>
+					<li>Login feature with user permissions. User can only read data in the beginning.</li>
+				</ul>
+			</li>
+			<li>
+				Libraries
+				<ul>
+					<li>Refactoring of the following plugins.</li>
+					<li>Rete-angular-plugin - Added CSS possibilities.</li>
+					<li>Rete-lifecycle - Added plugin to have lifecycles for our nodes.</li>
+					<li>Rete-comment-plugin - Adds the ability to have commented node editor parts, like Unreal engine 4.</li>
+				</ul>
+			</li>
+			<li>
+				Relations
+				<ul>
+					<li>Administrators are now able to add relations to the table they are in.</li>
+				</ul>
+			</li>
+			<li>
+				Story
+				<ul>
+					<li>New section added to make stories for characters and connect them through nodes.</li>
+				</ul>
+			</li>
+			<li>
+				Fixes
+				<ul>
+					<li>
+						Columns
+						<ul>
+							<li>Fix for table columns not visible in different themes.</li>
+						</ul>
+					</li>
+					<li>
+						Dialogues
+						<ul>
+							<li>Dialogues not being generated after dialogue option.</li>
+						</ul>
+					</li>
+					<li>`Async/await` was causing issues and end up crashing the node editor.</li>
+					<li>
+						Node editor
+						<ul>
+							<li>When saving in the node editor, nodes were not all saved when new and connection being made with them.</li>
+							<li>Deep relation was not using the observer to get the right values.</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="primary" (click)="dismiss()">Dismiss</button>
+		<button nbButton ghost status="primary" (click)="openComplete()">Complete Changelog</button>
+	</nb-card-footer>
+</nb-card>

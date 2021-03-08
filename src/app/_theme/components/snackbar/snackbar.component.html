@@ -1,0 +1,13 @@
+<!--<div class="paper-snackbar" style="bottom: 0; opacity: 1;">-->
+<!--	This is a long, specific message that won't fit on one line but is still useful. Try to finish reading this before yawning!-->
+<!--	<button class="action">Action</button>-->
+<!--</div>-->
+
+
+<div class="icon-container" *ngIf="hasIcon && icon">
+	<nb-icon [config]="icon"></nb-icon>
+</div>
+<div class="content-container">
+	<div class="message">{{ snackBar.message }}</div>
+	<button nbButton ghost status="primary" class="title subtitle" (click)="onSnackbarClicked()">{{ snackBar.title }}</button>
+</div>

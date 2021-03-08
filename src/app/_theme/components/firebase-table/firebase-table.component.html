@@ -1,0 +1,68 @@
+<div class="row">
+	<div class="col-md-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+		<nb-card>
+			<nb-card-header>
+				<div class="container col-md-12">
+					<div class="row mx-lg-n12">
+						<div class="col-4 py-3 pl-0">
+							<nb-badge [text]="getTable && getTable.metadata.private ? 'Private' : 'Public'" status="info" position="top left"></nb-badge>
+							<nb-badge *ngIf="getTable && getTable.metadata.deleted" style="left:50px;" [text]="DeletedTittle" status="danger" position="top left"></nb-badge>
+							<h4 class="mt-3 mb-1">{{ AddTitle }}</h4>
+							<h6 *ngIf="getTable" class="font-weight-normal font-italic">{{ getTable.metadata.description }}</h6>
+						</div>
+						<div class="col py-4 offset-md-4 pr-0">
+							<div style="float:right">
+								<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Table </span>
+
+								<!-- Settings button -->
+								<button style="font-size: 24px;padding: 5px;margin-right:5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="primary" (click)="openTableSettings()">
+									<!--  nbTooltip="Open Settings" nbTooltipPlacement="top" -->
+									<nb-icon icon="settings-2-outline"></nb-icon>
+								</button>
+
+								<!-- Bookmark button -->
+								<button  style="font-size: 24px;padding: 5px;margin-right:5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="primary">
+									<nb-icon icon="bookmark-outline" aria-hidden="true"></nb-icon>
+								</button>
+
+								<!-- Download button -->
+								<button  style="font-size: 24px;padding: 5px;margin-right:5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="primary">
+									<nb-icon icon="download-outline" aria-hidden="true"></nb-icon>
+								</button>
+
+								<!-- Delete button -->
+								<button style="font-size: 24px;padding: 5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="danger" (click)="onDeletePressed()">
+									<nb-icon icon="trash-2-outline"></nb-icon>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nb-card-header>
+				<nb-card-body>
+					<div class="container col-md-12" *ngIf="!isDeleted">
+						<div class="row mx-lg-n6 ml-4" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+							<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Columns </span>
+							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="insert(0)"><i class="add-column nb-plus"></i></button>
+							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="insert(1)"><i class="edit-column nb-edit"></i></button>
+							<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" (click)="insert(2)"><i class="delete-column nb-trash"></i></button>
+						</div>
+						<div class="row mx-lg-n6" style="float: right;position: relative;z-index: 1;">
+							<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Add multiple </span>
+							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="openBulkDialogue()"><i class="add-column nb-plus"></i></button>
+						</div>
+					</div>
+					<ng2-smart-table *ngIf="!isDeleted"
+									 #smartTableComponent
+									 [settings]="settings" [source]="getSource"
+									 (createConfirm)="onCreateConfirm($event)"
+									 (editConfirm)="onEditConfirm($event)"
+									 (deleteConfirm)="onDeleteConfirm($event)"
+									 (custom)="onChangelogConfirm($event)"
+									 (onColumnOrderChanged)="onColumnOrderChange($event)"></ng2-smart-table> <!-- (userSelectedRows)="onMultipleRowSelected($event)" -->
+					<!--				<button type="submit" nbButton (click)="open()">{{ AddButtonTitle }}</button>-->
+				</nb-card-body>
+		</nb-card>
+	</div>
+</div>

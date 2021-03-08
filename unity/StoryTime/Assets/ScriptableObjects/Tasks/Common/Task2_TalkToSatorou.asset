@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a58d5b6b79a2c1348b8714bf57058d04, type: 3}
+  m_Name: Task2_TalkToSatorou
+  m_EditorClassIdentifier: 
+  id: 2
+  tableName: tasks
+  linkedColumn: 
+  dropdownColumn: description
+  linkID: 4294967295
+  description: Report back to Satorou
+  hidden: 0
+  enemyCategory: 0
+  requiredCount: 0
+  actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
+  dialogueBeforeTask: {fileID: 0}
+  completeDialogue: {fileID: 11400000, guid: 0e0947bb413eaba428779198c8d50126, type: 2}
+  incompleteDialogue: {fileID: 11400000, guid: 4387529b9958a4046af2e53671f42fb0, type: 2}
+  items: []
+  type: 3
+  taskEvent: {fileID: 0}
+  isDone: 0

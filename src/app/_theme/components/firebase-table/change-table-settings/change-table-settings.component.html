@@ -1,0 +1,69 @@
+<nb-card status="primary" size="giant">
+<nb-card-header>
+		{{ source.title }}
+	</nb-card-header>
+	<nb-card-body>
+		<nb-tabset fullWidth>
+			<nb-tab tabTitle="Column Settings">
+				<div class="as-form">
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
+						<p>* {{ source.requiredText }}</p>
+						<p> Columns</p>
+						<!--
+										<ngx-checkbox-field *ngFor="let column of getColumns() | keyvalue;  let i = index"
+											[key]="column.key"
+											[text]="'Hide/Unhide - ' + column.value.title"
+											[value]="column.value.hidden"
+											(onToggleEvent)="OnToggle($event)">
+										</ngx-checkbox-field>
+						-->
+					</ngx-dynamic-form>
+				</div>
+			</nb-tab>
+			<nb-tab tabTitle="Relations" *ngIf="isAdmin">
+				<div class="row">
+					<ng2-smart-table
+						[source]="relSource" [settings]="relSettings"
+						(editConfirm)="onEditConfirm($event, true)"
+						(deleteConfirm)="onDeleteConfirm($event)">
+					</ng2-smart-table>
+					<div class="d-inline-block mt-2">
+						<button nbButton status="primary" (click)="openRelationDialogue()">Insert</button>
+					</div>
+				</div>
+			</nb-tab>
+			<nb-tab tabTitle="Revisions">
+				<nb-accordion multi>
+					<nb-accordion-item *ngFor="let revision of revisions | ngxKeyValue">
+						<nb-accordion-item-header class="align-items-baseline justify-content-between">
+							<p>Row ID: {{ revision.value.rowID }} revision #{{ revision.value.revision }}</p>
+							<button class="mr-1" nbButton ghost status="danger" (click)="onRevisionDeleted($event, revision)">Delete revision</button>
+						</nb-accordion-item-header>
+						<nb-accordion-item-body>
+							<div class="row">
+								<div class="col col-lg-6">
+									<h5>Old Value:</h5>
+									<div *ngFor="let value of revision.value.oldValue | keyvalue">
+										<pre [style.background-color]="revision.value.oldValue[value.key] !== revision.value.newValue[value.key] ? 'indianred': ''">{{ value.key }} {{ value.value }}</pre>
+									</div>
+									<button type="button" nbButton status="info" (click)="revert(revision.value)"> Revert </button>
+								</div>
+								<div class="col col-lg-6">
+									<h5 class="d-inline-block">New Value: </h5><span *ngIf="currentRevID === revision.value.revision" class="font-weight-bold"> Current</span>
+									<div *ngFor="let value of revision.value.newValue | keyvalue">
+										<pre [style.background-color]="revision.value.oldValue[value.key] !== revision.value.newValue[value.key] ? 'lightgreen': ''">{{ value.key }} {{ value.value }}</pre>
+									</div>
+									<button type="button" nbButton status="info" (click)="apply(revision.value)"> Revert </button>
+								</div>
+							</div>
+						</nb-accordion-item-body>
+					</nb-accordion-item>
+				</nb-accordion>
+				<!-- TODO make a list that grows to show the revisions -->
+			</nb-tab>
+		</nb-tabset>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+	</nb-card-footer>
+</nb-card>

@@ -1,0 +1,3 @@
+[submodule "-f"]
+	path = unity/StoryTime/Packages/StoryTime
+	url = https://github.com/vamidi/StoryTime-UPM.git

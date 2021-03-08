@@ -1,0 +1,305 @@
+fileFormatVersion: 2
+guid: 73a19ca5dc33c5c4798e838def6aa433
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1193355426711370830
+    second: newHUD_original_0
+  - first:
+      213: -3334745739524967928
+    second: newHUD_original_1
+  - first:
+      213: 4068015849072675922
+    second: newHUD_original_2
+  - first:
+      213: 2150387645133183096
+    second: newHUD_original_3
+  - first:
+      213: -1563945599200676780
+    second: newHUD_original_4
+  - first:
+      213: -6035126763708806383
+    second: newHUD_original_5
+  - first:
+      213: -2800897746103222079
+    second: newHUD_original_6
+  - first:
+      213: 189174821121009313
+    second: newHUD_original_7
+  - first:
+      213: -7519170002456135646
+    second: newHUD_original_8
+  - first:
+      213: 5431423413370432311
+    second: newHUD_original_9
+  - first:
+      213: 1067417164135228589
+    second: newHUD_original_10
+  - first:
+      213: -107760585268293596
+    second: newHUD_original_11
+  - first:
+      213: 2655061481923687375
+    second: newHUD_original_12
+  - first:
+      213: 2596593947473146462
+    second: newHUD_original_13
+  - first:
+      213: 5614483801266108429
+    second: newHUD_original_14
+  - first:
+      213: -173612815607155915
+    second: newHUD_original_15
+  - first:
+      213: 8672417442874706750
+    second: newHUD_original_16
+  - first:
+      213: 8734772251321257673
+    second: newHUD_original_17
+  - first:
+      213: -4457969374835634982
+    second: newHUD_original_18
+  - first:
+      213: -6553813158240732645
+    second: newHUD_original_19
+  - first:
+      213: -2063437432396041420
+    second: newHUD_original_20
+  - first:
+      213: -872858547163729282
+    second: newHUD_original_21
+  - first:
+      213: -8635873870234174930
+    second: newHUD_original_22
+  - first:
+      213: 3861715421588128405
+    second: newHUD_original_23
+  - first:
+      213: -3726784306803550668
+    second: newHUD_original_24
+  - first:
+      213: -9048085797785489977
+    second: newHUD_original_25
+  - first:
+      213: -5846587252096549293
+    second: newHUD_original_26
+  - first:
+      213: 6275683378106583351
+    second: newHUD_original_27
+  - first:
+      213: -7697479483700627451
+    second: newHUD_original_28
+  - first:
+      213: 2274673404079432395
+    second: newHUD_original_29
+  - first:
+      213: -5814462235540706059
+    second: newHUD_original_30
+  - first:
+      213: -9075156718034644495
+    second: newHUD_original_31
+  - first:
+      213: 1103754255176962174
+    second: newHUD_original_32
+  - first:
+      213: -7025550406406161894
+    second: newHUD_original_33
+  - first:
+      213: -4288871268523307337
+    second: newHUD_original_34
+  - first:
+      213: 1608122260466964457
+    second: newHUD_original_35
+  - first:
+      213: -631768685471206336
+    second: newHUD_original_36
+  - first:
+      213: -142296254756162127
+    second: newHUD_original_37
+  - first:
+      213: -2465820353282649236
+    second: newHUD_original_38
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 2
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: newHUD_original_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 190
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 85, y: 0, z: 85, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b38514ef89507fe0800000000000000
+      internalID: -1193355426711370830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: newHUD_original_1
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 0
+        width: 190
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 802fd5b0b6a98b1d0800000000000000
+      internalID: -3334745739524967928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: newHUD_original_2
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 0
+        width: 190
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25cc2a88cde747830800000000000000
+      internalID: 4068015849072675922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: newHUD_original_3
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 0
+        width: 190
+        height: 190
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8785d858b26b7dd10800000000000000
+      internalID: 2150387645133183096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 65cb2c99fbe9b394a984ffc95e22cff2
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

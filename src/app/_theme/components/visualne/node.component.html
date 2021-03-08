@@ -1,0 +1,46 @@
+<div class="node" [ngClass]="[selected(), node.name, editMode ? 'edit' : ''] | kebab">
+	<div class="title position-relative" [style.background-color]="node.meta?.headColor">{{ node.name }}</div>
+	<div class="content">
+		<div class="column">
+			<div class="input" *ngFor="let input of inputs" style="text-align: left;">
+<!--				<pre style="color: #fff">{{ input === undefined }}</pre>-->
+				<visualne-socket visualne-socket [io]="input" [socket]="input.socket" [socketClass]="input.hasConnection() ? ['connected'] : ['']"></visualne-socket>
+				<div class="input-title" *ngIf="!input.showControl()">{{ input.name }}</div>
+				<div class="input-control" *ngIf="input.showControl()" [visualne-control]="input.control"></div>
+			</div>
+			<div class="control" *ngFor="let control of controls" [visualne-control]="control"></div>
+		</div>
+		<div class="column" *ngIf="outputs.length !== 0">
+			<div class="output" *ngFor="let output of outputs">
+				<div class="output-title" [ngClass]="{ }">{{ output.name }}</div>
+				<visualne-socket visualne-socket [io]="output" [socket]="output.socket" [socketClass]="output.hasConnection() ? ['connected'] : ['']"></visualne-socket>
+			</div>
+		</div>
+	</div>
+</div>
+<!--	<div class="output" *ngFor="let output of outputs">-->
+<!--		<div class="output-title">{{output.name}}</div>-->
+<!--		<rete-socket rete-socket [io]="output" [socket]="output.socket"></rete-socket>-->
+<!--	</div>-->
+<!--	<div class="control" *ngFor="let control of controls" [rete-control]="control"></div>-->
+<!--	<div class="input" *ngFor="let input of inputs">-->
+<!--		<rete-socket rete-socket [io]="input" [socket]="input.socket"></rete-socket>-->
+<!--		<div class="input-title" *ngIf="!input.showControl()">{{input.name}}</div>-->
+<!--		<div class="input-control" *ngIf="input.showControl()" [rete-control]="input.control"></div>-->
+<!--	</div>-->
+<!--
+	<div class="content" *ngFor="let output of outputs; let i = index">
+		<div class="column">
+			<div class="input" *ngIf="inputs[i]">
+				<ngx-rete-socket ngxReteSocket [extraClass]="inputs[i].hasConnection() ? ['used'] : ['']" [io]="inputs[i]" [socket]="inputs[i].socket"></ngx-rete-socket>
+				<div class="input-title" *ngIf="!inputs[i].showControl()">{{ inputs[i].name }}</div>
+				<div class="input-control" *ngIf="inputs[i].showControl()" [ngxReteControl]="inputs[i].control"></div>
+			</div>
+			<div class="control" *ngFor="let control of controls" [ngxReteControl]="control"></div>
+		</div>
+		<div class="column">
+			<div class="output-title" [ngClass]="{ }">{{ output.name }}</div>
+			<ngx-rete-socket ngxReteSocket [io]="outputs[i]" [extraClass]="output.hasConnection() ? ['used'] : ['']" [socket]="output.socket"></ngx-rete-socket>
+		</div>
+	</div>
+-->

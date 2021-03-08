@@ -1,0 +1,11 @@
+@import '../../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	.form-group, textarea, button {
+		max-width: 90%;
+	}
+
+	textarea {
+		padding-right: nb-theme(select-icon-offset);
+	}
+}

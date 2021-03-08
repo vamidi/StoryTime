@@ -1,0 +1,12 @@
+/.github
+/vendor
+/.idea
+/.vscode
+
+Homestead.json
+Homestead.yaml
+
+.env
+.phpunit.result.cache
+
+firebase-setup.json

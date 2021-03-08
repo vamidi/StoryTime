@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a58d5b6b79a2c1348b8714bf57058d04, type: 3}
+  m_Name: Task3_FindItems
+  m_EditorClassIdentifier: 
+  id: 1
+  tableName: tasks
+  linkedColumn: 
+  dropdownColumn: description
+  linkID: 4294967295
+  description: Find an two apple and banana
+  hidden: 0
+  enemyCategory: 0
+  requiredCount: 3
+  actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
+  dialogueBeforeTask: {fileID: 0}
+  completeDialogue: {fileID: 11400000, guid: 6cad4a273f8743d4ea8516a2bba07e16, type: 2}
+  incompleteDialogue: {fileID: 11400000, guid: 4387529b9958a4046af2e53671f42fb0, type: 2}
+  items:
+  - item: {fileID: 11400000, guid: f9e2b123397ffd84ba67fe6b7659e974, type: 2}
+    amount: 2
+  - item: {fileID: 11400000, guid: 094781ca7ddd1ac49981f47c2844ab2b, type: 2}
+    amount: 1
+  type: 1
+  taskEvent: {fileID: 0}
+  isDone: 0

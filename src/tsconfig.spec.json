@@ -1,0 +1,21 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "../out-tsc/spec",
+		"baseUrl": "./",
+		"module": "commonjs",
+		"types": [
+			"jasmine",
+			"node"
+		]
+	},
+	"files": [
+		"test.ts",
+		"polyfills.ts"
+	],
+	"include": [
+		"app/*.spec.ts", // your spec file location parent of src or ../yourpath/
+		"**/*.spec.ts",
+		"**/*.d.ts"
+	]
+}

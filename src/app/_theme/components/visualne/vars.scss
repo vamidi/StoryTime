@@ -1,0 +1,15 @@
+﻿@import '../../styles/themes';
+
+$node-color: #393939;
+$node-color-selected: rgba( 35, 35, 35, 0.9);
+$node-border-color: #222222;
+$node-border-color-selected: nb-theme(color-primary-500);
+$node-box-shadow-color: rgba(0, 0, 0, 0.5);
+$node-box-shadow-color-selected: nb-theme(color-primary-500);
+$group-color: rgba(15, 80, 255, 0.2);
+$group-handler-size: 40px;
+$group-handler-offset: -10px;
+$socket-size: 16px;
+$socket-margin: 20px;
+$socket-color: #fff; /* #96b38a */
+$node-width: 420px;

@@ -1,0 +1,25 @@
+<nb-card>
+	<nb-card-body>
+		<nb-tabset>
+			<nb-tab tabTitle="Profile">
+				<div *ngIf="!isEmailVerified">
+					<nb-alert outline="warning" class="mb-2">
+						User mail is not verified. Please verify email soon, before deactivation.
+					</nb-alert>
+					<button class="mb-3" nbButton ghost (click)="resendMail()">Resend</button>
+				</div>
+				<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
+					<ngx-text-field #displayNameField></ngx-text-field>
+					<ngx-text-field #emailField></ngx-text-field>
+					<ngx-button-field #submitQuestion [ghost]="false"></ngx-button-field>
+				</ngx-dynamic-form>
+			</nb-tab>
+			<nb-tab tabTitle="Users & permissions">
+				<span>Content #2</span>
+			</nb-tab>
+			<nb-tab tabTitle="Simple Tab #3">
+				<span>Content #3</span>
+			</nb-tab>
+		</nb-tabset>
+	</nb-card-body>
+</nb-card>

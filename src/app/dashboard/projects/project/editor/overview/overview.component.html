@@ -1,0 +1,72 @@
+<div class="row" *ngIf="gridMode">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<!--			[ngClass]="[checkForm() && !parent.container.toGroup().controls[question.key]?.valid ? 'status-danger ' : 'status-success ' + question.inputCss]"-->
+	<div class="col-lg-8">
+		<h1>{{ Title }}</h1>
+	</div>
+	<div class="col-lg-4 align-self-center align-items-end" style="text-align: end">
+		<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Grid </span>
+		<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;"
+		        nbButton status="primary"
+		        *ngIf="!gridMode" (click)="this.gridMode = !this.gridMode;">
+			<nb-icon icon="grid-outline"></nb-icon>
+		</button>
+		<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;"
+		        nbButton status="primary"
+		        *ngIf="gridMode" (click)="this.gridMode = !this.gridMode;">
+			<nb-icon icon="list-outline"></nb-icon>
+		</button>
+		<span style="margin-right:10px;font-size: 18px;padding-top: 8px;" *ngIf="isAdmin">Columns </span>
+		<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" *ngIf="isAdmin" (click)="openColumnSettings(0)"><i class="add-column nb-plus"></i></button>
+		<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" *ngIf="isAdmin" (click)="openColumnSettings(1)"><i class="edit-column nb-edit"></i></button>
+		<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" *ngIf="isAdmin" (click)="openColumnSettings(2)"><i class="delete-column nb-trash"></i></button>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="addMultiple()">
+					<i class="add-column nb-plus"></i>
+				</button>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let data of tableData">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onListItemClicked($event, data);">
+			<nb-card-header>
+				<div class="d-flex flex-row">
+					<div>
+						<h4 class="d-inline-block">[{{ data.id }}] {{ data.title }}</h4>
+					</div>
+					<div class="btn-group align-self-start ml-auto" dropdown>
+						<!--<button id="button-basic" dropdownToggle type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+								aria-controls="dropdown-basic">
+							<i class="fas fa-ellipsis-h text-basic"></i>
+						</button>
+						<ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right menu-items"
+							role="menu" aria-labelledby="button-basic">
+							<li role="menuitem" class="menu-item">Edit</li>
+							<li class="divider dropdown-divider"></li>
+							<li role="menuitem" class="menu-item">Remove</li>
+						</ul> -->
+						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+								class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(data.id)" nbContextMenuTag="open-option-menu">
+							<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+<!--							<i class="fas fa-ellipsis-h text-basic"></i>-->
+						</button>
+					</div>
+				</div>
+			</nb-card-header>
+			<nb-card-body>
+				<p>{{ data.description }}</p>
+			</nb-card-body>
+			<nb-card-footer>
+				<!-- TODO add maybe person or amount of children in this card -->
+				<p><nb-icon icon="clock-outline"></nb-icon> {{ data.tstamp * 1000 | date }}</p>
+			</nb-card-footer>
+		</nb-card>
+	</div>
+</div>
+<ngx-firebase-table *ngIf="!gridMode" #firebaseTableComponent (toggleView)="toggleView($event)" [gridMode]="gridMode"></ngx-firebase-table>
+

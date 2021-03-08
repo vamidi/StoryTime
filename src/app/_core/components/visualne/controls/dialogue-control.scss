@@ -1,0 +1,27 @@
+@import '../../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	.form-group {
+		max-width: 90%;
+	}
+	textarea, button {
+		min-width: 380px;
+		max-width: 90%;
+	}
+	textarea {
+		min-height: 200px;
+		padding-right: nb-theme(select-icon-offset),
+	}
+	input {
+		/*border-radius: 30px;*/
+		background-color: transparent;
+		padding: 2px 6px;
+		border: 1px solid #fff;
+		color: white;
+		font-size: 14px;
+		/* width: 60px; */
+		min-width: 380px;
+		box-sizing: border-box;
+		border-radius: 0;
+	}
+}

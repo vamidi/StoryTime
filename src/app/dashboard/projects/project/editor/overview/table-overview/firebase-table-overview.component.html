@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-md-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+		<nb-card>
+			<nb-card-header>
+				<div class="container col-md-12">
+					<div class="row mx-lg-n12">
+						<div class="col-4 py-3 px-lg-3">
+							<h4>[{{ currentState?.id }}] {{ AddTitle }}</h4>
+							<h5 class="text-danger">{{ DeletedTittle }}</h5>
+						</div>
+						<div class="col py-4 px-lg-4 offset-md-6" *ngIf="isAdmin">
+							<div style="float:right">
+								<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Table </span>
+								<button style="font-size: 24px;padding: 5px;margin-right:5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="primary"><i class="nb-gear"></i></button>
+								<button style="font-size: 24px;padding: 5px;margin-top: -4px;" *ngIf="isTable()" nbButton status="danger" (click)="onDeletePressed()"><i class="nb-trash"></i></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nb-card-header>
+			<nb-card-body>
+				<div class="container col-md-12" *ngIf="!isDeleted">
+					<div class="row mx-lg-n6 ml-4" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+						<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Columns </span>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="insert(0)"><i class="add-column nb-plus"></i></button>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="insert(1)"><i class="edit-column nb-edit"></i></button>
+						<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" (click)="insert(2)"><i class="delete-column nb-trash"></i></button>
+					</div>
+					<div class="row mx-lg-n6" style="float: right;position: relative;z-index: 1;">
+						<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Add multiple </span>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="openBulkDialogue()"><i class="add-column nb-plus"></i></button>
+					</div>
+					<div class="row mx-lg-n6" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+						<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Relations </span>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="openRelationDialogue()"><i class="add-column nb-plus"></i></button>
+						<button style="margin-right:40px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="openRelationDialogue()"><i class="edit-column nb-edit"></i></button>
+					</div>
+				</div>
+				<ng2-smart-table *ngIf="!isDeleted"
+								 #smartTableComponent
+								 [settings]="settings" [source]="getTable.getSource"
+								 (createConfirm)="onCreateConfirm($event)"
+								 (editConfirm)="onEditConfirm($event)"
+								 (deleteConfirm)="onDeleteConfirm($event)"
+								 (custom)="onChangelogConfirm($event)"></ng2-smart-table> <!-- (userSelectedRows)="onMultipleRowSelected($event)" -->
+				<!--				<button type="submit" nbButton (click)="open()">{{ AddButtonTitle }}</button>-->
+			</nb-card-body>
+		</nb-card>
+		<ng-container #overViewContainer></ng-container>
+<!--		<ngx-table-overview-events-overview *ngIf="stateLoaded()" [ids]="ids" [tblName]="tblName"></ngx-table-overview-events-overview>-->
+	</div>
+</div>

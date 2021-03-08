@@ -1,0 +1,5 @@
+<div *ngIf="context.items.length" class="d-flex align-items-baseline">
+	<p class="text-uppercase mb-0" style="font-size: 0.8375rem; letter-spacing: .05rem; font-weight: 600; color: #607d88">notifications</p>
+	<button class="ml-auto p-0" ghost nbButton size="small" status="primary">Mark all as read</button>
+</div>
+<ngx-notifications-menu *ngIf="context.items.length" class="context-menu" [items]="context.items" [tag]="context.tag"></ngx-notifications-menu>

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e2fd3c7a720423aab4af3f8d6ca7f64, type: 3}
+  m_Name: Satorou_line_0
+  m_EditorClassIdentifier: 
+  id: 0
+  tableName: dialogues
+  linkedColumn: parentId
+  dropdownColumn: text
+  linkID: 4294967295
+  ParentID: 4294967295
+  NextDialogueID: 1
+  CharacterID: 0
+  Text: Hello traveler, I have a request for you
+  actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
+  choices: []

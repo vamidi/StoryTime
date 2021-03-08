@@ -1,0 +1,64 @@
+
+@mixin nb-snackbar-theme() {
+	nb-snackbar {
+		border-style: nb-theme(snackbar-border-style);
+		border-width: nb-theme(snackbar-border-width);
+		border-radius: nb-theme(snackbar-border-radius);
+		padding: nb-theme(snackbar-padding);
+		box-shadow: nb-theme(snackbar-shadow);
+
+		.title {
+			font-family: nb-theme(snackbar-title-text-font-family);
+			font-size: nb-theme(snackbar-title-text-font-size);
+			font-weight: nb-theme(snackbar-title-text-font-weight);
+			line-height: nb-theme(snackbar-title-text-line-height);
+		}
+
+		.message {
+			font-family: nb-theme(toastr-text-font-family);
+			font-size: nb-theme(toastr-text-font-size);
+			font-weight: nb-theme(toastr-text-font-weight);
+			line-height: nb-theme(toastr-text-line-height);
+		}
+
+		.icon-container {
+			@include nb-ltr(margin-right, 1.25rem);
+			@include nb-rtl(margin-left, 1.25rem);
+			border-radius: nb-theme(toastr-border-radius);
+			min-width: 2.5rem;
+			min-height: 2.5rem;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			nb-icon {
+				font-size: 1.5rem;
+			}
+		}
+	}
+
+	@each $status in nb-get-statuses() {
+		nb-snackbar.status-#{$status} {
+			background: nb-theme(snackbar-#{$status}-background-color);
+			border-color: nb-theme(snackbar-#{$status}-border-color);
+			color: nb-theme(snackbar-#{$status}-text-color);
+
+			.title {
+				color: nb-theme(snackbar-#{$status}-text-color);
+			}
+
+			&.destroy-by-click:hover {
+				background: nb-theme(snackbar-destroyable-#{$status}-hover-background-color);
+				border-color: nb-theme(snackbar-destroyable-#{$status}-hover-border-color);
+			}
+
+			.icon-container {
+				background: nb-theme(snackbar-icon-#{$status}-background-color);
+				color: nb-theme(snackbar-icon-#{$status}-color);
+			}
+		}
+	}
+	.snackbar-overlay-container {
+		z-index: 1041;
+	}
+}

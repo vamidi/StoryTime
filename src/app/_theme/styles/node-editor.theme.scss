@@ -1,0 +1,121 @@
+
+
+@mixin ngx-node-editor-theme() {
+	.node-editor {
+		div {
+			//z-index: 0!important;
+		}
+
+		.minimap, minimap middle {
+			top: 24px;
+			bottom: 0!important;
+		}
+
+		.context-menu {
+			width: 250px;
+			padding: 0;
+			background: nb-theme(background-basic-color-2);
+			box-shadow: 4px 5px 9px rgba(0, 0, 0, 0.5);
+			border: 1px solid nb-theme(background-alternative-color-2);
+
+			.search input {
+				height: 100%;
+				font-weight: bold;
+				font-family: Open Sans, sans-serif;
+				border-radius: 0;
+				color: nb-theme( text-basic-color);
+				border: 1px solid nb-theme(background-alternative-color-3);
+			}
+
+			&:first-child,
+			.search:first-child {
+				color: nb-theme( text-basic-color);
+				padding: 10px;
+				border: 0;
+				border-radius: 0;
+				background-color: nb-theme(background-basic-color-4);
+			}
+		}
+
+		.item {
+			color: nb-theme( text-basic-color);
+			background: nb-theme(background-basic-color-2);
+			border-bottom: 1.5px solid nb-theme(background-basic-color-3);
+			padding: 10px;
+			font-weight: bold;
+			&:last-child {
+				border-bottom: 0;
+			}
+			&:hover {
+				background: nb-theme(color-primary-500);
+				color: white;
+			}
+			&.hasSubitems {
+				.item {
+					border-top: 1px solid nb-theme(background-alternative-color-3);
+					border-right: 1px solid nb-theme(background-alternative-color-3);
+					border-bottom: 1px solid nb-theme(background-alternative-color-3);
+				}
+			}
+		}
+	}
+
+	.connection {
+		path {
+			// fill: none;
+			stroke: #eee;
+			stroke-width: 3px;
+			pointer-events: none;
+			z-index: 99!important;
+		}
+
+		&.socket-input-dialogue-value, &.socket-output-dialogue-value,
+		&.move-input-dialogue-value, &.move-output-dialogue-value {
+			path {
+				stroke: #8e44ad;
+			}
+		}
+
+		&.socket-input-dialogue-option-value, &.socket-output-dialogue-option-value,
+		&.move-input-dialugue-option-value, &.move-output-dialogue-option-value {
+			path {
+				stroke: #9b59b6;
+			}
+		}
+	}
+	.socket {
+		/*background: #96b38a;*/
+		background: transparent;
+		position: relative;
+
+/*
+		&::after {
+			content: '';
+			position: absolute;
+			width: 0;
+			height: 0;
+			top: 3px;
+			left: 16px;
+			display: inline-block;
+			border-style: solid;
+			border-width: 4px 0 4px 2.66667px;
+		}
+*/
+		//&.used {
+		//	background: #fff!important;
+		//}
+	}
+
+	.node {
+		.input {
+			.socket {
+				margin: 10px!important;
+			}
+			&.used {
+				.socket {
+					background: red!important;
+				}
+			}
+		}
+	}
+}

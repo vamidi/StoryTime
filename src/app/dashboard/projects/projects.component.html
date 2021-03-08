@@ -1,0 +1,114 @@
+<div class="row" *ngIf="gridMode">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-lg-12">
+		<h1>Projects</h1>
+	</div>
+	<div class="col-lg-12">
+		<h6 class="text-hint">From last 7 days</h6>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="insertProject()">
+					<i class="add-column nb-plus text-basic"></i>
+				</button>
+			</nb-card-body>
+		</nb-card>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let project of projectsService | timeSlice:7" type="button">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onProjectClicked($event, project);">
+			<nb-card-body class="d-flex flex-column">
+				<div class="d-flex flex-row">
+					<div class="my-2">
+						<ngx-avatar [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatar>
+					</div>
+					<div class="btn-group align-self-start ml-auto" dropdown>
+						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+						        class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(project.id)" nbContextMenuTag="open-project-menu">
+							<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+							<!--							<i class="fas fa-ellipsis-h text-basic"></i>-->
+						</button>
+					</div>
+				</div>
+				<div class="">
+					<h5>{{ project.metadata.title }}</h5>
+				</div>
+				<div class="">
+					<p>{{ project.metadata.description }}</p>
+				</div>
+				<div class="d-flex flex-row flex-grow-1">
+					<div  class="align-self-end member" *ngFor="let member of project.members | keyvalue; let index = i;">
+						<ngx-avatar [name]="member.key" [round]="true" [size]="33"></ngx-avatar>
+					</div>
+				</div>
+			</nb-card-body>
+		</nb-card>
+	</div>
+
+	<div class="col-lg-12">
+		<h6 class="text-hint">Previous 30 days</h6>
+	</div>
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let project of projectsService.getProjects() | async" type="button">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onProjectClicked($event, project);">
+			<nb-card-body class="d-flex flex-column">
+				<div class="d-flex flex-row">
+					<div class="my-2">
+						<ngx-avatar [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatar>
+					</div>
+					<div class="btn-group align-self-start ml-auto" dropdown>
+						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+						        class="btn-group align-self-start ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(project.id)" nbContextMenuTag="open-project-menu">
+							<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+							<!--							<i class="fas fa-ellipsis-h text-basic"></i>-->
+						</button>
+					</div>
+				</div>
+				<div class="">
+					<h5>{{ project.metadata.title }}</h5>
+				</div>
+				<div class="">
+					<p>{{ project.metadata.description }}</p>
+				</div>
+				<div class="d-flex flex-row flex-grow-1">
+					<div  class="align-self-end member" *ngFor="let member of project.members | keyvalue; let index = i;">
+						<ngx-avatar [name]="member.key" [round]="true" [size]="33"></ngx-avatar>
+					</div>
+				</div>
+			</nb-card-body>
+		</nb-card>
+	</div>
+</div>
+<div class="row" *ngIf="!gridMode">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-md-12">
+		<nb-card>
+			<nb-card-header>
+				<h4>Projects</h4>
+			</nb-card-header>
+			<nb-card-body>
+				<div class="container col-md-12" *ngIf="!isDeleted">
+					<div class="row mx-lg-n6 ml-4" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+						<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Columns </span>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="insertProject(0)"><i class="add-column nb-plus"></i></button>
+						<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="insertProject(1)"><i class="edit-column nb-edit"></i></button>
+						<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" (click)="insertProject(2)"><i class="delete-column nb-trash"></i></button>
+					</div>
+				</div>
+				<ng2-smart-table *ngIf="!isDeleted"
+				                 #smartTableComponent
+				                 [settings]="settings" [source]="source"
+				                 (edit)="onEditConfirm($event)"
+				                 (delete)="onDeleteConfirm($event)"
+				                 (custom)="onCreateConfirm($event)"
+				                 (onColumnOrderChanged)="onColumnOrderChange($event)"
+				></ng2-smart-table>
+				<!--				<button type="submit" nbButton (click)="open()">{{ AddButtonTitle }}</button>-->
+			</nb-card-body>
+		</nb-card>
+	</div>
+</div>
+

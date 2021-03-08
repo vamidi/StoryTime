@@ -1,0 +1,8 @@
+﻿<UXML xmlns:ui="UnityEngine.UIElements">
+	<ui:PopupWindow text="Selected Locales">
+		<ui:ScrollView name="locales-list" itemHeight="16" />
+	</ui:PopupWindow>
+	<ui:PopupWindow text="Tables">
+		<ui:ScrollView name="table-container" style="flex-grow:1;"/>
+	</ui:PopupWindow>
+</UXML>

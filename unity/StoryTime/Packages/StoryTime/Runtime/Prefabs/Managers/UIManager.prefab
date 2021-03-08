@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6868936267392258189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6868936267392258187}
+  - component: {fileID: 6868936267392258188}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6868936267392258187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6868936267392258189}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.47008294, y: 0.89060843, z: -0.017388567}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6868936267392258188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6868936267392258189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facfbb89f246435f99f14674edf43dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openUIDialogueEvent: {fileID: 11400000, guid: 10e76ab2424f6b741a8269b1576b5108,
+    type: 2}
+  closeUIDialogueEvent: {fileID: 11400000, guid: cbd4abfb8d701dc479f2506c899ce498,
+    type: 2}
+  openInventoryScreenEvent: {fileID: 0}
+  openInventoryScreenForCookingEvent: {fileID: 0}
+  closeInventoryScreenEvent: {fileID: 0}
+  onInteractionEndedEvent: {fileID: 11400000, guid: ce90a23bef1ec06428be699e8ab14bc0,
+    type: 2}
+  setInteractionEvent: {fileID: 11400000, guid: b3683bce5a2ef5e4cb75259ff24fc412,
+    type: 2}
+  showNavigationInteractionEvent: {fileID: 11400000, guid: 978f6713c93cacd48a06d18b2affc276,
+    type: 2}
+  dialogueController: {fileID: 0}
+  interactionPanel: {fileID: 0}
+  navigationPanel: {fileID: 0}
