@@ -1,3 +1,6 @@
 [submodule "-f"]
 	path = unity/StoryTime/Packages/StoryTime
 	url = https://github.com/vamidi/StoryTime-UPM.git
+[submodule "unity/StoryTime/Packages/StoryTime"]
+	path = unity/StoryTime/Packages/StoryTime
+	url = https://github.com/vamidi/StoryTime-UPM.git
