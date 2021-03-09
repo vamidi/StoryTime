@@ -31,7 +31,7 @@ public class CombatDirector : MonoBehaviour
 
     [Header("Listening to channels")]
     // Event where we should listen for incoming tasks that might involves killing monsters.
-    [SerializeField] private TaskChannelSO startTaskEvent;
+    [SerializeField] private TaskEventChannelSO startTaskEvent;
 
     private int m_EnemyAmount;
     private bool m_Spawn;

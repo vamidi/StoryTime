@@ -879,19 +879,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInput: {fileID: 0}
   actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
-  defaultDialogue: {fileID: 11400000, guid: 27310dc031734d84dad84ad73992c506, type: 2}
+  defaultStory: {fileID: 0}
   startTaskEvent: {fileID: 11400000, guid: 925add8049ad3004392b9f7fe5ccef94, type: 2}
   endDialogueEvent: {fileID: 0}
   interactionEvent: {fileID: 11400000, guid: 14b80f2cdae173b4fb8683269d32eddf, type: 2}
-  winDialogueEvent: {fileID: 0}
-  loseDialogueEvent: {fileID: 0}
+  completeDialogueEvent: {fileID: 11400000, guid: 45c43269234872e45a12feccfc7e9c80,
+    type: 2}
+  incompleteDialogueEvent: {fileID: 11400000, guid: 3d3ce7e06b2b8b94a8da07e9cde0aabc,
+    type: 2}
   continueWithTask: {fileID: 11400000, guid: 776fce244873b5f499a5a86e99f8f2b0, type: 2}
-  endTaskEvent: {fileID: 0}
+  endTaskEvent: {fileID: 11400000, guid: f3a4737356490824cad7adb65ed17ea6, type: 2}
   closeDialogueUIEvent: {fileID: 11400000, guid: cbd4abfb8d701dc479f2506c899ce498,
     type: 2}
+  endStoryEvent: {fileID: 11400000, guid: a3a335a39737dc84fb131e5d3b6b4ef1, type: 2}
   checkTaskValidityEvent: {fileID: 11400000, guid: e705c94ceac130640ab7e80c923d88f6,
     type: 2}
-  startDialogueEvent: {fileID: 11400000, guid: 1dafebf8ffa94d14cb84dfa1290f7581, type: 2}
+  startStoryEvent: {fileID: 11400000, guid: 1dafebf8ffa94d14cb84dfa1290f7581, type: 2}
   startTransformDialogue: {fileID: 11400000, guid: 20882f855bf38c8498571e8ea0479453,
     type: 2}
 --- !u!1 &1933583459545949919
