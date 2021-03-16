@@ -36944,6 +36944,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: fbe732b7105cd6c4391502b5461a34c9,
         type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
+      propertyPath: onStoryScreenOpenEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: f2e8ae5ed8b952847956af2033abbe2a,
+        type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
+      propertyPath: onStoryScreenCloseEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: bc247f6b0b2d29e429f531621e242426,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 483778ca9fd0abf44a9f1588041f185d, type: 3}
 --- !u!4 &7768764379501205086 stripped

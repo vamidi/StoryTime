@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0c95ea65afc4205abe815c53ab7b378, type: 3}
   m_Name: Hero's journey
   m_EditorClassIdentifier: 
+  guid: 27310dc031734d84dad84ad73992c506
   id: 0
   tableName: stories
   linkedColumn: parentId
@@ -28,4 +29,4 @@ MonoBehaviour:
   characterID: 4294967295
   parentId: 4294967295
   childId: 0
-  typeId: 0
+  typeId: 1
