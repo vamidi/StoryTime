@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: 
   m_DefaultGroup: 6addc37834683a647b651fd7afc025c5
+  m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
   m_DisableCatalogUpdateOnStart: 0
+  m_IgnoreUnsupportedFilesInBuild: 0
   m_UniqueBundleIds: 0
   m_maxConcurrentWebRequests: 500
   m_ContiguousBundles: 0
@@ -73,6 +75,9 @@ MonoBehaviour:
     - default
     - Locale
     - Locale-en
+    - Locale-fr-FR
+    - Locale-de
+    - Locale-es
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 989617014fd5bf546ba09fefd29f6c90, type: 2}
