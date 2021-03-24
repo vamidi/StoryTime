@@ -15,17 +15,17 @@ import {
 } from '@app-theme/components/form';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 import { NbDialogRef, NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
-import { IRelation, Revision, Table } from '@app-core/data/table';
+import { IRelation, Revision, Table } from '@app-core/data/state/tables';
 import { DefaultEditor, LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
 import { UtilsService } from '@app-core/utils';
-import { TablesService } from '@app-core/data/tables.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { TablesService } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { Util } from 'leaflet';
 import trim = Util.trim;
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -682,7 +682,7 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 
 	public constructor(
 		protected firebaseRelationService: FirebaseRelationService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tablesService: TablesService,
 	)
 	{

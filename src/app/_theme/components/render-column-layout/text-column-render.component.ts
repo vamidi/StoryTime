@@ -15,10 +15,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { NbSelectComponent } from '@nebular/theme';
 import { FilterCallback, FirebaseFilter, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { ITable, Table } from '@app-core/data/table';
-import { TablesService } from '@app-core/data/tables.service';
-import { Project } from '@app-core/data/project';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ITable, Table, TablesService } from '@app-core/data/state/tables';
+import { Project, ProjectsService } from '@app-core/data/state/projects';
 
 @Component({
 	template: `
@@ -42,7 +40,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 	private deeperRelation: any;
 
 	constructor(
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		private cd: ChangeDetectorRef,
 	) {}

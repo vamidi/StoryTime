@@ -7,10 +7,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpRequest } from '@angular/common/http';
-import { CoreModule } from '@app-core/core.module';
-import { ThemeModule } from '@app-theme/theme.module';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
+import { FormsModule } from '@angular/forms';
+
+import { NbFirebasePasswordStrategy, NbFirebasePasswordStrategyOptions } from '@nebular/firebase-auth';
 import {
 	NbAlertModule, NbButtonModule, NbCardModule,
 	NbChatModule, NbCheckboxModule,
@@ -21,6 +21,8 @@ import {
 	NbToastrModule,
 	NbWindowModule,
 } from '@nebular/theme';
+import { NbAuthSocialLink } from '@nebular/auth/auth.options';
+
 import {
 	NbAuthModule,
 	NbAuthJWTToken,
@@ -28,14 +30,16 @@ import {
 	NB_AUTH_TOKEN_INTERCEPTOR_FILTER,
 	getDeepFromObject,
 } from '@nebular/auth';
+
+import { CoreModule } from '@app-core/core.module';
+import { ThemeModule } from '@app-theme/theme.module';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+
 import { NgxFirebaseLoginComponent } from './pages/auth/firebase-login.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
-import { FormsModule } from '@angular/forms';
 import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.component';
-import { NbAuthSocialLink } from '@nebular/auth/auth.options';
-import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { NbFirebasePasswordStrategy, NbFirebasePasswordStrategyOptions } from '@nebular/firebase-auth';
 import { NgxInviteComponent } from './pages/invitation/invite.component';
 
 export function nbNoOpInterceptorFilter(req: HttpRequest<any>) {
@@ -63,8 +67,8 @@ const socialLinks: NbAuthSocialLink[] = [];
 	providers: [
 		AngularFireAuthGuard,
 		NbFirebasePasswordStrategy,
-		{provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: nbNoOpInterceptorFilter},
-		{provide: HTTP_INTERCEPTORS, useClass: NbAuthJWTInterceptor, multi: true},
+		{ provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: nbNoOpInterceptorFilter },
+		{ provide: HTTP_INTERCEPTORS, useClass: NbAuthJWTInterceptor, multi: true },
 	],
 	imports: [
 		BrowserModule,

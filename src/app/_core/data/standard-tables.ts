@@ -1,5 +1,5 @@
 // Will grow overtime
-import { TableTemplate } from '@app-core/data/table';
+import { TableTemplate } from '@app-core/data/state/tables';
 import { ProxyObject } from '@app-core/data/base';
 import { Pair } from '@app-core/utils/firebase.service';
 import { UtilsService } from '@app-core/utils';

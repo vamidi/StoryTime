@@ -54,7 +54,7 @@ export class AuthService
 		return this.router.navigate(['login']);
 	}
 
-	public async updateUserData({ uid, email, displayName, photoURL }: firebase.User)
+	public async updateUserData({ uid, email, displayName, photoURL }: firebase.User): Promise<void>
 	{
 		const userRef: AngularFirestoreDocument<{ uid, email, displayName, photoURL }> = this.afs.doc(`users/${uid}`);
 		const data = {

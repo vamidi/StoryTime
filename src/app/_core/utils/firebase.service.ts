@@ -7,10 +7,10 @@ import { Observable, Subscription } from 'rxjs';
 import { ProxyObject } from '@app-core/data/base';
 import { NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/users';
-import { UserService } from '@app-core/data/users.service';
+import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 
-import { Revision } from '@app-core/data/table';
+import { Revision } from '@app-core/data/state/tables';
 import { AngularFireList, AngularFireObject, ChildEvent } from '@angular/fire/database/interfaces';
 
 import * as firebase from 'firebase';
@@ -95,7 +95,7 @@ export class FirebaseService implements OnDestroy
 		protected toastrService: NbToastrService,
 		protected userService: UserService)
 	{
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) => this.user = user));
+		this.mainSubscription.add(this.userService.user$.subscribe((user: User) => this.user = user));
 	}
 
 	ngOnDestroy(): void

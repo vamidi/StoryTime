@@ -14,10 +14,10 @@ import { UtilsService } from '@app-core/utils';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { NbToastrService } from '@nebular/theme';
 import { ProxyObject } from '@app-core/data/base';
-import { UserService } from '@app-core/data/users.service';
-import { TablesService } from '@app-core/data/tables.service';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
+import { UserService } from '@app-core/data/state/users';
+import { TablesService } from '@app-core/data/state/tables';
+import { Table } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -64,7 +64,7 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		protected firebaseRelationService: FirebaseRelationService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected toasterService: NbToastrService,
 		protected snackbarService: NbSnackbarService,

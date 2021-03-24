@@ -22,11 +22,11 @@ import {
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BehaviorSubject } from 'rxjs';
 import { Option } from '@app-core/data/forms/form-types';
-import { ITable, Table } from '@app-core/data/table';
-import { Project } from '@app-core/data/project';
+import { ITable, Table } from '@app-core/data/state/tables';
+import { Project } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
-import { UserModel } from '@app-core/data/users';
-import { UserService } from '@app-core/data/users.service';
+import { UserModel } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 
 @Component({
 	selector: 'ngx-insert-table-dialog',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Project } from '@app-core/data/project';
-import { ProjectService } from '@app-core/data/projects.service';
+import { Project } from '@app-core/data/state/projects';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class EditorComponent implements OnInit
 	constructor(
 		protected router: Router,
 		protected activatedRoute: ActivatedRoute,
-		protected projectsService: ProjectService,
+		protected projectsService: ProjectsService,
 		protected firebaseService: FirebaseService,
 	) { }
 

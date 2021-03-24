@@ -6,8 +6,8 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { ButtonFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components/form';
 import { Option } from '@app-core/data/forms/form-types';
 import { NbDialogRef } from '@nebular/theme';
-import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/users';
-import { Project } from '@app-core/data/project';
+import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/state/users';
+import { Project } from '@app-core/data/state/projects';
 
 @Component({
 	selector: 'ngx-insert-member',

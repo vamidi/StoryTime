@@ -13,18 +13,18 @@ import {
 	BooleanColumnRenderComponent,
 } from '@app-theme/components';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { Table } from '@app-core/data/table';
-import { UserService } from '@app-core/data/users.service';
-import { User, UserModel } from '@app-core/data/users';
+import { Table } from '@app-core/data/state/tables';
+import { UserService } from '@app-core/data/state/users';
+import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { TablesService } from '@app-core/data/tables.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { TablesService } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
 import { map } from 'rxjs/operators';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { ObjectKeyValue, UserPreferences } from '@app-core/utils/utils.service';
 import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
@@ -136,7 +136,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	protected userPreferences: UserPreferences = null;
 
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
-	protected user: UserModel = new UserModel();
+	protected user: UserModel = defaultUser;
 
 	protected tableID: string = '';
 	protected table: Table = new Table();
@@ -161,7 +161,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected tableName: string = '',
 	) {
@@ -204,7 +204,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
 		}));
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
+		this.mainSubscription.add(this.userService.user$.subscribe((user: User) =>
 		{
 			// Only push changed users.
 			if(!isEqual(this.user, user))

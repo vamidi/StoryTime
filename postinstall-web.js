@@ -25,11 +25,13 @@ fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) =>
 const { argv } = require('yargs');
 const { version } = require('./package.json');
 
-// read environment variables from .env file
-require('dotenv').config();
-
 // read the command line arguments passed with yargs
 const environment = argv.environment;
+const options = environment === 'prod' ? { path: path.resolve(process.cwd(), '.env.production') } : {};
+
+// read environment variables from .env file
+require('dotenv').config(options);
+
 const isProduction = environment === 'prod';
 
 const targetPath = isProduction

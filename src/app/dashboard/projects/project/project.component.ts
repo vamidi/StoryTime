@@ -1,28 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { NbDialogService, NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { BehaviourType } from '@app-core/types';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { InsertTableComponent } from '@app-theme/components/firebase-table';
-import { UserService } from '@app-core/data/users.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { UserService } from '@app-core/data/state/users';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import { BehaviorSubject } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
-import { TablesService } from '@app-core/data/tables.service';
+import { TablesService } from '@app-core/data/state/tables';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { LinkRenderComponent } from '@app-theme/components';
 
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../../environments/environment';
-import { User } from '@app-core/data/users';
+import { User } from '@app-core/data/state/users';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import isEqual from 'lodash.isequal';
 
@@ -56,7 +56,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		protected menuService: NbMenuService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectsService: ProjectService,
+		protected projectsService: ProjectsService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected breadcrumbService: BreadcrumbsService,

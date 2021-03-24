@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ListResult } from '@angular/fire/storage/interfaces';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';

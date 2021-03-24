@@ -13,7 +13,7 @@ import {
 	NbThemeService, NbToastrService,
 } from '@nebular/theme';
 
-import { IUserTicket, UserModel } from '@app-core/data/users';
+import { IUserTicket, UserModel } from '@app-core/data/state/users';
 import { LayoutService, UtilsService } from '@app-core/utils';
 import { environment } from '../../../../environments/environment';
 import { ChangelogDialogComponent } from '@app-theme/components/changelog/changelog-dialog.component';
@@ -22,10 +22,11 @@ import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { UserService } from '@app-core/data/users.service';
+import { UserService, GetUser } from '@app-core/data/state/users';
 import { NgxMenuItem } from '@app-theme/components';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { NgxContextMenuDirective } from '@app-core/directives/ngx-context-menu.directive';
+import { Store } from '@ngxs/store';
 
 @Component({
 	selector: 'ngx-header',
@@ -84,12 +85,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 		private menuService: NbMenuService,
 		private themeService: NbThemeService,
 		private userService: UserService,
-		private projectService: ProjectService,
+		private projectService: ProjectsService,
 		private layoutService: LayoutService,
 		private breakpointService: NbMediaBreakpointsService,
 		private dialogService: NbDialogService,
 		private firebaseService: FirebaseService,
-		private userPreferencesService: UserPreferencesService)
+		private userPreferencesService: UserPreferencesService,
+		private store: Store)
 	{
 	}
 
@@ -106,8 +108,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 			.subscribe((isLessThanXl: boolean) => this.userPictureOnly = isLessThanXl);
 
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((obsUser) =>
+		this.mainSubscription.add(this.userService.user$.subscribe((obsUser) =>
 		{
+			console.log(obsUser);
 			if(obsUser)
 			{
 				// this.userNotifications = [];
@@ -154,6 +157,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 				return;
 			}
 		}));
+		this.store.dispatch(new GetUser());
 
 		this.themeService.onThemeChange()
 			.pipe(

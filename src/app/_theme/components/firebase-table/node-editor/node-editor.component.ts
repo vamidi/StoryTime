@@ -19,7 +19,7 @@ import { UtilsService } from '@app-core/utils';
 import { Subject } from 'rxjs';
 import { combineLatest } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { onSimpleTableMap, Table } from '@app-core/data/table';
+import { onSimpleTableMap, Table } from '@app-core/data/state/tables';
 
 export enum INSPECTOR_STATE
 {

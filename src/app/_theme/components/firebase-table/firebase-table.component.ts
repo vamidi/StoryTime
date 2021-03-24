@@ -11,9 +11,9 @@ import { NodeEditorComponent, NodeInspectorComponent } from './node-editor';
 
 import { ChangeTableSettingsComponent } from './change-table-settings/change-table-settings.component';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
-import { UserService } from '@app-core/data/users.service';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { UserService } from '@app-core/data/state/users';
+import { ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -54,7 +54,7 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 		protected service: SmartTableData,
 		protected userService: UserService,
 		protected userPreferenceService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected toastrService: NbToastrService,
 		protected router: Router,

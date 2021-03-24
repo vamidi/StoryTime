@@ -6,8 +6,8 @@ import {
 } from '@app-theme/components/firebase-table';
 import { BehaviourType } from '@app-core/types';
 import { NbDialogService } from '@nebular/theme';
-import { User, UserModel } from '@app-core/data/users';
-import { UserService } from '@app-core/data/users.service';
+import { User, UserModel, defaultUser } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { ProjectsComponent } from '@app-dashboard/projects/projects.component';
 import { ProjectComponent } from '@app-dashboard/projects/project/project.component';
 
@@ -38,7 +38,7 @@ export class SubHeaderComponent implements OnInit, AfterViewInit, OnChanges, OnD
 	// Main subscription to all events
 	protected mainSubscription: Subscription = new Subscription();
 
-	protected user: UserModel = new UserModel();
+	protected user: UserModel = defaultUser;
 
 	protected userPreferences: UserPreferences = null;
 
@@ -51,7 +51,7 @@ export class SubHeaderComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
 	public ngOnInit(): void
 	{
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
+		this.mainSubscription.add(this.userService.user$.subscribe((user: User) =>
 		{
 			// Only push changed users.
 			if(!isEqual(this.user, user))

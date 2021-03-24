@@ -1,10 +1,10 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { ObjectKeyValue, UserPreferences } from '@app-core/utils/utils.service';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { User, UserModel } from '@app-core/data/users';
+import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 import isEqual from 'lodash.isequal';
 import { ProxyObject } from '@app-core/data/base';
 import * as firebase from 'firebase';
@@ -18,7 +18,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	protected userPreferences: UserPreferences = null;
 
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
-	protected user: UserModel = new UserModel();
+	protected user: UserModel = defaultUser;
 
 	protected set setTblName(tblName: string)
 	{
@@ -68,7 +68,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
 		}));
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
+		this.mainSubscription.add(this.userService.user$.subscribe((user: User) =>
 		{
 			// Only push changed users.
 			if(!isEqual(this.user, user))

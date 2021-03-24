@@ -9,7 +9,7 @@ import { NbMenuItem, NbSpinnerService } from '@nebular/theme';
 import { MENU_ITEMS } from './pages/pages-menu';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 
 @Component({
 	selector: 'ngx-app',

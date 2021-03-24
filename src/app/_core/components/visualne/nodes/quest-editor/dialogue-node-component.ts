@@ -115,10 +115,10 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 
 				// save the current node
 				context.trigger('saveDialogue', payload);
-
-				// update the renderer
-				currentNode.update();
 			}
+
+			// update the renderer
+			currentNode.update();
 		}
 	}
 

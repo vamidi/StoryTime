@@ -11,14 +11,14 @@ import { ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { dialogueOptionSocket } from '@app-core/components/visualne/sockets';
 import { DebouncedFunc } from '@app-core/types';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { Project } from '@app-core/data/project';
-import { ProjectService } from '@app-core/data/projects.service';
+import { Project } from '@app-core/data/state/projects';
+import { ProjectsService } from '@app-core/data/state/projects';
 
 import { DropDownQuestion, Option, TextboxQuestion } from '@app-core/data/forms/form-types';
-import { TablesService } from '@app-core/data/tables.service';
-import { Table } from '@app-core/data/table';
+import { TablesService } from '@app-core/data/state/tables';
+import { Table } from '@app-core/data/state/tables';
 import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { UtilsService } from '@app-core/utils';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
@@ -39,8 +39,7 @@ import {
 	NumComponent,
 	StartNodeComponent,
 } from '@app-core/components/visualne';
-import { NodeEditorService } from '@app-core/data/node-editor.service';
-import { KeyValue } from '@angular/common';
+import { NodeEditorService } from '@app-core/data/state/node-editor/node-editor.service';
 
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
@@ -191,7 +190,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		protected toastrService: NbToastrService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectsService: ProjectService,
+		protected projectsService: ProjectsService,
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected nodeEditorService: NodeEditorService,
@@ -577,6 +576,16 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		this.nodeEditorService.Editor.bind('saveDialogue');
 		this.nodeEditorService.Editor.bind('saveOption');
 
+		this.nodeEditorService.listen('nodecreate', (node: Node) => {
+			if(node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId'))
+			{
+				node.data = {
+					...node.data,
+					dialogueId: 7,
+				}
+			}
+		});
+
 		this.nodeEditorService.listen(['nodetranslate', 'nodedeselected'], () => {
 			const hide = this.timeoutShow;
 
@@ -628,11 +637,14 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 
 		// Saving nodes we need to add character data as well.
 		this.nodeEditorService.listen('export', data => {
-			data.characters = [
-				// Set the main character that is talking in this array
-				this.nodeEditorService.SelectedStory.parentId,
-				// TODO Add characters that are joining the conversation
-			];
+			if (this.nodeEditorService.SelectedStory)
+			{
+				data.characters = [
+					// Set the main character that is talking in this array
+					this.nodeEditorService.SelectedStory.parentId,
+					// TODO Add characters that are joining the conversation
+				];
+			}
 		});
 
 		const ctx: Context<AdditionalEvents & EventsTypes> = this.nodeEditorService.Editor;
@@ -742,16 +754,16 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 
 			if(
 				tbl.name.toLowerCase() === 'dialogues'
-				&& (t === null)
+				&& (t === null || !t.loaded)
 				||
 				tbl.name.toLowerCase() === 'dialogueoptions'
-				&& (t === null)
+				&& (t === null || !t.loaded)
 				||
 				tbl.name.toLowerCase() === 'characters'
-				&& (t === null)
+				&& (t === null || !t.loaded)
 				||
 				tbl.name.toLowerCase() === 'stories'
-				&& (t === null)
+				&& (t === null || !t.loaded)
 			)
 			{
 				promises.push(this.tableService.addIfNotExists(tables[i]));

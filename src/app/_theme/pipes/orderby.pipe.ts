@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TablesService } from '@app-core/data/tables.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { TablesService } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
 
 declare type sortOrder = 'asc' | 'desc';
 
@@ -21,7 +21,7 @@ export class OrderByPipe implements PipeTransform
 
 		if (propertyName)
 		{
-			const isMetadata = value instanceof TablesService || value instanceof ProjectService;
+			const isMetadata = value instanceof TablesService || value instanceof ProjectsService;
 
 			// if we have a dot in the text that we might have nested values.
 			return arrValue.sort((a, b) => this.sort(propertyName, sortBy, a, b, isMetadata));

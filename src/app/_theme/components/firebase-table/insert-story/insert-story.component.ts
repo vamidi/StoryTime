@@ -6,11 +6,11 @@ import {
 } from '@angular/core';
 import { NbDialogRef, NbStepComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
 import { ICharacter, IDialogue, IStory } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import {
 	ButtonFieldComponent,
 	DropDownFieldComponent,
@@ -180,7 +180,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		protected ref: NbDialogRef<InsertStoryComponent>,
 		protected toastrService: NbToastrService,
 		protected firebaseService: FirebaseService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected cd: ChangeDetectorRef)
 	{
 

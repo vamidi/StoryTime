@@ -1,7 +1,18 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule, PathLocationStrategy, LocationStrategy } from '@angular/common';
+
 import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
+
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireStorageModule } from '@angular/fire/storage'
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
+
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+
 import { of as observableOf } from 'rxjs';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
@@ -12,27 +23,22 @@ import {
 	AuthService as AuthGuard,
 	LayoutService,
 } from './utils';
-import { UserData } from './data/users';
 import { SmartTableData } from './data/smart-table';
 
 import { SmartTableService } from './mock/smart-table.service';
 import { MockDataModule } from './mock/mock-data.module';
 
-import { UserService } from '@app-core/data/users.service';
+import { AppState } from './data/state/app.state';
+import { UserData, UserState, UserService } from './data/state/users';
 
-import { AngularFireModule } from '@angular/fire';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireStorageModule } from '@angular/fire/storage'
-import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { ProjectData, ProjectsService, ProjectsState  } from '@app-core/data/state/projects';
+import { TableData, TablesService, TablesState } from '@app-core/data/state/tables';
+import { NodeEditorService, NodeEditorState } from '@app-core/data/state/node-editor';
+
 import { environment } from '../../environments/environment';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { ProjectData } from '@app-core/data/project';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TableData } from '@app-core/data/table';
-import { TablesService } from '@app-core/data/tables.service';
-import { NodeEditorService } from '@app-core/data/node-editor.service';
+
 
 const socialLinks = [
 	{
@@ -54,7 +60,7 @@ const socialLinks = [
 
 const DATA_SERVICES = [
 	{ provide: UserData, useClass: UserService },
-	{ provide: ProjectData, useClass: ProjectService },
+	{ provide: ProjectData, useClass: ProjectsService },
 	{ provide: TableData, useClass: TablesService },
 	{ provide: SmartTableData, useClass: SmartTableService },
 ];
@@ -107,7 +113,12 @@ export const NB_CORE_PROVIDERS = [
 	{
 		provide: LocationStrategy, useClass: PathLocationStrategy,
 	},
+];
 
+export const CUSTOM_PROVIDERS = [
+	// Custom made service
+	FirebaseService,
+	FirebaseRelationService,
 	BreadcrumbsService,
 	UserService,
 	NodeEditorService,
@@ -115,12 +126,7 @@ export const NB_CORE_PROVIDERS = [
 	PlayerService,
 	AuthGuardService,
 	AuthGuard,
-];
 
-export const CUSTOM_PROVIDERS = [
-	// Custom made service
-	FirebaseService,
-	FirebaseRelationService,
 ];
 
 @NgModule({
@@ -131,6 +137,15 @@ export const CUSTOM_PROVIDERS = [
 		AngularFireFunctionsModule,
 		AngularFireStorageModule,
 		AngularFireModule.initializeApp(environment.firebase, 'management-buas'),
+
+		NgxsModule.forRoot([
+			AppState,
+			UserState,
+			ProjectsState,
+			TablesState,
+			NodeEditorState,
+		], { developmentMode: !environment.production }),
+		NgxsReduxDevtoolsPluginModule.forRoot({ maxAge: 25 }),
 	],
 	exports: [
 		NbAuthModule,

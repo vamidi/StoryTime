@@ -16,14 +16,14 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { InsertTeamMemberComponent } from '@app-theme/components/firebase-table/insert-team-member/insert-team-member.component';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { Revision } from '@app-core/data/table';
-import { TablesService } from '@app-core/data/tables.service';
+import { Revision } from '@app-core/data/state/tables';
+import { TablesService } from '@app-core/data/state/tables';
 
-import { IUserTicket, Roles, UserModel } from '@app-core/data/users';
-import { Project } from '@app-core/data/project';
+import { IUserTicket, Roles, UserModel } from '@app-core/data/state/users';
+import { Project } from '@app-core/data/state/projects';
 import { Subscription } from 'rxjs';
 import isEqual from 'lodash.isequal';
 import isEmpty from 'lodash.isempty';
@@ -130,7 +130,7 @@ export class ChangeProjectSettingsComponent implements
 			};
 		}
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((user) =>
+		this.mainSubscription.add(this.userService.user$.subscribe((user) =>
 		{
 			this.user = user;
 			this.firebaseService.getRef('projectRequests').orderByChild('uid')

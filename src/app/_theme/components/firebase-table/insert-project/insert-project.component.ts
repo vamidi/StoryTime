@@ -18,12 +18,12 @@ import {
 	TextFieldComponent,
 } from '@app-theme/components/form';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
-import { IProject, Project } from '@app-core/data/project';
-import { UserModel } from '@app-core/data/users';
+import { IProject, Project } from '@app-core/data/state/projects';
+import { UserModel } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { ITable, TableTemplate } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ITable, TableTemplate } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/standard-tables';
 import { BehaviorSubject } from 'rxjs';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
@@ -75,7 +75,7 @@ export class InsertProjectComponent
 		protected ref: NbDialogRef<InsertProjectComponent>,
 		protected ToastrService: NbToastrService,
 		protected firebaseService: FirebaseService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected cd: ChangeDetectorRef)
 	{
 

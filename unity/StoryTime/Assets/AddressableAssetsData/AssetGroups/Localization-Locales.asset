@@ -24,6 +24,13 @@ MonoBehaviour:
     - Locale
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
+  - m_GUID: cc2fc4549a22a2b489e1ee4b5f9a841a
+    m_Address: English (en)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
