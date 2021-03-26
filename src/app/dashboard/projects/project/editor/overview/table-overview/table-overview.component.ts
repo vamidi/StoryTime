@@ -5,7 +5,7 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { AssociatedRelation, FirebaseRelationService, TableRelation } from '@app-core/utils/firebase-relation.service';
 import { NbDialogService, NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { UtilsService } from '@app-core/utils';
+import { LanguageService, UtilsService } from '@app-core/utils';
 import { Location } from '@angular/common';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
 
@@ -64,6 +64,7 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 		protected nbSnackbarService: NbSnackbarService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
+		protected languageService: LanguageService,
 		protected location: Location,
 		protected activatedRoute: ActivatedRoute,
 		protected dynamicComponentService: DynamicComponentService,
@@ -71,7 +72,7 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 	{
 		super(firebaseService, firebaseRelationService,
 			service, userService, userPreferenceService, projectService, tableService, toastrService,
-			nbSnackbarService, router, dialogService,
+			nbSnackbarService, languageService, router, dialogService,
 		);
 	}
 

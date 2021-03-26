@@ -1,5 +1,6 @@
-import { KeyValue } from '@angular/common';
 import { Pair } from '@app-core/utils/firebase.service';
+
+export type KeyLanguageObject = { [key in KeyLanguage]: string; };
 
 export type KeyLanguage =
 	'af' |

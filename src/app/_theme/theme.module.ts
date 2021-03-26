@@ -55,6 +55,8 @@ import {
 	TextRenderComponent,
 	LinkRenderComponent,
 
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 
 	MyNodeComponent,
 
@@ -237,6 +239,8 @@ const CUSTOM_RENDER_COMPONENTS = [
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
 	TableColumnRendererComponent,
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 ];
 
 const CUSTOM_ENTRY_COMPONENT = [
@@ -269,6 +273,8 @@ const CUSTOM_ENTRY_COMPONENT = [
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
 	TableColumnRendererComponent,
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 
 	FormComponent,
 	DynamicFormComponent,

@@ -7,7 +7,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase-relation.servi
 import { User } from '@app-core/data/state/users';
 import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UtilsService } from '@app-core/utils';
+import { LanguageService, UtilsService } from '@app-core/utils';
 import { UserService } from '@app-core/data/state/users';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
@@ -60,6 +60,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 		protected ngZone: NgZone,
@@ -67,7 +68,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferenceService,
-			projectsService, tableService, firebaseService, firebaseRelationService, 'projects',
+			projectsService, tableService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}
 

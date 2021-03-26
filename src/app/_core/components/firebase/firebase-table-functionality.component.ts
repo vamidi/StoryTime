@@ -6,7 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { StringPair } from '@app-core/data/base/string-pair.class';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 
-import { UtilsService } from '@app-core/utils';
+import { LanguageService, UtilsService } from '@app-core/utils';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
@@ -28,6 +28,8 @@ import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { Option } from '@app-core/data/forms/form-types';
 
 export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTableComponent
 	implements OnInit, OnDestroy
@@ -66,13 +68,15 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected tableService: TablesService,
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
 		protected tableName: string = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
 			toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, tableName,
+			userPreferencesService, projectService, tableService,
+			languageService, tableName,
 		);
 		this.onAddSubscriptions.add(this.firebaseService.onTableAddEvent.subscribe(() => this.onAddTable()));
 	}

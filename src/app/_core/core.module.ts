@@ -22,6 +22,8 @@ import {
 	AuthGuardService,
 	AuthService as AuthGuard,
 	LayoutService,
+	PipelineService,
+	LanguageService,
 } from './utils';
 import { SmartTableData } from './data/smart-table';
 
@@ -34,10 +36,9 @@ import { UserData, UserState, UserService } from './data/state/users';
 import { ProjectData, ProjectsService, ProjectsState  } from '@app-core/data/state/projects';
 import { TableData, TablesService, TablesState } from '@app-core/data/state/tables';
 import { NodeEditorService, NodeEditorState } from '@app-core/data/state/node-editor';
-
-import { environment } from '../../environments/environment';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { environment } from '../../environments/environment';
 
 
 const socialLinks = [
@@ -122,11 +123,12 @@ export const CUSTOM_PROVIDERS = [
 	BreadcrumbsService,
 	UserService,
 	NodeEditorService,
+	PipelineService,
+	LanguageService,
 	LayoutService,
 	PlayerService,
 	AuthGuardService,
 	AuthGuard,
-
 ];
 
 @NgModule({

@@ -10,7 +10,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { InsertTableComponent } from '@app-theme/components/firebase-table';
 import { UserService } from '@app-core/data/state/users';
 import { ProjectsService } from '@app-core/data/state/projects';
-import { BreadcrumbsService, UtilsService } from '@app-core/utils';
+import { BreadcrumbsService, LanguageService, UtilsService } from '@app-core/utils';
 
 import { Table } from '@app-core/data/state/tables';
 import { BehaviorSubject } from 'rxjs';
@@ -60,6 +60,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected breadcrumbService: BreadcrumbsService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected activatedRoute: ActivatedRoute,
 		protected dialogService: NbDialogService,
@@ -67,7 +68,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 	) {
 		super(
 			router, toasterService, snackbarService, userService, userPreferencesService,
-			projectsService, tablesService, firebaseService, firebaseRelationService, 'projects',
+			projectsService, tablesService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}
 

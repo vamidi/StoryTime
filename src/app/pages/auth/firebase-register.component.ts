@@ -14,6 +14,7 @@ import { UserService } from '@app-core/data/state/users';
 
 import * as userActions from '@app-core/data/state/users/user.actions';
 import { Store } from '@ngxs/store';
+import { environment } from '../../../environments/environment';
 export type Action = userActions.All;
 
 @Component({
@@ -88,7 +89,7 @@ export class NgxFirebaseRegisterComponent {
 					});
 
 					// also update user info
-					this.store.dispatch(new UserUpdate(newUser));
+					if(environment.redux) this.store.dispatch(new UserUpdate(newUser));
 				}
 
 				this.messages = result.getMessages();

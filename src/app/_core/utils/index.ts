@@ -4,7 +4,8 @@ import { AuthGuardService } from './auth.guard.service';
 import { AuthService } from './auth.service';
 import { UtilsService } from './utils.service';
 import { LayoutService } from './layout.service';
-
+import { PipelineService } from './pipeline.service';
+import { LanguageService } from './language.service';
 export {
 	BreadcrumbsService,
 	PlayerService,
@@ -12,4 +13,6 @@ export {
 	AuthService,
 	UtilsService,
 	LayoutService,
+	PipelineService,
+	LanguageService,
 };

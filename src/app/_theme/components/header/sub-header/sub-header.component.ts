@@ -51,7 +51,7 @@ export class SubHeaderComponent implements OnInit, AfterViewInit, OnChanges, OnD
 
 	public ngOnInit(): void
 	{
-		this.mainSubscription.add(this.userService.user$.subscribe((user: User) =>
+		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
 		{
 			// Only push changed users.
 			if(!isEqual(this.user, user))

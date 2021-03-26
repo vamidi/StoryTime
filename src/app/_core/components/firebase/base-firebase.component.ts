@@ -68,7 +68,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
 		}));
 
-		this.mainSubscription.add(this.userService.user$.subscribe((user: User) =>
+		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
 		{
 			// Only push changed users.
 			if(!isEqual(this.user, user))

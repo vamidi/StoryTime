@@ -71,6 +71,11 @@ export class FirebaseService implements OnDestroy
 		return null;
 	}
 
+	public get permissions()
+	{
+		return this.userService.canEdit || this.userService.canDelete;
+	}
+
 	private excludedTables: string[] = ['users', 'revisions', 'relations', 'projects'];
 
 	protected tblName = '';
@@ -95,7 +100,7 @@ export class FirebaseService implements OnDestroy
 		protected toastrService: NbToastrService,
 		protected userService: UserService)
 	{
-		this.mainSubscription.add(this.userService.user$.subscribe((user: User) => this.user = user));
+		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) => this.user = user));
 	}
 
 	ngOnDestroy(): void

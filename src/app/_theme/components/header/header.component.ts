@@ -108,7 +108,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 			.subscribe((isLessThanXl: boolean) => this.userPictureOnly = isLessThanXl);
 
 
-		this.mainSubscription.add(this.userService.user$.subscribe((obsUser) =>
+		this.mainSubscription.add(this.userService.getUser().subscribe((obsUser) =>
 		{
 			console.log(obsUser);
 			if(obsUser)
@@ -157,7 +157,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 				return;
 			}
 		}));
-		this.store.dispatch(new GetUser());
+		if(environment.redux) this.store.dispatch(new GetUser());
 
 		this.themeService.onThemeChange()
 			.pipe(

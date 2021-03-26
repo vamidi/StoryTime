@@ -74,7 +74,7 @@ export class ProfileComponent implements OnInit, AfterViewInit
 			controlType: 'submitbutton',
 		});
 
-		this.userService.user$.subscribe((obsUser: UserModel) =>
+		this.userService.getUser().subscribe((obsUser: UserModel) =>
 		{
 			if(obsUser)
 			{

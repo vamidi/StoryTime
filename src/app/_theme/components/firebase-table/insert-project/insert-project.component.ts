@@ -27,6 +27,7 @@ import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/standard-tables';
 import { BehaviorSubject } from 'rxjs';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -155,6 +156,11 @@ export class InsertProjectComponent
 							private: false,
 							deleted: false,
 							owner: this.user.uid,
+							version: {
+								major: environment.MAJOR,
+								minor: environment.MINOR,
+								patch: environment.PATCH,
+							},
 						},
 					};
 
@@ -185,6 +191,11 @@ export class InsertProjectComponent
 									updated_at: UtilsService.timestamp,
 									private: false,
 									deleted: false,
+									version: {
+										major: environment.MAJOR,
+										minor: environment.MINOR,
+										patch: environment.PATCH,
+									},
 								},
 							};
 

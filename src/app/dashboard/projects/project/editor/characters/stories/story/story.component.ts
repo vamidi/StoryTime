@@ -10,7 +10,7 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NodeEditorComponent, NodeInspectorComponent } from '@app-theme/components/firebase-table/node-editor';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
-import { UtilsService } from '@app-core/utils';
+import { LanguageService, UtilsService } from '@app-core/utils';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { NbToastrService } from '@nebular/theme';
 import { ProxyObject } from '@app-core/data/base';
@@ -68,13 +68,15 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		protected tableService: TablesService,
 		protected toasterService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected activatedRoute: ActivatedRoute,
 	)
 	{
 		super(router, firebaseService, firebaseRelationService, toasterService,
 			snackbarService,
-			userService, userPreferencesService, projectService, tableService,'dialogues');
+			userService, userPreferencesService, projectService,
+			tableService, languageService, 'dialogues');
 	}
 
 	// public isSupported(): boolean

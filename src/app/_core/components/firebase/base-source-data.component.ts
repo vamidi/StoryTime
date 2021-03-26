@@ -11,6 +11,7 @@ import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { LanguageService } from '@app-core/utils';
 
 export class BaseSourceDataComponent extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
 {
@@ -27,6 +28,7 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 	 * @param tableService -
 	 * @param firebaseService - Firebase connection information
 	 * @param firebaseRelationService - Relation service for table relations
+	 * @param languageService -
 	 * @param tableName - table name what firebase should be looking at
 	 */
 	constructor(
@@ -39,11 +41,12 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected tableName: string = '',
 	) {
 		super(
 			router, firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, tableName,
+			userPreferencesService, projectService, tableService, languageService, tableName,
 		);
 	}
 

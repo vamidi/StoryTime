@@ -21,6 +21,7 @@ import { ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { LanguageService } from '@app-core/utils';
 
 /**
  * Overview Component
@@ -53,13 +54,13 @@ export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, firebaseService, firebaseRelationService,
-		);
+			projectService, tableService, firebaseService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit(): void

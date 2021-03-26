@@ -1,16 +1,17 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Engine, Node as VisualNENode, NodeEditor } from 'visualne';
 
-import { StartNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/start-node-component';
-import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-node-component';
-import { DialogueOptionNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-option-node-component';
-
 import { ConnectionPlugin } from 'visualne-connection-plugin';
 import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ContextMenuPlugin } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin } from 'visualne-comment-plugin';
 import MinimapPlugin from 'rete-minimap-plugin';
 import HistoryPlugin from 'rete-history-plugin';
+
+import { StartNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/start-node-component';
+import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-node-component';
+import { DialogueOptionNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-option-node-component';
+
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
 import { NumComponent } from '@app-core/components/visualne/nodes/number-component';

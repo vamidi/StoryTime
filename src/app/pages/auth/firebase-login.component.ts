@@ -11,13 +11,12 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import Persistence = firebase.auth.Auth.Persistence;
 
-import { Observable } from 'rxjs/Observable';
-
 import { UtilsService } from '@app-core/utils';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 
-import { UserService, UserModel, GetUser } from '@app-core/data/state/users';
+import { UserService, GetUser } from '@app-core/data/state/users';
+import { environment } from '../../../environments/environment';
 
 interface AuthSocialLink extends NbAuthSocialLink
 {
@@ -36,7 +35,7 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 
 	private returnUrl: string = '';
 
-	user$: Observable<UserModel> = this.userService.user$;
+	// user$: Observable<UserModel> = this.userService.user$;
 
 	constructor(
 		@Inject(NB_AUTH_OPTIONS) options:{},
@@ -116,7 +115,7 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 
 				const redirect = this.returnUrl !== '' ? this.returnUrl : result.getRedirect();
 				setTimeout(() => {
-					this.store.dispatch(new GetUser());
+					if(environment.redux) this.store.dispatch(new GetUser());
 					return this.router.navigateByUrl(redirect);
 				}, this.redirectDelay);
 

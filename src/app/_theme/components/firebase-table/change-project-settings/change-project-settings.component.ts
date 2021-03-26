@@ -130,7 +130,7 @@ export class ChangeProjectSettingsComponent implements
 			};
 		}
 
-		this.mainSubscription.add(this.userService.user$.subscribe((user) =>
+		this.mainSubscription.add(this.userService.getUser().subscribe((user) =>
 		{
 			this.user = user;
 			this.firebaseService.getRef('projectRequests').orderByChild('uid')
