@@ -12,11 +12,10 @@ import { NodeEditorComponent, NodeInspectorComponent } from './node-editor';
 import { ChangeTableSettingsComponent } from './change-table-settings/change-table-settings.component';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
 import { UserService } from '@app-core/data/state/users';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import { LanguageService } from '@app-core/utils';
 
 /**
  * Firebase table component

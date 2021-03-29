@@ -3,7 +3,6 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { BreadcrumbsService } from '@app-core/utils';
 import { breadcrumbsConfig } from '../../../pages/breadcrumbs.config';
-import { Breadcrumb } from '@app-core/utils/breadcrumbs.service';
 import { Subscription } from 'rxjs';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 
@@ -64,6 +63,12 @@ export class BreadcrumbsComponent implements OnInit, OnChanges, OnDestroy
 			this.breadcrumbService.removeBreadcrumbsRouteRegex(item.route);
 		});
 
+		// breadcrumbsConfig.nameCallbacks.forEach((callback) => this.breadcrumbService.addCallbackForRoute(callback.route, ))
+
+		breadcrumbsConfig.regexNameCallbacks.forEach((callbackRgx) => {
+			this.breadcrumbService.addCallbackForRouteRegex(callbackRgx.route, callbackRgx.callback);
+		})
+
 		this._urls.length = 0;
 		this.generateBreadcrumbTrail(this.router.url);
 
@@ -72,7 +77,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges, OnDestroy
 		this.breadcrumbService.registerComponent(this);
 	}
 
-	ngOnChanges(changes: any): void {
+	ngOnChanges(_: any): void {
 		if (!this._urls) {
 			return;
 		}
@@ -121,12 +126,9 @@ export class BreadcrumbsComponent implements OnInit, OnChanges, OnDestroy
 		this._routerSubscription.unsubscribe();
 	}
 
-	private hideIfNoBreadcrumbs() {
-		if (this.breadcrumbService.breadcrumbsRemoved(this.router.url)) {
-			this.isHidden = true;
-		} else {
-			this.isHidden = false;
-		}
+	private hideIfNoBreadcrumbs()
+	{
+		this.isHidden = this.breadcrumbService.breadcrumbsRemoved(this.router.url);
 	}
 
 }

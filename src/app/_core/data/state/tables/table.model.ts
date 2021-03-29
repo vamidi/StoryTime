@@ -7,6 +7,7 @@ import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { FilterCallback } from '@app-core/providers/firebase-filter.config';
 import { UtilsService } from '@app-core/utils';
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
+import { DebugType } from '@app-core/utils/utils.service';
 
 interface IMetaData {
 	created_at: Object;
@@ -204,6 +205,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 	public load(filters: FilterCallback<T>[] = []): Promise<T>
 	{
+		this.loaded = false;
 		const entries = Object.entries(this.data);
 
 		const dataSize = Object.keys(entries[0][1]).length + 1; // becuz id
@@ -214,7 +216,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 			value.id = +key;
 
 			if(dataSize !== Object.keys(value).length) {
-				console.log(dataSize, value, this.data[0]);
+				UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
 				UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
 			}
 		}
@@ -231,9 +233,9 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		// Load the source
 		const promise = this.source.load(this.filteredData);
 
-		promise.then(() => {
+		promise.then(() =>
+		{
 			this.source.refresh();
-
 			this.loaded = true;
 		}); // refresh list
 

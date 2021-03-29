@@ -28,7 +28,7 @@ import { UserService } from '@app-core/data/state/users';
 import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
 import { TablesService } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 
 import { Project } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -38,11 +38,9 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import {
 	KeyLanguage,
 	KeyLanguageObject,
-	systemLanguages,
 } from '@app-core/data/state/node-editor/languages.model';
 import { LanguageRenderComponent, LanguageColumnRenderComponent } from '@app-theme/components/render-column-layout/language-column-render.component';
 import isEqual from 'lodash.isequal';
-import { LanguageService } from '@app-core/utils/language.service';
 
 /**
  * @brief base class to get simple data information
@@ -71,7 +69,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		return this.table.getSource;
 	}
 
-	public get languages() { return systemLanguages; }
+	public get languages() { return this.languageService.ProjectLanguages; }
 
 	public settings: BaseSettings = new BaseSettings();
 	/*{
@@ -294,6 +292,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 */
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
 	{
+		console.trace(event);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
 			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
@@ -827,7 +826,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 							{
 								const languages = Object.keys(keyValue);
 								// Are we dealing with a language object
-								if (systemLanguages.has(languages[0] as KeyLanguage))
+								if (this.languageService.SystemLanguages.has(languages[0] as KeyLanguage))
 								{
 									type = 'custom';
 									newSettings.columns[key] = {
@@ -842,8 +841,6 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 									// Do nothing for now.
 								}
 							}
-
-
 						}
 
 						// if we found an entry link it

@@ -10,14 +10,14 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NodeEditorComponent, NodeInspectorComponent } from '@app-theme/components/firebase-table/node-editor';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
-import { LanguageService, UtilsService } from '@app-core/utils';
+import { UtilsService } from '@app-core/utils';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { NbToastrService } from '@nebular/theme';
 import { ProxyObject } from '@app-core/data/base';
 import { UserService } from '@app-core/data/state/users';
 import { TablesService } from '@app-core/data/state/tables';
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 

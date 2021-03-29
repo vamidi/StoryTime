@@ -1,4 +1,33 @@
-export const breadcrumbsConfig = {
+interface IRoute
+{
+	route: string
+}
+
+interface IRouteName extends IRoute
+{
+	name: string,
+}
+
+interface IRouteCallback extends IRoute
+{
+	callback: (id: string) => string;
+}
+
+interface Config
+{
+	prefix: string,
+	names: IRouteName[],
+	regexNames: IRouteName[],
+	hide: IRoute[],
+	regexHide: IRoute[],
+	noBreadcrumbs: IRoute[],
+	regexNoBreadcrumbs: IRoute[],
+	nameCallbacks: IRouteCallback[],
+	regexNameCallbacks: IRouteCallback[],
+}
+
+
+export const breadcrumbsConfig: Config = {
 
 	// The Home link in breadcrumbs
 	prefix: 'Home',
@@ -37,4 +66,8 @@ export const breadcrumbsConfig = {
 	regexNoBreadcrumbs: [
 		// {route: ''},
 	],
+
+	nameCallbacks: [],
+
+	regexNameCallbacks: [],
 };

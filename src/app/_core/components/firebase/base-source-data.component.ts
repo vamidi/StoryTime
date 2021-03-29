@@ -6,12 +6,11 @@ import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-f
 import { UserService } from '@app-core/data/state/users';
 
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import { LanguageService } from '@app-core/utils';
 
 export class BaseSourceDataComponent extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
 {

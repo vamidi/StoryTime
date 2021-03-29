@@ -4,12 +4,12 @@ import {
 	Component, Input, OnDestroy,
 	OnInit,
 } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { DefaultEditor, ViewCell } from '@vamidicreations/ng2-smart-table';
 import { TextAreaQuestion } from '@app-core/data/forms/form-types';
 import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { LanguageService } from '@app-core/utils/language.service';
+import { LanguageService } from '@app-core/data/state/projects/projects.service';
 
 @Component({
 	template: `
@@ -109,6 +109,7 @@ export class LanguageColumnRenderComponent extends DefaultEditor implements OnIn
 				if(this.selectedLanguage === lang)
 					return;
 
+				this.selectedLanguage = lang;
 				if(!value.hasOwnProperty(lang))
 					value[lang] = '';
 
@@ -125,9 +126,8 @@ export class LanguageColumnRenderComponent extends DefaultEditor implements OnIn
 
 	public onChange(event: any)
 	{
-		// const type = this.cell.getColumn().type;
 		const value: KeyLanguageObject = this.cell.getValue() as KeyLanguageObject;
-		value[this.selectedLanguage] = event;
-		this.cell.newValue = value;
+		this.cell.newValue = { ...value };
+		this.cell.newValue[this.selectedLanguage] = event.target.value;
 	}
 }

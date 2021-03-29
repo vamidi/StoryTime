@@ -13,7 +13,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase-relation.servi
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
@@ -46,13 +46,14 @@ export class StoriesComponent extends BaseSourceDataComponent implements OnInit,
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected activatedRoute: ActivatedRoute,
 		private location: Location,
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, firebaseService, firebaseRelationService, 'stories',
+			projectService, tableService, firebaseService, firebaseRelationService, languageService, 'stories',
 		);
 	}
 

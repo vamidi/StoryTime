@@ -5,7 +5,7 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { AssociatedRelation, FirebaseRelationService, TableRelation } from '@app-core/utils/firebase-relation.service';
 import { NbDialogService, NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { LanguageService, UtilsService } from '@app-core/utils';
+import { UtilsService } from '@app-core/utils';
 import { Location } from '@angular/common';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
 
@@ -16,7 +16,7 @@ import { DynamicComponentService } from '@app-core/utils/dynamic-component.servi
 import { TableOverviewEventsComponent } from './table-overview-events.component';
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';

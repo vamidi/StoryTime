@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { NbDialogService, NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
-import { Project } from '@app-core/data/state/projects';
+import { LanguageService, Project } from '@app-core/data/state/projects';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
@@ -10,7 +10,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { InsertTableComponent } from '@app-theme/components/firebase-table';
 import { UserService } from '@app-core/data/state/users';
 import { ProjectsService } from '@app-core/data/state/projects';
-import { BreadcrumbsService, LanguageService, UtilsService } from '@app-core/utils';
+import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 
 import { Table } from '@app-core/data/state/tables';
 import { BehaviorSubject } from 'rxjs';
@@ -45,6 +45,8 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 
 	protected project: Project = new Project();
 
+	protected userProjects: Map<string, string> = new Map<string, string>();
+
 	protected currentState: { project: Project } = { project: new Project() };
 
 	private readonly indexColumnPrefName = UtilsService.titleLowerCase(environment.title + ' project');
@@ -77,7 +79,13 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		super.ngOnInit();
 
 		this.mainSubscription.add(this.user$.pipe(
-			switchMap(() => this.projectsService.getProject$()),
+			switchMap((user) => {
+				if(user)
+				{
+					this.getProjectInformation().then(() => this.generateBreadcrumbs());
+				}
+				return this.projectsService.getProject$()
+			}),
 		).subscribe((project) =>
 		{
 			if(project && !isEqual(this.project, project) && project.hasOwnProperty('tables'))
@@ -87,6 +95,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 			}
 
 			this.userService.setUserPermissions(this.projectsService);
+			this.generateBreadcrumbs();
 		}));
 
 		this.mainSubscription.add(this.toggleView.subscribe((gridMode: boolean) => this.gridMode = gridMode));
@@ -315,8 +324,52 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		// });
 	}
 
+	protected getProjectInformation(): Promise<void>
+	{
+		if(!this.user)
+			return;
+
+		const promises: Promise<void>[] = [];
+		const projects = Object.keys(this.user.projects);
+		for (const key of projects)
+		{
+			if(!this.userProjects.has(key))
+			{
+				if(this.project.id === key)
+					this.userProjects.set(key, this.project.metadata.title);
+				else
+					promises.push(new Promise((resolve, _) =>
+					{
+						this.firebaseService.getRef(`projects/${key}/metadata/title`).on('value', (snapshot) =>
+						{
+							this.userProjects.set(key, snapshot.val());
+							resolve();
+						})
+					}));
+			}
+		}
+
+		return new Promise((resolve) =>
+		{
+			Promise.all(promises).then(() => resolve());
+		});
+	}
+
 	protected onUserReceived(user: User)
 	{
 		super.onUserReceived(user);
+	}
+
+	private generateBreadcrumbs()
+	{
+		if(this.userProjects.size === 0)
+			return;
+
+		// TODO hide projects that the user is not allowed to see.
+		this.breadcrumbService.addDropdownForRoute('/dashboard/projects',
+			Array.from( this.userProjects ).map<NbMenuItem>(([t, v]) => {
+				return {title: v, data: {method: 'projects', id: t}}
+			}));
+		this.breadcrumbService.regenerateBreadcrumbTrail();
 	}
 }

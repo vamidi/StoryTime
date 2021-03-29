@@ -10,7 +10,7 @@
 			<!-- -->
 			<a *ngIf="!last && url != prefix && isDropdown(url)"
 			   role="button" id="button-basic" type="button" dropdown aria-controls="dropdown-basic"
-			   [nbContextMenu]="dropdownRoute(url)" nbContextMenuTag="open-breadcrumb-menu">
+			   [nbContextMenu]="dropdownRoute(url)" nbContextMenuClass="cdk-breadcrumb-overlay" nbContextMenuTag="open-breadcrumb-menu">
 				{{ friendlyName(url) }}
 				<nb-icon icon="arrow-ios-back-outline"></nb-icon>
 			</a>

@@ -15,7 +15,7 @@
 					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="newStory()">New</button>
 					<nb-select size="large" selected="en" style="width: 10rem;margin-right:10px;font-size: 24px;"
 					           (selectedChange)="onLanguageChange($event)">
-						<nb-option *ngFor="let language of languages | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+						<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
 					</nb-select>
 				</div>
 			</nb-card-header>

@@ -60,14 +60,13 @@ import {
 
 	MyNodeComponent,
 
-	TableLoaderComponent,
-
 	// Form components
 	ButtonFieldComponent,
 	DropDownFieldComponent,
 	LabelFieldComponent,
 	TextFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 	FormComponent,
 	DynamicFormComponent,
 	NgxMenuComponent,
@@ -202,8 +201,6 @@ const COMPONENTS = [
 	NgxMenuItemComponent,
 	NgxMenuComponent,
 
-	TableLoaderComponent,
-
 	// VisualNE
 	NumberComponent,
 	DialogueComponent,
@@ -227,6 +224,7 @@ const CUSTOM_FORM_COMPONENTS = [
 	DropDownFieldComponent,
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 ];
 
 const CUSTOM_RENDER_COMPONENTS = [
@@ -262,8 +260,6 @@ const CUSTOM_ENTRY_COMPONENT = [
 	DialogueComponent,
 	DialogueOptionComponent,
 
-	TableLoaderComponent,
-
 	// Render Components
 	DateColumnComponent,
 	TextColumnComponent,
@@ -283,6 +279,7 @@ const CUSTOM_ENTRY_COMPONENT = [
 	DropDownFieldComponent,
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 ]
 
 const PIPES = [

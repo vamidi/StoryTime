@@ -6,11 +6,11 @@ import {
 	Input, OnDestroy,
 	OnInit,
 	Output,
-	ViewChild,
+	ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {
 	ButtonFieldComponent,
-	DynamicFormComponent,
+	DynamicFormComponent, SelectFieldWithBtnComponent,
 } from '@app-theme/components/form';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { InsertTeamMemberComponent } from '@app-theme/components/firebase-table/insert-team-member/insert-team-member.component';
@@ -23,8 +23,13 @@ import { Revision } from '@app-core/data/state/tables';
 import { TablesService } from '@app-core/data/state/tables';
 
 import { IUserTicket, Roles, UserModel } from '@app-core/data/state/users';
-import { Project } from '@app-core/data/state/projects';
-import { Subscription } from 'rxjs';
+import { LanguageService, Project } from '@app-core/data/state/projects';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Option } from '@app-core/data/forms/form-types';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
+import { UtilsService } from '@app-core/utils';
+
 import isEqual from 'lodash.isequal';
 import isEmpty from 'lodash.isempty';
 import intersection from 'lodash.intersection';
@@ -36,13 +41,15 @@ import intersection from 'lodash.intersection';
 	// styleUrls: ['./change-table-settings.component.scss'],
 })
 export class ChangeProjectSettingsComponent implements
-	OnInit, AfterViewInit, OnDestroy
-{
-	@ViewChild('submitQuestion', { static: true })
+	OnInit, AfterViewInit, OnDestroy {
+	@ViewChild('submitQuestion', {static: true})
 	public submitQuestion: ButtonFieldComponent = null;
 
-	@ViewChild(DynamicFormComponent, { static: true })
+	@ViewChild(DynamicFormComponent, {static: true})
 	private formComponent: DynamicFormComponent = null;
+
+	@ViewChild('viewFormContainer', { read: ViewContainerRef, static: true })
+	public viewFormContainer!: ViewContainerRef;
 
 	@Input()
 	public project: Project = null;
@@ -63,8 +70,7 @@ export class ChangeProjectSettingsComponent implements
 	@Output()
 	public onInsertRejected: Function | null = (): boolean => true;
 
-	public get isAdmin()
-	{
+	public get isAdmin() {
 		return this.userService.isAdmin;
 	}
 
@@ -86,6 +92,10 @@ export class ChangeProjectSettingsComponent implements
 
 	protected columns: Map<string, any> = new Map<string, any>();
 
+	protected cachedLanguages: Option<KeyLanguage>[] = [];
+
+	private langCounter: number = 0;
+
 	constructor(
 		protected ref: NbDialogRef<ChangeProjectSettingsComponent>,
 		protected dialogService: NbDialogService,
@@ -94,17 +104,18 @@ export class ChangeProjectSettingsComponent implements
 		protected userService: UserService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
+		protected dynamicComponentService: DynamicComponentService,
 		protected cd: ChangeDetectorRef,
-	) { }
+	) {
+	}
 
-	public ngOnInit(): void
-	{
+	public ngOnInit(): void {
 		const columns = Object.entries(this.settings.columns);
 
 		// only include hidden values that we can see
-		this.columns = new Map(columns.filter((item: [string, any] ) =>
-		{
-			if(this.userService.isAdmin)
+		this.columns = new Map(columns.filter((item: [string, any]) => {
+			if (this.userService.isAdmin)
 				return true;
 
 			return (
@@ -115,8 +126,7 @@ export class ChangeProjectSettingsComponent implements
 			)
 		}));
 
-		for(const [key, value] of this.columns)
-		{
+		for (const [key, value] of this.columns) {
 			this.source.fields[key] = {
 				value: value.hidden,
 				name: value.title.toLowerCase(),
@@ -130,18 +140,14 @@ export class ChangeProjectSettingsComponent implements
 			};
 		}
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((user) =>
-		{
-			this.user = user;
-			this.firebaseService.getRef('projectRequests').orderByChild('uid')
-				.equalTo(user.uid).on('value', result =>
-				{
-					if(result.exists())
-					{
+		this.mainSubscription.add(this.userService.getUser().subscribe((user) => {
+				this.user = user;
+				this.firebaseService.getRef('projectRequests').orderByChild('uid')
+					.equalTo(user.uid).on('value', result => {
+					if (result.exists()) {
 						const data: { [key: string]: IUserTicket } = result.val();
-						for (const key of Object.keys(data))
-						{
-							if(this.invites.find((i) => isEqual(i, data[key])))
+						for (const key of Object.keys(data)) {
+							if (this.invites.find((i) => isEqual(i, data[key])))
 								continue;
 
 							this.invites.push(data[key]);
@@ -150,41 +156,117 @@ export class ChangeProjectSettingsComponent implements
 				});
 			}),
 		);
+
+		if (this.project.metadata.hasOwnProperty('languages'))
+		{
+			const languages: string[] = Object.keys(this.project.metadata.languages);
+			this.languageService.SystemLanguages.forEach((value, key) => this.cachedLanguages.push(
+				new Option<KeyLanguage>({
+					key: value,
+					value: key,
+					selected: false,
+				})),
+			);
+
+			languages.forEach((lang) =>
+			{
+				// Whether the languages is enabled.
+				if (this.project.metadata.languages[lang])
+				{
+					this.source.fields[`language_list_${this.langCounter}`] = {
+						value: lang,
+						text: `Language ${this.langCounter + 1}`,
+						name: `language_list_${this.langCounter}`,
+						errorText: 'Choose a language',
+						required: true,
+						controlType: 'btn-dropdown',
+						showFirstBtn: false,
+						options$: new BehaviorSubject<Option<KeyLanguage>[]>(this.cachedLanguages),
+						onSelectEvent: (event: KeyLanguage) => this.onLanguageSelected(event),
+						// onIconClickEvent: () => this.addCharacter(),
+					}
+					this.langCounter++;
+				}
+			});
+		}
 	}
 
-	public ngAfterViewInit(): void
-	{
+	public ngAfterViewInit(): void {
 		this.cd.detectChanges();
 	}
 
-	public ngOnDestroy(): void
-	{
+	public ngOnDestroy(): void {
 		this.mainSubscription.unsubscribe();
 		this.firebaseService.getRef('projectRequests').off();
 	}
 
-	public hasRole(allowedRoles: string[], roles: Roles)
-	{
-		if(!roles)
+	public hasRole(allowedRoles: string[], roles: Roles) {
+		if (!roles)
 			return false;
 
 		const userRoles = Object.keys(roles);
 		return !isEmpty(intersection(allowedRoles, userRoles));
 	}
 
-	public OnToggle(event: any)
-	{
-		this.onToggleEvent.emit({ key: event.key, value: event.value });
+	public OnToggle(event: any) {
+		this.onToggleEvent.emit({key: event.key, value: event.value});
 	}
 
-	public inviteMember()
-	{
+	public inviteMember() {
 		this.dialogService.open(InsertTeamMemberComponent, {
 			context: {
 				project: this.project,
 				user: this.user,
 			},
 		});
+	}
+
+	public addNewLanguage()
+	{
+		const component = this.dynamicComponentService.addDynamicComponent(SelectFieldWithBtnComponent);
+		this.formComponent.addInput(component.instance,
+		{
+			value: 'en',
+			text: `Language ${this.langCounter + 1}`,
+			name: `language_list_${this.langCounter}`,
+			errorText: 'Choose a language',
+			required: true,
+			controlType: 'btn-dropdown',
+			options$: new BehaviorSubject<Option<KeyLanguage>[]>(this.cachedLanguages),
+			onSelectEvent: (event: KeyLanguage) => this.onLanguageSelected(event),
+			onSelectBtnClick: (event: any) => this.onDeleteLanguage(event),
+		});
+		this.langCounter++;
+	}
+
+	public onLanguageSelected(event: KeyLanguage)
+	{
+		if(!this.project.metadata.languages.hasOwnProperty(event))
+			this.project.metadata.languages[event] = true;
+
+		this.saveLanguages();
+	}
+
+	public saveLanguages()
+	{
+		this.firebaseService.getRef(`projects/${this.project.id}/metadata/languages`)
+			.update(this.project.metadata.languages).then(() =>
+			{
+				UtilsService.showToast(
+					this.toastrService,
+					'Languages updated',
+					'successfully updated the project',
+				);
+			},
+		);
+	}
+
+	public onDeleteLanguage(event: any)
+	{
+		if(this.project.metadata.languages.hasOwnProperty(event))
+			this.project.metadata.languages[event] = false;
+
+		this.saveLanguages();
 	}
 
 	public save(i: number)

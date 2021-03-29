@@ -1,12 +1,11 @@
 import {
-	AfterContentInit,
 	AfterViewInit,
 	ChangeDetectorRef,
 	Component, ElementRef, EventEmitter,
 	forwardRef, Inject, Input, NgZone,
 	OnInit, Output, Renderer2, ViewChild,
 } from '@angular/core';
-import { ControlValueAccessor, FormControl } from '@angular/forms';
+import { ControlValueAccessor } from '@angular/forms';
 import { BaseFormInputComponent } from '../form.component';
 import { TextboxQuestion } from '@app-core/data/forms/form-types';
 import { NB_DOCUMENT } from '@nebular/theme';

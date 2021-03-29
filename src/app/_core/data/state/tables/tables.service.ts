@@ -8,7 +8,7 @@ import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 import { ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { ProxyObject, StringPair } from '@app-core/data/base';
-import { QueryablePromise } from '@app-core/utils/utils.service';
+import { DebugType, QueryablePromise } from '@app-core/utils/utils.service';
 import { PipelineService } from '@app-core/utils/pipeline.service';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 import { environment } from '../../../../../environments/environment';
@@ -447,6 +447,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 					// Check for the old property name to avoid a ReferenceError in strict mode.
 					if (value.hasOwnProperty('id') )
 					{
+						UtilsService.onDebug('deleting id from table', DebugType.WARN);
 						delete asset.data[k]['id'];
 					}
 

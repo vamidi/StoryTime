@@ -12,7 +12,7 @@ import { dialogueOptionSocket } from '@app-core/components/visualne/sockets';
 import { DebouncedFunc } from '@app-core/types';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { Project } from '@app-core/data/state/projects';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 
 import { DropDownQuestion, Option, TextboxQuestion } from '@app-core/data/forms/form-types';
 import { TablesService } from '@app-core/data/state/tables';
@@ -23,7 +23,7 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { UtilsService } from '@app-core/utils';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
-import { TableLoaderComponent } from '@app-theme/components';
+import { SelectFieldWithBtnComponent } from '@app-theme/components';
 import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { ICharacter, IDialogue, IDialogueOption, IStory } from '@app-core/data/standard-tables';
 import { EventsTypes } from 'visualne/types/events';
@@ -40,7 +40,7 @@ import {
 	StartNodeComponent,
 } from '@app-core/components/visualne';
 import { NodeEditorService } from '@app-core/data/state/node-editor/node-editor.service';
-import { KeyLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
@@ -109,7 +109,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		this.textAreaQuestion.value = event.target.value as string;
 	}
 
-	public get languages() { return systemLanguages; }
+	public get languages() { return this.languageService.ProjectLanguages; }
 
 	public textQuestion: TextboxQuestion = new TextboxQuestion(
 		{ text: 'Previous Dialogue Text', value: '', disabled: true, type: 'text'},
@@ -147,7 +147,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 	protected currentOutputCount: number = 0;
 
 	protected outputs: Output[] = [];
-	protected selectComponents: TableLoaderComponent[] = [];
+	protected selectComponents: SelectFieldWithBtnComponent[] = [];
 	protected subs: [Subscription, Subscription][] = [];
 
 	// Tables
@@ -206,6 +206,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected nodeEditorService: NodeEditorService,
+		protected languageService: LanguageService,
 		protected componentResolver: DynamicComponentService,
 		private ngZone: NgZone,
 	) {
@@ -388,7 +389,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 
 			this.loadDifferentLanguage<IDialogueOption>(this.dialogueOptionsList, this.tblDialogueOptions);
 			this.selectComponents.forEach((c, idx, arr) => {
-				c.listQuestion.options$.next(this.dialogueOptionsList);
+				c.question.options$.next(this.dialogueOptionsList);
 				arr[idx] = c;
 			});
 			const nodes = this.nodeEditorService.Editor.nodes;
@@ -421,12 +422,12 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			const hasOutput = output !== null;
 
 			// create the component
-			const componentRef = this.componentResolver.addDynamicComponent(TableLoaderComponent);
-			const instance: TableLoaderComponent = componentRef.instance;
-			instance.listQuestion.options$.next(this.dialogueOptionsList);
+			const componentRef = this.componentResolver.addDynamicComponent(SelectFieldWithBtnComponent);
+			const instance: SelectFieldWithBtnComponent = componentRef.instance;
+			instance.question.options$.next(this.dialogueOptionsList);
 
 			const optionMap = this.currentNode.data.options as OptionMap;
-			instance.listQuestion.value = hasOutput && optionMap.hasOwnProperty(output.key)
+			instance.question.value = hasOutput && optionMap.hasOwnProperty(output.key)
 				? optionMap[output.key].value : Number.MAX_SAFE_INTEGER;
 
 			instance.selectComponent.selectedChange.emit(
@@ -434,7 +435,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			);
 
 			const idx = this.selectComponents.push(instance);
-			instance.listQuestion.text = hasOutput ? output.name : `Option Out ${idx}`;
+			instance.question.text = hasOutput ? output.name : `Option Out ${idx}`;
 			instance.id = idx - 1;
 
 			const outputText = hasOutput ? output.name : `Option Out ${idx} - [NULL]`;
@@ -490,7 +491,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		this.outputs.forEach((output, index, arr) =>
 		{
 			this.selectComponents[index].id = index;
-			this.selectComponents[index].listQuestion.text = `Option Out ${index + 1}`;
+			this.selectComponents[index].question.text = `Option Out ${index + 1}`;
 			arr[index].name = `Option Out ${index + 1} - [NULL]`;
 		});
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, Observable, of as observableOf, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, of as observableOf, Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { IProject, Project, ProjectData } from '@app-core/data/state/projects/project.model';
 import { FirebaseService } from '@app-core/utils/firebase.service';
@@ -16,6 +16,7 @@ import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 import pick from 'lodash.pick';
 import { PipelineService } from '@app-core/utils/pipeline.service';
 import { environment } from '../../../../../environments/environment';
+import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
 
 @Injectable({ providedIn: 'root'})
 export class ProjectsService extends ProjectData implements Iterable<Project>, IPipelineSchedule
@@ -237,12 +238,6 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			this.project = project;
 			this.project$.next(this.project);
 
-			// TODO hide projects that the user is not allowed to see.
-			// const projects = Array.from(this.projects.values());
-			// this.breadcrumbService.addDropdownForRoute('/dashboard/projects', projects.map<NbMenuItem>((t) => {
-			// 	return { title: project.metadata.title, data: { method: 'projects', id: t } }
-			// }));
-
 			/** ----------------------------------- Set tables ------------------------------ **/
 
 			// TODO hide tables that the user is not allowed to see.
@@ -250,7 +245,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			this.breadcrumbService.addDropdownForRouteRegex(`/dashboard/projects/${this.project.id}/tables`,
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
-					return {title: table.name, data: { method: 'tables', id: t}}
+					return {title: UtilsService.title(table.name), data: { method: 'tables', id: t }}
 				}),
 			);
 
@@ -464,6 +459,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 	{
 		switch (item.data.method)
 		{
+			// TODO change all urls to /dashboard/projects/project/
 			case 'projects':
 				this.router.navigate(['/dashboard/projects/', item.data.id]).then();
 				break;
@@ -478,6 +474,10 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		console.assert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
 		let dirty;
 		dirty = this.updateProjectVersion(key, v);
+		if(dirty)
+			this.updateProjectLanguages(key, v)
+		else
+			dirty = this.updateProjectLanguages(key, v);
 		return dirty;
 	}
 
@@ -485,7 +485,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 	 * @brief - Simple scheduler func to update project version
 	 * @private
 	 */
-	private updateProjectVersion(key, asset: Project): boolean
+	private updateProjectVersion(key: string, asset: Project): boolean
 	{
 		// alright we check if the version exists in the project.
 		if(!asset.metadata.hasOwnProperty('version'))
@@ -505,4 +505,62 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 
 		return false;
 	}
+
+	private updateProjectLanguages(key: string, asset: Project): boolean
+	{
+		// alright we check if the version exists in the project.
+		if(!asset.metadata.hasOwnProperty('languages'))
+		{
+			console.log('we dont have languages at all');
+			if(this.projects.has(key))
+			{
+				asset.metadata.languages = {
+					'en': true,
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+}
+
+@Injectable({ providedIn: 'root' })
+export class LanguageService
+{
+	public set SetLanguage(lang: KeyLanguage)
+	{
+		this.selectedLanguage = lang; this.selectedLanguage$.next(this.selectedLanguage);
+	}
+
+	public get Language(): Observable<KeyLanguage> { return this.selectedLanguage$.asObservable(); }
+
+	public get SystemLanguages(): Map<KeyLanguage, SystemLanguage> { return systemLanguages; }
+
+	public get ProjectLanguages(): Observable<Map<KeyLanguage, SystemLanguage>>
+	{
+		return this.projectsService.getProject$().pipe(
+			switchMap((project) => {
+				if(project && project.metadata.hasOwnProperty('languages'))
+				{
+					const map: Map<KeyLanguage, SystemLanguage> = new Map<KeyLanguage, SystemLanguage>();
+					const languages = Object.keys(project.metadata.languages);
+					languages.forEach((k: KeyLanguage) => {
+						if(project.metadata.languages[k])
+							map.set(k, systemLanguages.get(k));
+					});
+
+					return of(map);
+				}
+				return of(null);
+			}),
+		);
+	}
+
+	private selectedLanguage$: BehaviorSubject<KeyLanguage> = new BehaviorSubject<KeyLanguage>('en');
+
+	private selectedLanguage: KeyLanguage = null;
+
+	constructor(protected projectsService: ProjectsService) {}
 }

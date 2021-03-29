@@ -8,9 +8,8 @@
 				<div class="as-form">
 					<!-- general info
 						(re)name of the project
-
 					-->
-					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<p>* {{ source.requiredText }}</p>
 						<p> Columns</p>
 						<!--
@@ -22,6 +21,7 @@
 										</ngx-checkbox-field>
 						-->
 					</ngx-dynamic-form>
+					<button nbButton status="success" (click)="addNewLanguage()">Add language<nb-icon icon="plus-circle-outline"></nb-icon></button>
 				</div>
 			</nb-tab>
 			<nb-tab tabTitle="User Permissions" *ngIf="isAdmin">

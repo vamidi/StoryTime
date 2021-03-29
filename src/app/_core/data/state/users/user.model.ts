@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UtilsService } from '@app-core/utils';
+import { UtilsService } from '@app-core/utils/utils.service';
 
 export interface IUserTicket
 {

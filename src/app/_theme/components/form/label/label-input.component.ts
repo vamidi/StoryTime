@@ -9,7 +9,7 @@ import { FormQuestionBase } from '@app-core/data/forms/form-types';
 	selector: 'ngx-label-field',
 	template:
 		`
-		<label class="formHeading w-100 d-flex" for="{{ question.key }}--{{ question.controlType }}"
+		<label class="formHeading w-100 d-flex" [ngClass]="labelClass" for="{{ question.key }}--{{ question.controlType }}"
 			   *ngIf="question && showLabels">
 			<span class="flex-grow-1">{{ question.text }}<span *ngIf="question.required">*</span></span>
 			<nb-icon *ngIf="enableIcon" [icon]="labelIcon" (click)="onIconClick.emit()" class="click"></nb-icon>
@@ -52,6 +52,9 @@ export class LabelFieldComponent
 
 	@Input()
 	public labelIcon: string = '';
+
+	@Input()
+	public labelClass: string = '';
 
 	public get projectCheck()
 	{

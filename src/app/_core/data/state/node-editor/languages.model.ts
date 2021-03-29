@@ -1,49 +1,49 @@
-import { Pair } from '@app-core/utils/firebase.service';
+import { Pair } from '@app-core/functions/helper.functions';
 
 export type KeyLanguageObject = { [key in KeyLanguage]: string; };
 
 export type KeyLanguage =
-	'af' |
-	'ar' |
-	'eu' |
-	'be' |
-	'bg' |
-	'ca' |
-	'zh-CN' |
-	'zh-hans' |
-	'zh-hant' |
-	'hr' |
-	'cs' |
-	'da' |
-	'nl' |
-	'en' |
-	'et' |
-	'fo' |
-	'fi' |
-	'fr' |
-	'de' |
-	'el' |
-	'he' |
-	'hu' |
-	'is' |
-	'id' |
-	'it' |
-	'ja' |
-	'ko' |
-	'lv' |
-	'lt' |
-	'no' |
-	'pl' |
-	'pt' |
-	'ro' |
-	'ru' |
-	'sk' |
-	'sl' |
-	'es' |
-	'sv' |
-	'th' |
-	'tr' |
-	'uk' |
+	'af' 		|
+	'ar' 		|
+	'eu' 		|
+	'be' 		|
+	'bg' 		|
+	'ca' 		|
+	'zh-CN' 	|
+	'zh-hans' 	|
+	'zh-hant' 	|
+	'hr' 		|
+	'cs' 		|
+	'da' 		|
+	'nl' 		|
+	'en' 		|
+	'et' 		|
+	'fo' 		|
+	'fi' 		|
+	'fr' 		|
+	'de' 		|
+	'el' 		|
+	'he' 		|
+	'hu' 		|
+	'is' 		|
+	'id' 		|
+	'it' 		|
+	'ja' 		|
+	'ko' 		|
+	'lv' 		|
+	'lt' 		|
+	'no' 		|
+	'pl' 		|
+	'pt' 		|
+	'ro' 		|
+	'ru' 		|
+	'sk' 		|
+	'sl' 		|
+	'es' 		|
+	'sv' 		|
+	'th' 		|
+	'tr' 		|
+	'uk' 		|
 	'vi';
 
 export type SystemLanguage =

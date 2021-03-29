@@ -18,6 +18,3 @@ export * from './render-column-layout/text-column-render.component';
 export * from './render-column-layout/language-column-render.component';
 export * from './visualne/node.component';
 export * from './form'
-
-//
-export * from './table-loader/table-loader.component';

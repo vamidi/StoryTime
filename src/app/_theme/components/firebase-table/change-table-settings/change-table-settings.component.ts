@@ -34,6 +34,8 @@ import { InsertRelationDialogComponent } from '@app-theme/components/firebase-ta
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
 import * as firebase from 'firebase';
+import 'firebase/database';
+
 import isEqual from 'lodash.isequal';
 
 interface ColumnSetting {

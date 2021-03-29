@@ -2,12 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 
-export interface Breadcrumb
-{
-	label: string;
-	url: string;
-}
-
 @Injectable()
 export class BreadcrumbsService
 {
@@ -114,8 +108,6 @@ export class BreadcrumbsService
 	public getDropdownForRoute(route: string): NbMenuItem[] | null
 	{
 		let links: NbMenuItem[] = null;
-
-
 		this.routesWithDropDown.forEach(( value, key) =>
 		{
 			if (key === route)

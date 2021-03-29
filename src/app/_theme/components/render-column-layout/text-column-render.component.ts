@@ -18,7 +18,7 @@ import { FilterCallback, FirebaseFilter, firebaseFilterConfig } from '@app-core/
 import { ITable, Table, TablesService } from '@app-core/data/state/tables';
 import { Project, ProjectsService } from '@app-core/data/state/projects';
 import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
-import { LanguageService } from '@app-core/utils/language.service';
+import { LanguageService } from '@app-core/data/state/projects/projects.service';
 
 @Component({
 	template: `
@@ -37,7 +37,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 
 	public convertedValue: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-	private subscription: Subscription;
+	private subscription: Subscription = new Subscription();
 
 	private deeperRelation: any;
 
@@ -89,9 +89,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 								const relData = relationData.data[this.relation.id][this.relation.tblColumnRelation.value];
 
 								if(relData !== '') this.convertedValue.next(relData);
-
-								if (!isNaN(Number(relData))) // if this is a number that we got
-									this.handleDeeperRelation(relData);
+								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 
 						}
@@ -104,20 +102,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 								const relData = relationData[this.relation.tblColumnRelation.value];
 
 								if(relData !== '') this.convertedValue.next(relData);
-
-								const keyValue = relData as KeyLanguageObject;
-								if(keyValue !== null)
-								{
-									const languages = Object.keys(keyValue);
-									// Are we dealing with a language object
-									if (systemLanguages.has(languages[0] as KeyLanguage)) {
-										this.subscription.add(this.languageService.Language.subscribe((lang) => {
-											const newValue: string = relData[lang];
-											this.convertedValue.next(newValue);
-										}));
-									}
-								} else if (!isNaN(Number(relData))) // if this is a number that we got
-									this.handleDeeperRelation(relData);
+								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 						}
 					}, e => UtilsService.onError(e));
@@ -167,11 +152,10 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							if (snapshot.payload.exists) {
 								const relationData: any = snapshot.payload.val();
 
-								if (relationData.hasOwnProperty(pair.value)) {
+								if (relationData.hasOwnProperty(pair.value))
+								{
 									const relData = relationData[pair.value];
-									this.convertedValue.next(relData);
-									if (!isNaN(Number(relData))) // if this is a number that we got
-										this.handleDeeperRelation(relData); // go into even more deeper connection
+									this.resolveRelData(relData);
 								} else console.error('Column name could not be found!');
 							}
 						});
@@ -179,6 +163,24 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 				}
 			}
 		});
+	}
+
+	private resolveRelData(relData: any)
+	{
+		const keyValue = relData as KeyLanguageObject;
+		if(keyValue !== null)
+		{
+			const languages = Object.keys(keyValue);
+			// Are we dealing with a language object
+			if (systemLanguages.has(languages[0] as KeyLanguage)) {
+				this.subscription.add(this.languageService.Language.subscribe((lang) => {
+					const newValue: string = relData[lang];
+					this.convertedValue.next(newValue);
+				}));
+			}
+			else this.convertedValue.next(relData);
+		} else if (!isNaN(Number(relData))) // if this is a number that we got
+			this.handleDeeperRelation(relData); // go into even more deeper connection
 	}
 }
 
@@ -310,8 +312,7 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 
 	public ngOnDestroy()
 	{
-		if(this.subscription)
-			this.subscription.unsubscribe();
+		if(this.subscription) this.subscription.unsubscribe();
 
 		// unsubscribe to the other tables.
 		const column: Column = this.cell.getColumn();
@@ -458,23 +459,21 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 				const relData: string | number | KeyLanguageObject = relationData[relation.tblColumnRelation.value];
 				if(relData !== null || true)
 				{
-					// observer.next( relData );
-
 					if(relData !== '')
 					{
 						const keyValue = relData as KeyLanguageObject;
-						if(keyValue !== null)
-							this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, keyValue);
-						else if (!isNaN(Number(relData)) && typeof relData === 'number') // if this is a number that we got
-							this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
-						else
+						if(typeof keyValue === 'string')
 							this.question.options$.getValue().push(
-									new Option<number>({
+								new Option<number>({
 									value: snapshotKey,
 									key: snapshotKey + '. ' + UtilsService.truncate(relData as string, 50),
 									selected: selected,
 								}),
 							);
+						else if(typeof keyValue === 'object')
+							this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, keyValue);
+						else if (!isNaN(Number(relData)) && typeof relData === 'number') // if this is a number that we got
+							this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
 					}
 				}
 				// TODO this should be a column setting

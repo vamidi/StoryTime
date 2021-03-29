@@ -36,6 +36,9 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	public enableIcon: boolean = false;
 
 	@Input()
+	public enableFirstBtn: boolean = true;
+
+	@Input()
 	public labelIcon: string = '';
 
 	@Input()

@@ -7,9 +7,9 @@ import { FirebaseRelationService } from '@app-core/utils/firebase-relation.servi
 import { User } from '@app-core/data/state/users';
 import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LanguageService, UtilsService } from '@app-core/utils';
+import { UtilsService } from '@app-core/utils';
 import { UserService } from '@app-core/data/state/users';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
 import { LinkRenderComponent } from '@app-theme/components';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
@@ -248,7 +248,6 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 						});
 					});
 				}
-
 			}
 		}
 	}

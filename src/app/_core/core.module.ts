@@ -23,7 +23,6 @@ import {
 	AuthService as AuthGuard,
 	LayoutService,
 	PipelineService,
-	LanguageService,
 } from './utils';
 import { SmartTableData } from './data/smart-table';
 
@@ -33,7 +32,7 @@ import { MockDataModule } from './mock/mock-data.module';
 import { AppState } from './data/state/app.state';
 import { UserData, UserState, UserService } from './data/state/users';
 
-import { ProjectData, ProjectsService, ProjectsState  } from '@app-core/data/state/projects';
+import { LanguageService, ProjectData, ProjectsService, ProjectsState } from '@app-core/data/state/projects';
 import { TableData, TablesService, TablesState } from '@app-core/data/state/tables';
 import { NodeEditorService, NodeEditorState } from '@app-core/data/state/node-editor';
 import { FirebaseService } from '@app-core/utils/firebase.service';

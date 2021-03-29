@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { KeyValue } from '@angular/common';
 import {
 	FirebaseService,
-	Pair,
 	RelationDictionary,
 	RelationPair,
 } from '@app-core/utils/firebase.service';
 import { StringPair } from '@app-core/data/base/string-pair.class';
+import { Pair } from '@app-core/functions/helper.functions';
 import { NbToastrService } from '@nebular/theme';
 
 /**

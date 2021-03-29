@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 
 interface ITable
 {
@@ -35,6 +36,9 @@ interface IProjectData
 
 	// To see whether the project is deleted
 	deleted: boolean;
+
+	// To see which languages are in the project
+	languages: { [key in KeyLanguage]?: boolean },
 
 	version: IVersion;
 }
@@ -75,6 +79,9 @@ export class Project implements IProject
 		private: false,
 		deleted: false,
 		owner: '',
+		languages: {
+			'en': true,
+		},
 
 		// Pipeline settings
 		version: {

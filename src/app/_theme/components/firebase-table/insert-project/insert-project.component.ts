@@ -156,6 +156,9 @@ export class InsertProjectComponent
 							private: false,
 							deleted: false,
 							owner: this.user.uid,
+							languages: {
+								'en': true,
+							},
 							version: {
 								major: environment.MAJOR,
 								minor: environment.MINOR,

@@ -6,7 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { StringPair } from '@app-core/data/base/string-pair.class';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 
-import { LanguageService, UtilsService } from '@app-core/utils';
+import { UtilsService } from '@app-core/utils';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
@@ -22,14 +22,12 @@ import {
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
-import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
-import { Option } from '@app-core/data/forms/form-types';
 
 export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTableComponent
 	implements OnInit, OnDestroy

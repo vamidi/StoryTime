@@ -17,11 +17,10 @@ import { BehaviorSubject } from 'rxjs';
 import { FirebaseTableComponent } from '@app-theme/components/firebase-table/firebase-table.component';
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import { LanguageService } from '@app-core/utils';
 
 /**
  * Overview Component

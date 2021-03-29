@@ -1,7 +1,7 @@
 // Will grow overtime
 import { TableTemplate } from '@app-core/data/state/tables';
 import { ProxyObject } from '@app-core/data/base';
-import { Pair } from '@app-core/utils/firebase.service';
+import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import { Data as VisualNEData } from 'visualne/types/core/data';
 import { environment } from '../../../environments/environment';
