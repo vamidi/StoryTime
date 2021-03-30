@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { FilterCallback } from '@app-core/providers/firebase-filter.config';
 import { UtilsService } from '@app-core/utils';
+import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
+import { DebugType } from '@app-core/utils/utils.service';
 
 interface IMetaData {
 	created_at: Object;
@@ -23,6 +25,9 @@ export interface ITableData extends IMetaData
 	owner: string;
 	private: boolean;
 	deleted: boolean;
+
+	// Pipeline settings
+	version: IVersion;
 }
 
 export interface Revision<T extends ProxyObject = ProxyObject> {
@@ -53,7 +58,7 @@ export interface TableTemplate<T extends ProxyObject = ProxyObject>
 	[key: string]: T;
 }
 
-export interface ITable<T extends ProxyObject = ProxyObject> {
+export interface ITable<T extends ProxyObject = ProxyObject> extends PipelineAsset {
 	id: string,
 	projectID: string,
 	data: TableTemplate<T>,
@@ -103,6 +108,13 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		updated_at: {},
 		private: false,
 		deleted: false,
+
+		// Pipeline settings
+		version: {
+			major: 0,
+			minor: 0,
+			patch: 0,
+		},
 	}
 
 	public constructor(data?: ITable<T>)
@@ -193,6 +205,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 	public load(filters: FilterCallback<T>[] = []): Promise<T>
 	{
+		this.loaded = false;
 		const entries = Object.entries(this.data);
 
 		const dataSize = Object.keys(entries[0][1]).length + 1; // becuz id
@@ -202,8 +215,10 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		{
 			value.id = +key;
 
-			if(dataSize !== Object.keys(value).length)
-				UtilsService.onError(`${key} data size is not equal in table ${this.metadata.title}`);
+			if(dataSize !== Object.keys(value).length) {
+				UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+				UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
+			}
 		}
 
 		const data: T[] = Object.values(this.data);
@@ -218,9 +233,9 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		// Load the source
 		const promise = this.source.load(this.filteredData);
 
-		promise.then(() => {
+		promise.then(() =>
+		{
 			this.source.refresh();
-
 			this.loaded = true;
 		}); // refresh list
 

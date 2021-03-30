@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { UserModel } from '@app-core/data/users';
+import { UserModel, defaultUser } from '@app-core/data/state/users';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 import { ButtonFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 
@@ -35,7 +35,7 @@ export class ProfileComponent implements OnInit, AfterViewInit
 		fields: {},
 	};
 
-	public user: UserModel = new UserModel();
+	public user: UserModel = defaultUser;
 
 	constructor(
 		protected cd: ChangeDetectorRef,

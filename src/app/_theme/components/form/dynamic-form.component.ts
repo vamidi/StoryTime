@@ -15,6 +15,7 @@ import { TextFieldComponent } from '@app-theme/components/form/input/text-field-
 import { DropDownFieldComponent } from '@app-theme/components/form/dropdown/dropdown-input.component';
 import { CheckboxFieldComponent } from '@app-theme/components/form/checkbox/checkbox-input.component';
 import { ButtonFieldComponent } from '@app-theme/components/form/button/button-input.component';
+import { SelectFieldWithBtnComponent } from '@app-theme/components/form/select/select-field-with-btn.component';
 import { BaseFormInputComponent } from './form.component';
 import { UtilsService } from '@app-core/utils';
 import { FormControl } from '@angular/forms';
@@ -197,6 +198,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 				case 'dropdown':
 					component = this.dynamicComponentService.addDynamicComponent(DropDownFieldComponent);
 					break;
+				case 'btn-dropdown':
+					component = this.dynamicComponentService.addDynamicComponent(SelectFieldWithBtnComponent);
+					break;
 				case 'time':
 					break;
 				case 'date':
@@ -267,6 +271,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			if(field.onIconClickEvent)
 				el.question.onIconClickFunc = field.onIconClickEvent;
 
+			if(field.onSelectBtnClick)
+				el.question.onFirstBtnClick = field.onSelectBtnClick;
+
 			if(field.onKeyUpEvent)
 				el.question.onKeyUpFunc = field.onKeyUpEvent;
 
@@ -318,7 +325,7 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 		if(el instanceof DropDownFieldComponent)
 		{
-			const elDropdown = <DropDownFieldComponent>(el);
+			let elDropdown = <DropDownFieldComponent>(el);
 			elDropdown.relationDropDown = field ? field?.relationDropDown : false;
 			if(field?.sort)
 			{
@@ -337,6 +344,12 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 							break;
 					}
 				}
+			}
+
+			if(field.hasOwnProperty('showFirstBtn') && el instanceof SelectFieldWithBtnComponent)
+			{
+				elDropdown = <SelectFieldWithBtnComponent>(el);
+				elDropdown.enableFirstBtn = field.showFirstBtn;
 			}
 		}
 

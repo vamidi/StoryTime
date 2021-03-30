@@ -27,9 +27,9 @@ import { Util } from 'leaflet';
 import trim = Util.trim;
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { Table } from '@app-core/data/state/tables';
+import { ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 
 @Component({
 	selector: 'ngx-add-relation-dialog',
@@ -100,7 +100,7 @@ export class InsertRelationDialogComponent implements
 		protected toastrService: NbToastrService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tablesService: TablesService,
 		protected cd: ChangeDetectorRef)
 	{

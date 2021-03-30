@@ -13,7 +13,7 @@ import { NbSnackbarComponent, NbSnackbarContainerComponent } from '@app-theme/co
 		NbButtonModule,
 	],
 	declarations: [NbSnackbarContainerComponent, NbSnackbarComponent],
-	// entryComponents: [NbSnackbarContainerComponent, NbSnackbarComponent],
+	entryComponents: [NbSnackbarContainerComponent, NbSnackbarComponent],
 })
 export class NbSnackbarModule {
 	static forRoot(snackbarConfig: Partial<NbSnackbarConfig> = {}): ModuleWithProviders<NbSnackbarModule> {

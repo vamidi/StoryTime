@@ -1,18 +1,42 @@
 import { Injectable } from '@angular/core';
+import { NbToastrService } from '@nebular/theme';
+
+import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
+
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
-import { NbToastrService } from '@nebular/theme';
-import { ITable, Table, TableData } from '@app-core/data/table';
+import { ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { ProxyObject, StringPair } from '@app-core/data/base';
-import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { QueryablePromise } from '@app-core/utils/utils.service';
+import { DebugType, QueryablePromise } from '@app-core/utils/utils.service';
+import { PipelineService } from '@app-core/utils/pipeline.service';
+import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
+import { environment } from '../../../../../environments/environment';
+
 import isEqual from 'lodash.isequal';
 import pick from 'lodash.pick';
 
 @Injectable({ providedIn: 'root'})
-export class TablesService extends TableData implements Iterable<Table>
+export class TablesService extends TableData implements Iterable<Table>, IPipelineSchedule
 {
+	name: string = 'TableServiceScheduler';
+
+	items: Map<string, Table>;
+
+	/**
+	 * @see {PipelineService}
+	 * @brief - function we are going to call in the scheduler
+	 * @param v
+	 * @param idx
+	 * @param array
+	 */
+	callbackFn: (v: Table, key: string, map: Map<string, Table>) => boolean = this.updateTables;
+
+	/**
+	 * @brief - Force the change even when the version is the same.
+	 */
+	force: boolean = false;
+
 	private counter: number = 0;
 
 	private table: BehaviorSubject<Table | null> = new BehaviorSubject<Table>(null);
@@ -30,9 +54,13 @@ export class TablesService extends TableData implements Iterable<Table>
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected breadcrumbService: BreadcrumbsService,
+		protected pipelineService: PipelineService,
 	)
 	{
 		super();
+
+		// add to scheduler
+		this.pipelineService.addSchedule(this);
 	}
 
 	public clear()
@@ -195,9 +223,11 @@ export class TablesService extends TableData implements Iterable<Table>
 			// this.breadcrumbService.regenerateBreadcrumbTrail();
 
 			this.breadcrumbService.addCallbackForRouteRegex(`/dashboard/projects/${table.projectID}/tables/-[a-zA-Z]`, (id) => {
-				console.log(id);
 				return id === table.id ? UtilsService.titleCase(table.metadata.title).replace(/%20/g, ' ') : id;
 			});
+
+			this.items = new Map<string, Table>(this.tables);
+			this.pipelineService.run(this.name);
 		}
 
 		return table;
@@ -214,6 +244,7 @@ export class TablesService extends TableData implements Iterable<Table>
 		{
 			const table: ITable = pick(this.tables.get(key),
 				['id', 'projectID', 'data', 'revisions', 'relations', 'metadata']);
+
 			return this.firebaseService.updateItem(key, table, true, `tables`);
 		}
 
@@ -356,5 +387,80 @@ export class TablesService extends TableData implements Iterable<Table>
 				return { value: null, done: true };
 			},
 		};
+	}
+
+	public resolve(dirty: boolean, table: Table, key: string)
+	{
+		if(dirty)
+		{
+			this.tables.set(key, table);
+			this.update(key);
+		}
+	}
+
+	private updateTables(v: Table, key: string, map: Map<string, Table>): boolean
+	{
+		console.assert(map.size === this.tables.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.tables.size}`);
+		let dirty: boolean;
+		dirty = this.updateTableVersion(key, v);
+		if(dirty)
+			this.updateDialogueTblForLocalization(key, v)
+		else
+			dirty = this.updateDialogueTblForLocalization(key, v);
+
+		return dirty;
+	}
+
+	/**
+	 * @brief - Simple scheduler func to update project version
+	 * @private
+	 */
+	private updateTableVersion(key, asset: Table): boolean
+	{
+		// alright we check if the version exists in the project.
+		if(!asset.metadata.hasOwnProperty('version'))
+		{
+			if(this.tables.has(key))
+			{
+				asset.metadata.version = {
+					major: environment.MAJOR,
+					minor: environment.MINOR,
+					patch: environment.PATCH,
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private updateDialogueTblForLocalization(key, asset: Table)
+	{
+		if (asset.metadata.title === 'dialogues' || asset.metadata.title === 'dialogueOptions')
+		{
+			if (this.tables.has(key))
+			{
+				const entries = Object.entries(asset.data);
+				for (const [k, value] of entries)
+				{
+					// Check for the old property name to avoid a ReferenceError in strict mode.
+					if (value.hasOwnProperty('id') )
+					{
+						UtilsService.onDebug('deleting id from table', DebugType.WARN);
+						delete asset.data[k]['id'];
+					}
+
+					if (value.hasOwnProperty('text') && typeof value.text !== 'object') {
+						asset.data[k].text = {
+							'en': value.text,
+						};
+						UtilsService.onDebug(asset.data[k]);
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 }

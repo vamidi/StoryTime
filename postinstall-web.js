@@ -25,11 +25,13 @@ fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) =>
 const { argv } = require('yargs');
 const { version } = require('./package.json');
 
-// read environment variables from .env file
-require('dotenv').config();
-
 // read the command line arguments passed with yargs
 const environment = argv.environment;
+const options = environment === 'prod' ? { path: path.resolve(process.cwd(), '.env.production') } : {};
+
+// read environment variables from .env file
+require('dotenv').config(options);
+
 const isProduction = environment === 'prod';
 
 const targetPath = isProduction
@@ -41,6 +43,9 @@ if (!process.env.FIREBASE_DATABASE_URL) {
 	process.exit(-1);
 }
 
+const v1parts = version.split('.');
+// User can fill in every letter he desires.
+const final = v1parts.length > 1 && v1parts[2].includes('f') ? v1parts[2].split('f') : 0;
 
 // we have access to our environment variables
 // in the process.env object thanks to dotenv
@@ -59,6 +64,10 @@ export const environment = {
    title: '${process.env.APP_NAME}',
    production: ${isProduction},
    appVersion: '${version}',
+   redux: ${process.env.REDUX},
+   MAJOR: ${v1parts[0]},
+   MINOR: ${v1parts[1]},
+   PATCH: ${final[0]},
    firebase: {
    		apiKey: '${process.env.FIREBASE_API_KEY}',
 		authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',

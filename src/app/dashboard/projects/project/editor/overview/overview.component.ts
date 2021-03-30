@@ -15,10 +15,10 @@ import { BehaviourType } from '@app-core/types';
 import { InsertColumnComponent } from '@app-theme/components/firebase-table/insert-column/insert-column.component';
 import { BehaviorSubject } from 'rxjs';
 import { FirebaseTableComponent } from '@app-theme/components/firebase-table/firebase-table.component';
-import { UserService } from '@app-core/data/users.service';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { UserService } from '@app-core/data/state/users';
+import { Table } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -50,16 +50,16 @@ export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 		protected nbMenuService: NbMenuService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, firebaseService, firebaseRelationService,
-		);
+			projectService, tableService, firebaseService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit(): void

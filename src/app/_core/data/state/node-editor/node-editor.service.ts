@@ -9,22 +9,23 @@ import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ConnectionPlugin } from 'visualne-connection-plugin';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DebouncedFunc } from '@app-core/types';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { finalize, tap } from 'rxjs/operators';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ProjectsService } from '@app-core/data/state/projects/projects.service';
 import { InsertStoryComponent, LoadStoryComponent } from '@app-theme/components/firebase-table';
 import { ICharacter, IDialogue, IStory, IStoryData } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import { Data } from 'visualne/types/core/data';
 
 import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
-import { ProxyObject } from '@app-core/data/base';
 
 import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { DebugType } from '@app-core/utils/utils.service';
 
 @Injectable()
 export class NodeEditorService
@@ -65,6 +66,14 @@ export class NodeEditorService
 		}
 	}
 
+	public get Language() { return this.selectedLanguage; }
+
+	public set Language(language: KeyLanguage)
+	{
+		this.selectedLanguage = language;
+		this.selectedLanguage$.next(this.selectedLanguage);
+	}
+
 	public fileName: string = '';
 	public container: HTMLDivElement;
 
@@ -94,14 +103,9 @@ export class NodeEditorService
 
 	private insertStoryRef: NbDialogRef<InsertStoryComponent> = null;
 	private insertSub: Subscription = new Subscription();
-	private languages: string[] = [];
-	private defaultLanguage: string = 'ENG';
 
-	// "languages": [
-	// 	"ENG",
-	// 	"FR",
-	// 	"RUS"
-	// ],
+	private selectedLanguage$: BehaviorSubject<KeyLanguage> = new BehaviorSubject<KeyLanguage>('en');
+	private selectedLanguage: KeyLanguage = 'en';
 
 	/**
 	 *
@@ -116,7 +120,7 @@ export class NodeEditorService
 		protected toastrService: NbToastrService,
 		protected firebaseStorage: AngularFireStorage,
 		protected firebaseService: FirebaseService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 	) {
 		this.debounceSaveSnippet = debounce(this.saveSnip, 200);
 	}
@@ -202,16 +206,17 @@ export class NodeEditorService
 					await this.engine.process(this.nodeEditor.toJSON());
 				}) as any);
 
-			this.nodeEditor.on('import', data => {
-				this.languages = data.languages as string[] || [];
-				this.defaultLanguage = data.defaultLanguage as string || '';
-			});
+			// TODO see if we need this.
+			// this.nodeEditor.on('import', data => {
+			// 	this.languages = data.languages as string[] || [];
+			// 	this.defaultLanguage = data.defaultLanguage as string || '';
+			// });
 
 			// Saving nodes we need to add character data as well.
-			this.nodeEditor.on('export', data => {
-				data.languages = this.languages;
-				data.defaultLanguage = this.defaultLanguage;
-			});
+			// this.nodeEditor.on('export', data => {
+			// 	data.languages = this.languages;
+			// 	data.defaultLanguage = this.defaultLanguage;
+			// });
 
 			this.nodeEditor.view.area.zoom(0.8, 0, 0, 'wheel');
 			this.nodeEditor.view.resize();
@@ -355,6 +360,7 @@ export class NodeEditorService
 				characters: this.data.characters,
 				stories: this.data.stories,
 				dialogues: this.data.dialogues,
+				selectedLanguage: this.selectedLanguage,
 			},
 		});
 

@@ -1,10 +1,11 @@
 import { EventsTypes } from 'visualne/types/events';
-import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
+// import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
+import { IDialogue } from '@app-core/data/standard-tables';
 
 export interface AdditionalEvents extends EventsTypes
 {
 	saveDialogue: {
-		currDialogue: number, 	// The current node that contains the current dialogueId
+		currDialogue: number | IDialogue, 	// The current node that contains the current dialogueId
 		nextDialogue: number | null,	// The next dialogueId the node has to go to.
 		// optionMap?: OptionMap, 	// the options in the current dialogue
 	},

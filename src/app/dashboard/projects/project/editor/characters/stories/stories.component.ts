@@ -11,10 +11,10 @@ import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-ta
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { UserService } from '@app-core/data/users.service';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { UserService } from '@app-core/data/state/users';
+import { Table } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -42,17 +42,18 @@ export class StoriesComponent extends BaseSourceDataComponent implements OnInit,
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected activatedRoute: ActivatedRoute,
 		private location: Location,
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, firebaseService, firebaseRelationService, 'stories',
+			projectService, tableService, firebaseService, firebaseRelationService, languageService, 'stories',
 		);
 	}
 

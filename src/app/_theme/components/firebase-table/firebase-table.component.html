@@ -41,16 +41,22 @@
 				</div>
 			</nb-card-header>
 				<nb-card-body>
-					<div class="container col-md-12" *ngIf="!isDeleted">
-						<div class="row mx-lg-n6 ml-4" style="float: right;position: relative;z-index: 1;" *ngIf="isAdmin">
+					<div class="container row col-md-12" style="padding: 0;margin: 0;" *ngIf="!isDeleted">
+						<div class="col-lg-6" style="padding:0 0 15px 0">
+							<nb-select size="large" selected="en" style="width: 10rem;margin-right:10px;"
+							           (selectedChange)="onLanguageChange($event)">
+								<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+							</nb-select>
+						</div>
+						<div class="col-lg-3" style="text-align: right;padding: 0;margin: 0;">
+							<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Add multiple </span>
+							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="openBulkDialogue()"><i class="add-column nb-plus"></i></button>
+						</div>
+						<div class="col-lg-3" style="text-align: right;padding: 0;margin: 0;" *ngIf="isAdmin">
 							<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Columns </span>
 							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="insert(0)"><i class="add-column nb-plus"></i></button>
 							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info" (click)="insert(1)"><i class="edit-column nb-edit"></i></button>
 							<button style="margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="danger" (click)="insert(2)"><i class="delete-column nb-trash"></i></button>
-						</div>
-						<div class="row mx-lg-n6" style="float: right;position: relative;z-index: 1;">
-							<span style="margin-right:10px;font-size: 18px;padding-top: 8px;">Add multiple </span>
-							<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="primary" (click)="openBulkDialogue()"><i class="add-column nb-plus"></i></button>
 						</div>
 					</div>
 					<ng2-smart-table *ngIf="!isDeleted"

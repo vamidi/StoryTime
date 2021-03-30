@@ -8,7 +8,10 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export declare type NbControlTypes = 'textbox' | 'number' | 'autocomplete' | 'textarea' | 'dropdown' | 'time' | 'date' | 'checkbox' | 'checkbox_multi' | 'button' | 'submitbutton' | 'stepper';
+export declare type NbControlTypes = 'textbox' |
+	'number' |
+	'autocomplete' |
+	'textarea' | 'dropdown' | 'time' | 'date' | 'checkbox' | 'checkbox_multi' | 'button' | 'submitbutton' | 'stepper' | 'btn-dropdown';
 
 export declare type NbControlEvents = 'disableCheck';
 
@@ -41,6 +44,7 @@ export abstract class FormQuestionBase<T>
 	public onSelectFunc: Function = (event: any, optional: any = null) => UtilsService.onDebug(event);
 	public onKeyUpFunc: Function = (event: any) => UtilsService.onDebug(event);
 	public onIconClickFunc: Function = () => UtilsService.onDebug('icon clicked');
+	public onFirstBtnClick: Function = () => UtilsService.onDebug('first button clicked');
 
 	public set (value, formGroup: FormGroup): AbstractControl
 	{

@@ -26,10 +26,15 @@ export interface FormField<T> {
 	// operatorFunctions?: any[];
 	sort?: boolean;
 	sortDirection?: NbSortingDirection | Function;
+
 	onSelectEvent?: Function,
 	onKeyUpEvent?: Function,
 	onClickEvent?: Function,
 	onIconClickEvent?: Function,
+	onSelectBtnClick?: Function,
+
+	showFirstBtn?: boolean,
+
 	relationDropDown?: boolean; // is this a relation drop down
 	validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null;
 	asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null;

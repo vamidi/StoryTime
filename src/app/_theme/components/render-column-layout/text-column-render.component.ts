@@ -15,10 +15,10 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { NbSelectComponent } from '@nebular/theme';
 import { FilterCallback, FirebaseFilter, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { ITable, Table } from '@app-core/data/table';
-import { TablesService } from '@app-core/data/tables.service';
-import { Project } from '@app-core/data/project';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ITable, Table, TablesService } from '@app-core/data/state/tables';
+import { Project, ProjectsService } from '@app-core/data/state/projects';
+import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import { LanguageService } from '@app-core/data/state/projects/projects.service';
 
 @Component({
 	template: `
@@ -37,13 +37,14 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 
 	public convertedValue: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-	private subscription: Subscription;
+	private subscription: Subscription = new Subscription();
 
 	private deeperRelation: any;
 
 	constructor(
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
+		protected languageService: LanguageService,
 		private cd: ChangeDetectorRef,
 	) {}
 
@@ -87,11 +88,8 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							{
 								const relData = relationData.data[this.relation.id][this.relation.tblColumnRelation.value];
 
-								if(relData !== '')
-									this.convertedValue.next(relData);
-
-								if (!isNaN(Number(relData))) // if this is a number that we got
-									this.handleDeeperRelation(relData);
+								if(relData !== '') this.convertedValue.next(relData);
+								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 
 						}
@@ -103,11 +101,8 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							{
 								const relData = relationData[this.relation.tblColumnRelation.value];
 
-								if(relData !== '')
-									this.convertedValue.next(relData);
-
-								if (!isNaN(Number(relData))) // if this is a number that we got
-									this.handleDeeperRelation(relData);
+								if(relData !== '') this.convertedValue.next(relData);
+								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 						}
 					}, e => UtilsService.onError(e));
@@ -149,7 +144,6 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							return; // we did not find the key
 						}
 
-						console.log()
 						// Only one down
 						this.deeperRelation = this.relation.getItem(prevRelData, key);
 						const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
@@ -158,11 +152,10 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							if (snapshot.payload.exists) {
 								const relationData: any = snapshot.payload.val();
 
-								if (relationData.hasOwnProperty(pair.value)) {
+								if (relationData.hasOwnProperty(pair.value))
+								{
 									const relData = relationData[pair.value];
-									this.convertedValue.next(relData);
-									if (!isNaN(Number(relData))) // if this is a number that we got
-										this.handleDeeperRelation(relData); // go into even more deeper connection
+									this.resolveRelData(relData);
 								} else console.error('Column name could not be found!');
 							}
 						});
@@ -170,6 +163,24 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 				}
 			}
 		});
+	}
+
+	private resolveRelData(relData: any)
+	{
+		const keyValue = relData as KeyLanguageObject;
+		if(keyValue !== null)
+		{
+			const languages = Object.keys(keyValue);
+			// Are we dealing with a language object
+			if (systemLanguages.has(languages[0] as KeyLanguage)) {
+				this.subscription.add(this.languageService.Language.subscribe((lang) => {
+					const newValue: string = relData[lang];
+					this.convertedValue.next(newValue);
+				}));
+			}
+			else this.convertedValue.next(relData);
+		} else if (!isNaN(Number(relData))) // if this is a number that we got
+			this.handleDeeperRelation(relData); // go into even more deeper connection
 	}
 }
 
@@ -203,7 +214,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 })
 export class TextColumnComponent extends DefaultEditor implements OnInit, AfterViewInit, OnDestroy
 {
-	@ViewChild('autoInput', { static: true }) input;
+	// @ViewChild('autoInput', { static: true }) input;
 	filteredOptions$: Observable<Option<string | number | boolean>[]>;
 
 	public question: DropDownQuestion = new DropDownQuestion({
@@ -214,7 +225,6 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 		required: true,
 		options: new BehaviorSubject<number[]>([]),
 	});
-
 
 	public defaultValue: number = null;
 
@@ -238,6 +248,7 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 		private cd: ChangeDetectorRef,
 		protected firebaseService: FirebaseService,
 		protected tablesService: TablesService,
+		protected languageService: LanguageService,
 		/* private firebaseRelationService: FirebaseRelationService */)
 	{
 		super();
@@ -251,7 +262,6 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 		this.relationTable = editor.data.relationTable;
 		this.tableID = editor.data.tableID;
 		this.projectID = editor.data.projectID;
-
 		this.defaultValue = this.cell.getValue();
 
 		const column: Column = this.cell.getColumn();
@@ -302,14 +312,12 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 
 	public ngOnDestroy()
 	{
-		if(this.subscription)
-			this.subscription.unsubscribe();
+		if(this.subscription) this.subscription.unsubscribe();
 
 		// unsubscribe to the other tables.
 		const column: Column = this.cell.getColumn();
 		const relation: Relation = this.firebaseService.getRelation(this.currentTbl, column.id);
-		if(relation.relationRef)
-			relation.relationRef.off('value');
+		if(relation.relationRef) relation.relationRef.off('value');
 	}
 
 	public onChange(event: any)
@@ -349,8 +357,8 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 	public onInputChange(event: any)
 	{
 		UtilsService.onDebug(event);
-		if(!this.isProduction()) // experimental!
-			this.filteredOptions$ = this.getFilteredOptions(this.input.nativeElement.value);
+		// TODO experimental!
+		// if(!this.isProduction()) this.filteredOptions$ = this.getFilteredOptions(this.input.nativeElement.value);
 	}
 
 	public getDefaultValue()
@@ -387,71 +395,8 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 			if (el)
 			{
 				this.onChange(el.key);
-				this.input.nativeElement.value = el.value;
-			}
-		}
-	}
-
-	private filter(value: string): Option<string | number | boolean>[]
-	{
-		const filterValue = value.toLowerCase();
-		return this.question.options$.getValue().filter(optionValue => optionValue.key.toLowerCase().includes(filterValue));
-	}
-
-	private handleDeeperRelation({ prevSnapshotKey = -1, selected = false } , relation: Relation, prevRelData: any)
-	{
-		if(!relation)
-			return;
-
-		const entry: RelationPair = (relation.getRelationData(relation.tblColumnRelation.key));
-		if(entry)
-		{
-			const pair: StringPair = entry.get(relation.tblColumnRelation.value);
-
-			if(pair)
-			{
-				// Only one down
-				this.deeperRelation = relation.getItem(prevRelData, pair.key);
-				const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
-
-				snapshots.subscribe((snapshot: SnapshotAction<BaseResponse>) =>
-				{
-					if (snapshot.payload.exists)
-					{
-						const relationData: any = snapshot.payload.val();
-
-						if (relationData.hasOwnProperty(pair.value))
-						{
-							// TODO make a deeper relation work with this recursively.
-							// const entry: RelationPair = this.firebaseRelationService.getData().get(pair.key); // table
-							// const rel = new Relation(this.firebaseService, this.firebaseRelationService, pair);
-
-							// Only one down
-							// this.deeperRelation = relation.getItem(prevRelData, pair.key);
-							// const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
-
-							const relData = relationData[pair.value];
-							// observer.next( relData );
-							// if(!isNaN(Number(relData))) // if this is a number that we got
-							// {
-							// const rel: Relation = this.firebaseService.getRelation(column.id);
-							// this.handleDeeperRelation({}, rel, relData); // go into even more deeper connection
-							// }else
-							this.question.options$.getValue().push(
-								new Option<number>({
-									key: prevSnapshotKey + '. ' + UtilsService.truncate(relData, 50),
-									value: prevSnapshotKey,
-									selected: selected,
-								}),
-							);
-						} else console.error('Column name could not be found!');
-
-						// TODO this should be a column setting
-						// Sort the options descending.
-						this.question.options$.getValue()
-							.sort((a: Option<number>, b: Option<number>) => Number(b.value) - Number(a.value));
-					}
-				});
+				// TODO Experimental!
+				// this.input.nativeElement.value = el.value;
 			}
 		}
 	}
@@ -511,20 +456,25 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 				// if(relationData.deleted === true)
 				// 	return;
 
-				const relData = relationData[relation.tblColumnRelation.value];
+				const relData: string | number | KeyLanguageObject = relationData[relation.tblColumnRelation.value];
 				if(relData !== null || true)
 				{
-					// observer.next( relData );
-					if (relData !== '' && !isNaN(Number(relData))) // if this is a number that we got
-						this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
-					else
-						this.question.options$.getValue().push(
-							new Option<number>({
-								value: snapshotKey,
-								key: snapshotKey + '. ' + UtilsService.truncate(relData, 50),
-								selected: selected,
-							}),
-						);
+					if(relData !== '')
+					{
+						const keyValue = relData as KeyLanguageObject;
+						if(typeof keyValue === 'string')
+							this.question.options$.getValue().push(
+								new Option<number>({
+									value: snapshotKey,
+									key: snapshotKey + '. ' + UtilsService.truncate(relData as string, 50),
+									selected: selected,
+								}),
+							);
+						else if(typeof keyValue === 'object')
+							this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, keyValue);
+						else if (!isNaN(Number(relData)) && typeof relData === 'number') // if this is a number that we got
+							this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
+					}
 				}
 				// TODO this should be a column setting
 				// Sort the options descending.
@@ -560,5 +510,93 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 
 		// if(!this.isProduction()) // experimental!
 		// this.filteredOptions$ = of(this.question.options);
+	}
+
+	private filter(value: string): Option<string | number | boolean>[]
+	{
+		const filterValue = value.toLowerCase();
+		return this.question.options$.getValue().filter(optionValue => optionValue.key.toLowerCase().includes(filterValue));
+	}
+
+	private handleDeeperRelation({ prevSnapshotKey = -1, selected = false } , relation: Relation, prevRelData: number)
+	{
+		if(!relation)
+			return;
+
+		const entry: RelationPair = (relation.getRelationData(relation.tblColumnRelation.key));
+		if(entry)
+		{
+			const pair: StringPair = entry.get(relation.tblColumnRelation.value);
+
+			if(pair)
+			{
+				// Only one down
+				this.deeperRelation = relation.getItem(prevRelData, pair.key);
+				const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
+
+				snapshots.subscribe((snapshot: SnapshotAction<BaseResponse>) =>
+				{
+					if (snapshot.payload.exists)
+					{
+						const relationData: any = snapshot.payload.val();
+
+						if (relationData.hasOwnProperty(pair.value))
+						{
+							// TODO make a deeper relation work with this recursively.
+							// const entry: RelationPair = this.firebaseRelationService.getData().get(pair.key); // table
+							// const rel = new Relation(this.firebaseService, this.firebaseRelationService, pair);
+
+							// Only one down
+							// this.deeperRelation = relation.getItem(prevRelData, pair.key);
+							// const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
+
+							const relData = relationData[pair.value];
+							// observer.next( relData );
+							// if(!isNaN(Number(relData))) // if this is a number that we got
+							// {
+							// const rel: Relation = this.firebaseService.getRelation(column.id);
+							// this.handleDeeperRelation({}, rel, relData); // go into even more deeper connection
+							// }else
+							if(relData !== '')
+							{
+								const keyValue = relData as KeyLanguageObject;
+								if(keyValue !== null)
+									this.handleLanguageValue({prevSnapshotKey, selected}, keyValue);
+								else
+									this.question.options$.getValue().push(
+										new Option<number>({
+											key: prevSnapshotKey + '. ' + UtilsService.truncate(relData, 50),
+											value: prevSnapshotKey,
+											selected: selected,
+										}),
+									);
+							}
+						} else console.error('Column name could not be found!');
+
+						// TODO this should be a column setting
+						// Sort the options descending.
+						this.question.options$.getValue()
+							.sort((a: Option<number>, b: Option<number>) => Number(b.value) - Number(a.value));
+					}
+				});
+			}
+		}
+	}
+
+	private handleLanguageValue({ prevSnapshotKey = -1, selected = false }, prevRelData: KeyLanguageObject)
+	{
+		const languages = Object.keys(prevRelData);
+		// Are we dealing with a language object
+		if (systemLanguages.has(languages[0] as KeyLanguage))
+		{
+			const newValue: string = prevRelData['en'];
+			this.question.options$.getValue().push(
+				new Option<number>({
+					key: prevSnapshotKey + '. ' + UtilsService.truncate(newValue, 50),
+					value: prevSnapshotKey,
+					selected: selected,
+				}),
+			);
+		}
 	}
 }

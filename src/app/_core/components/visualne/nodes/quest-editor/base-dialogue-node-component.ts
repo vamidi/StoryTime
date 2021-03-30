@@ -2,7 +2,7 @@ import { Type } from '@angular/core';
 import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data';
 import { Node } from 'visualne';
 import { BaseNodeComponent } from '../base-node-component';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import { NodeEditor } from 'visualne';
 import { Subject } from 'rxjs';
 

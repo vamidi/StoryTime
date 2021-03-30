@@ -55,10 +55,10 @@ import {
 	TextRenderComponent,
 	LinkRenderComponent,
 
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 
 	MyNodeComponent,
-
-	TableLoaderComponent,
 
 	// Form components
 	ButtonFieldComponent,
@@ -66,6 +66,7 @@ import {
 	LabelFieldComponent,
 	TextFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 	FormComponent,
 	DynamicFormComponent,
 	NgxMenuComponent,
@@ -200,8 +201,6 @@ const COMPONENTS = [
 	NgxMenuItemComponent,
 	NgxMenuComponent,
 
-	TableLoaderComponent,
-
 	// VisualNE
 	NumberComponent,
 	DialogueComponent,
@@ -225,6 +224,7 @@ const CUSTOM_FORM_COMPONENTS = [
 	DropDownFieldComponent,
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 ];
 
 const CUSTOM_RENDER_COMPONENTS = [
@@ -237,6 +237,8 @@ const CUSTOM_RENDER_COMPONENTS = [
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
 	TableColumnRendererComponent,
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 ];
 
 const CUSTOM_ENTRY_COMPONENT = [
@@ -258,8 +260,6 @@ const CUSTOM_ENTRY_COMPONENT = [
 	DialogueComponent,
 	DialogueOptionComponent,
 
-	TableLoaderComponent,
-
 	// Render Components
 	DateColumnComponent,
 	TextColumnComponent,
@@ -269,6 +269,8 @@ const CUSTOM_ENTRY_COMPONENT = [
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
 	TableColumnRendererComponent,
+	LanguageRenderComponent,
+	LanguageColumnRenderComponent,
 
 	FormComponent,
 	DynamicFormComponent,
@@ -277,6 +279,7 @@ const CUSTOM_ENTRY_COMPONENT = [
 	DropDownFieldComponent,
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
+	SelectFieldWithBtnComponent,
 ]
 
 const PIPES = [

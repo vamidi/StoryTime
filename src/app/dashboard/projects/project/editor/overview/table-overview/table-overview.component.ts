@@ -14,10 +14,10 @@ import { ChangeTableSettingsComponent } from '@app-theme/components/firebase-tab
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { TableOverviewEventsComponent } from './table-overview-events.component';
-import { UserService } from '@app-core/data/users.service';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { UserService } from '@app-core/data/state/users';
+import { Table } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -57,13 +57,14 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 		protected service: SmartTableData,
 		protected userService: UserService,
 		protected userPreferenceService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected toastrService: NbToastrService,
 		protected nbToastrService: NbToastrService,
 		protected nbSnackbarService: NbSnackbarService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
+		protected languageService: LanguageService,
 		protected location: Location,
 		protected activatedRoute: ActivatedRoute,
 		protected dynamicComponentService: DynamicComponentService,
@@ -71,7 +72,7 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 	{
 		super(firebaseService, firebaseRelationService,
 			service, userService, userPreferenceService, projectService, tableService, toastrService,
-			nbSnackbarService, router, dialogService,
+			nbSnackbarService, languageService, router, dialogService,
 		);
 	}
 

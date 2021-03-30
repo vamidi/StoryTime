@@ -3,11 +3,11 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
 
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { Table } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
@@ -27,6 +27,7 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 	 * @param tableService -
 	 * @param firebaseService - Firebase connection information
 	 * @param firebaseRelationService - Relation service for table relations
+	 * @param languageService -
 	 * @param tableName - table name what firebase should be looking at
 	 */
 	constructor(
@@ -35,15 +36,16 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected tableName: string = '',
 	) {
 		super(
 			router, firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, tableName,
+			userPreferencesService, projectService, tableService, languageService, tableName,
 		);
 	}
 

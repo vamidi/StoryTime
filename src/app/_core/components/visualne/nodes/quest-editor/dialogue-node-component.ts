@@ -82,7 +82,7 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 
 			const context: Context<AdditionalEvents & EventsTypes> = this.editor;
 
-			console.log(inputs, outputs, input, output);
+			// console.log(inputs, outputs, input, output);
 			if(input.hasConnection() || output.hasConnection())
 			{
 				const payload = {
@@ -115,10 +115,10 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 
 				// save the current node
 				context.trigger('saveDialogue', payload);
-
-				// update the renderer
-				currentNode.update();
 			}
+
+			// update the renderer
+			currentNode.update();
 		}
 	}
 

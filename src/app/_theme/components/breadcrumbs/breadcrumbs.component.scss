@@ -11,3 +11,15 @@
 .breadcrumb a:hover {
 	color: nb-theme(link-text-hover-color) !important;
 }
+
+.breadcrumb-item nb-icon
+{
+	font-size: 1rem;
+	vertical-align: middle;
+}
+
+::ng-deep .nb-theme-default .cdk-breadcrumb-overlay nb-menu
+{
+	max-height: 500px;
+	overflow-y: scroll;
+}

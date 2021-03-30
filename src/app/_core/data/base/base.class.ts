@@ -1,4 +1,3 @@
-
 export interface ProxyObject {
 	id?: number;
 	deleted: boolean;

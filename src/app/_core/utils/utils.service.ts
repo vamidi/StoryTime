@@ -49,6 +49,8 @@ export enum DebugType
 	LOG, // normal log output
 	TRACE, // show trace of the log being logged
 	TABLE, // show log in table form
+	WARN,
+	ERROR,
 	// TODO add more
 }
 
@@ -122,6 +124,12 @@ export class UtilsService
 				case DebugType.TABLE:
 					console.table(msg, optionalParams);
 					break;
+				case DebugType.WARN:
+					console.warn(msg, optionalParams);
+					break;
+				case DebugType.ERROR:
+					console.error(msg, optionalParams);
+					break;
 				default:
 					console.log(msg, optionalParams);
 					break;
@@ -131,8 +139,7 @@ export class UtilsService
 
 	static onError(msg: any, ...optionalParams: any[])
 	{
-		if (!environment.production)
-			console.error(msg, optionalParams);
+		this.onDebug(msg, DebugType.ERROR, optionalParams);
 	}
 
 	static truncate(text: string, maxLength: number)

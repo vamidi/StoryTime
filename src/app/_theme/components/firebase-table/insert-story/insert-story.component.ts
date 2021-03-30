@@ -6,11 +6,11 @@ import {
 } from '@angular/core';
 import { NbDialogRef, NbStepComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
 import { ICharacter, IDialogue, IStory } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import {
 	ButtonFieldComponent,
 	DropDownFieldComponent,
@@ -19,6 +19,7 @@ import {
 } from '@app-theme/components/form';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BehaviorSubject } from 'rxjs';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 
 @Component({
 	selector: ' ngx-insert-story',
@@ -40,6 +41,9 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	@Input()
 	public dialogues: Table<IDialogue> = null;
+
+	@Input()
+	public selectedLanguage: KeyLanguage = 'en';
 
 	public get Ref(): NbDialogRef<InsertStoryComponent> { return this.ref; }
 
@@ -170,7 +174,9 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,
 		deleted: false,
-		text: '',
+		text: {
+			'en': '',
+		},
 		characterId: Number.MAX_SAFE_INTEGER,
 		nextId: Number.MAX_SAFE_INTEGER,
 		parentId: Number.MAX_SAFE_INTEGER,
@@ -180,7 +186,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		protected ref: NbDialogRef<InsertStoryComponent>,
 		protected toastrService: NbToastrService,
 		protected firebaseService: FirebaseService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected cd: ChangeDetectorRef)
 	{
 
@@ -327,7 +333,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	public onNewDialogueChanged(event: string)
 	{
-		this.dialogue.text = event;
+		this.dialogue.text[this.selectedLanguage] = event;
 	}
 
 	public onDialogueSelected(event: number)
@@ -381,7 +387,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		const options: Option<number>[] = [];
 		this.dialogues.filteredData.forEach((pObj) => options.push(
 			new Option<number>({
-				key: pObj.id + '. ' + UtilsService.truncate(pObj.text, 50),
+				key: pObj.id + '. ' + UtilsService.truncate(pObj.text[this.selectedLanguage], 50),
 				value: +pObj.id,
 				selected: false,
 			})),

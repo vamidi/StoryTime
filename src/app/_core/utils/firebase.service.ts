@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { AngularFireDatabase, SnapshotAction } from '@angular/fire/database';
 import { UtilsService } from '@app-core/utils/utils.service';
 import { Relation } from '@app-core/data/base/relation.class';
@@ -7,15 +8,19 @@ import { Observable, Subscription } from 'rxjs';
 import { ProxyObject } from '@app-core/data/base';
 import { NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/users';
-import { UserService } from '@app-core/data/users.service';
+import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 
-import { Revision } from '@app-core/data/table';
+import { Revision } from '@app-core/data/state/tables';
 import { AngularFireList, AngularFireObject, ChildEvent } from '@angular/fire/database/interfaces';
 
-import * as firebase from 'firebase';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { environment } from '../../../environments/environment';
+
+import * as firebase from 'firebase/app';
+import 'firebase/database';
+
+import isEqual from 'lodash.isequal';
 
 export declare type RelationDictionary<T> = Map<string, T>; // tblName, relation pair
 
@@ -24,8 +29,6 @@ export declare type RelationPair = RelationDictionary<StringPair>; // key, value
 
 // key = table, value = map<key -> columnID, Relation>
 export declare type MRelationPair = RelationDictionary<Map<string, Relation>>;
-
-export function Pair<K, V>(k: K, v: V): readonly [K, V] { return [k, v]}
 
 export interface IUserResponse {
 	total: number;
@@ -71,6 +74,11 @@ export class FirebaseService implements OnDestroy
 		return null;
 	}
 
+	public get permissions()
+	{
+		return this.userService.canEdit || this.userService.canDelete;
+	}
+
 	private excludedTables: string[] = ['users', 'revisions', 'relations', 'projects'];
 
 	protected tblName = '';
@@ -93,9 +101,14 @@ export class FirebaseService implements OnDestroy
 		protected afd: AngularFireDatabase,
 		protected http: HttpClient,
 		protected toastrService: NbToastrService,
-		protected userService: UserService)
+		protected userService: UserService,
+		protected router: Router)
 	{
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) => this.user = user));
+		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
+		{
+			if(!isEqual(this.user, user))
+				this.user = user;
+		}));
 	}
 
 	ngOnDestroy(): void

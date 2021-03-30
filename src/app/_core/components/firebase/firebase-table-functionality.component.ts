@@ -20,11 +20,11 @@ import {
 } from '@app-theme/components/firebase-table';
 
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { UserService } from '@app-core/data/users.service';
-import { Table } from '@app-core/data/table';
-import { ProjectService } from '@app-core/data/projects.service';
+import { UserService } from '@app-core/data/state/users';
+import { Table } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
-import { TablesService } from '@app-core/data/tables.service';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
@@ -62,17 +62,19 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected service: SmartTableData,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
+		protected languageService: LanguageService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
 		protected tableName: string = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
 			toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, tableName,
+			userPreferencesService, projectService, tableService,
+			languageService, tableName,
 		);
 		this.onAddSubscriptions.add(this.firebaseService.onTableAddEvent.subscribe(() => this.onAddTable()));
 	}

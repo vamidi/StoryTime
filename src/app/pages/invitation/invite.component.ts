@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
-import { IUserTicket } from '@app-core/data/users';
+import { IUserTicket } from '@app-core/data/state/users';
 import { NbThemeService, NbToastrService } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';

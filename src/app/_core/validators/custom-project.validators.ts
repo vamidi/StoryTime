@@ -3,7 +3,7 @@ import { FirebaseService } from '../utils/firebase.service';
 import { from, Observable, of as observableOf } from 'rxjs';
 import { map, take, debounceTime } from 'rxjs/operators';
 import { UtilsService } from '@app-core/utils';
-import { UserModel } from '@app-core/data/users';
+import { UserModel } from '@app-core/data/state/users';
 import firebase from 'firebase/app';
 import DataSnapshot = firebase.database.DataSnapshot;
 

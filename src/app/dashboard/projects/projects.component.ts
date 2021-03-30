@@ -4,12 +4,12 @@ import { NbDialogService, NbMenuService, NbToastrService } from '@nebular/theme'
 import { InsertProjectComponent } from '@app-theme/components/firebase-table/insert-project/insert-project.component';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { User } from '@app-core/data/users';
-import { Project } from '@app-core/data/project';
+import { User } from '@app-core/data/state/users';
+import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '@app-core/utils';
-import { UserService } from '@app-core/data/users.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { UserService } from '@app-core/data/state/users';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
 import { LinkRenderComponent } from '@app-theme/components';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
@@ -17,7 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { BaseSettings } from '@app-core/mock/base-settings';
-import { TablesService } from '@app-core/data/tables.service';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../environments/environment';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
@@ -50,7 +50,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 	private readonly indexColumnPrefName = UtilsService.titleLowerCase(environment.title + ' projects');
 
 	constructor(
-		public projectsService: ProjectService,
+		public projectsService: ProjectsService,
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
 		protected dialogService: NbDialogService,
@@ -60,6 +60,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		protected tableService: TablesService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 		protected ngZone: NgZone,
@@ -67,7 +68,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 	) {
 		super(
 			router, toastrService, snackbarService, userService, userPreferenceService,
-			projectsService, tableService, firebaseService, firebaseRelationService, 'projects',
+			projectsService, tableService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}
 
@@ -247,7 +248,6 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 						});
 					});
 				}
-
 			}
 		}
 	}

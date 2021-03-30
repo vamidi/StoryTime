@@ -7,10 +7,15 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@
 import { Router } from '@angular/router';
 import { getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService, NbAuthSocialLink } from '@nebular/auth';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { User } from '@app-core/data/users';
+import { User, UserUpdate } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { NbToastrService } from '@nebular/theme';
-import { UserService } from '@app-core/data/users.service';
+import { UserService } from '@app-core/data/state/users';
+
+import * as userActions from '@app-core/data/state/users/user.actions';
+import { Store } from '@ngxs/store';
+import { environment } from '../../../environments/environment';
+export type Action = userActions.All;
 
 @Component({
 	selector: 'nb-register',
@@ -32,6 +37,7 @@ export class NgxFirebaseRegisterComponent {
 
 	constructor(protected service: NbAuthService,
 				protected toastrService: NbToastrService,
+				private store: Store,
 				protected userService: UserService,
 				@Inject(NB_AUTH_OPTIONS) protected options = {},
 				protected cd: ChangeDetectorRef,
@@ -83,7 +89,7 @@ export class NgxFirebaseRegisterComponent {
 					});
 
 					// also update user info
-					this.userService.updateUserInfo(newUser);
+					if(environment.redux) this.store.dispatch(new UserUpdate(newUser));
 				}
 
 				this.messages = result.getMessages();

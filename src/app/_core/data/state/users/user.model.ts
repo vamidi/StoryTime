@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { UtilsService } from '@app-core/utils';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { UtilsService } from '@app-core/utils/utils.service';
 
 export interface IUserTicket
 {
@@ -87,8 +87,6 @@ export interface RecentUsers extends Contacts
 
 export class UserModel implements User
 {
-	uid: string = '';
-
 	public metadata: IUserData = {
 		displayName: '',
 		email: '',
@@ -99,6 +97,11 @@ export class UserModel implements User
 		updated_at: UtilsService.timestamp,
 	}
 
+	constructor(public uid: string, displayName: string)
+	{
+		this.metadata.displayName = displayName;
+	}
+
 	// Standard give the user privileges to access the project,
 	// and read them.
 	public projects: { [key: string]: { roles: Roles } } = { };
@@ -106,9 +109,7 @@ export class UserModel implements User
 
 export abstract class UserData
 {
-	abstract setUser(key: string, newUser: User, current: boolean);
-
-	abstract getUser(): Observable<User>;
+	abstract getUser(): BehaviorSubject<UserModel>; // Observable<UserModel>;
 
 	abstract getMembers(): Observable<User[]>;
 

@@ -26,9 +26,9 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { FilterCallback, FirebaseFilter, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { BaseFormSettings, FormField } from '@app-core/mock/base-form-settings';
 import { Validators } from '@angular/forms';
-import { Table } from '@app-core/data/table';
+import { Table } from '@app-core/data/state/tables';
 import { ProxyObject } from '@app-core/data/base';
-import { TablesService } from '@app-core/data/tables.service';
+import { TablesService } from '@app-core/data/state/tables';
 
 @Component({
 	selector: 'ngx-add-multiple-dialog',

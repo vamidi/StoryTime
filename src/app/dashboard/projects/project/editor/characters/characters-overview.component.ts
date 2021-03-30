@@ -7,9 +7,9 @@ import {
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { UserService } from '@app-core/data/users.service';
-import { ProjectService } from '@app-core/data/projects.service';
-import { TablesService } from '@app-core/data/tables.service';
+import { UserService } from '@app-core/data/state/users';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
@@ -29,14 +29,15 @@ export class CharactersComponent extends BaseSourceDataComponent implements OnIn
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
 		protected tableService: TablesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
 		protected activatedRoute: ActivatedRoute,
 		protected router: Router,
 	) {
 		super(router, toastrService, snackbarService, userService, userPreferencesService, projectService,
-			tableService, firebaseService, firebaseRelationService, 'characters');
+			tableService, firebaseService, firebaseRelationService, languageService, 'characters');
 	}
 
 	public ngOnInit(): void

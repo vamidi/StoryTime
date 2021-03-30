@@ -4,8 +4,8 @@ import { SnapshotAction } from '@angular/fire/database';
 import { BaseResponse } from '@app-core/data/base/base.class';
 import { StringPair } from '@app-core/data/base/string-pair.class';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { TablesService } from '@app-core/data/tables.service';
-import { Table } from '@app-core/data/table';
+import { TablesService } from '@app-core/data/state/tables';
+import { Table } from '@app-core/data/state/tables';
 
 import * as firebase from 'firebase';
 

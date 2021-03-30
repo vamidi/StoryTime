@@ -1,9 +1,19 @@
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { BaseSettings } from '@app-core/mock/base-settings';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UtilsService } from '@app-core/utils';
+import { Router } from '@angular/router';
+
 import { NbToastrService } from '@nebular/theme';
+
+import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
+
+import { Util } from 'leaflet';
+import trim = Util.trim;
+
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
+import { BaseSettings } from '@app-core/mock/base-settings';
+import { UtilsService } from '@app-core/utils';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { BehaviourType } from '@app-core/types';
 import {
@@ -13,25 +23,24 @@ import {
 	BooleanColumnRenderComponent,
 } from '@app-theme/components';
 import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { Table } from '@app-core/data/table';
-import { UserService } from '@app-core/data/users.service';
-import { User, UserModel } from '@app-core/data/users';
+import { Table } from '@app-core/data/state/tables';
+import { UserService } from '@app-core/data/state/users';
+import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
-import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { TablesService } from '@app-core/data/tables.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { TablesService } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 
-import { Util } from 'leaflet';
-import trim = Util.trim;
-import { map } from 'rxjs/operators';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { ObjectKeyValue, UserPreferences } from '@app-core/utils/utils.service';
 import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import {
+	KeyLanguage,
+	KeyLanguageObject,
+} from '@app-core/data/state/node-editor/languages.model';
+import { LanguageRenderComponent, LanguageColumnRenderComponent } from '@app-theme/components/render-column-layout/language-column-render.component';
 import isEqual from 'lodash.isequal';
-import * as firebase from 'firebase';
 
 /**
  * @brief base class to get simple data information
@@ -59,6 +68,8 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	{
 		return this.table.getSource;
 	}
+
+	public get languages() { return this.languageService.ProjectLanguages; }
 
 	public settings: BaseSettings = new BaseSettings();
 	/*{
@@ -136,7 +147,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	protected userPreferences: UserPreferences = null;
 
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
-	protected user: UserModel = new UserModel();
+	protected user: UserModel = defaultUser;
 
 	protected tableID: string = '';
 	protected table: Table = new Table();
@@ -161,8 +172,9 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
+		protected languageService: LanguageService,
 		protected tableName: string = '',
 	) {
 		if(tableName !== '')
@@ -280,6 +292,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 */
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
 	{
+		console.trace(event);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
 			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
@@ -590,6 +603,11 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		}
 	}
 
+	public onLanguageChange(event: KeyLanguage)
+	{
+		this.languageService.SetLanguage = event;
+	}
+
 	/**
 	 *
 	 * @brief - Process data to change the settings data.
@@ -664,7 +682,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	}
 
 	/**
-	 * #brief update the settings with latest columns
+	 * @brief update the settings with latest columns
 	 * @param newSettings
 	 */
 	protected updateSettings(newSettings: BaseSettings)
@@ -792,7 +810,6 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 							}
 						}
 
-						// TODO make a render for boolean data
 						if (typeof value === 'boolean')
 						{
 							type = 'string';
@@ -800,6 +817,30 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 								type: 'custom',
 								component: BooleanColumnRenderComponent,
 							};
+						}
+
+						if(typeof value === 'object')
+						{
+							const keyValue = value as KeyLanguageObject;
+							if(keyValue !== null)
+							{
+								const languages = Object.keys(keyValue);
+								// Are we dealing with a language object
+								if (this.languageService.SystemLanguages.has(languages[0] as KeyLanguage))
+								{
+									type = 'custom';
+									newSettings.columns[key] = {
+										...newSettings.columns[key],
+										renderComponent: LanguageRenderComponent,
+										editor: {
+											type: 'custom',
+											component: LanguageColumnRenderComponent,
+										},
+									};
+
+									// Do nothing for now.
+								}
+							}
 						}
 
 						// if we found an entry link it
@@ -925,7 +966,9 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 			{
 				type: 'custom',
 				component: TextColumnComponent,
-				data: { tblName: tbl, relationTable: pair.key, projectID: this.table.projectID, tableID: this.table.id },
+				data: {
+					tblName: tbl, relationTable: pair.key, projectID: this.table.projectID, tableID: this.table.id,
+				},
 				config: { /* data: { relation: rel }, */ },
 			}
 		}

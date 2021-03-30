@@ -38,18 +38,18 @@ MonoBehaviour:
     - Locale-de
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 5bb6878a8bd64d6458e4a928cb7bbd4f
-    m_Address: Dialogues_fr-FR
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr-FR
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
   - m_GUID: 19e241d87f0d6d449a484b823d21f227
     m_Address: Dialogues_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: e22165dec89b9d34a9d6ee71cb9bfb5b
+    m_Address: Dialogues_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
   m_ReadOnly: 1

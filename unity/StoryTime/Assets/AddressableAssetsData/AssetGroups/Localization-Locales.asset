@@ -31,13 +31,6 @@ MonoBehaviour:
     - Locale
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 9784e5383c6eb1e48bc2c884c6044396
-    m_Address: French (France) (fr-FR)
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
   - m_GUID: 2a6f987c543687748aeca5727019039a
     m_Address: Spanish (es)
     m_ReadOnly: 1
@@ -47,6 +40,13 @@ MonoBehaviour:
     m_TargetAsset: {fileID: 0}
   - m_GUID: 5734df3d3c5686d40b468337df10dfc1
     m_Address: German (de)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 7950a02c349317648aec1ea6428016d7
+    m_Address: French (fr)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale

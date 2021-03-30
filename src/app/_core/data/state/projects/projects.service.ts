@@ -1,20 +1,44 @@
 import { Injectable } from '@angular/core';
-import { IProject, Project, ProjectData } from '@app-core/data/project';
-import { BehaviorSubject, Observable, of as observableOf, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { BehaviorSubject, Observable, of, of as observableOf, Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
+
+import { IProject, Project, ProjectData } from '@app-core/data/state/projects/project.model';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 import { NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
-import { Table } from '@app-core/data/table';
-import { TablesService } from './tables.service';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { ProxyObject } from '@app-core/data/base';
-import { filter } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
+
 import pick from 'lodash.pick';
+import { PipelineService } from '@app-core/utils/pipeline.service';
+import { environment } from '../../../../../environments/environment';
+import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
 
 @Injectable({ providedIn: 'root'})
-export class ProjectService extends ProjectData implements Iterable<Project>
+export class ProjectsService extends ProjectData implements Iterable<Project>, IPipelineSchedule
 {
+	name: string = 'ProjectsServiceScheduler';
+
+	public items: Map<string, Project>;
+
+	/**
+	 * @see {PipelineService}
+	 * @brief - function we are going to call in the scheduler
+	 * @param v
+	 * @param idx
+	 * @param array
+	 */
+	callbackFn: (v: Project, key: string, map: Map<string, Project>) => boolean = this.updateProject;
+
+	/**
+	 * @brief - Force the change even when the version is the same.
+	 */
+	force: boolean = false;
+
 	private counter: number = 0;
 
 	private project: Project | null = null;
@@ -37,10 +61,15 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 		protected firebaseService: FirebaseService,
 		protected tablesService: TablesService,
 		protected breadcrumbService: BreadcrumbsService,
+		protected pipelineService: PipelineService,
 		protected router: Router,
 	)
 	{
 		super();
+
+
+		// add to scheduler
+		this.pipelineService.addSchedule(this);
 	}
 
 	/**
@@ -196,20 +225,18 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 			{
 				this.deletedProjects.set(key, newProject);
 			}
-			else
+			else {
 				this.projects.set(key, newProject);
+
+				// Add item to the list
+				this.items = this.projects;
+			}
 		}
 
 		if(current)
 		{
 			this.project = project;
 			this.project$.next(this.project);
-
-			// TODO hide projects that the user is not allowed to see.
-			// const projects = Array.from(this.projects.values());
-			// this.breadcrumbService.addDropdownForRoute('/dashboard/projects', projects.map<NbMenuItem>((t) => {
-			// 	return { title: project.metadata.title, data: { method: 'projects', id: t } }
-			// }));
 
 			/** ----------------------------------- Set tables ------------------------------ **/
 
@@ -218,7 +245,7 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 			this.breadcrumbService.addDropdownForRouteRegex(`/dashboard/projects/${this.project.id}/tables`,
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
-					return {title: table.name, data: { method: 'tables', id: t}}
+					return {title: UtilsService.title(table.name), data: { method: 'tables', id: t }}
 				}),
 			);
 
@@ -234,6 +261,9 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 				this.project.metadata.updated_at = snapshot.val();
 				this.project$.next(this.project);
 			});
+
+			// Run the scheduler
+			this.pipelineService.run(this.name);
 		}
 
 		return project;
@@ -248,8 +278,11 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 	{
 		if(this.projects.has(key))
 		{
-			const table: IProject = pick(this.projects.get(key),
-				['id', 'members', 'tables', 'metadata']);
+			const table: IProject = pick(this.projects.get(key), ['id', 'members', 'tables', 'metadata']);
+
+			if(!this.firebaseService.permissions)
+				return Promise.reject(`No permissions to make changes to ${key}`);
+
 			return this.firebaseService.updateItem(key, table, true, `projects`);
 		}
 
@@ -410,10 +443,23 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 		};
 	}
 
+	public resolve(dirty: boolean, project: Project, key: string)
+	{
+		if(dirty)
+		{
+			this.projects.set(key, project);
+			this.update(key);
+		}
+
+		// clear the scheduler
+		this.items.clear();
+	}
+
 	protected onCardOptionClicked(item: { title: string, data: { id: string, method: string } })
 	{
 		switch (item.data.method)
 		{
+			// TODO change all urls to /dashboard/projects/project/
 			case 'projects':
 				this.router.navigate(['/dashboard/projects/', item.data.id]).then();
 				break;
@@ -422,4 +468,99 @@ export class ProjectService extends ProjectData implements Iterable<Project>
 				break;
 		}
 	}
+
+	private updateProject(v: Project, key: string, map: Map<string, Project>): boolean
+	{
+		console.assert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
+		let dirty;
+		dirty = this.updateProjectVersion(key, v);
+		if(dirty)
+			this.updateProjectLanguages(key, v)
+		else
+			dirty = this.updateProjectLanguages(key, v);
+		return dirty;
+	}
+
+	/**
+	 * @brief - Simple scheduler func to update project version
+	 * @private
+	 */
+	private updateProjectVersion(key: string, asset: Project): boolean
+	{
+		// alright we check if the version exists in the project.
+		if(!asset.metadata.hasOwnProperty('version'))
+		{
+			console.log('we dont have a version at all');
+			if(this.projects.has(key))
+			{
+				asset.metadata.version = {
+					major: environment.MAJOR,
+					minor: environment.MINOR,
+					patch: environment.PATCH,
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private updateProjectLanguages(key: string, asset: Project): boolean
+	{
+		// alright we check if the version exists in the project.
+		if(!asset.metadata.hasOwnProperty('languages'))
+		{
+			console.log('we dont have languages at all');
+			if(this.projects.has(key))
+			{
+				asset.metadata.languages = {
+					'en': true,
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+}
+
+@Injectable({ providedIn: 'root' })
+export class LanguageService
+{
+	public set SetLanguage(lang: KeyLanguage)
+	{
+		this.selectedLanguage = lang; this.selectedLanguage$.next(this.selectedLanguage);
+	}
+
+	public get Language(): Observable<KeyLanguage> { return this.selectedLanguage$.asObservable(); }
+
+	public get SystemLanguages(): Map<KeyLanguage, SystemLanguage> { return systemLanguages; }
+
+	public get ProjectLanguages(): Observable<Map<KeyLanguage, SystemLanguage>>
+	{
+		return this.projectsService.getProject$().pipe(
+			switchMap((project) => {
+				if(project && project.metadata.hasOwnProperty('languages'))
+				{
+					const map: Map<KeyLanguage, SystemLanguage> = new Map<KeyLanguage, SystemLanguage>();
+					const languages = Object.keys(project.metadata.languages);
+					languages.forEach((k: KeyLanguage) => {
+						if(project.metadata.languages[k])
+							map.set(k, systemLanguages.get(k));
+					});
+
+					return of(map);
+				}
+				return of(null);
+			}),
+		);
+	}
+
+	private selectedLanguage$: BehaviorSubject<KeyLanguage> = new BehaviorSubject<KeyLanguage>('en');
+
+	private selectedLanguage: KeyLanguage = null;
+
+	constructor(protected projectsService: ProjectsService) {}
 }
