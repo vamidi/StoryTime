@@ -10,49 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: Dialogues Shared Data
+  m_Name: DialogueOptions Shared Data
   m_EditorClassIdentifier: 
-  m_TableCollectionName: Dialogues
-  m_TableCollectionNameGuidString: 880a163e3a20fbb48aa71546d89bb0e7
+  m_TableCollectionName: DialogueOptions
+  m_TableCollectionNameGuidString: f60a77fa6b7a8bd48865dd2d2871439f
   m_Entries:
-  - m_Id: 98494205952
+  - m_Id: 1
     m_Key: 1
     m_Metadata:
       m_Items: []
-  - m_Id: 98678755328
+  - m_Id: 2
     m_Key: 2
     m_Metadata:
       m_Items: []
-  - m_Id: 98771030016
+  - m_Id: 3
     m_Key: 3
-    m_Metadata:
-      m_Items: []
-  - m_Id: 98859110400
-    m_Key: 4
-    m_Metadata:
-      m_Items: []
-  - m_Id: 98951385088
-    m_Key: 5
-    m_Metadata:
-      m_Items: []
-  - m_Id: 99039465472
-    m_Key: 6
-    m_Metadata:
-      m_Items: []
-  - m_Id: 99114962944
-    m_Key: 7
-    m_Metadata:
-      m_Items: []
-  - m_Id: 99198849024
-    m_Key: 8
-    m_Metadata:
-      m_Items: []
-  - m_Id: 209223831552
-    m_Key: 9
-    m_Metadata:
-      m_Items: []
-  - m_Id: 398814162079744
-    m_Key: 
     m_Metadata:
       m_Items: []
   m_Metadata:
@@ -65,4 +37,4 @@ MonoBehaviour:
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
         asm: Unity.Localization}
       data:
-        m_CustomEpoch: 1616500845139
+        m_CustomEpoch: 1617111237288

@@ -18,57 +18,51 @@ MonoBehaviour:
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 98494205952
-    m_Localized: <emotion=scared><speed=50>Hello <color=red>traveler</color>, I have
-      a request for <anim=shake>you.</anim><action=doJump>
+  - m_Id: 1
+    m_Localized: Hello traveler, I have a request for you
     m_Metadata:
       m_Items:
       - id: 0
-  - m_Id: 98678755328
-    m_Localized: I need some ingredients for my wife, but unfortunely I am not able
-      to go because of all the monsters. Would you be so kind to grab it for me?
+  - m_Id: 2
+    m_Localized: I need some ingredients for my wife, but unfortunately I am not
+      able to go because of all the monsters. Would you be so kind to grab it for
+      me?
     m_Metadata:
       m_Items:
       - id: 1
-  - m_Id: 98771030016
-    m_Localized: Great! Thank you for your help <anim=wave>adventurer.</anim>
+  - m_Id: 3
+    m_Localized: Great! Thank you for your help adventurer.
     m_Metadata:
       m_Items:
       - id: 2
-  - m_Id: 98859110400
+  - m_Id: 4
     m_Localized: Hey Hero, I have a request for you
     m_Metadata:
       m_Items:
       - id: 3
-  - m_Id: 98951385088
+  - m_Id: 5
     m_Localized: You should be able to find the Hillichurls over there.
     m_Metadata:
       m_Items:
       - id: 4
-  - m_Id: 99039465472
+  - m_Id: 6
     m_Localized: Great you have defeated them! Thank you traveler.
     m_Metadata:
       m_Items:
       - id: 5
-  - m_Id: 99114962944
+  - m_Id: 7
     m_Localized: Even though it is safe for me to travel is it possible to fetch
       the ingredients for me? I can't leave my wife and kids behind. I am looking
       for two <b>apples</b> and one <b>banana</b>
     m_Metadata:
       m_Items:
       - id: 6
-  - m_Id: 99198849024
+  - m_Id: 8
     m_Localized: No worries, I will ask the knights and see if they have time for
       me.
     m_Metadata:
       m_Items:
       - id: 7
-  - m_Id: 209223831552
-    m_Localized: Thank you traveler for collecting everything for me. Please accept
-      this reward.
-    m_Metadata:
-      m_Items:
-      - id: 8
   references:
     version: 1
     00000000:
@@ -103,7 +97,3 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: 8
-    00000008:
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: 9
