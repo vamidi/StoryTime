@@ -292,7 +292,6 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 */
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
 	{
-		console.trace(event);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
 			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;

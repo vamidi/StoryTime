@@ -1,6 +1,6 @@
 import { EventsTypes } from 'visualne/types/events';
 // import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
-import { IDialogue } from '@app-core/data/standard-tables';
+import { IDialogue, IDialogueOption } from '@app-core/data/standard-tables';
 
 export interface AdditionalEvents extends EventsTypes
 {
@@ -10,7 +10,7 @@ export interface AdditionalEvents extends EventsTypes
 		// optionMap?: OptionMap, 	// the options in the current dialogue
 	},
 	saveOption: {
-		fOption: number, // the option in the first dialogue
+		fOption: number | IDialogueOption, // the option in the current dialogue
 		fNextId: number, // the dialogue that is the nextId of the option
 	}
 }

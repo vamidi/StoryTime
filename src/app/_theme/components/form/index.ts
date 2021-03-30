@@ -6,3 +6,6 @@ export { LabelFieldComponent } from './label/label-input.component';
 export { SelectFieldWithBtnComponent } from './select/select-field-with-btn.component';
 export { FormComponent } from './form.component';
 export { DynamicFormComponent } from './dynamic-form.component';
+
+// Form field that dont belong to forms
+export { BasicTextFieldInputComponent } from './non-form-components/basic-text-field.input.component';

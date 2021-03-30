@@ -82,7 +82,8 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 
 			const context: Context<AdditionalEvents & EventsTypes> = this.editor;
 
-			// console.log(inputs, outputs, input, output);
+			// console.log(inputs, outputs);
+			// console.log(input, output);
 			if(input.hasConnection() || output.hasConnection())
 			{
 				const payload = {
