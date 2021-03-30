@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { Component, Engine, NodeEditor, Plugin } from 'visualne';
 import { FirebaseService } from '@app-core/utils/firebase.service';
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
 import { SelectionPlugin, SelectionParams } from 'visualne-selection-plugin';
 import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ConnectionPlugin } from 'visualne-connection-plugin';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DebouncedFunc } from '@app-core/types';
 import { Project } from '@app-core/data/state/projects';
-import { finalize, tap } from 'rxjs/operators';
 import { ProjectsService } from '@app-core/data/state/projects/projects.service';
 import { InsertStoryComponent, LoadStoryComponent } from '@app-theme/components/firebase-table';
 import { ICharacter, IDialogue, IStory, IStoryData } from '@app-core/data/standard-tables';
@@ -19,13 +17,15 @@ import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Table } from '@app-core/data/state/tables';
 import { Data } from 'visualne/types/core/data';
+import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
 import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
 
 import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
-import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
-import { DebugType } from '@app-core/utils/utils.service';
 
 @Injectable()
 export class NodeEditorService

@@ -69,6 +69,9 @@ import {
 	SelectFieldWithBtnComponent,
 	FormComponent,
 	DynamicFormComponent,
+
+	BasicTextFieldInputComponent,
+
 	NgxMenuComponent,
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
@@ -115,6 +118,7 @@ import {
 } from './layouts';
 import { DigitOnlyDirective } from './directives/digit-only.directive';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { TextareaAutoresizeDirective } from '@app-theme/directives/textarea-autoresize.directive';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SmartTableModule } from '@vamidicreations/ng2-smart-table';
@@ -210,10 +214,6 @@ const COMPONENTS = [
 	// Rendering component
 	MyNodeComponent,
 	NodeInspectorComponent,
-
-	// Directives
-	DigitOnlyDirective,
-	ClickStopPropagationDirective,
 ];
 
 const CUSTOM_FORM_COMPONENTS = [
@@ -225,6 +225,8 @@ const CUSTOM_FORM_COMPONENTS = [
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
+
+	BasicTextFieldInputComponent,
 ];
 
 const CUSTOM_RENDER_COMPONENTS = [
@@ -280,6 +282,8 @@ const CUSTOM_ENTRY_COMPONENT = [
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
+
+	BasicTextFieldInputComponent,
 ]
 
 const PIPES = [
@@ -292,6 +296,14 @@ const PIPES = [
 	TimeSlicePipe,
 	OrderByPipe,
 ];
+
+const DIRECTIVES = [
+
+	// Directives
+	DigitOnlyDirective,
+	ClickStopPropagationDirective,
+	TextareaAutoresizeDirective,
+]
 
 @NgModule({
 	imports: [
@@ -306,15 +318,17 @@ const PIPES = [
 	exports: [
 		CommonModule,
 		...PIPES,
+		...DIRECTIVES,
 		...COMPONENTS,
 		...CUSTOM_FORM_COMPONENTS,
 		...CUSTOM_RENDER_COMPONENTS,
 	],
 	declarations: [
+		...PIPES,
+		...DIRECTIVES,
 		...COMPONENTS,
 		...CUSTOM_FORM_COMPONENTS,
 		...CUSTOM_RENDER_COMPONENTS,
-		...PIPES,
 	],
 	entryComponents: [
 		...CUSTOM_ENTRY_COMPONENT,

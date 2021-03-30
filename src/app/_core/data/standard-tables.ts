@@ -19,7 +19,7 @@ export interface IDialogueOption extends ProxyObject
 {
 	childId: number,
 	parentId: number,
-	text: string,
+	text: { [key in KeyLanguage]?: string },
 }
 
 export interface IStory extends ProxyObject
