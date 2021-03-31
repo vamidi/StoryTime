@@ -20,6 +20,7 @@ import {
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BehaviorSubject } from 'rxjs';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { createDialogue } from '@app-core/functions/helper.functions';
 
 @Component({
 	selector: ' ngx-insert-story',
@@ -170,17 +171,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		name: '',
 		description: '',
 	};
-	private dialogue: IDialogue = {
-		created_at: UtilsService.timestamp,
-		updated_at: UtilsService.timestamp,
-		deleted: false,
-		text: {
-			'en': '',
-		},
-		characterId: Number.MAX_SAFE_INTEGER,
-		nextId: Number.MAX_SAFE_INTEGER,
-		parentId: Number.MAX_SAFE_INTEGER,
-	}
+	private dialogue: IDialogue = createDialogue();
 
 	constructor(
 		protected ref: NbDialogRef<InsertStoryComponent>,

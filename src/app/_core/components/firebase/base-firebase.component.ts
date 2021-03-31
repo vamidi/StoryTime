@@ -8,7 +8,6 @@ import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 import isEqual from 'lodash.isequal';
 import { ProxyObject } from '@app-core/data/base';
 import * as firebase from 'firebase';
-
 /**
  * @brief simple base firebase implementation
  * where the class calculates the user permissions.
@@ -87,11 +86,21 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			this.mainSubscription.unsubscribe();
 	}
 
+	protected insertFirebaseData(
+		event: { data: ProxyObject, confirm?: any },
+	): Promise<number>
+	{
+		const obj: ProxyObject = { ...event.data };
+		return this.firebaseService.insertData(`${this.tableName}/data`, obj, this.tableName);
+	}
+
 	protected updateFirebaseData(
 		event: { data: ProxyObject, newData: ProxyObject, confirm?: any },
-		obj: ProxyObject,
-		oldObj: ProxyObject): Promise<void | string | firebase.database.Reference>
+	): Promise<void | string | firebase.database.Reference>
 	{
+		const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
+		const obj: ProxyObject = { ...event.newData };
+
 		// TODO resolve if data is wrong or if we also need to do something with the lastID
 		// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
 		return this.firebaseService.updateData(

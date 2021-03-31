@@ -42,6 +42,8 @@ import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
+import { createDialogue, createDialogueOption } from '@app-core/functions/helper.functions';
+import { UtilsService } from '@app-core/utils';
 
 const DIALOGUE_NODE_NAME: string = 'Dialogue';
 const DIALOGUE_OPTION_NODE_NAME: string = 'Dialogue Option';
@@ -392,14 +394,6 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			instance.question.controlType = 'textarea';
 			// instance.question.options$.next(this.dialogueOptionsList);
 
-			const optionMap = this.currentNode.data.options as OptionMap;
-			instance.question.value = hasOutput && optionMap.hasOwnProperty(output.key)
-				? optionMap[output.key].value : Number.MAX_SAFE_INTEGER;
-
-			instance.question.value = this.getOption(
-				hasOutput && optionMap.hasOwnProperty(output.key) ? optionMap[output.key].value : Number.MAX_SAFE_INTEGER,
-			);
-
 			const idx = this.optionTextAreaComponents.push(instance);
 			instance.question.text = hasOutput ? output.name : `Option Out ${idx}`;
 			instance.index = idx - 1;
@@ -409,11 +403,44 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			const out = hasOutput ? output :
 				new Output(`optionOut-${this.currentOutputCount++}`, outputText, dialogueOptionSocket, false);
 
+			const optionMap = this.currentNode.data.options as OptionMap;
+			instance.question.value = this.getOption(
+				hasOutput && optionMap.hasOwnProperty(out.key) ? optionMap[out.key].value : Number.MAX_SAFE_INTEGER,
+			);
+
 			const outputIdx = this.outputs.push(out);
 
 			if(!hasOutput) // only add when we have created a new output
+			{
 				this.currentNode.addOutput(this.outputs[outputIdx - 1]);
+				// Add the option also to the table.
+				this.tableName = `tables/${this.tblDialogueOptions.id}`;
+				// Let firebase search with current table name
+				this.firebaseService.setTblName(this.tableName);
 
+				const event: { data: ProxyObject, confirm?: any } = { data: createDialogueOption() };
+				this.insertFirebaseData(event)
+				.then((data) =>
+					{
+						UtilsService.showToast(
+							this.toastrService,
+							'Dialogue option added!',
+							'Dialogue option has successfully been created',
+						);
+
+						if(data && typeof data === 'number')
+						{
+							this.onOptionSelected(instance.index, data);
+
+							instance.question.value = this.getOption(
+								hasOutput && optionMap.hasOwnProperty(out.key) ? optionMap[out.key].value : Number.MAX_SAFE_INTEGER,
+							);
+
+							console.log(`new Dialogue: ${this.currentNode}`);
+						}
+					},
+				);
+			}
 			/* TODO capture the changes in the options.
 			this.subs.push([
 				this.mainSubscription.add(
@@ -552,13 +579,34 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		this.nodeEditorService.Editor.bind('saveDialogue');
 		this.nodeEditorService.Editor.bind('saveOption');
 
-		this.nodeEditorService.listen('nodecreate', (node: Node) => {
+		this.nodeEditorService.listen('nodecreate', (node: Node) =>
+		{
 			if(node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId'))
 			{
-				node.data = {
-					...node.data,
-					dialogueId: 7,
-				}
+				this.tableName = `tables/${this.dialogues.id}`;
+				// Let firebase search with current table name
+				this.firebaseService.setTblName(this.tableName);
+
+				const event: { data: ProxyObject, confirm?: any } = { data: createDialogue() };
+				this.insertFirebaseData(event)
+				.then((data) =>
+					{
+						UtilsService.showToast(
+							this.toastrService,
+							'Dialogue added!',
+							'Dialogue has successfully been created',
+						);
+
+						if(data && typeof data === 'number')
+						{
+							node.data = {
+								...node.data,
+								dialogueId: data,
+							}
+							UtilsService.onDebug(`new Dialogue: ${node}`);
+						}
+					},
+				);
 			}
 		});
 
@@ -655,12 +703,10 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 				}
 				 */
 
-				const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
-				const obj: ProxyObject = { ...event.newData };
 				if(isEqual(event.data, event.newData))
 					return;
 
-				this.updateFirebaseData(event, obj, oldObj);
+				this.updateFirebaseData(event);
 				this.nodeEditorService.saveSnippet();
 			}
 		});
@@ -693,13 +739,10 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 				// override with the incoming dialogue
 				if(typeof fOption !== 'number') event.newData = { ...event.newData, ...fOption };
 
-				const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
-				const obj: ProxyObject = { ...event.newData };
-
 				if(isEqual(event.data, event.newData))
 					return;
 
-				this.updateFirebaseData(event, obj, oldObj);
+				this.updateFirebaseData(event);
 				this.nodeEditorService.saveSnippet();
 			}
 		});

@@ -496,7 +496,7 @@ export class NodeEditorService
 
 		this.firebaseUploadTask.percentageChanges();
 		this.snapshot = this.firebaseUploadTask.snapshotChanges().pipe(
-			tap(console.log),
+			tap(UtilsService.onDebug),
 			finalize(() =>
 			{
 				UtilsService.showToast(
