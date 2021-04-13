@@ -24,6 +24,7 @@ fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) =>
 /** Create environment file */
 const { argv } = require('yargs');
 const { version } = require('./package.json');
+const path = require('path');
 
 // read the command line arguments passed with yargs
 const environment = argv.environment;

@@ -6,7 +6,6 @@ using Cinemachine;
 using Gamekit3D;
 
 using DatabaseSync;
-using DatabaseSync.Components;
 
 /// <summary>
 /// @brief - Spawn system that spawns the player in the world.
@@ -24,6 +23,8 @@ public class SpawnSystem : BaseSpawnSystem
 	[SerializeField] private CinemachineVirtualCamera dialogueCamera;       // Reference to the dialogue camera.
 	[SerializeField] private Volume dashVolume;
 
+	[SerializeField] private HealthUI playerHealth;
+
 	protected override void Spawn(int spawnIndex)
 	{
 		Transform spawnLocation = GetSpawnLocation(spawnIndex, m_SpawnLocations);
@@ -35,6 +36,8 @@ public class SpawnSystem : BaseSpawnSystem
 		// Set the game camera variable.
 		playerInstance.gameCamera = gameCamera;
 		playerInstance.aimCamera = aimCamera;
+
+		playerHealth.representedDamageable = playerInstance.GetComponent<Damageable>();
 
 		// Grab the dash ability to set the game cam and volume.
 		DashAbility dashAbility = playerInstance.GetComponent<DashAbility>();
@@ -52,7 +55,6 @@ public class SpawnSystem : BaseSpawnSystem
 
 		// The CameraSystem will pick this up to frame the player
 		playerTransformAnchor.Transform = playerTransform;
-
 	}
 
 	private Transform GetSpawnLocation(int index, Transform[] spawnLocations)

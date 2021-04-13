@@ -195,7 +195,7 @@ export class UserService extends UserData implements OnDestroy
 			{
 				if(snapshot)
 				{
-					// console.log(this.firebaseUser.uid);
+					console.log(this.firebaseUser.uid);
 					const user = new UserModel(authData.uid, authData.displayName);
 					snapshot.forEach((member) => user[member.key] = member.payload.val());
 					return new userActions.Authenticated(user);

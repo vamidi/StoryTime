@@ -1,10 +1,9 @@
+/*
 import {
-	AfterViewInit,
 	ChangeDetectorRef,
 	Component,
 	Input,
 	OnInit,
-	Type,
 } from '@angular/core';
 import { Control, NodeEditor } from 'visualne';
 import { AngularControl } from 'visualne-angular-plugin';
@@ -29,7 +28,6 @@ export class DialogueControlComponent extends AngularComponentControl implements
 
 	/**
 	 * @brief - Call the parent function --> the component connected
-	 */
 	@Input() mounted!: Function;
 
 	constructor(
@@ -75,3 +73,4 @@ export class DialogueControl extends Control implements AngularControl
 		this.putData(this.key, this.props.value)
 	}
 }
+*/

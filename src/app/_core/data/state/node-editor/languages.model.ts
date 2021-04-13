@@ -1,6 +1,6 @@
 import { Pair } from '@app-core/functions/helper.functions';
 
-export type KeyLanguageObject = { [key in KeyLanguage]: string; };
+export type KeyLanguageObject = { [key in KeyLanguage]?: string; };
 
 export type KeyLanguage =
 	'af' 		|

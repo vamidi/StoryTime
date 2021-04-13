@@ -83,12 +83,13 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 						if(snapshot instanceof Table)
 						{
 							const relationData: Table = snapshot;
+							console.log(relationData);
 
 							if (relationData && relationData.data[this.relation.id].hasOwnProperty(this.relation.tblColumnRelation.value))
 							{
 								const relData = relationData.data[this.relation.id][this.relation.tblColumnRelation.value];
 
-								if(relData !== '') this.convertedValue.next(relData);
+								console.log(relationData);
 								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 
@@ -100,8 +101,6 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 							if (relationData && relationData.hasOwnProperty(this.relation.tblColumnRelation.value))
 							{
 								const relData = relationData[this.relation.tblColumnRelation.value];
-
-								if(relData !== '') this.convertedValue.next(relData);
 								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 						}
@@ -114,8 +113,8 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 	private handleDeeperRelation(prevRelData: any)
 	{
 		const table$ = this.tableService.addIfNotExists(this.relation.tblColumnRelation.key);
-		table$.then((res) => {
-
+		table$.then((res) =>
+		{
 			const table = res instanceof Table ? res : this.tableService.getTableById(this.relation.tblColumnRelation.key);
 			if(table)
 			{
@@ -168,12 +167,15 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 	private resolveRelData(relData: any)
 	{
 		const keyValue = relData as KeyLanguageObject;
-		if(keyValue !== null)
+		if(typeof relData === 'string') this.convertedValue.next(relData);
+		else if(typeof relData === 'object' && keyValue !== null)
 		{
 			const languages = Object.keys(keyValue);
 			// Are we dealing with a language object
-			if (systemLanguages.has(languages[0] as KeyLanguage)) {
-				this.subscription.add(this.languageService.Language.subscribe((lang) => {
+			if (systemLanguages.has(languages[0] as KeyLanguage))
+			{
+				this.subscription.add(this.languageService.Language.subscribe((lang) =>
+				{
 					const newValue: string = relData[lang];
 					this.convertedValue.next(newValue);
 				}));
@@ -242,7 +244,7 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 
 	private subscription: Subscription = new Subscription();
 
-	private deeperRelation: any;
+	// private deeperRelation: any;
 
 	constructor(
 		private cd: ChangeDetectorRef,
@@ -459,22 +461,18 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 				const relData: string | number | KeyLanguageObject = relationData[relation.tblColumnRelation.value];
 				if(relData !== null || true)
 				{
-					if(relData !== '')
-					{
-						const keyValue = relData as KeyLanguageObject;
-						if(typeof keyValue === 'string')
-							this.question.options$.getValue().push(
-								new Option<number>({
-									value: snapshotKey,
-									key: snapshotKey + '. ' + UtilsService.truncate(relData as string, 50),
-									selected: selected,
-								}),
-							);
-						else if(typeof keyValue === 'object')
-							this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, keyValue);
-						else if (!isNaN(Number(relData)) && typeof relData === 'number') // if this is a number that we got
-							this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
-					}
+					if(typeof relData === 'string')
+						this.question.options$.getValue().push(
+							new Option<number>({
+								value: snapshotKey,
+								key: snapshotKey + '. ' + UtilsService.truncate(relData as string, 50),
+								selected: selected,
+							}),
+						);
+					else if(typeof relData === 'object')
+						this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, relData as KeyLanguageObject);
+					else if (!isNaN(Number(relData))) // if this is a number that we got
+						this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
 				}
 				// TODO this should be a column setting
 				// Sort the options descending.
@@ -523,7 +521,9 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 		if(!relation)
 			return;
 
-		const entry: RelationPair = (relation.getRelationData(relation.tblColumnRelation.key));
+		const table = this.tablesService.getTableById(relation.tblColumnRelation.key);
+		const entry: RelationPair = (relation.getRelationData(table.title));
+
 		if(entry)
 		{
 			const pair: StringPair = entry.get(relation.tblColumnRelation.value);
@@ -531,54 +531,57 @@ export class TextColumnComponent extends DefaultEditor implements OnInit, AfterV
 			if(pair)
 			{
 				// Only one down
-				this.deeperRelation = relation.getItem(prevRelData, pair.key);
-				const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
+				const otherTable = this.tablesService.getTableByName(pair.key);
+				const relationData: any = otherTable.find(prevRelData);// snapshot.payload.val();
 
-				snapshots.subscribe((snapshot: SnapshotAction<BaseResponse>) =>
+				if (relationData && relationData.hasOwnProperty(pair.value))
 				{
-					if (snapshot.payload.exists)
+					// TODO make a deeper relation work with this recursively.
+					// const entry: RelationPair = this.firebaseRelationService.getData().get(pair.key); // table
+					// const rel = new Relation(this.firebaseService, this.firebaseRelationService, pair);
+
+					// Only one down
+					// this.deeperRelation = relation.getItem(prevRelData, pair.key);
+					// const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
+
+					const relData = relationData[pair.value];
+					// observer.next( relData );
+					// if(!isNaN(Number(relData))) // if this is a number that we got
+					// {
+					// const rel: Relation = this.firebaseService.getRelation(column.id);
+					// this.handleDeeperRelation({}, rel, relData); // go into even more deeper connection
+					// }else
+					if(relData !== '')
 					{
-						const relationData: any = snapshot.payload.val();
-
-						if (relationData.hasOwnProperty(pair.value))
-						{
-							// TODO make a deeper relation work with this recursively.
-							// const entry: RelationPair = this.firebaseRelationService.getData().get(pair.key); // table
-							// const rel = new Relation(this.firebaseService, this.firebaseRelationService, pair);
-
-							// Only one down
-							// this.deeperRelation = relation.getItem(prevRelData, pair.key);
-							// const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
-
-							const relData = relationData[pair.value];
-							// observer.next( relData );
-							// if(!isNaN(Number(relData))) // if this is a number that we got
-							// {
-							// const rel: Relation = this.firebaseService.getRelation(column.id);
-							// this.handleDeeperRelation({}, rel, relData); // go into even more deeper connection
-							// }else
-							if(relData !== '')
-							{
-								const keyValue = relData as KeyLanguageObject;
-								if(keyValue !== null)
-									this.handleLanguageValue({prevSnapshotKey, selected}, keyValue);
-								else
-									this.question.options$.getValue().push(
-										new Option<number>({
-											key: prevSnapshotKey + '. ' + UtilsService.truncate(relData, 50),
-											value: prevSnapshotKey,
-											selected: selected,
-										}),
-									);
-							}
-						} else console.error('Column name could not be found!');
-
-						// TODO this should be a column setting
-						// Sort the options descending.
-						this.question.options$.getValue()
-							.sort((a: Option<number>, b: Option<number>) => Number(b.value) - Number(a.value));
+						const keyValue = relData as KeyLanguageObject;
+						if(keyValue !== null)
+							this.handleLanguageValue({prevSnapshotKey, selected}, keyValue);
+						else
+							this.question.options$.getValue().push(
+								new Option<number>({
+									key: prevSnapshotKey + '. ' + UtilsService.truncate(relData, 50),
+									value: prevSnapshotKey,
+									selected: selected,
+								}),
+							);
 					}
-				});
+				} else console.error('Column name could not be found!');
+
+				// TODO this should be a column setting
+				// Sort the options descending.
+				this.question.options$.getValue()
+					.sort((a: Option<number>, b: Option<number>) => Number(b.value) - Number(a.value));
+
+				// this.deeperRelation = relation.getItem(prevRelData, otherTable.id);
+				// const snapshots: any = this.deeperRelation.snapshotChanges(['child_changed']);
+
+				// snapshots.subscribe((snapshot: SnapshotAction<BaseResponse>) =>
+				// {
+				// 	if (snapshot.payload.exists)
+				// 	{
+				//
+				// 	}
+				// });
 			}
 		}
 	}

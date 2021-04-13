@@ -12,9 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed954e9dbb1644f1bd754243e93a1989, type: 3}
   m_Name: Satorou
   m_EditorClassIdentifier: 
+  guid: 2519bba1230af58458cbc5af932a827d
   id: 0
   tableName: characters
   linkedColumn: 
   dropdownColumn: name
   linkID: 4294967295
-  _actorName: Satorou
+  actorName:
+    m_TableReference:
+      m_TableCollectionName: GUID:4e531e60398601f459790a3ae2655bd9
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 1
+    m_FallbackState: 0

@@ -110,7 +110,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 
 		this.mainSubscription.add(this.userService.getUser().subscribe((obsUser) =>
 		{
-			console.log(obsUser);
 			if(obsUser)
 			{
 				// this.userNotifications = [];

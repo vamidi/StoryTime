@@ -12,6 +12,7 @@ TagManager:
   - GameCamera
   - DialogueCamera
   - Enemy
+  - CraftingBench
   layers:
   - Default
   - TransparentFX

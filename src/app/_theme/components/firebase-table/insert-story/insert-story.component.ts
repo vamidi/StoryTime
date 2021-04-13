@@ -20,7 +20,7 @@ import {
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BehaviorSubject } from 'rxjs';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
-import { createDialogue } from '@app-core/functions/helper.functions';
+import { createDialogue, createCharacter, createStory } from '@app-core/functions/helper.functions';
 
 @Component({
 	selector: ' ngx-insert-story',
@@ -151,26 +151,8 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	public title: string = 'New Project';
 	public defaultValue: number = Number.MAX_SAFE_INTEGER;
 
-	private story: IStory = {
-		title: '',
-		description: '',
-		id: -1,
-		deleted: false,
-		parentId: Number.MAX_SAFE_INTEGER,
-		childId: Number.MAX_SAFE_INTEGER,
-		storyFile: '',
-		typeId: Number.MAX_SAFE_INTEGER,
-		taskId: Number.MAX_SAFE_INTEGER,
-		created_at: UtilsService.timestamp,
-		updated_at: UtilsService.timestamp,
-	}
-	private character: ICharacter = {
-		created_at: UtilsService.timestamp,
-		updated_at: UtilsService.timestamp,
-		deleted: false,
-		name: '',
-		description: '',
-	};
+	private story: IStory = createStory();
+	private character: ICharacter = createCharacter();
 	private dialogue: IDialogue = createDialogue();
 
 	constructor(
@@ -217,7 +199,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	public onNewCharacterChange(event: string)
 	{
-		this.character.name = event;
+		this.character.name[this.selectedLanguage] = event;
 	}
 
 	public onSelectCharacter(event: number)
@@ -226,7 +208,9 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 		// Set the character name to the second form
 		const character: ICharacter = this.characters.find(this.story.parentId);
-		this.storyFormComponent.formContainer.set(this.storyCharacter.question.key, character ? character.name : '');
+		this.storyFormComponent.formContainer.set(
+			this.storyCharacter.question.key, character ? character.name[this.selectedLanguage] : '',
+		);
 	}
 
 	public cancelInsertCharacter()
@@ -253,9 +237,9 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 						this.story.parentId = data;
 					}
 
-					this.character.formContainer.set(this.characterList.question.key, this.story.parentId);
+					this.charFormComponent.formContainer.set(this.characterList.question.key, this.story.parentId);
 
-					setTimeout(() => this.dialogueList.selectComponent.selectedChange.emit(this.story.parentId), 500);
+					setTimeout(() => this.characterList.selectComponent.selectedChange.emit(this.story.parentId), 500);
 
 					this.characterList.setDisabledState(false);
 					this.characterName.hidden = true;
@@ -267,12 +251,15 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	protected getCharacterOptions(): Option<number>[]
 	{
 		const options: Option<number>[] = [];
-		this.characters.filteredData.forEach((pObj) => options.push(
-			new Option<number>({
-				key: pObj.id + '. ' + UtilsService.truncate(pObj.name, 50),
-				value: +pObj.id,
-				selected: false,
-			})),
+		this.characters.filteredData.forEach((pObj) =>
+		{
+			options.push(
+					new Option<number>({
+						key: pObj.id + '. ' + UtilsService.truncate(pObj.name[this.selectedLanguage], 50),
+						value: +pObj.id,
+						selected: false,
+			}))
+		},
 		);
 
 		return options;
@@ -282,12 +269,12 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	public onStoryTitleChanged(event: string)
 	{
-		this.story.title = event;
+		this.story.title[this.selectedLanguage] = event;
 	}
 
 	public onStoryDescriptionChanged(event: string)
 	{
-		this.story.description = event;
+		this.story.description[this.selectedLanguage] = event;
 	}
 
 	public createStory(): Promise<void|boolean>
@@ -347,6 +334,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	public insertDialogue()
 	{
 		const tblName = `tables/${this.dialogues.id}`;
+		this.firebaseService.setTblName(tblName);
 		this.firebaseService.insertData(tblName + '/data', this.dialogue, tblName)
 			.then((data) =>
 				{
@@ -450,7 +438,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 			errorText: 'Type in a description',
 			hidden: false,
 			required: true,
-			controlType: 'textbox',
+			controlType: 'textarea',
 			onKeyUpEvent: (event: string) => this.onStoryDescriptionChanged(event),
 		});
 

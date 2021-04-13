@@ -27,8 +27,6 @@ export class EditorComponent implements OnInit
 		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 		const id = map.get('id');
 
-		console.log(map);
-
 		// We need the project already to exists
 
 		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>

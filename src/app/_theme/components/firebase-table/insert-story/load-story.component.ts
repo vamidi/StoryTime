@@ -3,10 +3,12 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { ListResult } from '@angular/fire/storage/interfaces';
 import { Project } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import firebase from 'firebase/app';
 import { UtilsService } from '@app-core/utils';
+import firebase from 'firebase/app';
+
+const BASE_STORAGE_PATH: string = `node-editor/projects`;
 
 @Component({
 	selector: ' ngx-load-story',
@@ -42,7 +44,7 @@ export class LoadStoryComponent implements OnInit
 
 	public getTitle(idx: number): string
 	{
-		const metadata = this.metadata[idx];
+		const metadata: { customMetadata: any, name: string } = this.metadata[idx];
 		if(metadata)
 		{
 			const lastText = metadata.customMetadata.name.split('_').pop();
@@ -53,7 +55,7 @@ export class LoadStoryComponent implements OnInit
 	}
 
 	public stories: BehaviorSubject<firebase.storage.Reference[]> = new BehaviorSubject<firebase.storage.Reference[]>([]);
-	public metadata: { customMetadata: any }[] = [];
+	public metadata: { customMetadata: any, name: string }[] = [];
 
 	private project: Project = null;
 
@@ -65,21 +67,15 @@ export class LoadStoryComponent implements OnInit
 
 	public async ngOnInit(): Promise<void>
 	{
-		const httpOptions = {
-			headers: new HttpHeaders({
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-			}),
-			responseType: 'blob',
-		};
-
 		// get the all the files from the project.
 		this.firebaseStorage.ref(
-			'node-editor/stories',
+			`${BASE_STORAGE_PATH}/${this.project.id}/stories/`,
 		).listAll().toPromise().then((listResult: ListResult) => {
-			listResult.items.forEach(async (ref) => {
-				this.metadata.push(await ref.getMetadata());
-			})
+			listResult.items.forEach((ref) => {
+				ref.getMetadata().then((m) => {
+					this.metadata.push(m);
+				});
+			});
 			this.stories.next(listResult.items);
 		});
 	}
@@ -92,6 +88,6 @@ export class LoadStoryComponent implements OnInit
 			{
 				this.ref.close({ storyId: this.metadata[idx].customMetadata.storyID, data: text });
 			});
-		}, e => console.log(e))
+		}, e => console.log(e));
 	}
 }

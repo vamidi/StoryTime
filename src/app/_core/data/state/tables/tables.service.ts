@@ -227,7 +227,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 			});
 
 			this.items = new Map<string, Table>(this.tables);
-			this.pipelineService.run(this.name);
+			// this.pipelineService.run(this.name);
 		}
 
 		return table;
@@ -401,6 +401,10 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 	private updateTables(v: Table, key: string, map: Map<string, Table>): boolean
 	{
 		console.assert(map.size === this.tables.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.tables.size}`);
+
+		if(environment.production) // don't run in production
+			return;
+
 		let dirty: boolean;
 		dirty = this.updateTableVersion(key, v);
 		if(dirty)
@@ -437,10 +441,16 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 
 	private updateDialogueTblForLocalization(key, asset: Table)
 	{
-		if (asset.metadata.title === 'dialogues' || asset.metadata.title === 'dialogueOptions')
+		if (asset.metadata.title === 'dialogues' ||
+			asset.metadata.title === 'dialogueOptions' ||
+			asset.metadata.title === 'items' ||
+			asset.metadata.title === 'characters' ||
+			asset.metadata.title === 'stories')
 		{
 			if (this.tables.has(key))
 			{
+				console.log(`changing ${asset.metadata.title}`);
+
 				const entries = Object.entries(asset.data);
 				for (const [k, value] of entries)
 				{
@@ -455,9 +465,35 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 						asset.data[k].text = {
 							'en': value.text,
 						};
-						UtilsService.onDebug(asset.data[k]);
 					}
+
+					if (value.hasOwnProperty('name') && typeof value.name !== 'object') {
+						asset.data[k].name = {
+							'en': value.name,
+						};
+					}
+
+					if (value.hasOwnProperty('title') && typeof value.title !== 'object') {
+						asset.data[k].title = {
+							'en': value.title,
+						};
+					}
+
+					if (value.hasOwnProperty('description') && typeof value.description !== 'object') {
+						asset.data[k].description = {
+							'en': value.description,
+						};
+					}
+
+					if (value.hasOwnProperty('Sellable') && typeof value.text !== 'object') {
+						asset.data[k].sellable = value.Sellable;
+						delete asset.data[k].Sellable;
+					}
+
+					UtilsService.onDebug(asset.data[k]);
 				}
+
+				return true;
 			}
 		}
 

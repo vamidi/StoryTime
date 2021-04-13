@@ -202,10 +202,10 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			// load the character
 			if(res)
 			{
-				this.title = res.title;
-				this.textAreaQuestion.value = this.getDialogue(res.childId);
+				this.title = res.title[this.nodeEditorService.Language];
+				this.textAreaQuestion.value = this.getQuestionValue(res.childId, this.dialogues);
 				if (res.parentId !== Number.MAX_SAFE_INTEGER && this.characters.find(res.parentId)) {
-					this.charTextQuestion.value = this.characters.find(res.parentId).name;
+					this.charTextQuestion.value = this.getQuestionValue(res.parentId, this.characters, 'name');
 				}
 			}
 		}));
@@ -291,23 +291,26 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 
 	public newStory(): void
 	{
+		// TODO see also if the user has not save yet.
+		if (this.nodeEditorService.Editor.nodes.length > 0 && !confirm('Are you sure you want to create a new story?'))
+			return;
+
 		this.nodeEditorService.newStory(async (res?: IStory) =>
+		{
+			if(res !== undefined)
 			{
-				if(res !== undefined)
+				if(this.nodeEditorService.SelectedStory)
 				{
-					if(this.nodeEditorService.SelectedStory)
-					{
-						this.title = this.nodeEditorService.SelectedStory.title;
+					this.title = this.nodeEditorService.SelectedStory.title[this.nodeEditorService.Language];
 
-						// set the start node output data to the new story
-						this.textAreaQuestion.value = this.getDialogue(this.nodeEditorService.SelectedStory.childId);
+					// set the start node output data to the new story
+					this.textAreaQuestion.value = this.getQuestionValue(this.nodeEditorService.SelectedStory.childId, this.dialogues);
 
-						// and save it to the local storage
-						this.nodeEditorService.saveSnippet();
-					}
+					// and save it to the local storage
+					this.nodeEditorService.saveSnippet();
 				}
-			},
-		);
+			}
+		});
 	}
 
 	public onSelect(event: number)
@@ -357,14 +360,15 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			if(this.currentNode)
 			{
 				// change the current dialogue text area
-				this.textAreaQuestion.value = this.getDialogue(this.currentNode.data.dialogueId as number);
+				this.textAreaQuestion.value = this.getQuestionValue(this.currentNode.data.dialogueId as number, this.dialogues);
 
 				// Change the text of all the option in the current dialogue.
 				const optionMap = this.currentNode.data.options as OptionMap;
 				this.outputs.forEach((output, idx) => {
 					const hasOutput = output !== null;
-					this.optionTextAreaComponents[idx].question.value = this.getOption(
+					this.optionTextAreaComponents[idx].question.value = this.getQuestionValue(
 						hasOutput && optionMap.hasOwnProperty(output.key) ? optionMap[output.key].value : Number.MAX_SAFE_INTEGER,
+						this.tblDialogueOptions,
 					);
 				});
 
@@ -404,8 +408,9 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 				new Output(`optionOut-${this.currentOutputCount++}`, outputText, dialogueOptionSocket, false);
 
 			const optionMap = this.currentNode.data.options as OptionMap;
-			instance.question.value = this.getOption(
+			instance.question.value = this.getQuestionValue(
 				hasOutput && optionMap.hasOwnProperty(out.key) ? optionMap[out.key].value : Number.MAX_SAFE_INTEGER,
+				this.tblDialogueOptions,
 			);
 
 			const outputIdx = this.outputs.push(out);
@@ -421,25 +426,25 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 				const event: { data: ProxyObject, confirm?: any } = { data: createDialogueOption() };
 				this.insertFirebaseData(event)
 				.then((data) =>
+				{
+					UtilsService.showToast(
+						this.toastrService,
+						'Dialogue option added!',
+						'Dialogue option has successfully been created',
+					);
+
+					if(data && typeof data === 'number')
 					{
-						UtilsService.showToast(
-							this.toastrService,
-							'Dialogue option added!',
-							'Dialogue option has successfully been created',
+						this.onOptionSelected(instance.index, data);
+
+						instance.question.value = this.getQuestionValue(
+							hasOutput && optionMap.hasOwnProperty(out.key) ? optionMap[out.key].value : Number.MAX_SAFE_INTEGER,
+							this.tblDialogueOptions,
 						);
 
-						if(data && typeof data === 'number')
-						{
-							this.onOptionSelected(instance.index, data);
-
-							instance.question.value = this.getOption(
-								hasOutput && optionMap.hasOwnProperty(out.key) ? optionMap[out.key].value : Number.MAX_SAFE_INTEGER,
-							);
-
-							console.log(`new Dialogue: ${this.currentNode}`);
-						}
-					},
-				);
+						UtilsService.onDebug(`new Dialogue: ${this.currentNode}`);
+					}
+				});
 			}
 			/* TODO capture the changes in the options.
 			this.subs.push([
@@ -610,7 +615,8 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			}
 		});
 
-		this.nodeEditorService.listen(['nodetranslate', 'nodedeselected'], () => {
+		this.nodeEditorService.listen(['nodetranslate', 'nodedeselected'], () =>
+		{
 			const hide = this.timeoutShow;
 
 			if (hide && hide.cancel)
@@ -625,8 +631,9 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		});
 
 		// if we are done with dragging
-		this.nodeEditorService.listen('nodetranslated', ({ node, prev}: { node: Node, prev: [number, number] } ) => {
-			if(node.position === prev)
+		this.nodeEditorService.listen('nodetranslated', ({ node, prev}: { node: Node, prev: [number, number] } ) =>
+		{
+			if(node.position !== prev)
 				this.timeoutShow(node);
 		});
 
@@ -641,9 +648,11 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			let option: Option<number> | string;
 			// we are dialogue with dialogue options
 			if(outputNode.key.includes('option'))
-				option = this.getOption(outputNode.node.data.options[outputNode.key].value as number);
+				option = this.getQuestionValue(
+					outputNode.node.data.options[outputNode.key].value as number, this.tblDialogueOptions,
+				);
 			else
-				option = this.getDialogue(outputNode.node.data.dialogueId as number);
+				option = this.getQuestionValue(outputNode.node.data.dialogueId as number, this.dialogues);
 
 			this.textQuestion.value = option;
 		});
@@ -904,7 +913,7 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		{
 			this.nonStartNode = true;
 			this.textAreaQuestion.text = 'Dialogue';
-			this.textAreaQuestion.value = this.getDialogue(node.data.dialogueId as number);
+			this.textAreaQuestion.value = this.getQuestionValue(node.data.dialogueId as number, this.dialogues);
 
 			// create the options
 			if(this.currentNode.outputs.size)
@@ -930,6 +939,8 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 		}
 		else {
 			this.nonStartNode = false;
+			this.textAreaQuestion.text = 'Start dialogue';
+			this.textAreaQuestion.value = this.getQuestionValue(node.data.dialogueId as number, this.dialogues);
 		}
 
 		// TODO enable code if use of dialogue option node.
@@ -951,48 +962,33 @@ export class NodeEditorComponent extends BaseFirebaseComponent implements OnInit
 			// we are dialogue with dialogue options
 			if(outputNode.key.includes('option'))
 			{
-				option = this.getOption(outputNode.node.data.options[outputNode.key].value as number);
+				option = this.getQuestionValue(
+					outputNode.node.data.options[outputNode.key].value as number, this.tblDialogueOptions,
+				);
 			}
 			else {
-				option = this.getDialogue(outputNode.node.data.dialogueId as number);
+				option = this.getQuestionValue(outputNode.node.data.dialogueId as number, this.dialogues);
 			}
 		}
 
 		this.textQuestion.value = option;
 	}
 
-	protected getDialogue(dialogueId: number): string
+	protected getQuestionValue(id: number, list: Table, key: string = 'text'): string
 	{
-		if(!this.textAreaQuestion) return '';
+		const value = list.find(id);
 
-		const dialogue: IDialogue = this.dialogues.find(dialogueId);
-
-		if(dialogue)
+		if(value)
 		{
-			const defaultText = dialogue.text['en'];
-			if(!dialogue.text.hasOwnProperty(this.nodeEditorService.Language))
+			const defaultText = value[key]['en'];
+			if(!value[key].hasOwnProperty(this.nodeEditorService.Language))
 				return defaultText ? `{ DEFAULT: ${ defaultText } }` : 'Localization not found';
 
-			return dialogue.text[this.nodeEditorService.Language];
+			return value[key][this.nodeEditorService.Language];
 		}
 
 		return '';
-	}
 
-	protected getOption(optionId: number): string
-	{
-		const option: IDialogueOption = this.tblDialogueOptions.find(optionId);
-
-		if(option)
-		{
-			const defaultText = option.text['en'];
-			if(!option.text.hasOwnProperty(this.nodeEditorService.Language))
-				return defaultText ? `{ DEFAULT: ${ defaultText } }` : 'Localization not found';
-
-			return option.text[this.nodeEditorService.Language];
-		}
-
-		return '';
 	}
 
 	protected loadDifferentLanguage<T extends ProxyObject = ProxyObject>(options: Option<number>[], tableRef: Table<T>)

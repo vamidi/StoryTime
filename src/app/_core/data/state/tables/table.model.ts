@@ -173,8 +173,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	 */
 	public push(id: number, obj: T): Promise<T>
 	{
-		if(this.data[id])
-			throw new Error(`${this.metadata.title}: Element already exist in this table`);
+		if(this.data[id]) throw new Error(`${this.metadata.title}: Element already exist in this table ${id}`);
 
 		obj['id'] = id;
 		this.data[id] = obj;

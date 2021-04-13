@@ -36940,6 +36940,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
         type: 3}
+      propertyPath: startCrafting
+      value: 
+      objectReference: {fileID: 11400000, guid: 89541e88e0771154bb2567760ccb3c89,
+        type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
       propertyPath: onObjectPickUp
       value: 
       objectReference: {fileID: 11400000, guid: fbe732b7105cd6c4391502b5461a34c9,
@@ -36955,6 +36961,24 @@ PrefabInstance:
       propertyPath: onStoryScreenCloseEvent
       value: 
       objectReference: {fileID: 11400000, guid: bc247f6b0b2d29e429f531621e242426,
+        type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
+      propertyPath: onCloseCookingScreenEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 8981a85d3940f6b4c89f133621e62664,
+        type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
+      propertyPath: onInventoryScreenOpenEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 43271c4511aa8d94881f3fb38cf7430f,
+        type: 2}
+    - target: {fileID: 8953430744842566978, guid: 483778ca9fd0abf44a9f1588041f185d,
+        type: 3}
+      propertyPath: onCloseInventoryScreenEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 436eba4e5a7cce740bb19ca6153e0827,
         type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 483778ca9fd0abf44a9f1588041f185d, type: 3}

@@ -4,33 +4,32 @@ import { ProxyObject } from '@app-core/data/base';
 import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import { Data as VisualNEData } from 'visualne/types/core/data';
-import { environment } from '../../../environments/environment';
-import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 
 export interface IDialogue extends ProxyObject
 {
 	characterId: number,
 	nextId: number,
 	parentId: number,
-	text: { [key in KeyLanguage]?: string },
+	text: KeyLanguageObject,
 }
 
 export interface IDialogueOption extends ProxyObject
 {
 	childId: number,
 	parentId: number,
-	text: { [key in KeyLanguage]?: string },
+	text: KeyLanguageObject,
 }
 
 export interface IStory extends ProxyObject
 {
-	parentId: number; 		// character ID
-	childId: number; 		// dialogue start node
-	description: string; 	// description of the story
-	title: string;			// title of the story
-	storyFile: string		// location of the file that describes the nodes.
-	typeId: number, 		// type of quest it is main story or somethings different, the player decide.
-	taskId: number,			// Where the first task is.
+	parentId: number; 					// character ID
+	childId: number; 					// dialogue start node
+	description: KeyLanguageObject; 	// description of the story
+	title: KeyLanguageObject;			// title of the story
+	storyFile: string					// location of the file that describes the nodes.
+	typeId: number, 					// type of quest it is main story or somethings different, the player decide.
+	taskId: number,						// Where the first task is.
 }
 
 export interface IStoryData
@@ -41,17 +40,15 @@ export interface IStoryData
 
 export interface ICharacter extends ProxyObject
 {
-	name: string;
-	description: string;
+	name: KeyLanguageObject;
+	description: KeyLanguageObject;
 }
 
-export const standardTablesDescription: Map<string, string> = new Map<string, string>([
-
-]);
+export const standardTablesDescription: Map<string, string> = new Map<string, string>([]);
 
 export const standardTables: Map<string, TableTemplate> = new Map<string, TableTemplate>([
 	// Dialogues
-	Pair('dialogues', {
+	Pair<string, { [key: number]: IDialogue }>('dialogues',{
 		0: {
 			deleted: false,
 			characterId: 0,
@@ -63,10 +60,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			options: '',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Items
@@ -77,41 +70,36 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			effectTypeId: 0,
 			name: '',
 			sellValue: 0,
-			Sellable: true,
+			sellable: true,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// characters
-	Pair( 'characters', 	{
+	Pair<string, { [key: number]: ICharacter }>( 'characters', 	{
 		0: {
 			deleted: false,
-			name: '',
+			name: {
+				'en': '',
+			},
+			description: {
+				'en': '',
+			},
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Dialogue Options
-	Pair( 'dialogueOptions', 	{
+	Pair<string, { [key: number]: IDialogueOption }>( 'dialogueOptions', 	{
 		0: {
 			deleted: false,
 			childId: 0,
 			parentId: 0,
-			Text: '',
+			text: {
+				'en': '',
+			},
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Dialogue Option Events
@@ -124,10 +112,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			value: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// QuestTypes
@@ -137,20 +121,12 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: 'Main',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		1: {
 			deleted: false,
 			name: 'Sub',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	Pair('nonPlayableCharacters', {
@@ -160,10 +136,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			description: 'Just a plain non playable character',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Reward types
@@ -173,10 +145,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: 'None',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Quest Events
@@ -188,30 +156,26 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			value: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Stories / Quests
 	// Stories does not need to contain a quest.
-	Pair( 'stories',{
+	Pair<string, { [key: number]: IStory }>( 'stories',{
 		0: {
 			deleted: false,
 			childId: 0, 						// the dialogue is will start
-			description: '', 					// description what the player will face in the quest
+			description: {
+				'en': '',
+			}, 									// description what the player will face in the quest
 			parentId: 0, 						// the character that we can grab from the character table.
-			title: '', 							// the title of the quest
+			title: {
+				'en': '',
+			}, 									// the title of the quest
 			typeId: 0, 							// type of quest it is main story or somethings different, the player decide.
 			taskId: Number.MAX_SAFE_INTEGER,	// Where the first task is.
 			storyFile: '',						// Location of the story file
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	/* TODO see if we need this
@@ -238,10 +202,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			typeId: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Task completion types
@@ -251,60 +211,36 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: 'Collect',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		1: {
 			deleted: false,
 			name: 'Defeat',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		2: {
 			deleted: false,
 			name: 'Talk',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		3: {
 			deleted: false,
 			name: 'Collect',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		4: {
 			deleted: false,
 			name: 'Interact',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 		5: {
 			deleted: false,
 			name: 'Defend',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Task events
@@ -317,10 +253,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Effect types
@@ -330,10 +262,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: 'None',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Shops
@@ -344,10 +272,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			parentId: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Shop craftables
@@ -360,10 +284,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			value: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Shop craft conditions
@@ -375,10 +295,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			parentId: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Enemies
@@ -389,10 +305,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			category: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 	// Enemy categories
@@ -402,10 +314,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: '',
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
-
-			major: environment.MAJOR,
-			minor: environment.MINOR,
-			patch: environment.PATCH,
 		},
 	}),
 

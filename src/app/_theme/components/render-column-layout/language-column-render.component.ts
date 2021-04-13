@@ -100,7 +100,7 @@ export class LanguageColumnRenderComponent extends DefaultEditor implements OnIn
 	// TODO this data should be automatic for relation ship columns
 	ngOnInit(): void
 	{
-		const value: KeyLanguageObject = this.cell.getValue() as KeyLanguageObject;
+		let value: KeyLanguageObject = <KeyLanguageObject>this.cell.getValue() as KeyLanguageObject;
 		if(value !== null)
 		{
 			// Set to default value first
@@ -110,6 +110,9 @@ export class LanguageColumnRenderComponent extends DefaultEditor implements OnIn
 					return;
 
 				this.selectedLanguage = lang;
+
+				if(typeof value === 'string') value = { en: '' };
+
 				if(!value.hasOwnProperty(lang))
 					value[lang] = '';
 

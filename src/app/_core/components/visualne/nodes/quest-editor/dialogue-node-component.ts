@@ -23,8 +23,8 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 			node.data.options = <OptionMap>{};
 
 		node
-			.addInput(new Input('dialogueIn', 'In ID [NULL]', dialogueSocket, false))
-			.addOutput(new Output('dialogueOut', 'Out ID [NULL]' , dialogueSocket, true),
+			.addInput(new Input('dialogueIn', 'In ID [NULL]', dialogueSocket, true))
+			.addOutput(new Output('dialogueOut', 'Out ID [NULL]' , dialogueSocket, false),
 		);
 
 		const options = Object.keys(node.data.options as OptionMap);

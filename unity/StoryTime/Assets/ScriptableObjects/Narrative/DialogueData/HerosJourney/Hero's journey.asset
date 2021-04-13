@@ -25,15 +25,20 @@ MonoBehaviour:
   actor: {fileID: 11400000, guid: 2519bba1230af58458cbc5af932a827d, type: 2}
   title:
     m_TableReference:
-      m_TableCollectionName: GUID:880a163e3a20fbb48aa71546d89bb0e7
+      m_TableCollectionName: GUID:ef1106854641cea41ae5a5e6a76b2bf9
+    m_TableEntryReference:
+      m_KeyId: 1
+      m_Key: 
+    m_FallbackState: 0
+  description:
+    m_TableReference:
+      m_TableCollectionName: 
     m_TableEntryReference:
       m_KeyId: 0
       m_Key: 1
     m_FallbackState: 0
-  description: The hero will start on his first journey
   characterName: 
   characterID: 4294967295
   parentId: 4294967295
   childId: 0
   typeId: 1
-  collection: {fileID: 11400000, guid: 7e79bbf442b560d44ad256d5d61e4a22, type: 2}

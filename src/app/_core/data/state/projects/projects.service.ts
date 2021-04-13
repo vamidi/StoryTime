@@ -472,6 +472,10 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 	private updateProject(v: Project, key: string, map: Map<string, Project>): boolean
 	{
 		console.assert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
+
+		if(environment.production) // don't run in production
+			return;
+
 		let dirty;
 		dirty = this.updateProjectVersion(key, v);
 		if(dirty)

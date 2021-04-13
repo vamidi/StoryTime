@@ -1,31 +1,39 @@
 import { Injectable } from '@angular/core';
+
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
+
 import { Component, Engine, NodeEditor, Plugin } from 'visualne';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { Data } from 'visualne/types/core/data';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
 import { SelectionPlugin, SelectionParams } from 'visualne-selection-plugin';
 import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ConnectionPlugin } from 'visualne-connection-plugin';
+
+import { FirebaseService } from '@app-core/utils/firebase.service';
 import { DebouncedFunc } from '@app-core/types';
 import { Project } from '@app-core/data/state/projects';
 import { ProjectsService } from '@app-core/data/state/projects/projects.service';
 import { InsertStoryComponent, LoadStoryComponent } from '@app-theme/components/firebase-table';
 import { ICharacter, IDialogue, IStory, IStoryData } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
-import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Table } from '@app-core/data/state/tables';
-import { Data } from 'visualne/types/core/data';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { finalize, tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
 
 import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
+
+// Path to the storage bucket
+// TODO add version control
+const BASE_STORAGE_PATH: string = `node-editor/projects`;
 
 @Injectable()
 export class NodeEditorService
@@ -94,7 +102,6 @@ export class NodeEditorService
 
 	// Firebase settings
 	protected firebaseUploadTask: AngularFireUploadTask;
-	protected snapshot: Observable<UploadTaskSnapshot>;
 
 	private localStorageName = 'localStory@0.2.0';
 
@@ -102,7 +109,7 @@ export class NodeEditorService
 		{ characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue> } = null;
 
 	private insertStoryRef: NbDialogRef<InsertStoryComponent> = null;
-	private insertSub: Subscription = new Subscription();
+	private mainSubscription: Subscription = new Subscription();
 
 	private selectedLanguage$: BehaviorSubject<KeyLanguage> = new BehaviorSubject<KeyLanguage>('en');
 	private selectedLanguage: KeyLanguage = 'en';
@@ -273,7 +280,8 @@ export class NodeEditorService
 				{
 					// we need to create a new field
 					// instantiate a new editor
-					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title}`);
+					// TODO make the user able to save the story with the name they want
+					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
 
 					// save it in FireStorage as well for later access
 					this.nodeEditor.fromJSON(data).then(() =>
@@ -291,7 +299,7 @@ export class NodeEditorService
 						UtilsService.showToast(
 							this.toastrService,
 							'Story Loaded',
-							`${this.selectedStory.title} loaded!`,
+							`${ this.selectedStory.title[this.selectedLanguage] } loaded!`,
 						);
 
 						this.nodeEditor.trigger('process');
@@ -302,13 +310,11 @@ export class NodeEditorService
 					UtilsService.onError(`Story ${res.storyId} can\'t be found`);
 			}
 
-			if(onClose)
-				onClose(res);
-
-			this.insertSub.remove(closeFunc);
+			if(onClose) onClose(res);
+			this.mainSubscription.remove(closeFunc);
 		});
 
-		this.insertSub.add(closeFunc);
+		this.mainSubscription.add(closeFunc);
 	}
 
 	public saveStory()
@@ -318,38 +324,34 @@ export class NodeEditorService
 
 		// call the function again. Now with this we make sure it is now saving over and over again.
 		this.saveSnippet();
-		this.uploadToStorage();
-
-		this.snapshot.subscribe((snapshot) => {
+		const sub = this.uploadToStorage().subscribe((snapshot) =>
+		{
 			// When we have uploaded the story.
 			if(!this.isActive(snapshot))
 			{
-				snapshot.ref.getDownloadURL().then(
-					(URL: string) => {
-						const event: { data: IStory, newData: IStory, confirm?: any } = {
-							data: this.selectedStory,
-							newData: {
-								...this.selectedStory,
-								// override storyFile
-								storyFile: URL,
-							},
-						};
+				const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/stories/${this.fileName}.json`;
 
-						const oldObj: IStory = event.hasOwnProperty('data') ? { ...event.data } : null;
-						const obj: IStory = { ...event.newData };
+				const event: { data: IStory, newData: IStory, confirm?: any } = {
+					data: this.selectedStory,
+					newData: {
+						...this.selectedStory,
+						// override storyFile
+						storyFile: path,
+					},
+				};
 
-						if(isEqual(event.data, event.newData))
-						{
-							return;
-						}
+				const oldObj: IStory = event.hasOwnProperty('data') ? { ...event.data } : null;
+				const obj: IStory = { ...event.newData };
 
-						const tableName = `tables/${this.data.stories.id}`;
-						return this.firebaseService.updateData(
-							event.newData.id, tableName + '/revisions', obj, oldObj, tableName + '/data');
-					}
-					, e => UtilsService.onError(e));
+				if(isEqual(event.data, event.newData))
+					return;
+
+				const tableName = `tables/${this.data.stories.id}`;
+				return this.firebaseService.updateData(
+					event.newData.id, tableName + '/revisions', obj, oldObj, tableName + '/data');
 			}
 		});
+		this.mainSubscription.add(sub);
 	}
 
 	public newStory(onClose?: (res?: IStory) => void)
@@ -364,16 +366,18 @@ export class NodeEditorService
 			},
 		});
 
-		this.insertSub.add(this.insertStoryRef.onClose.subscribe((res: IStory) =>
+		const sub = this.insertStoryRef.onClose.subscribe((res: IStory) =>
 		{
 			if(res !== undefined)
 			{
 				this.selectedStory = this.data.stories.find(res.id);
 				if(this.selectedStory)
 				{
+					this.nodeEditor.clear();
+
 					// we need to create a new field
 					// instantiate a new editor
-					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title}`);
+					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
 
 					this.components[0].createNode().then((startNode) =>
 					{
@@ -397,12 +401,12 @@ export class NodeEditorService
 				}
 			}
 
-			if(onClose)
-				onClose(res);
+			if(onClose) onClose(res);
 
 			this.insertStoryRef = null;
-			this.insertSub.unsubscribe();
-		}));
+			this.mainSubscription.remove(sub);
+		});
+		this.mainSubscription.add(sub);
 
 		return this.insertStoryRef;
 	}
@@ -471,10 +475,10 @@ export class NodeEditorService
 		this.storyLoaded.next(null);
 
 		// maybe we have still an subscription
-		if(!this.insertSub.closed) this.insertSub.unsubscribe();
+		if(!this.mainSubscription.closed) this.mainSubscription.unsubscribe();
 	}
 
-	protected uploadToStorage()
+	protected uploadToStorage(): Observable<any>
 	{
 		// convert your object into a JSON-string
 		const jsonString = JSON.stringify(this.nodeEditor.toJSON());
@@ -482,21 +486,18 @@ export class NodeEditorService
 		// create a Blob from the JSON-string
 		const blob = new Blob([jsonString], { type: 'application/json' });
 
-		// Path to the storage bucket
-		// TODO add version control
-		const path: string = `node-editor/stories/${this.fileName}.json`;
+		const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/stories/${this.fileName}.json`;
 
 		this.firebaseUploadTask = this.firebaseStorage.upload(path, blob, {
 			customMetadata: {
-				name: this.fileName,
-				projectID: this.project.id,
-				storyID: `${ this.selectedStory.id }`,
+				name: this.fileName, // name of the file without json
+				projectID: this.project.id, // project id
+				storyID: `${ this.selectedStory.id }`, // story id
 			},
 		});
 
 		this.firebaseUploadTask.percentageChanges();
-		this.snapshot = this.firebaseUploadTask.snapshotChanges().pipe(
-			tap(UtilsService.onDebug),
+		return this.firebaseUploadTask.snapshotChanges().pipe(
 			finalize(() =>
 			{
 				UtilsService.showToast(

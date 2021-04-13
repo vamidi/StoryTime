@@ -137,7 +137,7 @@ export const CUSTOM_PROVIDERS = [
 		AngularFireAuthModule,
 		AngularFireFunctionsModule,
 		AngularFireStorageModule,
-		AngularFireModule.initializeApp(environment.firebase, 'management-buas'),
+		AngularFireModule.initializeApp(environment.firebase),
 
 		NgxsModule.forRoot([
 			AppState,
