@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { QuestsSmartTableService } from '@app-core/mock/quests-smart-table.service';
-import { FirebaseService } from '@app-core/utils/firebase.service';
-import { AssociatedRelation, FirebaseRelationService, TableRelation } from '@app-core/utils/firebase-relation.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { AssociatedRelation, FirebaseRelationService, TableRelation } from '@app-core/utils/firebase/firebase-relation.service';
 import { NbDialogService, NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { UtilsService } from '@app-core/utils';
@@ -14,7 +14,7 @@ import { ChangeTableSettingsComponent } from '@app-theme/components/firebase-tab
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { TableOverviewEventsComponent } from './table-overview-events.component';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';

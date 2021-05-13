@@ -30,9 +30,9 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('item-editor')">
 			<nb-card-header>
-				Quest Editor
+				Item Editor
 			</nb-card-header>
 			<nb-card-body>
 				<p>In this module you can create or change existing quests.</p>

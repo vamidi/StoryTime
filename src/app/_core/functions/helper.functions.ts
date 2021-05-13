@@ -1,4 +1,4 @@
-import { ICharacter, IDialogue, IDialogueOption, IStory } from '@app-core/data/standard-tables';
+import { ICharacter, ICraftable, IDialogue, IDialogueOption, IItem, IStory } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
 
 export function Pair<K, V>(k: K, v: V): readonly [K, V] { return [k, v] }
@@ -66,4 +66,36 @@ export function createCharacter(): ICharacter
 			'en': '',
 		},
 	};
+}
+
+export function createItem(): IItem
+{
+	return {
+		deleted: false,
+		effectPrimaryValue: 0,
+		effectTypeId: 0,
+		name: {
+			'en': '',
+		},
+		description: {
+			'en': '',
+		},
+		sellValue: 0,
+		sellable: true,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+	};
+}
+
+export function createCraftable(): ICraftable
+{
+	return {
+		deleted: false,
+		childId: 0,
+		parentId: 0,
+		shopRevisionId: 0,
+		value: 0,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+	}
 }

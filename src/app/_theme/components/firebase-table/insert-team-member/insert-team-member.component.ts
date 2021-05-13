@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@a
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { Observable, of } from 'rxjs';
 import { debounceTime, switchMap, map, startWith } from 'rxjs/operators';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ButtonFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components/form';
 import { Option } from '@app-core/data/forms/form-types';
 import { NbDialogRef } from '@nebular/theme';

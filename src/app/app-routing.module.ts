@@ -11,6 +11,7 @@ import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.compone
 
 import {
 	// hasCustomClaim,
+	// NbAngularPrismaAuthGuard,
 	AngularFireAuthGuard,
 	redirectUnauthorizedTo,
 	redirectLoggedInTo,
@@ -18,7 +19,7 @@ import {
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
 import { NgxInviteComponent } from './pages/invitation/invite.component';
-// import { HomeComponent } from './home.component';
+import { HomeComponent } from './home.component';
 
 // const adminOnly = () => hasCustomClaim('admin');
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth/login']);
@@ -26,16 +27,16 @@ const redirectLoggedInToDatabase = () => redirectLoggedInTo(['dashboard/']);
 // const belongsToAccount = (next) => hasCustomClaim(`account-${next.params.id}`);
 
 const routes: Routes = [
-	/*{
+	{
 		path: '',
 		component: HomeComponent,
-	},*/
+	},
 	{
 		path: 'dashboard',
 		component: DashboardComponent,
 		loadChildren: () => import('./dashboard/dashboard.module')
 			.then(m => m.DashboardModule),
-		canActivate: [ AngularFireAuthGuard ],
+		canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
 		data: { authGuardPipe: redirectUnauthorizedToLogin },
 	},
 	// {
@@ -52,13 +53,13 @@ const routes: Routes = [
 			{
 				path: '',
 				component: NgxFirebaseLoginComponent,
-				canActivate: [ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
 				data: { authGuardPipe: redirectLoggedInToDatabase },
 			},
 			{
 				path: 'login',
 				component: NgxFirebaseLoginComponent,
-				canActivate: [ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
 				data: { authGuardPipe: redirectLoggedInToDatabase },
 			},
 			{
@@ -77,7 +78,7 @@ const routes: Routes = [
 			{
 				path: 'reset-password',
 				component: NbResetPasswordComponent,
-				canActivate: [ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
 				data: { authGuardPipe: redirectUnauthorizedToLogin },
 			},
 		],
@@ -85,7 +86,7 @@ const routes: Routes = [
 	{
 		path: 'invite',
 		component: NgxInviteComponent,
-		canActivate: [ AngularFireAuthGuard ],
+		canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
 		data: { authGuardPipe: redirectUnauthorizedToLogin },
 	},
 	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },

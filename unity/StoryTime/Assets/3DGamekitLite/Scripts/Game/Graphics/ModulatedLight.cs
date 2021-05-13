@@ -7,7 +7,6 @@ namespace Gamekit3D
     [RequireComponent(typeof(Light))]
     public class ModulatedLight : MonoBehaviour
     {
-
         public enum ModulationType
         {
             Sine, Triangle, Perlin, Random

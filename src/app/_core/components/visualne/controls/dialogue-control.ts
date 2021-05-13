@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Control } from 'visualne';
 import { AngularControl } from 'visualne-angular-plugin';
-import { FirebaseService } from '../../../utils/firebase.service';
+import { FirebaseService } from '../../../utils/firebase/firebase.service';
 import { UtilsService } from '../../../utils';
 import { NbToastrService } from '@nebular/theme';
 // import * as uuid from 'uuid';

@@ -1,0 +1,70 @@
+<div class="row">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-lg-12">
+		<nb-card>
+			<nb-card-header class="row">
+				<div class="col-7">
+					<h4>Node Editor - {{ title }}</h4>
+				</div>
+				<div class="col-5">
+					<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info"><i class="edit-column nb-edit"></i></button>
+					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="loadCraftable()">Load</button>
+					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="saveCraftable()">Save</button>
+					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="newCraftable()">New</button>
+					<nb-select size="large" selected="en" style="width: 10rem;margin-right:10px;font-size: 24px;"
+					           (selectedChange)="onLanguageChange($event)">
+						<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+					</nb-select>
+				</div>
+			</nb-card-header>
+		</nb-card>
+	</div>
+	<div class="wrapper">
+		<div class="side-panel left open" #leftSidePanel>
+			<nb-card class="h-100">
+				<nb-card-header>
+					Item
+					<button nbButton ghost status="success" (click)="insertItem()">
+						<nb-icon icon="plus-outline"></nb-icon>
+					</button>
+				</nb-card-header>
+				<nb-card-body>
+					<!-- All fields of the selected item -->
+					<ngx-dynamic-form [source]="Source" [showLabels]="true"></ngx-dynamic-form>
+				</nb-card-body>
+				<nb-card-footer>
+					<ngx-button-field #submitQuestion (onSubmitFunc)="updateItem()"></ngx-button-field>
+				</nb-card-footer>
+			</nb-card>
+			<!-- Item dropdown -->
+			<!-- Button with save and new -->
+		</div>
+		<div class="side-panel right" #sidePanel>
+			<nb-card class="h-100">
+				<nb-card-header>
+					<button nbButton ghost status="basic">
+						<nb-icon icon="expand"></nb-icon>
+					</button>
+					<h6>{{ nodeTitle }}</h6>
+				</nb-card-header>
+				<nb-card-body>
+					<!-- If normal item then we have to specify the following -->
+					<!-- items that we can select -->
+					<div class="form-group {{ itemListQuestion.groupCss }}">
+						<label class="formHeading" for="{{ itemListQuestion.key }}--dropdown">{{ itemListQuestion.text }}</label>
+						<nb-select id="{{ itemListQuestion.key }}--dropdown"
+						          nbInput fullWidth
+						          [selected]="itemListQuestion.value"
+						          (selectedChange)="pickItem($event)">
+						</nb-select>
+						<button nbButton fullWidth status="success" class="mt-2" (click)="updateItem()">Save</button>
+					</div>
+				</nb-card-body>
+			</nb-card>
+		</div>
+		<div #nodeEditor class="node-editor"></div>
+	</div>
+	<div class="col-md-12"></div>
+</div>

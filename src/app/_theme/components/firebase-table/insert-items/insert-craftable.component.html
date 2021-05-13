@@ -1,0 +1,25 @@
+<nb-card status="primary" size="giant">
+	<nb-card-body>
+		<!-- we need to create an craftable item -->
+		<nb-stepper #stepper [linear]="true">
+			<nb-step #craftStepper label="Craftable Item">
+
+				<!-- Craftable form -->
+
+				<ngx-dynamic-form #craftFormComponent [source]="craftHandler.source" [showLabels]="true">
+					<!-- (onSendForm)="onSendForm()" -->
+				</ngx-dynamic-form>
+			</nb-step>
+			<nb-step [hidden]="true">
+				<div class="step-container">
+					<h3>Craftable Generated!</h3>
+					<button nbButton status="success" class="mr-2" (click)="dismiss()">Close</button><!-- TODO TIMER {{ timer}} -->
+					<button nbButton status="info" (click)="stepper.reset()">New craftable</button>
+				</div>
+			</nb-step>
+		</nb-stepper>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton fullWidth status="danger" (click)="Ref.close()">Close form</button>
+	</nb-card-footer>
+</nb-card>

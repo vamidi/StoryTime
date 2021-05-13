@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { User } from '@app-core/data/state/users';
 import { Observable } from 'rxjs';
 import { UtilsService } from '@app-core/utils';

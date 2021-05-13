@@ -26,12 +26,20 @@ $grid-size: 20px;
 			height: 100%;
 			position: absolute;
 			background: #fff;
-			right: 0;
 			z-index: 999;
 			visibility: collapse;
 
-			border-top-left-radius: 20px;
-			border-bottom-left-radius: 20px;
+			&.left {
+				left: 0;
+				border-top-right-radius: 20px;
+				border-bottom-right-radius: 20px;
+			}
+
+			&.right {
+				right: 0;
+				border-top-left-radius: 20px;
+				border-bottom-left-radius: 20px;
+			}
 
 			&.open {
 				visibility: visible;

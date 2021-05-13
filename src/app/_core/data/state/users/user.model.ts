@@ -1,5 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UtilsService } from '@app-core/utils/utils.service';
+import firebase from 'firebase/app';
 
 export interface IUserTicket
 {
@@ -109,6 +110,42 @@ export class UserModel implements User
 
 export abstract class UserData
 {
+	/**
+	 * Checks whether the user is a super user.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get isSuper(): boolean;
+
+	/**
+	 * Checks whether the user is a admin user.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get isAdmin(): boolean;
+
+	/**
+	 * Checks whether the user is able to read certain data.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get canRead(): boolean;
+
+	/**
+	 * Checks whether the user is able to edit certain data.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get canEdit(): boolean;
+
+	/**
+	 * Checks whether the user is able to delete certain data.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get canDelete(): boolean;
+
+	/**
+	 * Checks whether the user is verified.
+	 * @return {boolean} returns true if user meets condition.
+	 */
+	abstract get isVerified();
+
 	abstract getUser(): BehaviorSubject<UserModel>; // Observable<UserModel>;
 
 	abstract getMembers(): Observable<User[]>;

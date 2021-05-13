@@ -14,7 +14,7 @@ import { NbSelectComponent, NbToastrService } from '@nebular/theme';
 // import * as uuid from 'uuid';
 
 import { Subject } from 'rxjs';
-import { FirebaseService } from '../../../utils/firebase.service';
+import { FirebaseService } from '../../../utils/firebase/firebase.service';
 import { UtilsService } from '../../../utils';
 import { DebugType } from '../../../utils/utils.service';
 import assign from 'lodash.assign';

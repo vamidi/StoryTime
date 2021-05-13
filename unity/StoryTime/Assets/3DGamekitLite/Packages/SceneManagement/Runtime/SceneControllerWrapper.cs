@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
+using DatabaseSync.Components;
+
 namespace Gamekit3D
 {
-    public class SceneControllerWrapper : MonoBehaviour
+	public class SceneControllerWrapper : MonoBehaviour
     {
         public void RestartZone(bool resetHealth)
         {

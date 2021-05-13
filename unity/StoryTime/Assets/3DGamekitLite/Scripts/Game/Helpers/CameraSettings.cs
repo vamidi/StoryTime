@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
@@ -46,7 +44,7 @@ namespace Gamekit3D
             if (controllerCameraTransform != null)
                 controllerCamera = controllerCameraTransform.GetComponent<CinemachineFreeLook>();
 
-            PlayerController playerController = FindObjectOfType<PlayerController>();
+            DatabaseSync.Components.PlayerController playerController = FindObjectOfType<DatabaseSync.Components.PlayerController>();
             if (playerController != null && playerController.name == "Ellen")
             {
                 follow = playerController.transform;

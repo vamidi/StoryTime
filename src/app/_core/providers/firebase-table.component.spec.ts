@@ -2,7 +2,7 @@ import { async, TestBed, inject, tick, fakeAsync, ComponentFixture } from '@angu
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FirebaseTableComponent } from './firebase-table/firebase-table.component';
-import { FirebaseService } from '../../_core/utils/firebase.service';
+import { FirebaseService } from '../utils/firebase/firebase.service';
 
 
 describe('FirebaseService', () => {

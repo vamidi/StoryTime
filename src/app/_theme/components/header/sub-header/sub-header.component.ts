@@ -1,9 +1,7 @@
 import { AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import {
-	ChangeProjectSettingsComponent,
-	InsertProjectComponent,
-	InsertTableComponent,
-} from '@app-theme/components/firebase-table';
+import { ChangeProjectSettingsComponent } from '@app-theme/components/firebase-table/change-project-settings/change-project-settings.component';
+import { InsertProjectComponent } from '@app-theme/components/firebase-table/insert-project/insert-project.component';
+import { InsertTableComponent } from '@app-theme/components/firebase-table/insert-table/insert-table.component';
 import { BehaviourType } from '@app-core/types';
 import { NbDialogService } from '@nebular/theme';
 import { User, UserModel, defaultUser } from '@app-core/data/state/users';

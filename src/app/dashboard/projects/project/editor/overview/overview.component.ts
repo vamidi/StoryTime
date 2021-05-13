@@ -1,11 +1,11 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
 	InsertMultipleDialogComponent,
 } from '@app-theme/components/firebase-table/insert-multiple-items/insert-multiple-dialog.component';
 import { NbDialogService, NbMenuService, NbToastrService } from '@nebular/theme';
-import { FirebaseRelationService, TableRelation } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService, TableRelation } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { BaseSettings } from '@app-core/mock/base-settings';
 
@@ -15,7 +15,7 @@ import { BehaviourType } from '@app-core/types';
 import { InsertColumnComponent } from '@app-theme/components/firebase-table/insert-column/insert-column.component';
 import { BehaviorSubject } from 'rxjs';
 import { FirebaseTableComponent } from '@app-theme/components/firebase-table/firebase-table.component';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';

@@ -16,13 +16,12 @@ import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { InsertTeamMemberComponent } from '@app-theme/components/firebase-table/insert-team-member/insert-team-member.component';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { UserService } from '@app-core/data/state/users';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { Revision } from '@app-core/data/state/tables';
 import { TablesService } from '@app-core/data/state/tables';
 
-import { IUserTicket, Roles, UserModel } from '@app-core/data/state/users';
+import { IUserTicket, UserData, Roles, UserModel, UserService } from '@app-core/data/state/users';
 import { LanguageService, Project } from '@app-core/data/state/projects';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Option } from '@app-core/data/forms/form-types';

@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, of, of as observableOf, Subscription } fro
 import { filter, switchMap } from 'rxjs/operators';
 
 import { IProject, Project, ProjectData } from '@app-core/data/state/projects/project.model';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 import { NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
 import { Table, TablesService } from '@app-core/data/state/tables';

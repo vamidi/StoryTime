@@ -9,7 +9,7 @@ import { StringPair } from '@app-core/data/base/string-pair.class';
 import { BaseResponse, ProxyObject } from '@app-core/data/base/base.class';
 
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
+import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { UtilsService } from '@app-core/utils';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';

@@ -21,17 +21,12 @@
 			]
 		}
 	},
-	"angularCompilerOptions": {
-		"enableIvy": false
-	},
-	"exclude": [
-		"test.ts",
-		"**/*.spec.ts",
-		"../node_modules/@nebular/**/*.spec.ts"
+	"files": [
+		"main.ts",
+		"polyfills.ts",
+		"typings.d.ts"
 	],
 	"include": [
-		"../src/*.ts",
-		"../src/**/*.ts",
-		"../node_modules/@nebular/**/*.ts"
+		"src/**/*.d.ts"
 	]
 }

@@ -20,3 +20,6 @@ export * from './nodes/number-component';
 export * from './nodes/quest-editor/dialogue-node-component';
 export * from './nodes/quest-editor/dialogue-option-node-component';
 export * from './nodes/quest-editor/start-node-component';
+
+export * from './nodes/item-editor/item-master-node.component';
+export * from './nodes/item-editor/item-node.component';

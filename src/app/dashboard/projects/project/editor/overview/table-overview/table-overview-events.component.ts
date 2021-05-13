@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { QuestsSmartTableService } from '@app-core/mock/quests-smart-table.service';
-import { FirebaseService } from '@app-core/utils/firebase.service';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
@@ -11,7 +11,7 @@ import { InsertColumnComponent } from '@app-theme/components/firebase-table/inse
 import { ChangeTableSettingsComponent } from '@app-theme/components/firebase-table/change-table-settings/change-table-settings.component';
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import {UtilsService } from '@app-core/utils';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';

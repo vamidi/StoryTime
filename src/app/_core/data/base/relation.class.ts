@@ -1,13 +1,13 @@
-import { FirebaseService } from '../../utils/firebase.service';
+import { FirebaseService } from '../../utils/firebase/firebase.service';
 import { Observable } from 'rxjs';
 import { SnapshotAction } from '@angular/fire/database';
 import { BaseResponse } from '@app-core/data/base/base.class';
 import { StringPair } from '@app-core/data/base/string-pair.class';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { TablesService } from '@app-core/data/state/tables';
 import { Table } from '@app-core/data/state/tables';
 
-import * as firebase from 'firebase';
+import firebase from 'firebase/app';
 
 // TODO see if needed
 // export enum ERenderComponent

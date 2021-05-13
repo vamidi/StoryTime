@@ -3,12 +3,12 @@ import { Location } from '@angular/common';
 import { NbDialogService, NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
 import { LanguageService, Project } from '@app-core/data/state/projects';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { FirebaseService } from '@app-core/utils/firebase.service';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BehaviourType } from '@app-core/types';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { InsertTableComponent } from '@app-theme/components/firebase-table';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 
@@ -222,9 +222,12 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		}
 	}
 
-	public openEditor()
+	public openEditor(location: string = '')
 	{
-		this.router.navigate(['./editor'], { relativeTo: this.activatedRoute }).then();
+		if(!location)
+			this.router.navigate(['./editor'], { relativeTo: this.activatedRoute }).then();
+		else
+			this.router.navigate([`./editor/${location}`], { relativeTo: this.activatedRoute}).then();
 	}
 
 	protected configureSettings()

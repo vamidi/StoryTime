@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Gamekit3D
@@ -11,7 +9,7 @@ namespace Gamekit3D
         public void OnSceneGUI()
         {
             var cpg = target as CheckpointGroup;
-            var children = cpg.GetComponentsInChildren<Checkpoint>();
+            var children = cpg.GetComponentsInChildren<DatabaseSync.Components.Checkpoint>();
             for (var i = 0; i < children.Length; i++)
             {
                 if (Tools.current == Tool.Scale)
@@ -54,7 +52,7 @@ namespace Gamekit3D
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    var g = new GameObject("Checkpoint (" + children.Length + ")", typeof(SphereCollider), typeof(Checkpoint));
+                    var g = new GameObject("Checkpoint (" + children.Length + ")", typeof(SphereCollider), typeof(DatabaseSync.Components.Checkpoint));
                     Undo.RegisterCreatedObjectUndo(g, "Create Checkpoint");
                     g.transform.position = hit.point;
                     g.transform.parent = cpg.transform;
@@ -66,5 +64,5 @@ namespace Gamekit3D
             }
         }
 
-    } 
+    }
 }

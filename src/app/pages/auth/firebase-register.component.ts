@@ -6,8 +6,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService, NbAuthSocialLink } from '@nebular/auth';
-import { FirebaseService } from '@app-core/utils/firebase.service';
-import { User, UserUpdate } from '@app-core/data/state/users';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { User, UserData, UserUpdate } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { NbToastrService } from '@nebular/theme';
 import { UserService } from '@app-core/data/state/users';
@@ -32,7 +32,12 @@ export class NgxFirebaseRegisterComponent {
 	submitted = false;
 	errors: string[] = [];
 	messages: string[] = [];
-	user: any = {};
+	user: any = {
+		firstName: '',
+		lastName: '',
+		email: '', password: '',
+		confirmPassword: '', terms: false,
+	};
 	socialLinks: NbAuthSocialLink[] = [];
 
 	constructor(protected service: NbAuthService,

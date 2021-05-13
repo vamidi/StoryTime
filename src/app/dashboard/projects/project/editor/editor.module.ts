@@ -18,9 +18,10 @@ import { EditorRoutingModule } from './editor.routing.module';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 
 import { CharactersModule } from './characters/characters.module';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { EditorComponent } from '@app-dashboard/projects/project/editor/editor.component';
-import { NodeEditorComponent } from '@app-dashboard/projects/project/editor/node-editor/node-editor.component';
+import { StoryEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/story-editor.component';
+import { ItemEditorComponent } from '@app-dashboard/projects/project/editor/item-editor/item-editor.component';
 
 /**
  * @brief Modules from libraries
@@ -53,7 +54,8 @@ const LIB_MODULES = [
 	],
 	declarations:[
 		EditorComponent,
-		NodeEditorComponent,
+		StoryEditorComponent,
+		ItemEditorComponent,
 	],
 	providers: [
 		DynamicComponentService,

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	InsertMultipleDialogComponent,
 } from '@app-theme/components/firebase-table/insert-multiple-items/insert-multiple-dialog.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';

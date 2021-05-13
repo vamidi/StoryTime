@@ -10,8 +10,10 @@ import {
 } from '@nebular/theme';
 import { NbIconConfig } from '@nebular/theme/components/icon/icon.component';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app'
 import 'firebase/database';
+import { Observable } from 'rxjs/Observable';
+import { NbAuthResult } from '@nebular/auth';
 
 export interface ObjectKeyValue<T>
 {
@@ -109,6 +111,17 @@ export class UtilsService
 		NbGlobalLogicalPosition.BOTTOM_END,
 		NbGlobalLogicalPosition.BOTTOM_START,
 	];
+
+	// authorization code and tokens
+	public authorizationCode: string;
+	public oAuthToken: string;
+	public oAuthVerifier: string;
+
+	// popup related
+	private windowHandle: Window;   // reference to the window object we will create
+	private intervalId: any = null;  // For setting interval time between we check for authorization code or token
+	private loopCount = 600;   // the count until which the check will be done, or after window be closed automatically.
+	private intervalLength = 100;   // the gap in which the check will be done for code.
 
 	static onDebug(msg: any, type: DebugType = DebugType.LOG, ...optionalParams: any[])
 	{
@@ -424,5 +437,78 @@ export class UtilsService
 	protected static pad(n: number): string
 	{
 		return `0${n}`.slice(-2);
+	}
+
+	/** Window settings */
+
+	public doAuthorization(
+		url: string, isRegisterAction: boolean, socialMediaProvider: string = '',
+	): Observable<NbAuthResult>
+	{
+		/* isRegisterAction flag i am using to check if the process is for registration or Login */
+		/* socialMediaProvider is for name of social media , it is optional*/
+
+		let loopCount = this.loopCount;
+
+		/* Create the window object by passing url and optional window title */
+		this.windowHandle = UtilsService.createOauthWindow(url, 'OAuth login');
+
+		/* Now start the timer for which the window will stay, and after time over window will be closed */
+		this.intervalId = window.setInterval(() =>
+		{
+			if (loopCount-- < 0) {
+				window.clearInterval(this.intervalId);
+				this.windowHandle.close();
+			} else {
+				let href: string;  // For referencing window url
+				try {
+					href = this.windowHandle.location.href; // set window location to href string
+				} catch (e) {
+					// console.log('Error:', e); // Handle any errors here
+				}
+				if (href != null) {
+
+					// Method for getting query parameters from query string
+					const getQueryString = (field: any, _url: string) => {
+						const windowLocationUrl = _url ? _url : href;
+						const reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+						const string = reg.exec(windowLocationUrl);
+						return string ? string[1] : null;
+					};
+					/* As i was getting code and oauth-token i added for same, you can replace with your expected variables */
+					if (href.match('code')) {
+						// for google , fb, github, linkedin
+						window.clearInterval(this.intervalId);
+						this.authorizationCode = getQueryString('code', href);
+						this.windowHandle.close();
+						if (isRegisterAction) {
+							/* call signup method */
+						} else {
+							/* call login method */
+						}
+					} else if (href.match('oauth_token')) {
+						// for twitter
+						window.clearInterval(this.intervalId);
+						this.oAuthToken = getQueryString('oauth_token', href);
+						this.oAuthVerifier = getQueryString('oauth_verifier', href);
+						this.windowHandle.close();
+						if (isRegisterAction) {
+							/* call signup */
+						} else {
+							/* call login */
+						}
+					}
+				}
+			}
+		}, this.intervalLength);
+
+		return undefined;
+	}
+
+	public static createOauthWindow(url: string, name = 'Authorization', width = 500, height = 600, left = 0, top = 0)
+	{
+		if (url == null) return null;
+		const options = `width=${width},height=${height},left=${left},top=${top}`;
+		return window.open(url, name, options);
 	}
 }

@@ -6,11 +6,13 @@ export declare type NbSortingDirection = 'ASC' | 'DESC';
 
 export interface FormField<T> {
 	// key: string;
+	index?: number;
 	value: T;
 	type?: T;
 	id?: number;
 	groupCss?: string;
 	inputCss?: string;
+	ghost?: boolean;
 	name: string;
 	text: string;
 	placeholder?: string;
@@ -27,14 +29,17 @@ export interface FormField<T> {
 	sort?: boolean;
 	sortDirection?: NbSortingDirection | Function;
 
-	onSelectEvent?: Function,
-	onKeyUpEvent?: Function,
-	onClickEvent?: Function,
-	onIconClickEvent?: Function,
-	onSelectBtnClick?: Function,
+	onSelectEvent?: Function;
+	onKeyUpEvent?: Function;
+	onClickEvent?: Function;
+	onIconClickEvent?: Function;
+	onSelectBtnClick?: Function;
 
-	showFirstBtn?: boolean,
+	showFirstBtn?: boolean;
 
+	// Enable icon inside label field
+	enableLabelIcon?: boolean;
+	labelIcon?: string;
 	relationDropDown?: boolean; // is this a relation drop down
 	validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null;
 	asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null;
@@ -48,7 +53,5 @@ export class BaseFormSettings
 	alias: string = '';
 	requiredText: string = '';
 	// Type & Option field Type
-	fields: { [key: string]: FormField<any> } = {
-
-	};
+	fields: { [key: string]: FormField<any> } = { };
 }

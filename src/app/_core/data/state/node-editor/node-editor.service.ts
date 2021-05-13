@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 
-import { Component, Engine, NodeEditor, Plugin } from 'visualne';
+import { Component as VisualNEComponent, Engine, NodeEditor, Plugin } from 'visualne';
 import { Data } from 'visualne/types/core/data';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
@@ -13,12 +13,16 @@ import { SelectionPlugin, SelectionParams } from 'visualne-selection-plugin';
 import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ConnectionPlugin } from 'visualne-connection-plugin';
 
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { DebouncedFunc } from '@app-core/types';
 import { Project } from '@app-core/data/state/projects';
 import { ProjectsService } from '@app-core/data/state/projects/projects.service';
-import { InsertStoryComponent, LoadStoryComponent } from '@app-theme/components/firebase-table';
-import { ICharacter, IDialogue, IStory, IStoryData } from '@app-core/data/standard-tables';
+import {
+	InsertCraftableComponent,
+	InsertStoryComponent,
+	LoadStoryComponent,
+} from '@app-theme/components/firebase-table';
+import { ICharacter, ICraftable, IDialogue, IItem, IStory, IStoryData } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
 import { Table } from '@app-core/data/state/tables';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
@@ -26,6 +30,7 @@ import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+import firebase from 'firebase/app';
 import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
 
 import debounce from 'lodash.debounce';
@@ -43,7 +48,7 @@ export class NodeEditorService
 		return this.nodeEditor;
 	}
 
-	public get Components(): Component[]
+	public get Components(): VisualNEComponent[]
 	{
 		return this.components;
 	}
@@ -53,12 +58,17 @@ export class NodeEditorService
 		return this.selectedStory;
 	}
 
+	public get SelectedCraftItem(): ICraftable
+	{
+		return this.selectedCraftItem;
+	}
+
 	public set Data({ key, value }: { key: string, value: Table })
 	{
 		if(this.data.hasOwnProperty(key))
 		{
 			this.data[key] = value;
-
+			console.log(key, this.data[key]);
 			if(this.insertStoryRef)
 			{
 				switch(key)
@@ -67,7 +77,12 @@ export class NodeEditorService
 						this.insertStoryRef.componentRef.instance.Characters = this.data[key];
 						break;
 					case 'dialogues':
-						this.insertStoryRef.componentRef.instance.Dialogues = this.data[key];
+						if(this.insertStoryRef.componentRef.instance instanceof InsertStoryComponent)
+							this.insertStoryRef.componentRef.instance.Dialogues = this.data[key];
+						break;
+					case 'craftables':
+						if(this.insertStoryRef.componentRef.instance instanceof InsertCraftableComponent)
+							this.insertStoryRef.componentRef.instance.Craftables = this.data[key];
 						break;
 				}
 			}
@@ -86,16 +101,18 @@ export class NodeEditorService
 	public container: HTMLDivElement;
 
 	public storyLoaded: BehaviorSubject<IStory> = new BehaviorSubject<IStory>(null);
+	public craftItemLoaded: BehaviorSubject<ICraftable> = new BehaviorSubject<ICraftable>(null);
 
 	protected contextSettings: ContextMenuPluginParams = null;
 
 	protected nodeEditor: NodeEditor;
 	protected engine: Engine;
 
-	protected components: Component[] = [];
+	protected components: VisualNEComponent[] = [];
 
 	protected project: Project = null;
 	protected selectedStory: IStory = null;
+	protected selectedCraftItem: ICraftable = null;
 
 	// data settings
 	protected debounceSaveSnippet!: DebouncedFunc<() => void>;
@@ -105,10 +122,19 @@ export class NodeEditorService
 
 	private localStorageName = 'localStory@0.2.0';
 
-	private data:
-		{ characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue> } = null;
+	private data: {
+		characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue>,
+		items?: Table<IItem>,
+		craftables?: Table<ICraftable>,
+	} = {
+		characters: null,
+		stories: null,
+		dialogues: null,
+		items: null,
+		craftables: null,
+	};
 
-	private insertStoryRef: NbDialogRef<InsertStoryComponent> = null;
+	private insertStoryRef: NbDialogRef<InsertStoryComponent | InsertCraftableComponent> = null;
 	private mainSubscription: Subscription = new Subscription();
 
 	private selectedLanguage$: BehaviorSubject<KeyLanguage> = new BehaviorSubject<KeyLanguage>('en');
@@ -134,11 +160,14 @@ export class NodeEditorService
 
 	public initialize(
 		container: HTMLDivElement,
-		data: { characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue> },
+		data: {
+			characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue>,
+			items: Table<IItem>, craftables: Table<ICraftable>,
+		},
 	): Promise<void>
 	{
 		this.container = container;
-		this.data = data;
+		this.data = { ...data };
 
 		// get the project
 		this.project = this.projectService.getProject();
@@ -149,7 +178,7 @@ export class NodeEditorService
 		return Promise.resolve();
 	}
 
-	public async run<T extends Component = Component>(
+	public async run<T extends VisualNEComponent = VisualNEComponent>(
 		components: T[] = [],
 		name = 'story@0.2.0',
 		settings: ContextMenuPluginParams = {
@@ -247,7 +276,7 @@ export class NodeEditorService
 	 *
 	 * @param args
 	 */
-	public addComponent<T extends Component>(args: T | T[])
+	public addComponent<T extends VisualNEComponent>(args: T | T[])
 	{
 		if(!this.engine || !this.container) throw new Error('You need to initialize the editor! Did you forget to call initialize()?');
 
@@ -257,32 +286,64 @@ export class NodeEditorService
 			this.registerComponent(args);
 	}
 
-	public loadStory(onClose?: (res?: { storyId: string, data: string }) => void): void
+	public loadStory(
+		path: string = 'stories', onClose?: (res?: { storyId?: string, itemId?: string, data: string }) => void,
+	): void
 	{
 		// TODO open a modal with the choose which file.
 		// TODO load the file in the editor.
 		const ref: NbDialogRef<LoadStoryComponent> = this.dialogService.open(LoadStoryComponent, {
 			closeOnEsc: false,
-			context: {},
+			context: {
+				childPath: path,
+			},
 		});
 		ref.componentRef.instance.Project = this.project;
 
-		const closeFunc = ref.onClose.subscribe( (res: { storyId: string, data: string }) =>
+		const closeFunc = ref.onClose.subscribe( (res: {
+			storyId?: string,
+			itemId?: string,
+			data: string,
+		}) =>
 		{
 			if(res !== undefined)
 			{
-				// parse the response
-				const data: Data = JSON.parse(res.data);
-
-				this.selectedStory = this.data.stories.find(+res.storyId);
-
-				if(this.selectedStory)
+				const isStory = res.hasOwnProperty('storyId');
+				if(isStory)
 				{
-					// we need to create a new field
-					// instantiate a new editor
-					// TODO make the user able to save the story with the name they want
-					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
+					this.selectedStory = this.data.stories.find(+res.storyId);
 
+					if(this.selectedStory)
+					{
+						// we need to create a new field
+						// instantiate a new editor
+						// TODO make the user able to save the story with the name they want
+						this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
+					}
+					else
+						UtilsService.onError(`Story ${res.storyId} can\'t be found`);
+				}
+				else if(res.hasOwnProperty('itemId'))
+				{
+					this.selectedCraftItem = this.data.craftables.find(+res.itemId);
+
+					if(this.selectedCraftItem)
+					{
+						// we need to create a new field
+						// instantiate a new editor
+						// TODO make the user able to save the story with the name they want
+						const selectedItem = this.data.items.find(this.selectedCraftItem.childId);
+
+						this.fileName = UtilsService.titleLowerCase(`craftable_${this.selectedCraftItem.id}_${selectedItem.name['en']}`);
+					}
+					else
+						UtilsService.onError(`Craftable ${res.itemId} can\'t be found`);
+				}
+
+				if(res.hasOwnProperty('data'))
+				{
+					// parse the response
+					const data: Data = JSON.parse(res.data);
 					// save it in FireStorage as well for later access
 					this.nodeEditor.fromJSON(data).then(() =>
 					{
@@ -290,7 +351,13 @@ export class NodeEditorService
 						// call the function again. Now with this we make sure it is now saving over and over again.
 						this.saveSnippet();
 
-						this.storyLoaded.next(this.selectedStory);
+						if(isStory)
+						{
+							this.storyLoaded.next(this.selectedStory);
+						}
+						else
+							this.craftItemLoaded.next(this.selectedCraftItem);
+
 
 						setTimeout(() => {
 							this.nodeEditor.nodes.forEach(n => this.nodeEditor.view.updateConnections({ node: n }));
@@ -306,8 +373,7 @@ export class NodeEditorService
 
 					});
 				}
-				else
-					UtilsService.onError(`Story ${res.storyId} can\'t be found`);
+
 			}
 
 			if(onClose) onClose(res);
@@ -319,9 +385,6 @@ export class NodeEditorService
 
 	public saveStory()
 	{
-		if(this.selectedStory === null)
-			return;
-
 		// call the function again. Now with this we make sure it is now saving over and over again.
 		this.saveSnippet();
 		const sub = this.uploadToStorage().subscribe((snapshot) =>
@@ -329,24 +392,29 @@ export class NodeEditorService
 			// When we have uploaded the story.
 			if(!this.isActive(snapshot))
 			{
-				const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/stories/${this.fileName}.json`;
+				const isStory = this.selectedStory ?? false;
+				const childPath = isStory ? 'stories' : 'craftables';
 
-				const event: { data: IStory, newData: IStory, confirm?: any } = {
-					data: this.selectedStory,
+				const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/${childPath}/${this.fileName}.json`;
+
+				const newData = isStory ? this.selectedStory : this.selectedCraftItem;
+				const payload: { data: IStory | ICraftable, newData: IStory | ICraftable, confirm?: any } = {
+					data: isStory ? this.selectedStory : this.selectedCraftItem,
 					newData: {
-						...this.selectedStory,
-						// override storyFile
-						storyFile: path,
+						...newData,
+						craftFile: path,
 					},
 				};
 
-				const oldObj: IStory = event.hasOwnProperty('data') ? { ...event.data } : null;
-				const obj: IStory = { ...event.newData };
+				const event: { data: IStory | ICraftable, newData: IStory | ICraftable, confirm?: any } = payload;
+
+				const oldObj: IStory | ICraftable = event.hasOwnProperty('data') ? { ...event.data } : null;
+				const obj: IStory | ICraftable = { ...event.newData };
 
 				if(isEqual(event.data, event.newData))
 					return;
 
-				const tableName = `tables/${this.data.stories.id}`;
+				const tableName = isStory ? `tables/${this.data.stories.id}` : `tables/${this.data.craftables.id}`;
 				return this.firebaseService.updateData(
 					event.newData.id, tableName + '/revisions', obj, oldObj, tableName + '/data');
 			}
@@ -354,50 +422,98 @@ export class NodeEditorService
 		this.mainSubscription.add(sub);
 	}
 
-	public newStory(onClose?: (res?: IStory) => void)
+	public newStory<T extends InsertStoryComponent | InsertCraftableComponent>(
+		content: Type<T>, onClose?: (res?: IStory | ICraftable) => void,
+	)
 	{
-		this.insertStoryRef = this.dialogService.open(InsertStoryComponent, {
+		const ctx: any = {
+			characters: this.data.characters,
+			stories: this.data.stories,
+			items: this.data.items,
+			dialogues: this.data.dialogues,
+			craftables: this.data.craftables,
+			selectedLanguage: this.selectedLanguage,
+		};
+
+		this.insertStoryRef = this.dialogService.open(content, {
 			closeOnEsc: false,
-			context: {
-				characters: this.data.characters,
-				stories: this.data.stories,
-				dialogues: this.data.dialogues,
-				selectedLanguage: this.selectedLanguage,
-			},
+			context: ctx,
 		});
 
-		const sub = this.insertStoryRef.onClose.subscribe((res: IStory) =>
+		const sub = this.insertStoryRef.onClose.subscribe((res?: IStory | ICraftable) =>
 		{
 			if(res !== undefined)
 			{
-				this.selectedStory = this.data.stories.find(res.id);
-				if(this.selectedStory)
+				const startNode$ = this.components[0].createNode();
+
+				if(content === InsertStoryComponent)
 				{
-					this.nodeEditor.clear();
-
-					// we need to create a new field
-					// instantiate a new editor
-					this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
-
-					this.components[0].createNode().then((startNode) =>
+					// if we are dealing with a story
+					this.selectedStory = this.data.stories.find(res.id);
+					if(this.selectedStory)
 					{
-						startNode.position = [200, 200];
+						this.nodeEditor.clear();
 
-						startNode.data['dialogueId'] = +this.selectedStory.childId;
+						// we need to create a new field
+						// instantiate a new editor
+						this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
 
-						// in the story table we have
-						// ID - id of the story
-						// Title - title of the story
-						// description - description for the story
-						// parentId - the story that is connected to the story.
-						// childId - dialogue start node
+						startNode$.then((startNode) =>
+						{
+							startNode.position = [200, 200];
 
-						this.nodeEditor.addNode(startNode);
-						this.nodeEditor.trigger('process');
+							startNode.data['dialogueId'] = +this.selectedStory.childId;
 
-						// save it in FireStorage as well for later access
-						this.saveStory();
-					});
+							// in the story table we have
+							// ID - id of the story
+							// Title - title of the story
+							// description - description for the story
+							// parentId - the story that is connected to the story.
+							// childId - dialogue start node
+
+							this.nodeEditor.addNode(startNode);
+							this.nodeEditor.trigger('process');
+
+							// save it in FireStorage as well for later access
+							this.saveStory();
+						});
+					}
+				}
+
+				if(content === InsertCraftableComponent)
+				{
+					// if we are dealing with a craftable item.
+					this.selectedCraftItem = this.data.craftables.find(res.id);
+					if(this.selectedCraftItem)
+					{
+						this.nodeEditor.clear();
+
+						// we need to create a new field
+						// instantiate a new editor
+						const selectedItem = this.data.items.find(this.selectedCraftItem.childId);
+
+						this.fileName = UtilsService.titleLowerCase(`craftable_${this.selectedCraftItem.id}_${selectedItem.name['en']}`);
+
+						startNode$.then((startNode) =>
+						{
+							startNode.position = [200, 200];
+
+							// if we are dealing with a story
+							startNode.data['itemId'] = +this.selectedCraftItem.childId;
+							// in the story table we have
+							// ID - id of the story
+							// Title - title of the story
+							// description - description for the story
+							// parentId - the story that is connected to the story.
+							// childId - dialogue start node
+
+							this.nodeEditor.addNode(startNode);
+							this.nodeEditor.trigger('process');
+
+							// save it in FireStorage as well for later access
+							this.saveStory();
+						});
+					}
 				}
 			}
 
@@ -428,7 +544,7 @@ export class NodeEditorService
 		{
 			const data = this.nodeEditor.toJSON();
 			UtilsService.setItemInLocalStorage(this.localStorageName,
-				<IStoryData>{storyId: this.selectedStory.id, data: data },
+				<IStoryData>{storyId: this.selectedStory?.id, itemId: this.selectedCraftItem?.id, data: data },
 			);
 		}
 	}
@@ -483,18 +599,35 @@ export class NodeEditorService
 		// convert your object into a JSON-string
 		const jsonString = JSON.stringify(this.nodeEditor.toJSON());
 
+		console.log(jsonString);
+
 		// create a Blob from the JSON-string
 		const blob = new Blob([jsonString], { type: 'application/json' });
 
-		const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/stories/${this.fileName}.json`;
+		console.log(blob);
+
+		const childPath = this.selectedStory ? 'stories' : 'craftables';
+
+		const path: string = `
+			${BASE_STORAGE_PATH}/${this.project.id}/${childPath}/${this.fileName}.json
+		`;
+
+		console.log(path, this.selectedStory === null, this.selectedCraftItem === null);
+		const customMetadata: { name: string, projectID: string, storyID?: string, itemID?: string } = {
+			name: this.fileName, // name of the file without json
+			projectID: this.project.id, // project id
+		};
+
+		if(this.selectedStory !== null)
+			customMetadata.storyID = `${ this.selectedStory.id }`; // story id
+
+		if(this.selectedCraftItem !== null)
+			customMetadata.itemID = `${ this.selectedCraftItem.id }`; // item id
 
 		this.firebaseUploadTask = this.firebaseStorage.upload(path, blob, {
-			customMetadata: {
-				name: this.fileName, // name of the file without json
-				projectID: this.project.id, // project id
-				storyID: `${ this.selectedStory.id }`, // story id
-			},
+			customMetadata: customMetadata,
 		});
+		console.log(customMetadata);
 
 		this.firebaseUploadTask.percentageChanges();
 		return this.firebaseUploadTask.snapshotChanges().pipe(
@@ -509,7 +642,7 @@ export class NodeEditorService
 		);
 	}
 
-	protected registerComponent<T extends Component>(c: T)
+	protected registerComponent<T extends VisualNEComponent>(c: T)
 	{
 		this.components.push(c);
 		this.nodeEditor.register(c);

@@ -44,6 +44,24 @@ export interface ICharacter extends ProxyObject
 	description: KeyLanguageObject;
 }
 
+export interface IItem extends ProxyObject
+{
+	name: KeyLanguageObject;
+	description: KeyLanguageObject;
+	effectPrimaryValue: number,
+	effectTypeId: number,
+	sellValue: number,
+	sellable: boolean,
+}
+
+export interface ICraftable extends ProxyObject
+{
+	childId: number,
+	parentId: number,
+	shopRevisionId: number,
+	value: number,
+}
+
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([]);
 
 export const standardTables: Map<string, TableTemplate> = new Map<string, TableTemplate>([
@@ -63,12 +81,17 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Items
-	Pair( 'items', 	{
+	Pair<string, { [key: number]: IItem }>( 'items', 	{
 		0: {
 			deleted: false,
 			effectPrimaryValue: 0,
 			effectTypeId: 0,
-			name: '',
+			name: {
+				'en': '',
+			},
+			description: {
+				'en': '',
+			},
 			sellValue: 0,
 			sellable: true,
 			created_at: UtilsService.timestamp,
@@ -275,7 +298,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Shop craftables
-	Pair( 'shopCraftables', 	{
+	Pair<string, { [key:string]: ICraftable }>( 'shopCraftables', 	{
 		0: {
 			deleted: false,
 			childId: 0,

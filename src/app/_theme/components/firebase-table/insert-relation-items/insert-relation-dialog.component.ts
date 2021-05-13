@@ -21,11 +21,11 @@ import {
 	TextFieldComponent,
 	DynamicFormComponent,
 } from '@app-theme/components/form';
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
+import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { StringPair } from '@app-core/data/base';
 import { Util } from 'leaflet';
 import trim = Util.trim;
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { Table } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';

@@ -9,7 +9,7 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BehaviourType } from '@app-core/types';
 import {
 	ButtonFieldComponent,

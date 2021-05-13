@@ -13,16 +13,15 @@ import {
 	NbThemeService, NbToastrService,
 } from '@nebular/theme';
 
-import { IUserTicket, UserModel } from '@app-core/data/state/users';
+import { IUserTicket, UserModel, UserData, GetUser, UserService } from '@app-core/data/state/users';
 import { LayoutService, UtilsService } from '@app-core/utils';
 import { environment } from '../../../../environments/environment';
 import { ChangelogDialogComponent } from '@app-theme/components/changelog/changelog-dialog.component';
 import { NbThemeNames, UserPreferences } from '@app-core/utils/utils.service';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { UserService, GetUser } from '@app-core/data/state/users';
 import { NgxMenuItem } from '@app-theme/components';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { NgxContextMenuDirective } from '@app-core/directives/ngx-context-menu.directive';
@@ -84,7 +83,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 		private sidebarService: NbSidebarService,
 		private menuService: NbMenuService,
 		private themeService: NbThemeService,
-		private userService: UserService,
+		protected userService: UserService,
 		private projectService: ProjectsService,
 		private layoutService: LayoutService,
 		private breakpointService: NbMediaBreakpointsService,
@@ -201,7 +200,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy
 
 		this.firebaseService.getRef('projectRequests').orderByChild('recipient').equalTo(this.user.uid).off();
 		this.mainSubscription.unsubscribe();
-
 	}
 
 	/**

@@ -1,13 +1,14 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule, PathLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
+import { NB_AUTH_TOKEN_INTERCEPTOR_FILTER, NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
+import { NbFirebaseAuthModule } from '@nebular/firebase-auth';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage'
-import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
 
 import { NgxsModule } from '@ngxs/store';
@@ -20,7 +21,6 @@ import {
 	BreadcrumbsService,
 	PlayerService,
 	AuthGuardService,
-	AuthService as AuthGuard,
 	LayoutService,
 	PipelineService,
 } from './utils';
@@ -35,10 +35,13 @@ import { UserData, UserState, UserService } from './data/state/users';
 import { LanguageService, ProjectData, ProjectsService, ProjectsState } from '@app-core/data/state/projects';
 import { TableData, TablesService, TablesState } from '@app-core/data/state/tables';
 import { NodeEditorService, NodeEditorState } from '@app-core/data/state/node-editor';
-import { FirebaseService } from '@app-core/utils/firebase.service';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { AngularPrismaDatabase, PrismaService } from '@app-core/utils/prisma';
+import { DatabaseService } from '@app-core/utils/database.service';
+import { AngularPrismaAuth } from '@app-core/auth/auth.service';
 import { environment } from '../../environments/environment';
-
+import { AuthModule } from '@app-core/auth/auth.module';
 
 const socialLinks = [
 	{
@@ -63,6 +66,8 @@ const DATA_SERVICES = [
 	{ provide: ProjectData, useClass: ProjectsService },
 	{ provide: TableData, useClass: TablesService },
 	{ provide: SmartTableData, useClass: SmartTableService },
+	{ provide: FirebaseService, useClass: PrismaService },
+	{ provide: AngularFireDatabase, useClass: AngularPrismaDatabase },
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -118,16 +123,18 @@ export const NB_CORE_PROVIDERS = [
 export const CUSTOM_PROVIDERS = [
 	// Custom made service
 	FirebaseService,
+	UserService,
 	FirebaseRelationService,
 	BreadcrumbsService,
-	UserService,
 	NodeEditorService,
 	PipelineService,
 	LanguageService,
 	LayoutService,
 	PlayerService,
 	AuthGuardService,
-	AuthGuard,
+	// AuthGuard,
+	AngularPrismaAuth,
+	DatabaseService,
 ];
 
 @NgModule({
@@ -138,6 +145,9 @@ export const CUSTOM_PROVIDERS = [
 		AngularFireFunctionsModule,
 		AngularFireStorageModule,
 		AngularFireModule.initializeApp(environment.firebase),
+		AuthModule.initializeApp(environment.prisma),
+
+		NbFirebaseAuthModule,
 
 		NgxsModule.forRoot([
 			AppState,

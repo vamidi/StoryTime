@@ -154,7 +154,7 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	public ngAfterViewInit()
 	{
 		if(!this.myFormGroup)
-			UtilsService.onError('There is no form group, did you forget to add it?', this);
+			UtilsService.onError(`There is no form group, did you forget to add it? ${this.key}`, this);
 
 		// Notify that we are initialized
 		this.onComponentInit.emit(this);

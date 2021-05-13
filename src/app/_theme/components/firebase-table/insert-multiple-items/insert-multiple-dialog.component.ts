@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
-import { FormQuestionBase, NbControlTypes, Option } from '@app-core/data/forms/form-types';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { FormQuestionBase, Option } from '@app-core/data/forms/form-types';
+import { BaseSettings, Column } from '@app-core/mock/base-settings';
 import { BehaviourType } from '@app-core/types';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import { BehaviorSubject } from 'rxjs';
@@ -22,13 +22,15 @@ import {
 	DynamicFormComponent,
 } from '@app-theme/components/form';
 import { Relation } from '@app-core/data/base/relation.class';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FilterCallback, FirebaseFilter, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
 import { BaseFormSettings, FormField } from '@app-core/mock/base-form-settings';
-import { Validators } from '@angular/forms';
 import { Table } from '@app-core/data/state/tables';
 import { ProxyObject } from '@app-core/data/base';
 import { TablesService } from '@app-core/data/state/tables';
+import { DataSourceColumnHandler } from '@app-core/data/data-source-column-handler';
+import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import { LanguageRenderComponent } from '@app-theme/components';
 
 @Component({
 	selector: 'ngx-add-multiple-dialog',
@@ -79,15 +81,16 @@ export class InsertMultipleDialogComponent implements
 	@ViewChild('checkboxQuestion', { static: true })
 	public checkboxQuestion: CheckboxFieldComponent = null;
 
-	public source: BaseFormSettings = {
+	public get Source(): BaseFormSettings { return this.sourceHandler.source }
+
+	protected sourceHandler: DataSourceColumnHandler = new DataSourceColumnHandler({
 		title: 'Insert',
 		alias: 'test',
 		requiredText: 'Fill in all fields',
 		fields: {},
-	};
+	});
 
 	protected behaviourType: BehaviourType = BehaviourType.INSERT;
-
 	protected table: Table = new Table();
 
 	constructor(
@@ -109,86 +112,8 @@ export class InsertMultipleDialogComponent implements
 			this.updateBehaviourType(behaviourType)
 		});
 
-		// Initialize the insert column form
-		// set all variables of the grabbed form.
-		for (const [key, value] of Object.entries<{ [key: string]: unknown }>(this.settings.columns))
-		{
-			// value: T;
-			// type: T;
-			// id?: number;
-			// key: string;
-			// groupCss?: string;
-			// inputCss?: string;
-			// name: string;
-			// text: string;
-			// placeholder?: string;
-			// errorText?: string;
-			// required?: boolean;
-			// disabled?: boolean;
-			// readOnly: boolean;
-			// required_text: string;
-			// order: number;
-			// controlType: NbControlTypes;
-			// options?: Option<T>[];
-
-			const column: any = value;
-			let field: FormField<any> = null;
-			switch (column.type)
-			{
-				case 'number':
-					field = this.configureField<number>(key, column, 'number',0);
-					field.errorText = 'This field requires a minimal number of zero';
-					this.source.fields[key] = field;
-					break;
-				case 'string':
-				case 'html':
-					if (column.hasOwnProperty('editor') && column.editor.hasOwnProperty('component'))
-					{
-						if (column.editor.component.name === 'BooleanColumnRenderComponent')
-						{
-							field = this.configureField<boolean>(key, column, 'dropdown', false);
-							const b: boolean = field.value;
-							field.options$ = new BehaviorSubject<Option<boolean>[]>([
-								new Option<boolean>({
-									key: 'false',
-									value: false,
-									selected: b === false,
-								}),
-								new Option<boolean>({key: 'true', value: true, selected: b === true}),
-							]);
-
-							this.source.fields[key] = field;
-						}
-					} else {
-						field = this.configureField<string>(key, column, 'textbox','');
-						field.validatorOrOpts = [
-							Validators.minLength(1),
-						];
-						field.errorText = 'This field needs to be filled in';
-						this.source.fields[key] = field;
-					}
-					break;
-				case 'custom':
-					field = this.configureRelation(key, column);
-					this.source.fields[key] = field;
-					break;
-			}
-
-			/*
-			if (component)
-			{
-				const instance = component.instance;
-				instance.parent = this.formComponent;
-				this.configureComponent(key, column, instance);
-				this.formComponent.addElement(instance);
-				this.inputs.set(key, instance.question);
-
-				// Generate the form
-				this.insertFormContainer.add(instance.question);
-				component.changeDetectorRef.detectChanges();
-			}
- 			*/
-		}
+		this.sourceHandler.initialize(this.settings.columns, (key, column) => this.configureRelation(key, column));
+		this.sourceHandler.createFields();
 
 		const insertBtnTitle: string = this.getText(this.behaviourType);
 		this.formComponent.addInput<string>(this.submitQuestion, {
@@ -269,7 +194,7 @@ export class InsertMultipleDialogComponent implements
 	{
 		this.behaviourType$.unsubscribe();
 
-		UtilsService.onDebug('clean up');
+		UtilsService.onDebug('cleaning up dialog');
 	}
 
 	public initForm()
@@ -333,6 +258,9 @@ export class InsertMultipleDialogComponent implements
 
 				const column: any = value;
 				const controlValue: any = controls[key].value;
+
+				console.log(controlValue, column.type);
+
 				switch (column.type)
 				{
 					case 'number':
@@ -344,7 +272,13 @@ export class InsertMultipleDialogComponent implements
 							? controls[key] === 'true' : controlValue;
 						break;
 					case 'custom':
-						// Relation value
+						// Relation value or keyValue language data
+						console.log(value.renderComponent);
+						if(value.renderComponent === LanguageRenderComponent)
+						{
+							data.newData[key] = { 'en': controlValue };
+							break;
+						}
 						data.newData[key] = Number(controlValue);
 						break;
 					default:
@@ -417,34 +351,7 @@ export class InsertMultipleDialogComponent implements
 		this.behaviourType = behaviourType;
 	}
 
-	protected configureField<T>(key: string, column: any, type: NbControlTypes, defaultValue: T): FormField<T>
-	{
-		let value: T = null;
-		if (column.hasOwnProperty('defaultValue'))
-		{
-			// TODO fix for every key.
-			value = key === 'id' && this.data.hasOwnProperty(key) ? <T>this.data[key] : <T>column.defaultValue;
-		}
-		else if(this.data.hasOwnProperty(key))
-		{
-			// TODO why U have DIS?
-			if(column.type === 'number' || column.type === 'string' || column.type === 'html' || column.type === 'custom')
-				value = this.data[key];
-		}
-
-		return {
-			value: value ?? defaultValue,
-			name: column.title.toLowerCase(),
-			controlType: type,
-			readOnly: !!column.defaultValue,
-			hidden: column.hidden,
-			text: column.title,
-			placeholder: column.title,
-			required: true,
-		};
-	}
-
-	protected configureRelation(key: string, column: { [key:string]: unknown }): FormField<any>
+	protected configureRelation(key: string, column: Column): FormField<any>
 	{
 		let field: FormField<any>;
 		if (key /* && Number(value) !== Number.MAX_SAFE_INTEGER */)
@@ -453,10 +360,10 @@ export class InsertMultipleDialogComponent implements
 
 			if (relation)
 			{
-				field = this.configureField<number>(key, column, 'dropdown', Number.MAX_SAFE_INTEGER);
+				field = this.sourceHandler.configureField<number>(key, column, 'dropdown', Number.MAX_SAFE_INTEGER);
 				field.options$ = new BehaviorSubject([]);
 
-				this.source.fields[key] = field;
+				this.Source.fields[key] = field;
 
 				// Set the dropdown to relation
 				field.relationDropDown = true;
@@ -472,7 +379,7 @@ export class InsertMultipleDialogComponent implements
 			}
 		}
 
-		field = this.configureField<number>(key, column, 'number', Number.MAX_SAFE_INTEGER);
+		field = this.sourceHandler.configureField<number>(key, column, 'number', Number.MAX_SAFE_INTEGER);
 		return field;
 	}
 
@@ -503,12 +410,33 @@ export class InsertMultipleDialogComponent implements
 
 				if (!options.some((el) => el.id === snapshot.id ))
 				{
-					const option = new Option<number>({
-						id: +snapshot.id,
-						key: snapshot.id + '. ' + UtilsService.truncate(snapshot[relation.tblColumnRelation.value], 50),
-						value: +snapshot.id,
-						selected: false,
-					});
+					// We need to convert or else we cant compare
+					const snapshotKey: number = Number(snapshot.id);
+
+					let option: Option<number>;
+					const relData: string | number | KeyLanguageObject = snapshot[relation.tblColumnRelation.value];
+					if(typeof relData === 'string')
+					{
+						option = new Option<number>({
+							id: snapshotKey,
+							key: snapshotKey + '. ' + UtilsService.truncate(relData as string, 50),
+							value: snapshotKey,
+							selected: false,
+						});
+					}
+					else if(typeof relData === 'object')
+						option =
+							this.handleLanguageValue({ prevSnapshotKey: snapshotKey, selected: selected }, relData as KeyLanguageObject);
+					else if (!isNaN(Number(relData))) // if this is a number that we got
+					{
+						option = new Option<number>({
+							id: snapshotKey,
+							key: snapshotKey + '. ' + UtilsService.truncate(relData.toString(), 50),
+							value: snapshotKey,
+							selected: false,
+						});
+					}
+					// 	this.handleDeeperRelation({ prevSnapshotKey: snapshotKey, selected: selected }, relation, relData);
 
 					// Sort the options descending.
 					options.sort((a, b) => Number(b.value) - Number(a.value));
@@ -570,5 +498,21 @@ export class InsertMultipleDialogComponent implements
 		public controlType: NbControlTypes;
 		public options: Option<any>[];
 		*/
+	}
+
+	private handleLanguageValue({ prevSnapshotKey = -1, selected = false }, prevRelData: KeyLanguageObject)
+	{
+		const languages = Object.keys(prevRelData);
+		// Are we dealing with a language object
+		if (systemLanguages.has(languages[0] as KeyLanguage))
+		{
+			const newValue: string = prevRelData['en'];
+			return new Option<number>({
+				id: prevSnapshotKey,
+				key: prevSnapshotKey + '. ' + UtilsService.truncate(newValue, 50),
+				value: prevSnapshotKey,
+				selected: selected,
+			});
+		}
 	}
 }

@@ -184,6 +184,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 	public update(element: T, values: any): Promise<T>
 	{
+		console.trace(element, values);
 		const promise = this.getSource.update(element, values);
 
 		promise.then(() =>
@@ -197,7 +198,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				}
 			}
 
-		}).catch((error) => console.error(error));
+		}).catch((error) => UtilsService.onError(error));
 
 		return promise;
 	}
@@ -207,16 +208,20 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		this.loaded = false;
 		const entries = Object.entries(this.data);
 
-		const dataSize = Object.keys(entries[0][1]).length + 1; // becuz id
-
-		// assign the key to the id of the table data.
-		for(const [key, value] of entries)
+		const entry = entries[0];
+		if(entry)
 		{
-			value.id = +key;
+			const dataSize = Object.keys(entry[1]).length + 1; // becuz id
 
-			if(dataSize !== Object.keys(value).length) {
-				UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
-				UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
+			// assign the key to the id of the table data.
+			for(const [key, value] of entries)
+			{
+				value.id = +key;
+
+				if(dataSize !== Object.keys(value).length) {
+					UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
+				}
 			}
 		}
 
@@ -234,6 +239,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 		promise.then(() =>
 		{
+			console.log(this.filteredData);
 			this.source.refresh();
 			this.loaded = true;
 		}); // refresh list
@@ -316,9 +322,8 @@ export abstract class TableData
 
 export const onSimpleTableMap = map((snapshots: SnapshotAction<any>[]) =>
 {
-	console.log(this);
 	const table: Table = new Table();
-	table.id = this.tableID;
+	// table.id = that.tableID;
 
 	// configure fields
 	snapshots.forEach((snapshot: SnapshotAction<any>) => table[snapshot.key] = snapshot.payload.val());

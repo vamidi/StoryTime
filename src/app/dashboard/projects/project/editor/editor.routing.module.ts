@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import {  RouterModule, Routes } from '@angular/router';
-import { FirebaseRoutingService } from '@app-core/utils/firebase-routing.service';
+import { FirebaseRoutingService } from '@app-core/utils/firebase/firebase-routing.service';
 import { EditorComponent } from './editor.component';
 import { FirebaseTableComponent } from '@app-theme/components/firebase-table/firebase-table.component';
-import { NodeEditorComponent } from '@app-dashboard/projects/project/editor/node-editor/node-editor.component';
+import { StoryEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/story-editor.component';
+import { ItemEditorComponent } from '@app-dashboard/projects/project/editor/item-editor/item-editor.component';
 
 // declare var routes: string[] = [
 // 	{ key: string, name: string, hidden: boolean}
@@ -16,13 +17,13 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				component: NodeEditorComponent,
+				component: StoryEditorComponent,
 
 			},
-			// {
-			// 	path: ':id/editor/:story',
-			// 	component: EditorComponent,
-			// },
+			{
+				path: 'item-editor',
+				component: ItemEditorComponent,
+			},
 			{
 				path: 'characters',
 				loadChildren: () => import('./characters/characters.module')

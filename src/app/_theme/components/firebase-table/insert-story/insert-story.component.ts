@@ -5,7 +5,7 @@ import {
 	OnInit, ViewChild,
 } from '@angular/core';
 import { NbDialogRef, NbStepComponent, NbToastrService } from '@nebular/theme';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
 import { ICharacter, IDialogue, IStory } from '@app-core/data/standard-tables';

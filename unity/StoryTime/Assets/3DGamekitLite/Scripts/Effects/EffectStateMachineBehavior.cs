@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Gamekit3D
 {
-    public class EffectStateMachineBehavior : SceneLinkedSMB<EffectEvents>
+    public class EffectStateMachineBehavior : DatabaseSync.Components.SceneLinkedSMB<EffectEvents>
     {
         public enum EventType
         {

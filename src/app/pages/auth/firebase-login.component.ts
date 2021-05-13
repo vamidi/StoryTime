@@ -7,15 +7,15 @@ import { NbThemeService } from '@nebular/theme';
 
 import { Store } from '@ngxs/store';
 
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app'
 import 'firebase/auth';
 import Persistence = firebase.auth.Auth.Persistence;
 
 import { UtilsService } from '@app-core/utils';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 
-import { UserService, GetUser } from '@app-core/data/state/users';
+import { UserService, GetUser, UserData } from '@app-core/data/state/users';
 import { environment } from '../../../environments/environment';
 
 interface AuthSocialLink extends NbAuthSocialLink
@@ -58,13 +58,16 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 		// this.socialLinks.push(link);
 	}
 
-	public async ngOnInit(): Promise<void>
+	public ngOnInit()
 	{
-		const userPreferences = await this.userPreferencesService.getUserPreferences().toPromise();
-		this.themeService.changeTheme(userPreferences.currentTheme);
+		this.userPreferencesService.getUserPreferences().subscribe(
+			userPreferences => this.themeService.changeTheme(userPreferences.currentTheme),
+		);
 
 		// get return url from route parameters or default to '/'
 		this.returnUrl = this.route.snapshot.queryParams.returnUrl ?? '';
+
+		console.log(this.strategy);
 	}
 
 	public handleLogin(method: string)
@@ -107,6 +110,7 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 				if(res.hasOwnProperty('user')) {
 					localStorage.setItem('user', JSON.stringify(res.user));
 				}
+				console.log(result.getToken(), result.getToken().getPayload());
 				// expire after 3600 seconds (1 hour)
 				if(result.getToken() && result.getToken().getPayload())
 					UtilsService.setItemInLocalStorage('expire_at', result.getToken().getPayload().exp);

@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { FirebaseService } from '../utils/firebase.service';
+import { FirebaseService } from '../utils/firebase/firebase.service';
 import { from, Observable, of as observableOf } from 'rxjs';
 import { map, take, debounceTime } from 'rxjs/operators';
 import { UtilsService } from '@app-core/utils';

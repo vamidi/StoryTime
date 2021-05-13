@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 namespace Gamekit3D
 {
-    public class EllenSpawn : MonoBehaviour
+    public class EllenSpawn : DatabaseSync.Components.BaseSpawn
     {
         [HideInInspector]
         public float effectTime;
@@ -23,10 +21,15 @@ namespace Gamekit3D
         float m_Timer;
         float m_EndTime;
 
-        bool m_Started = false;
-
-        void Awake()
+        public override void Respawn()
         {
+	        base.Respawn();
+	        StartEffect();
+        }
+
+        protected override void Awake()
+        {
+	        base.Awake();
             respawnParticles.SetActive(false);
             m_PropertyBlock = new MaterialPropertyBlock();
             m_Renderer = GetComponentInChildren<Renderer>();
@@ -42,31 +45,28 @@ namespace Gamekit3D
 
             pos = new Vector4(0, 0, 0, 0);
 
-            m_Started = false;
-
-            this.enabled = false;
+            enabled = false;
         }
 
-        void OnEnable()
+        protected override void OnEnable()
         {
-            m_Started = false;
+	        base.OnEnable();
             m_Renderer.materials = EllenRespawnMaterials;
             Set(0.001f);
             m_Renderer.enabled = false;
         }
 
-        public void StartEffect()
+        protected void StartEffect()
         {
             m_Renderer.enabled = true;
 
             respawnParticles.SetActive(true);
-            m_Started = true;
             m_Timer = 0.0f;
         }
 
         void Update()
         {
-            if (!m_Started)
+            if (!IsStarted)
                 return;
 
             float cutoff = Mathf.Clamp(m_Timer / effectTime, 0.01f, 1.0f);
@@ -77,7 +77,7 @@ namespace Gamekit3D
             if (cutoff >= 1.0f)
             {
                 m_Renderer.materials = EllenMaterials;
-                this.enabled = false;
+                enabled = false;
             }
         }
 

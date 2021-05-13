@@ -1,10 +1,10 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { SmartTableData } from '@app-core/data/smart-table';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { StringPair } from '@app-core/data/base/string-pair.class';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
 import { UtilsService } from '@app-core/utils';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -15,12 +15,13 @@ import {
 	InsertColumnComponent,
 	ChangeTableSettingsComponent,
 	RevisionDialogComponent,
+	InsertItemsDialogComponent,
 	InsertMultipleDialogComponent,
 	InsertRelationDialogComponent,
 } from '@app-theme/components/firebase-table';
 
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { UserService } from '@app-core/data/state/users';
+import { UserData, UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
@@ -238,13 +239,25 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public openBulkDialogue()
 	{
-		const ref = this.dialogService.open(InsertMultipleDialogComponent, {
-			context: {
-				title: 'Add item to ' + this.AddTitle,
-				tblName: this.table.metadata.title,
-				settings: this.settings,
-			},
-		});
+		let ref;
+		if(this.table.title === 'items')
+		{
+			ref = this.dialogService.open(InsertItemsDialogComponent, {
+				context: {
+					title: 'Add item to ' + this.AddTitle,
+					tblName: this.table.metadata.title,
+					settings: this.settings,
+				},
+			});
+		}
+		else
+			ref = this.dialogService.open(InsertMultipleDialogComponent, {
+				context: {
+					title: 'Add item to ' + this.AddTitle,
+					tblName: this.table.metadata.title,
+					settings: this.settings,
+				},
+			});
 
 		// Otherwise scope will make this undefined in the method
 		ref.componentRef.instance.insertEvent.subscribe((event: any) => this.onCreateConfirm(event));

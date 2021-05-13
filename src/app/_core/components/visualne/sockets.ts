@@ -20,3 +20,6 @@ dialogueOptionSocket.combineWith(dialogueSocket);
 // anySocket.combineWith(dialogueSocket);
 // anySocket.combineWith(dialogueOptionSocket);
 
+export const itemSocket = new Socket('Item Value', '#f1c40f');
+itemSocket.combineWith(itemSocket);
+

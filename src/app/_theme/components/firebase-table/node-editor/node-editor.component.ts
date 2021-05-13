@@ -12,7 +12,7 @@ import { StartNodeComponent } from '@app-core/components/visualne/nodes/quest-ed
 import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-node-component';
 import { DialogueOptionNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-option-node-component';
 
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
 import { NumComponent } from '@app-core/components/visualne/nodes/number-component';
 import { NbToastrService } from '@nebular/theme';
@@ -71,7 +71,7 @@ export class NodeEditorComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	// Rete plugin
 	@ViewChild('nodeEditor', { static: true })
-	public el: ElementRef;
+	public el: any;
 
 	@Input()
 	public dialogues: Table;

@@ -8,7 +8,7 @@ import { of as observableOf, Observable, Subscription, BehaviorSubject } from 'r
 import { switchMap, map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -189,7 +189,7 @@ export class UserService extends UserData implements OnDestroy
 
 	public retrieveUserData(authData: firebase.User): Observable<Action>
 	{
-		const userRef$ = this.afd.list<any>(`users/${authData.uid}`);
+		const userRef$ = this.afd.list<any>(/* this, */`users/${authData.uid}`);
 		return userRef$.snapshotChanges(['child_added', 'child_changed', 'child_removed']).pipe(
 			map((snapshot: SnapshotAction<any>[] | null) =>
 			{
@@ -306,7 +306,7 @@ export class UserService extends UserData implements OnDestroy
 					{
 						this.firebaseUser = user;
 						UtilsService.onDebug(user.uid);
-						const userRef$ = this.afd.list<any>(`users/${user.uid}`);
+						const userRef$ = this.afd.list<any>(/* this, */`users/${user.uid}`);
 						return userRef$.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
 					}
 
@@ -332,7 +332,7 @@ export class UserService extends UserData implements OnDestroy
 				{
 					this.firebaseUser = user;
 					UtilsService.onDebug(user.uid);
-					const userRef$ = this.afd.list<any>(`users/${user.uid}`);
+					const userRef$ = this.afd.list<any>(/* this, */`users/${user.uid}`);
 					return userRef$.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
 				}
 

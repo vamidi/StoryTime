@@ -3,10 +3,10 @@ import { NbToastrService } from '@nebular/theme';
 
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 import { ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { DebugType, QueryablePromise } from '@app-core/utils/utils.service';
 import { PipelineService } from '@app-core/utils/pipeline.service';

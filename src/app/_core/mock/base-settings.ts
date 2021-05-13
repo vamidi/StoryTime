@@ -1,13 +1,33 @@
+import { Type } from '@angular/core';
 import { DateColumnComponent } from '@app-theme/components/base-table-layout/base-date-column.component';
-import { BooleanColumnRenderComponent } from '@app-theme/components/render-column-layout';
+import { BooleanColumnRenderComponent, LinkRenderComponent } from '@app-theme/components/render-column-layout';
+import { DefaultEditor, ViewCell } from '@vamidicreations/ng2-smart-table';
 
-export interface Column<T> {
+export interface Column {
 	title: string,
-	type: string,
-	editable: boolean,
-	addable: boolean,
-	width: string,
-	defaultValue: T,
+	type?: string,
+
+	index?: number,
+
+	width?: string,
+	class?: string,
+
+	defaultValue?: any,
+
+	addable?: boolean,
+
+	editable?: boolean,
+	hidden?: boolean,
+
+	editor?: {
+		type?: 'custom',
+		component?: Type<DefaultEditor>,
+		data?: any,
+		config?: any,
+	},
+	renderComponent?: Type<ViewCell>,
+	onComponentInitFunction?: (instance: ViewCell) => void,
+	valuePrepareFunction?: (cell , row) => string,
 }
 
 export class BaseSettings
@@ -49,7 +69,7 @@ export class BaseSettings
 		confirmDelete: true,
 		width: '50px',
 	};
-	columns: any = {
+	columns: { [key: string]: Column } = {
 		id: {
 			title: 'ID',
 			type: 'number',

@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 using Cinemachine;
-using Gamekit3D;
 
 using DatabaseSync;
+using DatabaseSync.Components;
 
 /// <summary>
 /// @brief - Spawn system that spawns the player in the world.
@@ -20,7 +20,7 @@ public class SpawnSystem : BaseSpawnSystem
 	[Header("Player Settings")]
 	[SerializeField] private CinemachineFreeLook gameCamera;				// Reference to the game camera.
 	[SerializeField] private CinemachineVirtualCamera aimCamera;            // Reference to the aim camera.
-	[SerializeField] private CinemachineVirtualCamera dialogueCamera;       // Reference to the dialogue camera.
+	// [SerializeField] private CinemachineVirtualCamera dialogueCamera;       // Reference to the dialogue camera.
 	[SerializeField] private Volume dashVolume;
 
 	[SerializeField] private HealthUI playerHealth;

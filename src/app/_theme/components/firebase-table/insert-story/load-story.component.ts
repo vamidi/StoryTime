@@ -35,6 +35,9 @@ export class LoadStoryComponent implements OnInit
 		this.project = project;
 	}
 
+	@Input()
+	public childPath: string = 'stories';
+
 	public onStoryClicked(event, idx: number, story: firebase.storage.Reference)
 	{
 		story.getDownloadURL().then((URL) => {
@@ -68,10 +71,12 @@ export class LoadStoryComponent implements OnInit
 	public async ngOnInit(): Promise<void>
 	{
 		// get the all the files from the project.
+		console.log('here', `${BASE_STORAGE_PATH}/${this.project.id}/${this.childPath}/`);
 		this.firebaseStorage.ref(
-			`${BASE_STORAGE_PATH}/${this.project.id}/stories/`,
+			`${BASE_STORAGE_PATH}/${this.project.id}/${this.childPath}/`,
 		).listAll().toPromise().then((listResult: ListResult) => {
 			listResult.items.forEach((ref) => {
+				console.log(ref);
 				ref.getMetadata().then((m) => {
 					this.metadata.push(m);
 				});
@@ -86,7 +91,13 @@ export class LoadStoryComponent implements OnInit
 		{
 			result.text().then((text) =>
 			{
-				this.ref.close({ storyId: this.metadata[idx].customMetadata.storyID, data: text });
+				const d: any = { data: text }
+				if(this.metadata[idx].customMetadata.hasOwnProperty('storyID'))
+					d.storyId = this.metadata[idx].customMetadata.storyID;
+				else
+					d.itemId = this.metadata[idx].customMetadata.itemID;
+
+				this.ref.close(d);
 			});
 		}, e => console.log(e));
 	}

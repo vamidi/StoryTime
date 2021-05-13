@@ -131,6 +131,7 @@ export class NbFirebaseAuthStrategy extends NbAuthStrategy
 	 */
 	logout(data?: any): Observable<NbAuthResult>
 	{
+		console.log(this.afAuth.currentUser);
 		if(this.afAuth.currentUser)
 		{
 			const module = 'logout';

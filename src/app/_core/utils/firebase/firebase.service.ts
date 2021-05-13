@@ -8,16 +8,16 @@ import { Observable, Subscription } from 'rxjs';
 import { ProxyObject } from '@app-core/data/base';
 import { NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IFoundAbleUser, IUserTicket, User } from '@app-core/data/state/users';
-import { UserService } from '@app-core/data/state/users';
+import { IFoundAbleUser, IUserTicket, User, UserService } from '@app-core/data/state/users';
+import { UserData } from '@app-core/data/state/users/user.model';
 
 import { Revision } from '@app-core/data/state/tables';
 import { AngularFireList, AngularFireObject, ChildEvent } from '@angular/fire/database/interfaces';
 
 import { AngularFireFunctions } from '@angular/fire/functions';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
@@ -97,7 +97,7 @@ export class FirebaseService implements OnDestroy
 	protected mainSubscription: Subscription = new Subscription();
 
 	constructor(
-		private angularFireFunctions: AngularFireFunctions,
+		protected angularFireFunctions: AngularFireFunctions,
 		protected afd: AngularFireDatabase,
 		protected http: HttpClient,
 		protected toastrService: NbToastrService,
@@ -552,6 +552,12 @@ export class FirebaseService implements OnDestroy
 		return this.angularFireFunctions.httpsCallable('updateRoles')(ticket);
 	}
 
+	public list<T>(userData: UserData, tblName: string = ''): AngularFireList<T> | null
+	{
+		if(userData)
+			return this.getList<T>(tblName);
+	}
+
 	/**
 	 * @brief - Save the sheets
 	public saveSheet(title: string, id: string, data: any)
@@ -569,7 +575,7 @@ export class FirebaseService implements OnDestroy
 	 * @brief - Get latest id of the table we are querying from.
 	 * Declare a function that increment a counter in a transaction
 	 */
-	private getId(tblName: string): Promise<any>
+	protected getId(tblName: string): Promise<any>
 	{
 		let tbl = this.tblName;
 
@@ -586,7 +592,7 @@ export class FirebaseService implements OnDestroy
 		// return this.getRef(tbl).set(firebase.database.ServerValue.increment(1));
 	}
 
-	private getList<T>(tblName: string = ''): AngularFireList<T>
+	protected getList<T>(tblName: string = ''): AngularFireList<T>
 	{
 		let tbl = this.tblName;
 
@@ -606,7 +612,7 @@ export class FirebaseService implements OnDestroy
 	 * @param copiedData
 	 * @param copiedOldData
 	 */
-	private async insertRevision(tblRef: string, id: string | number,
+	protected async insertRevision(tblRef: string, id: string | number,
 		copiedData: ProxyObject, copiedOldData: ProxyObject,
 	): Promise<void | string | firebase.database.Reference>
 	{
@@ -629,7 +635,7 @@ export class FirebaseService implements OnDestroy
 			return Promise.reject('Couldn\'t insert new revisions');
 		}).then(async result =>
 		{
-			let promise: Promise<void | firebase.database.Reference> = Promise.resolve();
+			let promise: Promise<void> | firebase.database.ThenableReference = Promise.resolve();
 			// if we found an item.
 			if(result.exists())
 			{

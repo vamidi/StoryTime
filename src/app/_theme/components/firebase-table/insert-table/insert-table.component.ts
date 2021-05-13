@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import {
 	DynamicFormComponent,
@@ -25,7 +25,7 @@ import { Option } from '@app-core/data/forms/form-types';
 import { ITable, Table } from '@app-core/data/state/tables';
 import { Project } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
-import { UserModel } from '@app-core/data/state/users';
+import { UserData, UserModel } from '@app-core/data/state/users';
 import { UserService } from '@app-core/data/state/users';
 import { environment } from '../../../../../environments/environment';
 

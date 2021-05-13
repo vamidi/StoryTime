@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
 import { IUserTicket } from '@app-core/data/state/users';

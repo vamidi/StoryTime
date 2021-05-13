@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MENU_ITEMS } from '../pages/pages-menu';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService } from '@app-core/utils';
 import { NgxMenuItem } from '@app-theme/components';
 import { OneColumnLayoutComponent } from '@app-theme/layouts';

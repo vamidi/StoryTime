@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Gamekit3D;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Playables;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+using DatabaseSync.Components;
 
 namespace Gamekit3D
 {
@@ -68,7 +67,7 @@ namespace Gamekit3D
 
         protected void SwitchPauseState()
         {
-            if (m_InPause && Time.timeScale > 0 || !m_InPause && ScreenFader.IsFading)
+            if (m_InPause && Time.timeScale > 0 || !m_InPause && DatabaseSync.Components.ScreenFader.IsFading)
                 return;
 
             if (!alwaysDisplayMouse)
@@ -88,9 +87,9 @@ namespace Gamekit3D
                     m_Directors[i].Resume ();
                 }
             }
-            
+
             if(!m_InPause)
-                CameraShake.Stop ();
+	            DatabaseSync.Components.CameraShake.Stop ();
 
             if (m_InPause)
                 PlayerInput.Instance.GainControl();

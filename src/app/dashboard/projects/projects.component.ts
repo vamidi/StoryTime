@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { NbDialogService, NbMenuService, NbToastrService } from '@nebular/theme';
 import { InsertProjectComponent } from '@app-theme/components/firebase-table/insert-project/insert-project.component';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { User } from '@app-core/data/state/users';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { User, UserData } from '@app-core/data/state/users';
 import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '@app-core/utils';

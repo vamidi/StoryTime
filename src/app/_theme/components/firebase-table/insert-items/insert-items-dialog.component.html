@@ -1,0 +1,20 @@
+<nb-card status="primary">
+	<nb-card-header>Insert item</nb-card-header>
+	<nb-card-body>
+		<div class="form-group">
+			<label class="formHeading w-100 d-flex">
+				<span class="flex-grow-1">Item Picture</span>
+			</label>
+			<!-- TODO enable photo import -->
+		</div>
+		<!-- <ngx-form (onSendForm)="onSendForm()" [container]="insertFormContainer" [showLabels]="true">
+			<ng-container #formContainer></ng-container>
+		</ngx-form> -->
+		<ngx-dynamic-form [source]="Source" [showLabels]="true"></ngx-dynamic-form>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+		<ngx-button-field #submitQuestion (onSubmitFunc)="onSendForm()"></ngx-button-field>
+		<ngx-checkbox-field #checkboxQuestion></ngx-checkbox-field>
+	</nb-card-footer>
+</nb-card>

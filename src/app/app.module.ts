@@ -10,7 +10,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule, HttpRequest } from '@angular/commo
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { FormsModule } from '@angular/forms';
 
-import { NbFirebasePasswordStrategy, NbFirebasePasswordStrategyOptions } from '@nebular/firebase-auth';
 import {
 	NbAlertModule, NbButtonModule, NbCardModule,
 	NbChatModule, NbCheckboxModule,
@@ -36,6 +35,8 @@ import { ThemeModule } from '@app-theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import { NbPrismaPasswordStrategy, NbPrismaPasswordStrategyOptions } from './_core/strategies/prisma-password.strategy';
+
 import { NgxFirebaseLoginComponent } from './pages/auth/firebase-login.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
 import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.component';
@@ -46,11 +47,11 @@ export function nbNoOpInterceptorFilter(req: HttpRequest<any>) {
 	return req.url === '/refresh';
 }
 
-export function getter(module: string, res: any, options: NbFirebasePasswordStrategyOptions) {
+export function getter(module: string, res: any, options: NbPrismaPasswordStrategyOptions) {
 	return getDeepFromObject(res, options.errors.key, options[module].defaultErrors);
 }
 
-export function messageGetter(module: string, res: any, options: NbFirebasePasswordStrategyOptions) {
+export function messageGetter(module: string, res: any, options: NbPrismaPasswordStrategyOptions) {
 	getDeepFromObject(res.body, options.messages.key, options[module].defaultMessages);
 }
 
@@ -66,7 +67,7 @@ const socialLinks: NbAuthSocialLink[] = [];
 	],
 	providers: [
 		AngularFireAuthGuard,
-		NbFirebasePasswordStrategy,
+		NbPrismaPasswordStrategy,
 		{ provide: NB_AUTH_TOKEN_INTERCEPTOR_FILTER, useValue: nbNoOpInterceptorFilter },
 		{ provide: HTTP_INTERCEPTORS, useClass: NbAuthJWTInterceptor, multi: true },
 	],
@@ -94,7 +95,7 @@ const socialLinks: NbAuthSocialLink[] = [];
 
 		NbAuthModule.forRoot({
 			strategies: [
-				NbFirebasePasswordStrategy.setup({
+				NbPrismaPasswordStrategy.setup({
 					// baseEndpoint: 'https://buas.vamidicreations.nl/core',
 					name: 'password',
 
@@ -145,6 +146,7 @@ const socialLinks: NbAuthSocialLink[] = [];
 						method: 'post',
 					},
 				}),
+
 			],
 			forms: {
 				login: {

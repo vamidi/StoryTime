@@ -14,6 +14,7 @@ export class DynamicComponentService
 	{
 		this.factoryResolver = factoryResolver
 	}
+
 	setRootViewContainerRef(viewContainerRef: ViewContainerRef)
 	{
 		this.rootViewContainer = viewContainerRef;
@@ -27,5 +28,17 @@ export class DynamicComponentService
 		return this.rootViewContainer.createComponent(factory, this.rootViewContainer.length,
 			this.rootViewContainer.injector, []);
 		// this.rootViewContainer.insert(component.hostView);;
+	}
+
+	move<T>(shift: number, componentRef: ComponentRef<T>)
+	{
+		// const currentIndex = this.rootViewContainer.indexOf(componentRef.hostView);
+		const len = this.rootViewContainer.length;
+		let destinationIndex = shift;
+		if (destinationIndex >= len) {
+			destinationIndex = len - 1;
+		}
+		// console.log(shift, currentIndex, destinationIndex, componentRef.instance);
+		this.rootViewContainer.move(componentRef.hostView, destinationIndex);
 	}
 }

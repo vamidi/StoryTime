@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Control, NodeEditor, Input as ReteInput } from 'visualne';
 import { AngularControl } from 'visualne-angular-plugin';
-import { FirebaseService } from '../../../utils/firebase.service';
+import { FirebaseService } from '../../../utils/firebase/firebase.service';
 import { dialogueOptionSocket } from '@app-core/components/visualne/sockets';
 import { UtilsService } from '../../../utils';
 // import * as uuid from 'uuid';

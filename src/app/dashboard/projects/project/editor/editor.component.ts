@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Project } from '@app-core/data/state/projects';
 import { ProjectsService } from '@app-core/data/state/projects';
-import { FirebaseService } from '@app-core/utils/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 
 @Component({
 	selector: 'ngx-editor',

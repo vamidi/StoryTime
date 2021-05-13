@@ -11,12 +11,6 @@ namespace Gamekit3D
         public Transform particleOffset;
         public ParticleSystem PS;
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -75,5 +69,5 @@ namespace Gamekit3D
 
 
         }
-    } 
+    }
 }

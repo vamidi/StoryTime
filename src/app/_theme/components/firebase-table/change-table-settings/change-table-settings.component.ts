@@ -17,8 +17,8 @@ import { BaseSettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { UserService } from '@app-core/data/state/users';
 import { NbDialogRef, NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { IRelation, Revision, Table } from '@app-core/data/state/tables';
 import { DefaultEditor, LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { ProxyObject, StringPair } from '@app-core/data/base';
@@ -33,7 +33,7 @@ import { environment } from '../../../../../environments/environment';
 import { InsertRelationDialogComponent } from '@app-theme/components/firebase-table/insert-relation-items/insert-relation-dialog.component';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
-import * as firebase from 'firebase';
+import firebase from 'firebase/app'
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
