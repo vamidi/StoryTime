@@ -400,7 +400,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 
 	private updateTables(v: Table, key: string, map: Map<string, Table>): boolean
 	{
-		console.assert(map.size === this.tables.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.tables.size}`);
+		UtilsService.onAssert(map.size === this.tables.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.tables.size}`);
 
 		if(environment.production) // don't run in production
 			return;

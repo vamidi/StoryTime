@@ -261,7 +261,6 @@ export class UserService extends UserData implements OnDestroy
 		return this.user$;
 	}
 
-
 	public getMembers(): Observable<User[]>
 	{
 		return observableOf(this.members);

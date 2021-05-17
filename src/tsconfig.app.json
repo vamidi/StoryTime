@@ -27,6 +27,14 @@
 		"typings.d.ts"
 	],
 	"include": [
-		"src/**/*.d.ts"
+		"src/**/*.d.ts",
+		"src/*.ts",
+		"src/**/*.ts",
+		"../node_modules/@nebular/**/*.ts"
+	],
+	"exclude": [
+		"test.ts",
+		"**/*.spec.ts",
+		"../node_modules/@nebular/**/*.spec.ts"
 	]
 }

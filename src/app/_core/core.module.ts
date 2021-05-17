@@ -20,7 +20,7 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import {
 	BreadcrumbsService,
 	PlayerService,
-	AuthGuardService,
+	// AuthGuardService,
 	LayoutService,
 	PipelineService,
 } from './utils';
@@ -37,11 +37,11 @@ import { TableData, TablesService, TablesState } from '@app-core/data/state/tabl
 import { NodeEditorService, NodeEditorState } from '@app-core/data/state/node-editor';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { AngularPrismaDatabase, PrismaService } from '@app-core/utils/prisma';
+// import { AngularPrismaDatabase, PrismaService } from '@app-core/utils/prisma';
 import { DatabaseService } from '@app-core/utils/database.service';
-import { AngularPrismaAuth } from '@app-core/auth/auth.service';
+// import { AngularPrismaAuth } from '@app-core/auth/auth.service';
 import { environment } from '../../environments/environment';
-import { AuthModule } from '@app-core/auth/auth.module';
+// import { AuthModule } from '@app-core/auth/auth.module';
 
 const socialLinks = [
 	{
@@ -66,8 +66,8 @@ const DATA_SERVICES = [
 	{ provide: ProjectData, useClass: ProjectsService },
 	{ provide: TableData, useClass: TablesService },
 	{ provide: SmartTableData, useClass: SmartTableService },
-	{ provide: FirebaseService, useClass: PrismaService },
-	{ provide: AngularFireDatabase, useClass: AngularPrismaDatabase },
+	// { provide: FirebaseService, useClass: PrismaService },
+	// { provide: AngularFireDatabase, useClass: AngularPrismaDatabase },
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -131,9 +131,9 @@ export const CUSTOM_PROVIDERS = [
 	LanguageService,
 	LayoutService,
 	PlayerService,
-	AuthGuardService,
+	// AuthGuardService,
 	// AuthGuard,
-	AngularPrismaAuth,
+	// AngularPrismaAuth,
 	DatabaseService,
 ];
 
@@ -145,7 +145,7 @@ export const CUSTOM_PROVIDERS = [
 		AngularFireFunctionsModule,
 		AngularFireStorageModule,
 		AngularFireModule.initializeApp(environment.firebase),
-		AuthModule.initializeApp(environment.prisma),
+		// AuthModule.initializeApp(environment.prisma),
 
 		NbFirebaseAuthModule,
 

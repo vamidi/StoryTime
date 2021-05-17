@@ -1,14 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
-import { ListResult } from '@angular/fire/storage/interfaces';
 import { Project } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
 import { UtilsService } from '@app-core/utils';
-import firebase from 'firebase/app';
-
-const BASE_STORAGE_PATH: string = `node-editor/projects`;
+import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
+import { map } from 'rxjs/operators';
 
 @Component({
 	selector: ' ngx-load-story',
@@ -27,78 +22,65 @@ export class LoadStoryComponent implements OnInit
 		return this.ref;
 	}
 
-	public get Project(): Project { return this.project; }
-
-	@Input()
-	public set Project(project: Project)
-	{
-		this.project = project;
-	}
-
 	@Input()
 	public childPath: string = 'stories';
 
-	public onStoryClicked(event, idx: number, story: firebase.storage.Reference)
+	public fileUploads: any[] = [];
+
+	public onFileClicked(event, idx: number, file: any)
 	{
-		story.getDownloadURL().then((URL) => {
-			this.loadStory(idx, URL);
-		});
+		this.loadStory(idx, file.url);
 	}
 
 	public getTitle(idx: number): string
 	{
-		const metadata: { customMetadata: any, name: string } = this.metadata[idx];
+		const metadata: any = this.fileUploads[idx].metadata;
 		if(metadata)
 		{
-			const lastText = metadata.customMetadata.name.split('_').pop();
+			const lastText = metadata.name.split('_').pop();
 			return UtilsService.titleCase(UtilsService.replaceCharacter(lastText,/-/g, ' '));
 		}
 
 		return '';
 	}
 
-	public stories: BehaviorSubject<firebase.storage.Reference[]> = new BehaviorSubject<firebase.storage.Reference[]>([]);
-	public metadata: { customMetadata: any, name: string }[] = [];
-
 	private project: Project = null;
 
 	constructor(
 		protected ref: NbDialogRef<LoadStoryComponent>,
-		protected http: HttpClient,
-		protected firebaseStorage: AngularFireStorage,
+		protected storageService: FirebaseStorageService,
 	) { }
 
-	public async ngOnInit(): Promise<void>
+	public ngOnInit()
 	{
-		// get the all the files from the project.
-		console.log('here', `${BASE_STORAGE_PATH}/${this.project.id}/${this.childPath}/`);
-		this.firebaseStorage.ref(
-			`${BASE_STORAGE_PATH}/${this.project.id}/${this.childPath}/`,
-		).listAll().toPromise().then((listResult: ListResult) => {
-			listResult.items.forEach((ref) => {
-				console.log(ref);
-				ref.getMetadata().then((m) => {
-					this.metadata.push(m);
-				});
-			});
-			this.stories.next(listResult.items);
+		this.storageService.getFiles(`${this.childPath}`, 6).snapshotChanges().pipe(
+			map(changes => {
+				// store the key
+				changes.forEach((c) => console.log({ key: c.payload.key, ...c.payload.val() }));
+				return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
+			}),
+		).subscribe(fileUploads => {
+			this.fileUploads = fileUploads;
 		});
 	}
 
 	protected loadStory(idx: number, url: string)
 	{
-		this.http.get(url, { responseType: 'blob' }).subscribe((result) =>
+		console.log(url);
+		this.storageService.getJsonFile(url).then((result) =>
 		{
+			console.log(result);
 			result.text().then((text) =>
 			{
-				const d: any = { data: text }
-				if(this.metadata[idx].customMetadata.hasOwnProperty('storyID'))
-					d.storyId = this.metadata[idx].customMetadata.storyID;
+				console.log(text);
+				const d: { data: string, storyId?: number, itemId?: number } = { data: text };
+				if(this.fileUploads[idx].hasOwnProperty('storyId'))
+					d.storyId = this.fileUploads[idx].storyId;
 				else
-					d.itemId = this.metadata[idx].customMetadata.itemID;
+					d.itemId = this.fileUploads[idx].itemId;
 
 				this.ref.close(d);
 			});
-		}, e => console.log(e));
+		}, e => UtilsService.onError(e));
 	}
 }

@@ -17,6 +17,7 @@ import pick from 'lodash.pick';
 import { PipelineService } from '@app-core/utils/pipeline.service';
 import { environment } from '../../../../../environments/environment';
 import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
 
 @Injectable({ providedIn: 'root'})
 export class ProjectsService extends ProjectData implements Iterable<Project>, IPipelineSchedule
@@ -59,6 +60,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		protected toastrService: NbToastrService,
 		protected menuService: NbMenuService,
 		protected firebaseService: FirebaseService,
+		protected storageService: FirebaseStorageService,
 		protected tablesService: TablesService,
 		protected breadcrumbService: BreadcrumbsService,
 		protected pipelineService: PipelineService,
@@ -261,6 +263,9 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				this.project.metadata.updated_at = snapshot.val();
 				this.project$.next(this.project);
 			});
+
+			// set the project ref in the storage service
+			this.storageService.Project = this.project;
 
 			// Run the scheduler
 			this.pipelineService.run(this.name);
@@ -471,7 +476,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 
 	private updateProject(v: Project, key: string, map: Map<string, Project>): boolean
 	{
-		console.assert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
+		UtilsService.onAssert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
 
 		if(environment.production) // don't run in production
 			return;

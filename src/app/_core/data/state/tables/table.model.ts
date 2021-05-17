@@ -8,6 +8,8 @@ import { FilterCallback } from '@app-core/providers/firebase-filter.config';
 import { UtilsService } from '@app-core/utils';
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
 import { DebugType } from '@app-core/utils/utils.service';
+import { FileUpload } from '@app-core/data/file-upload.model';
+import { Data } from 'visualne/types/core/data';
 
 interface IMetaData {
 	created_at: Object;
@@ -65,6 +67,24 @@ export interface ITable<T extends ProxyObject = ProxyObject> extends PipelineAss
 	revisions: { [key: string]: Revision<T> },
 	relations: IRelation,
 	metadata: ITableData,
+}
+
+/**
+ * @brief - Craftable file that belongs to the table.
+ */
+export class CraftableFileUpload extends FileUpload
+{
+	id: string;                 // Id of the file
+	metadata: {
+		name: string,           // name of the file without json
+		projectID: string,      // Project id
+	};
+	itemId: number;             // Story associated with this file.
+	data: Data;                 // JSON data of the story
+
+	constructor(file: File) {
+		super(file);
+	}
 }
 
 export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, Iterable<ProxyObject>

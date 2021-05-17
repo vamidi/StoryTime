@@ -50,31 +50,33 @@ const DIALOGUE_OPTION_NODE_NAME: string = 'Dialogue Option';
 		nb-card-header button {
 			float: right;
 		}
+
 		nb-icon {
 			cursor: pointer;
 		}
 		`,
 	],
 })
-export class StoryEditorComponent extends NodeEditorComponent implements OnInit
-{
+export class StoryEditorComponent extends NodeEditorComponent implements OnInit {
 	// VisualNE Editor
-	@ViewChild('nodeEditor', { static: true })
+	@ViewChild('nodeEditor', {static: true})
 	public el: ElementRef<HTMLDivElement>;
 
-	public set setDialogue(event: any)
-	{
+	@ViewChild('sidePanel', {static: true})
+	public sidePanel: ElementRef<HTMLDivElement>;
+
+	public set setDialogue(event: any) {
 		this.textAreaQuestion.value = event.target.value as string;
 	}
 
 	public textQuestion: TextboxQuestion = new TextboxQuestion(
-		{ text: 'Previous Dialogue Text', value: '', disabled: true, type: 'text'},
+		{text: 'Previous Dialogue Text', value: '', disabled: true, type: 'text'},
 	);
 	public charTextQuestion: TextboxQuestion = new TextboxQuestion(
-		{ text: 'Character', value: '', disabled: true, type: 'text'},
+		{text: 'Character', value: '', disabled: true, type: 'text'},
 	);
 	public textAreaQuestion: TextboxQuestion = new TextboxQuestion(
-		{ text: 'Dialogue', value: '', disabled: true, type: 'text'},
+		{text: 'Dialogue', value: '', disabled: true, type: 'text'},
 	);
 
 	protected components: VisualNEComponent[] = [
@@ -89,14 +91,11 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		// searchKeep: title => true,
 		// leave item when searching, optional. For example, title => ['Refresh'].includes(title)
 		delay: 100,
-		rename(component)
-		{
+		rename(component) {
 			return component.name;
 		},
-		allocate(component)
-		{
-			if (component.name === 'Number' || component.name === 'Add')
-			{
+		allocate(component) {
+			if (component.name === 'Number' || component.name === 'Add') {
 				return ['Math']
 			}
 			return [];
@@ -137,15 +136,12 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		);
 	}
 
-	public ngOnInit()
-	{
+	public ngOnInit() {
 		super.ngOnInit();
 
-		this.mainSubscription.add(this.nodeEditorService.storyLoaded.subscribe((res: IStory) =>
-		{
+		this.mainSubscription.add(this.nodeEditorService.storyLoaded.subscribe((res: IStory) => {
 			// load the character
-			if(res)
-			{
+			if (res) {
 				this.title = res.title[this.nodeEditorService.Language];
 				this.textAreaQuestion.value = this.getQuestionValue(res.childId, this.dialogues);
 				if (res.parentId !== Number.MAX_SAFE_INTEGER && this.characters.find(res.parentId)) {
@@ -156,28 +152,22 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 
 	}
 
-	public loadStory()
-	{
+	public loadStory() {
 		this.nodeEditorService.loadStory();
 	}
 
-	public saveStory(): void
-	{
+	public saveStory(): void {
 		this.nodeEditorService.saveStory();
 	}
 
-	public newStory(): void
-	{
+	public newStory(): void {
 		// TODO see also if the user has not save yet.
 		if (this.nodeEditorService.Editor.nodes.length > 0 && !confirm('Are you sure you want to create a new story?'))
 			return;
 
-		this.nodeEditorService.newStory(InsertStoryComponent, async (res?: IStory) =>
-		{
-			if(res !== undefined)
-			{
-				if(this.nodeEditorService.SelectedStory)
-				{
+		this.nodeEditorService.newStory(InsertStoryComponent, async (res?: IStory) => {
+			if (res !== undefined) {
+				if (this.nodeEditorService.SelectedStory) {
 					this.title = this.nodeEditorService.SelectedStory.title[this.nodeEditorService.Language];
 
 					// set the start node output data to the new story
@@ -190,14 +180,11 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		});
 	}
 
-	public onSelect(event: number)
-	{
+	public onSelect(event: number) {
 		this.textAreaQuestion.value = event;
-		if(this.currentNode)
-		{
+		if (this.currentNode) {
 			// if we have a dialogueNode
-			if(this.currentNode.name === DIALOGUE_NODE_NAME)
-			{
+			if (this.currentNode.name === DIALOGUE_NODE_NAME) {
 				// TODO see if we need this
 				// this.currentNode.data['dialogueId'] = +this.listQuestion.value;
 
@@ -209,8 +196,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 				// childId - dialogue start node
 
 				// if we are changing the start node
-				if(!this.nonStartNode)
-				{
+				if (!this.nonStartNode) {
 					// change the childId.
 					this.nodeEditorService.SelectedStory.childId = this.currentNode.data.dialogueId as number;
 
@@ -219,8 +205,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 				}
 			}
 
-			if(this.currentNode.name === DIALOGUE_OPTION_NODE_NAME)
-			{
+			if (this.currentNode.name === DIALOGUE_OPTION_NODE_NAME) {
 				// TODO see if we need this.
 				// this.currentNode.data['optionId'] = +this.listQuestion.value;
 			}
@@ -229,14 +214,11 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		}
 	}
 
-	public onLanguageChange(event: KeyLanguage)
-	{
+	public onLanguageChange(event: KeyLanguage) {
 		super.onLanguageChange(event);
 
-		if(this.nodeEditorService.Editor)
-		{
-			if(this.currentNode)
-			{
+		if (this.nodeEditorService.Editor) {
+			if (this.currentNode) {
 				// change the current dialogue text area
 				this.textAreaQuestion.value = this.getQuestionValue(this.currentNode.data.dialogueId as number, this.dialogues);
 
@@ -260,14 +242,14 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 			// 	arr[idx] = c;
 			// });
 			const nodes = this.nodeEditorService.Editor.nodes;
-			nodes.forEach((n) => { if(n.name === DIALOGUE_NODE_NAME) n.update() });
+			nodes.forEach((n) => {
+				if (n.name === DIALOGUE_NODE_NAME) n.update()
+			});
 		}
 	}
 
-	public addOption(output: Output = null)
-	{
-		if(this.currentNode)
-		{
+	public addOption(output: Output = null) {
+		if (this.currentNode) {
 			const hasOutput = output !== null;
 
 			// create the component
@@ -293,7 +275,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 
 			const outputIdx = this.outputs.push(out);
 
-			if(!hasOutput) // only add when we have created a new output
+			if (!hasOutput) // only add when we have created a new output
 			{
 				this.currentNode.addOutput(this.outputs[outputIdx - 1]);
 				// Add the option also to the table.
@@ -301,18 +283,16 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 				// Let firebase search with current table name
 				this.firebaseService.setTblName(this.tableName);
 
-				const event: { data: ProxyObject, confirm?: any } = { data: createDialogueOption() };
+				const event: { data: ProxyObject, confirm?: any } = {data: createDialogueOption()};
 				this.insertFirebaseData(event)
-					.then((data) =>
-					{
+					.then((data) => {
 						UtilsService.showToast(
 							this.toastrService,
 							'Dialogue option added!',
 							'Dialogue option has successfully been created',
 						);
 
-						if(data && typeof data === 'number')
-						{
+						if (data && typeof data === 'number') {
 							this.onOptionSelected(instance.index, data);
 
 							instance.question.value = this.getQuestionValue(
@@ -337,22 +317,20 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 			this.currentNode.update();
 
 			// save the snippet again
-			if(!hasOutput)
+			if (!hasOutput)
 				this.nodeEditorService.saveSnippet();
 		}
 	}
 
-	public onOptionSelected(idx: number, event: number)
-	{
+	public onOptionSelected(idx: number, event: number) {
 		const output = this.currentNode.outputs.get(this.outputs[idx].key);
-		(this.currentNode.data.options as OptionMap)[output.key] = { key: idx, value: event };
+		(this.currentNode.data.options as OptionMap)[output.key] = {key: idx, value: event};
 
 		this.currentNode.update();
 		this.nodeEditorService.Editor.trigger('process');
 	}
 
-	public onOptionDeleted(idx: number)
-	{
+	public onOptionDeleted(idx: number) {
 		// delete the output by key
 		this.currentNode.removeOutput(this.outputs[idx]);
 		this.outputs.splice(idx, 1);
@@ -365,8 +343,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		// this.mainSubscription.remove(sub[1]);
 
 		// we need to rearrange the outputs
-		this.outputs.forEach((output, index, arr) =>
-		{
+		this.outputs.forEach((output, index, arr) => {
 			this.optionTextAreaComponents[index].index = index;
 			this.optionTextAreaComponents[index].question.text = `Option Out ${index + 1}`;
 			arr[index].name = `Option Out ${index + 1} - [NULL]`;
@@ -377,35 +354,31 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		this.currentNode.update();
 	}
 
-	public updateDialogue()
-	{
+	public updateDialogue() {
 		// If we have a whole new value we need to add it to the option list
-		if(this.currentNode !== null)
-		{
+		if (this.currentNode !== null) {
 			const listValue = this.textAreaQuestion.value as string;
 			const foundedDialogue: IDialogue = this.dialogues.find(this.currentNode.data.dialogueId as number);
 
 			const dialogue = {
 				id: foundedDialogue.id,
-				text: { ...foundedDialogue.text },
+				text: {...foundedDialogue.text},
 			}
 			dialogue.text[this.nodeEditorService.Language] = listValue as string;
 
 			// find the current dialogue
-			const payload = { currDialogue: dialogue, nextDialogue: null /*, optionMap: null, */ }
+			const payload = {currDialogue: dialogue, nextDialogue: null /*, optionMap: null, */}
 			const context: Context<AdditionalEvents & EventsTypes> = this.nodeEditorService.Editor;
 			context.trigger('saveDialogue', payload);
 		}
 	}
 
-	public updateOptions()
-	{
-		if(this.outputs.length === 0 || !this.currentNode)
+	public updateOptions() {
+		if (this.outputs.length === 0 || !this.currentNode)
 			return;
 
 		const optionMap = this.currentNode.data.options as OptionMap;
-		this.outputs.forEach((output, idx) =>
-		{
+		this.outputs.forEach((output, idx) => {
 			const hasOutput = output !== null;
 			const listValue = this.optionTextAreaComponents[idx].question.value as string;
 
@@ -416,11 +389,11 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 
 			const option = {
 				id: foundedOption.id,
-				text: { ...foundedOption.text },
+				text: {...foundedOption.text},
 			}
 			option.text[this.nodeEditorService.Language] = listValue as string;
 
-			const payload = { fOption: option, fNextId: null }
+			const payload = {fOption: option, fNextId: null}
 			const context: Context<AdditionalEvents & EventsTypes> = this.nodeEditorService.Editor;
 			context.trigger('saveOption', payload);
 		});
@@ -428,28 +401,23 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 
 	}
 
-	protected async initializeListeners()
-	{
-		this.nodeEditorService.listen('nodecreate', (node: Node) =>
-		{
-			if(node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId'))
-			{
+	protected async initializeListeners() {
+		this.nodeEditorService.listen('nodecreate', (node: Node) => {
+			if (node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId')) {
 				this.tableName = `tables/${this.dialogues.id}`;
 				// Let firebase search with current table name
 				this.firebaseService.setTblName(this.tableName);
 
-				const event: { data: ProxyObject, confirm?: any } = { data: createDialogue() };
+				const event: { data: ProxyObject, confirm?: any } = {data: createDialogue()};
 				this.insertFirebaseData(event)
-					.then((data) =>
-						{
+					.then((data) => {
 							UtilsService.showToast(
 								this.toastrService,
 								'Dialogue added!',
 								'Dialogue has successfully been created',
 							);
 
-							if(data && typeof data === 'number')
-							{
+							if (data && typeof data === 'number') {
 								node.data = {
 									...node.data,
 									dialogueId: data,
@@ -467,7 +435,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 
 			let option: Option<number> | string;
 			// we are dialogue with dialogue options
-			if(outputNode.key.includes('option'))
+			if (outputNode.key.includes('option'))
 				option = this.getQuestionValue(
 					outputNode.node.data.options[outputNode.key].value as number, this.tblDialogueOptions,
 				);
@@ -478,27 +446,22 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		});
 	}
 
-	protected loadNodeInPanel(node: Node)
-	{
+	protected loadNodeInPanel(node: Node) {
 		super.loadNodeInPanel(node);
 
 		// this.listQuestion.value = node.data.dialogueId as number ?? Number.MAX_SAFE_INTEGER;
 		// this.selectComponent.selectedChange.emit(this.listQuestion.value);
 
 		// let selectionValue = Number.MAX_SAFE_INTEGER;
-		if(node.name === DIALOGUE_NODE_NAME)
-		{
+		if (node.name === DIALOGUE_NODE_NAME) {
 			this.nonStartNode = true;
 			this.textAreaQuestion.text = 'Dialogue';
 			this.textAreaQuestion.value = this.getQuestionValue(node.data.dialogueId as number, this.dialogues);
 
 			// create the options
-			if(this.currentNode.outputs.size)
-			{
-				this.currentNode.outputs.forEach((output) =>
-				{
-					if(output.key !== 'dialogueOut')
-					{
+			if (this.currentNode.outputs.size) {
+				this.currentNode.outputs.forEach((output) => {
+					if (output.key !== 'dialogueOut') {
 						this.addOption(output);
 						this.currentOutputCount++;
 					}
@@ -506,15 +469,12 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 			}
 
 			this.updatePrevious(this.currentNode);
-		}
-		else if(node.name === DIALOGUE_OPTION_NODE_NAME)
-		{
+		} else if (node.name === DIALOGUE_OPTION_NODE_NAME) {
 			this.nonStartNode = true;
 			this.textAreaQuestion.text = 'Dialogue Option';
 			// this.listQuestion.options$.next(this.dialogueOptionsList);
 			// selectionValue = node.data.optionId as number ?? Number.MAX_SAFE_INTEGER;
-		}
-		else {
+		} else {
 			this.nonStartNode = false;
 			this.textAreaQuestion.text = 'Start dialogue';
 			this.textAreaQuestion.value = this.getQuestionValue(node.data.dialogueId as number, this.dialogues);
@@ -527,23 +487,19 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit
 		// }, 100);
 	}
 
-	protected updatePrevious(node: Node)
-	{
+	protected updatePrevious(node: Node) {
 		const input: Input = node.inputs.get('dialogueIn') ? node.inputs.get('dialogueIn') : null;
 
 		let option: string = '';
-		if(input.hasConnection())
-		{
+		if (input.hasConnection()) {
 			const outputNode: Output = input.connections[0].output;
 
 			// we are dialogue with dialogue options
-			if(outputNode.key.includes('option'))
-			{
+			if (outputNode.key.includes('option')) {
 				option = this.getQuestionValue(
 					outputNode.node.data.options[outputNode.key].value as number, this.tblDialogueOptions,
 				);
-			}
-			else {
+			} else {
 				option = this.getQuestionValue(outputNode.node.data.dialogueId as number, this.dialogues);
 			}
 		}

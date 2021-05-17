@@ -155,6 +155,12 @@ export class UtilsService
 		this.onDebug(msg, DebugType.ERROR, optionalParams);
 	}
 
+	static onAssert(value: any, message?: string, ...optionalParams: any[])
+	{
+		if (!environment.production)
+			console.assert(value, message, optionalParams);
+	}
+
 	static truncate(text: string, maxLength: number)
 	{
 		return text.length > maxLength ? `${ text.substring(0, maxLength)}...` : text;
@@ -510,5 +516,17 @@ export class UtilsService
 		if (url == null) return null;
 		const options = `width=${width},height=${height},left=${left},top=${top}`;
 		return window.open(url, name, options);
+	}
+
+	/** FILE **/
+	public static blobToFile(blobFile: Blob, fileName:string): File
+	{
+		const file: any = blobFile;
+		// A Blob() is almost a File() - it's just missing the two properties below which we will add
+		file.lastModifiedDate = new Date();
+		file.name = fileName;
+
+		// Cast to a File() type
+		return <File>blobFile;
 	}
 }

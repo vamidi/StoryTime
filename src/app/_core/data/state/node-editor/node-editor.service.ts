@@ -15,7 +15,7 @@ import { ConnectionPlugin } from 'visualne-connection-plugin';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { DebouncedFunc } from '@app-core/types';
-import { Project } from '@app-core/data/state/projects';
+import { Project, StoryFileUpload } from '@app-core/data/state/projects';
 import { ProjectsService } from '@app-core/data/state/projects/projects.service';
 import {
 	InsertCraftableComponent,
@@ -24,21 +24,17 @@ import {
 } from '@app-theme/components/firebase-table';
 import { ICharacter, ICraftable, IDialogue, IItem, IStory, IStoryData } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
-import { Table } from '@app-core/data/state/tables';
+import { CraftableFileUpload, Table } from '@app-core/data/state/tables';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { FirebaseStorageService, NbLocationFileType } from '@app-core/utils/firebase/firebase-storage.service';
+import { FileUpload } from '@app-core/data/file-upload.model';
 
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 
 import firebase from 'firebase/app';
-import UploadTaskSnapshot = firebase.storage.UploadTaskSnapshot;
 
 import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
-
-// Path to the storage bucket
-// TODO add version control
-const BASE_STORAGE_PATH: string = `node-editor/projects`;
 
 @Injectable()
 export class NodeEditorService
@@ -68,7 +64,6 @@ export class NodeEditorService
 		if(this.data.hasOwnProperty(key))
 		{
 			this.data[key] = value;
-			console.log(key, this.data[key]);
 			if(this.insertStoryRef)
 			{
 				switch(key)
@@ -98,6 +93,7 @@ export class NodeEditorService
 	}
 
 	public fileName: string = '';
+	public currentFileUpload?: StoryFileUpload | FileUpload;
 	public container: HTMLDivElement;
 
 	public storyLoaded: BehaviorSubject<IStory> = new BehaviorSubject<IStory>(null);
@@ -116,9 +112,6 @@ export class NodeEditorService
 
 	// data settings
 	protected debounceSaveSnippet!: DebouncedFunc<() => void>;
-
-	// Firebase settings
-	protected firebaseUploadTask: AngularFireUploadTask;
 
 	private localStorageName = 'localStory@0.2.0';
 
@@ -146,6 +139,7 @@ export class NodeEditorService
 	 * @param toastrService
 	 * @param firebaseStorage
 	 * @param firebaseService
+	 * @param storageService
 	 * @param projectService
 	 */
 	constructor(
@@ -153,6 +147,7 @@ export class NodeEditorService
 		protected toastrService: NbToastrService,
 		protected firebaseStorage: AngularFireStorage,
 		protected firebaseService: FirebaseService,
+		protected storageService: FirebaseStorageService,
 		protected projectService: ProjectsService,
 	) {
 		this.debounceSaveSnippet = debounce(this.saveSnip, 200);
@@ -298,7 +293,6 @@ export class NodeEditorService
 				childPath: path,
 			},
 		});
-		ref.componentRef.instance.Project = this.project;
 
 		const closeFunc = ref.onClose.subscribe( (res: {
 			storyId?: string,
@@ -392,31 +386,11 @@ export class NodeEditorService
 			// When we have uploaded the story.
 			if(!this.isActive(snapshot))
 			{
-				const isStory = this.selectedStory ?? false;
-				const childPath = isStory ? 'stories' : 'craftables';
-
-				const path: string = `${BASE_STORAGE_PATH}/${this.project.id}/${childPath}/${this.fileName}.json`;
-
-				const newData = isStory ? this.selectedStory : this.selectedCraftItem;
-				const payload: { data: IStory | ICraftable, newData: IStory | ICraftable, confirm?: any } = {
-					data: isStory ? this.selectedStory : this.selectedCraftItem,
-					newData: {
-						...newData,
-						craftFile: path,
-					},
-				};
-
-				const event: { data: IStory | ICraftable, newData: IStory | ICraftable, confirm?: any } = payload;
-
-				const oldObj: IStory | ICraftable = event.hasOwnProperty('data') ? { ...event.data } : null;
-				const obj: IStory | ICraftable = { ...event.newData };
-
-				if(isEqual(event.data, event.newData))
-					return;
-
-				const tableName = isStory ? `tables/${this.data.stories.id}` : `tables/${this.data.craftables.id}`;
-				return this.firebaseService.updateData(
-					event.newData.id, tableName + '/revisions', obj, oldObj, tableName + '/data');
+				UtilsService.showToast(
+					this.toastrService,
+					'Story saved!',
+					'Node data has been uploaded successfully',
+				);
 			}
 		});
 		this.mainSubscription.add(sub);
@@ -572,7 +546,7 @@ export class NodeEditorService
 		});
 	}
 
-	public isActive(snapshot: UploadTaskSnapshot)
+	public isActive(snapshot: firebase.storage.UploadTaskSnapshot)
 	{
 		return snapshot.state === 'running'
 			&& snapshot.bytesTransferred < snapshot.totalBytes;
@@ -599,47 +573,47 @@ export class NodeEditorService
 		// convert your object into a JSON-string
 		const jsonString = JSON.stringify(this.nodeEditor.toJSON());
 
-		console.log(jsonString);
-
 		// create a Blob from the JSON-string
-		const blob = new Blob([jsonString], { type: 'application/json' });
+		const file: File = UtilsService.blobToFile(new Blob([jsonString], { type: 'application/json' }), `${this.fileName}.json`);
 
-		console.log(blob);
+		if (file)
+		{
+			const metadata: {
+				customMetadata: { name: string, projectID: string },
+			} = {
+				customMetadata: {
+					name: this.fileName, // name of the file without json
+					projectID: this.project.id, // project id
+				},
+			};
 
-		const childPath = this.selectedStory ? 'stories' : 'craftables';
-
-		const path: string = `
-			${BASE_STORAGE_PATH}/${this.project.id}/${childPath}/${this.fileName}.json
-		`;
-
-		console.log(path, this.selectedStory === null, this.selectedCraftItem === null);
-		const customMetadata: { name: string, projectID: string, storyID?: string, itemID?: string } = {
-			name: this.fileName, // name of the file without json
-			projectID: this.project.id, // project id
-		};
-
-		if(this.selectedStory !== null)
-			customMetadata.storyID = `${ this.selectedStory.id }`; // story id
-
-		if(this.selectedCraftItem !== null)
-			customMetadata.itemID = `${ this.selectedCraftItem.id }`; // item id
-
-		this.firebaseUploadTask = this.firebaseStorage.upload(path, blob, {
-			customMetadata: customMetadata,
-		});
-		console.log(customMetadata);
-
-		this.firebaseUploadTask.percentageChanges();
-		return this.firebaseUploadTask.snapshotChanges().pipe(
-			finalize(() =>
+			if(this.selectedStory !== null)
 			{
-				UtilsService.showToast(
-					this.toastrService,
-					'Story saved!',
-					'Node data has been uploaded successfully',
-				);
-			}),
-		);
+				this.currentFileUpload = new StoryFileUpload(file);
+				(<StoryFileUpload>this.currentFileUpload).metadata = metadata.customMetadata;
+				(<StoryFileUpload>this.currentFileUpload).storyId = this.selectedStory.id; // story id;
+			}
+
+			if(this.selectedCraftItem !== null)
+			{
+				this.currentFileUpload = new CraftableFileUpload(file);
+				(<CraftableFileUpload>this.currentFileUpload).metadata = metadata.customMetadata;
+				(<CraftableFileUpload>this.currentFileUpload).itemId = this.selectedCraftItem.id; // item id
+			}
+
+			const childPath = this.selectedStory ? 'stories' : 'craftables';
+			const type: NbLocationFileType = this.selectedStory ? 'Story' : 'Craftable';
+
+			return this.storageService.pushFileToStorage(childPath, this.currentFileUpload, type, metadata);
+			/*.subscribe(
+				percentage => {
+					this.percentage = Math.round(percentage ? percentage : 0);
+				},
+				error => {
+					UtilsService.onError(error);
+				},
+			);*/
+		}
 	}
 
 	protected registerComponent<T extends VisualNEComponent>(c: T)

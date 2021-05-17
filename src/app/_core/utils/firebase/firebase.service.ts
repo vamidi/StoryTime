@@ -12,7 +12,7 @@ import { IFoundAbleUser, IUserTicket, User, UserService } from '@app-core/data/s
 import { UserData } from '@app-core/data/state/users/user.model';
 
 import { Revision } from '@app-core/data/state/tables';
-import { AngularFireList, AngularFireObject, ChildEvent } from '@angular/fire/database/interfaces';
+import { AngularFireList, AngularFireObject, ChildEvent, QueryFn } from '@angular/fire/database/interfaces';
 
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { environment } from '../../../../environments/environment';
@@ -552,10 +552,17 @@ export class FirebaseService implements OnDestroy
 		return this.angularFireFunctions.httpsCallable('updateRoles')(ticket);
 	}
 
-	public list<T>(userData: UserData, tblName: string = ''): AngularFireList<T> | null
+	public getList<T>(tblName: string = '', queryFn?: QueryFn): AngularFireList<T>
 	{
-		if(userData)
-			return this.getList<T>(tblName);
+		let tbl = this.tblName;
+
+		// if we override the tblName
+		if(tblName !== '')
+			tbl = tblName;
+
+		this.lastUsedTblName = tbl;
+
+		return this.afd.list<T>(tbl, queryFn);
 	}
 
 	/**
@@ -590,19 +597,6 @@ export class FirebaseService implements OnDestroy
 
 		// for simple increment use
 		// return this.getRef(tbl).set(firebase.database.ServerValue.increment(1));
-	}
-
-	protected getList<T>(tblName: string = ''): AngularFireList<T>
-	{
-		let tbl = this.tblName;
-
-		// if we override the tblName
-		if(tblName !== '')
-			tbl = tblName;
-
-		this.lastUsedTblName = tbl;
-
-		return this.afd.list<T>(tbl);
 	}
 
 	/**

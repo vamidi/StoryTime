@@ -43,9 +43,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 {
 	// VisualNE Editor
 	abstract el: ElementRef<HTMLDivElement>;
-
-	@ViewChild('sidePanel', { static: true })
-	public sidePanel: ElementRef<HTMLDivElement>;
+	
+	// Side panel
+	abstract sidePanel: ElementRef<HTMLDivElement>;
 
 	@ViewChild('overViewContainer', { read: ViewContainerRef, static: true })
 	public vcr!: ViewContainerRef;

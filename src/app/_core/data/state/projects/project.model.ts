@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs';
+import { Data } from 'visualne/types/core/data';
+
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { FileUpload } from '@app-core/data/file-upload.model';
+import { Observable } from 'rxjs';
 
 interface ITable
 {
@@ -103,6 +106,24 @@ export class Project implements IProject
 	}
 
 	static empty(tClass: any) { return tClass.length === 0; }
+}
+
+/**
+ * @brief - StoryFile that belongs to the project.
+ */
+export class StoryFileUpload extends FileUpload
+{
+	id: string;             // Id of the file
+	metadata: {
+		name: string,       // name of the file without json
+		projectID: string,  // Project id
+	};
+	storyId: number;        // Story associated with this file.
+	data: Data;              // JSON data of the story
+
+	constructor(file: File) {
+		super(file);
+	}
 }
 
 export abstract class ProjectData

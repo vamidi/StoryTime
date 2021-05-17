@@ -27,7 +27,6 @@ export interface IStory extends ProxyObject
 	childId: number; 					// dialogue start node
 	description: KeyLanguageObject; 	// description of the story
 	title: KeyLanguageObject;			// title of the story
-	storyFile: string					// location of the file that describes the nodes.
 	typeId: number, 					// type of quest it is main story or somethings different, the player decide.
 	taskId: number,						// Where the first task is.
 }
@@ -196,7 +195,6 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			}, 									// the title of the quest
 			typeId: 0, 							// type of quest it is main story or somethings different, the player decide.
 			taskId: Number.MAX_SAFE_INTEGER,	// Where the first task is.
-			storyFile: '',						// Location of the story file
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},

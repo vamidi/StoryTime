@@ -53,6 +53,9 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 	@ViewChild('nodeEditor', { static: true })
 	public el: ElementRef<HTMLDivElement>;
 
+	@ViewChild('sidePanel', { static: true })
+	public sidePanel: ElementRef<HTMLDivElement>;
+
 	@ViewChild(DynamicFormComponent, { static: true })
 	public formComponent: DynamicFormComponent = null;
 
