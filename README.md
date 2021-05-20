@@ -1,13 +1,15 @@
 ![StoryTime logo](./installation/storytime_logo.jpg)
 
-# StoryTime 2020.1.3f1
+# StoryTime 2020.1.3f2
 A management tool that for creating role-playing games. This tool will work with Unity3D &amp; Unreal engine 4
 
 ## Requirements
 
+> **Support for SQL is in development!**
+
 * Make sure you have Node version >= 10.0 and (NPM >= 5 or Yarn ) [url](https://nodejs.org/en/download/)
 * Your game engine of choice where you can receive JSON from the API.
-* A Firebase project free or blaze tier.
+* A Firebase database(free or blaze tier) or an SQL database (PostgreSQL, SQLite or MSSQL).
 * A web host to communicate with Firebase and return JSON data to your framework/engine.
 
 # Installation
@@ -58,15 +60,15 @@ npm install
 
 * Fill in the name of your app, you can keep `Firebase Hosting` unchecked and click register app.
 
-> The config that you see will be for your firebase credentials. Keep them safe!
+> **The config that you see will be for your firebase credentials. Keep them safe!**
 
 * Once you have registered your app click to continue back to console, and you will see your credentials.
 
-> **NOTE - You can also use the credentials from the registration form**
+> **You can also use the credentials from the registration form**
 
 ## Authentication
 
-> **NOTE for StoryTime to work you need users, so we have to add it now to the firebase project.**
+> **For StoryTime to work you need users, so we have to add it now to the firebase project.**
 
 * Go back to the firebase console, Under the `Build` category click on authentication.
 
@@ -83,11 +85,11 @@ npm install
 ![Firebase authentication screen](./installation/firebase-authentication-add-user.png)
 
 * Add a new user.
-> **NOTE - Can be any kind of email as long as it is a valid email. The password can be anything you want**
+> **Can be any kind of email as long as it is a valid email. The password can be anything you want**
 
 ## Firebase database
 
-> **NOTE for StoryTime to work you need to use Firebase realtime database, so we have to add it now to the firebase project.**
+> **For StoryTime to work you need to use Firebase realtime database, so we have to add it now to the firebase project.**
 
 * Go back to the firebase console, unfold `build` on the left side panel and click realtime database.
 
@@ -97,14 +99,14 @@ npm install
 
 ![Firebase Database setup screen](./installation/firebase-database-setup-001.png)
 
-> **NOTE - Choosing the database that is close to your location might help with the connection to the database**
+> **Choosing the database that is close to your location might help with the connection to the database**
 
 * Choose the location where you want to store your database. You can choose what you prefer, I prefer United States.
 * Click next to continue.
 
 ![Firebase Database rules](./installation/firebase-database-rules.png)
 
-> **NOTE - Database rules can be changed later!**
+> **Database rules can be changed later!**
 
 * For development purposes I recommend choosing test mode, this will give read write access until the timestamp is surpassed (30days).
 * Click enable to continue.
@@ -115,9 +117,9 @@ npm install
 ## Configuration
 
 **StoryTime** uses environment variables to configure firebase automatice. The [.env] file contains all the environment variables used in **StoryTime**.
-> **NOTE - the `.env` should not be deleted or renamed, because the installation depends on this file.**
+> **the `.env` should not be deleted or renamed, because the installation depends on this file.**
 
-> **NOTE - if you are using separate environments make sure you create multiple apps with different firebase credentials and different `.env.[YOUR_ENVIRONMENT]` files.**
+> **If you are using separate environments make sure you create multiple apps with different firebase credentials and different `.env.[YOUR_ENVIRONMENT]` files.**
 * Create a file in the root of the project, name it `.env` and copy over the content from the `.env.example` file.
 
 The following table describes the configurable environment variables.
