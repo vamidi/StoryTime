@@ -1,6 +1,6 @@
 @import '../../../../../_theme/styles/themes';
 
-@import "~@angular/cdk/overlay-prebuilt.css";
+@import '~@angular/cdk/overlay-prebuilt.css';
 
 $grid-size: 20px;
 
@@ -48,11 +48,11 @@ $grid-size: 20px;
 	}
 
 	.context-menu {
-		margin-top:.25rem;
+		margin-top: 0.25rem;
 		background-color: #fff;
 		padding: 1rem;
 		box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.2);
 		width:10rem;
-		z-index: 9999
+		z-index: 9999;
 	}
 }

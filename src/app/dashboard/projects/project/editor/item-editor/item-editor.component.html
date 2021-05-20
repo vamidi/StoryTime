@@ -54,10 +54,10 @@
 					<!-- items that we can select -->
 					<div class="form-group {{ itemListQuestion.groupCss }}">
 						<label class="formHeading" for="{{ itemListQuestion.key }}--dropdown">{{ itemListQuestion.text }}</label>
-						<nb-select id="{{ itemListQuestion.key }}--dropdown"
-						          nbInput fullWidth
-						          [selected]="itemListQuestion.value"
-						          (selectedChange)="pickItem($event)">
+						<nb-select fullWidth [selected]="defaultOption" (selectedChange)="pickItem($event)">
+<!--							<nb-option [id]="'dialogue-option-new'" [value]="defaultOption">[+] None</nb-option>-->
+							<nb-option [value]="defaultOption">[+] None</nb-option>
+							<nb-option *ngFor="let o of itemListQuestion.options$ | async" [value]="o.value">{{ o.key }}</nb-option>
 						</nb-select>
 						<button nbButton fullWidth status="success" class="mt-2" (click)="updateItem()">Save</button>
 					</div>

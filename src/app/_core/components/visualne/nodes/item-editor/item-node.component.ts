@@ -16,6 +16,7 @@ export class ItemNodeComponent extends BaseNodeComponent
 
 	public async builder(node: Node): Promise<void>
 	{
+		node.addInput(new Input('itemIn', `Item ID [NULL]`, itemSocket));
 		node.addOutput(new Output('itemOut', `Item ID [NULL]`, itemSocket));
 	}
 

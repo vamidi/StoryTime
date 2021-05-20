@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"importHelpers": true,
 		"module": "esnext",
+		"baseUrl": "./src",
 		"outDir": "./dist/out-tsc",
 		"sourceMap": true,
 		"declaration": false,
@@ -22,6 +23,23 @@
 			{
 				"name": "tslint-language-service"
 			}
-		]
+		],
+		"paths": {
+			"@angular/*": [
+				"../node_modules/@angular/*"
+			],
+			"@nebular/*": [
+				"../node_modules/@nebular/*"
+			],
+			"@app-theme/*": [
+				"app/_theme/*"
+			],
+			"@app-core/*": [
+				"app/_core/*"
+			],
+			"@app-dashboard/*": [
+				"app/dashboard/*"
+			]
+		}
 	}
 }

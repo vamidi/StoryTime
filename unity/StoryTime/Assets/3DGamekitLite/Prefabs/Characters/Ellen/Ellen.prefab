@@ -29800,7 +29800,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848091113033776}
-  m_LocalRotation: {x: 0.5933059, y: 0.5343824, z: 0.41211826, w: 0.4388419}
+  m_LocalRotation: {x: 0.5933058, y: 0.53438234, z: 0.41211832, w: 0.43884197}
   m_LocalPosition: {x: 0.65400004, y: 1.206, z: 0.023000034}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -30597,7 +30597,7 @@ GameObject:
   - component: {fileID: 4035643436854338}
   - component: {fileID: 95065152071237234}
   - component: {fileID: 143281348168218644}
-  - component: {fileID: 114011089888769184}
+  - component: {fileID: 7733077722457337518}
   - component: {fileID: 114603677736913854}
   - component: {fileID: 114579421511091938}
   - component: {fileID: 114166992771378430}
@@ -30680,7 +30680,7 @@ CharacterController:
   m_SkinWidth: 0.001
   m_MinMoveDistance: 0.01
   m_Center: {x: 0, y: 0.901, z: 0}
---- !u!114 &114011089888769184
+--- !u!114 &7733077722457337518
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -30689,36 +30689,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 1991219941496362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0149b5ab8f608c943b260125ac76d875, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ee96f7fdced465790c0ba1e07b33cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onDamageMessageReceivers: {fileID: 0}
   maxHitPoints: 5
   invulnerabiltyTime: 5
   hitAngle: 360
   hitForwardRotation: 360
-  OnDeath:
+  onDeath:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: ChangeHitPointUI
-        m_Mode: 2
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 114011089888769184}
-          m_ObjectArgumentAssemblyTypeName: Gamekit3D.Damageable, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnReceiveDamage:
+  onReceiveDamage:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: ChangeHitPointUI
-        m_Mode: 2
+      - m_Target: {fileID: 1076943315163266}
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 114011089888769184}
-          m_ObjectArgumentAssemblyTypeName: Gamekit3D.Damageable, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -30735,10 +30736,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  OnHitWhileInvulnerable:
+  onHitWhileInvulnerable:
     m_PersistentCalls:
       m_Calls: []
-  OnBecomeVulnerable:
+  onBecomeVulnerable:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1076943315163266}
@@ -30752,15 +30753,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnResetDamage:
+  onResetDamage:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: ChangeHitPointUI
-        m_Mode: 2
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 114011089888769184}
-          m_ObjectArgumentAssemblyTypeName: Gamekit3D.Damageable, Assembly-CSharp
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -30777,7 +30778,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onDamageMessageReceivers: []
 --- !u!114 &114603677736913854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30923,7 +30923,7 @@ MonoBehaviour:
   dashVolume: {fileID: 0}
   animator: {fileID: 95065152071237234}
   weapon: {fileID: 114298887321203036}
-  damageable: {fileID: 114011089888769184}
+  damageable: {fileID: 7733077722457337518}
   skinnedMesh: {fileID: 137313094020794488}
   dashParticle: {fileID: 895362593}
 --- !u!114 &4525821519776139230

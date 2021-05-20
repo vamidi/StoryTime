@@ -1,5 +1,5 @@
 import { NodeEditorComponent } from '@app-dashboard/projects/project/editor/node-editor/node-editor.component';
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { Component as VisualNEComponent, Node } from 'visualne';
 import { ProxyObject } from '@app-core/data/base';
 import { createItem } from '@app-core/functions/helper.functions';
@@ -53,6 +53,9 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 	@ViewChild('nodeEditor', { static: true })
 	public el: ElementRef<HTMLDivElement>;
 
+	@ViewChild('overViewContainer', { read: ViewContainerRef, static: true })
+	public vcr!: ViewContainerRef;
+
 	@ViewChild('sidePanel', { static: true })
 	public sidePanel: ElementRef<HTMLDivElement>;
 
@@ -76,6 +79,8 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 	);
 
 	public settings: BaseSettings = new BaseSettings();
+
+	public defaultOption: number = Number.MAX_SAFE_INTEGER;
 
 	protected components: VisualNEComponent[] = [
 		new ItemMasterNodeComponent(),
@@ -158,7 +163,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 
 	public saveCraftable()
 	{
-
+		this.nodeEditorService.saveStory();
 	}
 
 	public newCraftable()
@@ -274,7 +279,10 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 	{
 		this.nodeEditorService.listen('nodecreate', (node: Node) =>
 		{
-			if(node.name === ITEM_NODE_NAME && !node.data.hasOwnProperty('itemId'))
+			if(this.nodeEditorService.SelectedCraftItem === null)
+				UtilsService.onError('Crafted item is not loaded.');
+
+			if(this.nodeEditorService.SelectedCraftItem !== null && node.name === ITEM_NODE_NAME && !node.data.hasOwnProperty('itemId'))
 			{
 				this.tableName = `tables/${this.items.id}`;
 				// Let firebase search with current table name
@@ -286,7 +294,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 					{
 						UtilsService.showToast(
 							this.toastrService,
-							'Dialogue added!',
+							'Item added!',
 							'Dialogue has successfully been created',
 						);
 
@@ -309,6 +317,19 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 		const data = super.initializeCtxData();
 		data.items = this.items;
 		data.craftables = this.craftables;
+
+		const options: Option<number>[] = [];
+		this.items.filteredData.forEach((item) => {
+			options.push(new Option({
+				id: item.id,
+				key: item.id + '. ' + UtilsService.truncate(item.name['en'] as string, 50),
+				value: item.id,
+				selected: false,
+			}));
+		});
+
+		this.itemListQuestion.options$.next(options);
+		console.log(this.itemListQuestion);
 
 		return data;
 	}

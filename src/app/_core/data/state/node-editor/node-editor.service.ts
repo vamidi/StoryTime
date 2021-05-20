@@ -303,6 +303,7 @@ export class NodeEditorService
 			if(res !== undefined)
 			{
 				const isStory = res.hasOwnProperty('storyId');
+				let selectedItem = null;
 				if(isStory)
 				{
 					this.selectedStory = this.data.stories.find(+res.storyId);
@@ -326,7 +327,7 @@ export class NodeEditorService
 						// we need to create a new field
 						// instantiate a new editor
 						// TODO make the user able to save the story with the name they want
-						const selectedItem = this.data.items.find(this.selectedCraftItem.childId);
+						selectedItem = this.data.items.find(this.selectedCraftItem.childId);
 
 						this.fileName = UtilsService.titleLowerCase(`craftable_${this.selectedCraftItem.id}_${selectedItem.name['en']}`);
 					}
@@ -359,8 +360,8 @@ export class NodeEditorService
 
 						UtilsService.showToast(
 							this.toastrService,
-							'Story Loaded',
-							`${ this.selectedStory.title[this.selectedLanguage] } loaded!`,
+							isStory ? 'Story Loaded' : 'Item loaded',
+							`${ isStory ? this.selectedStory.title[this.selectedLanguage] : selectedItem.name[this.selectedLanguage] } loaded!`,
 						);
 
 						this.nodeEditor.trigger('process');

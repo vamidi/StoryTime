@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
 
@@ -61,6 +61,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 	// VisualNE Editor
 	@ViewChild('nodeEditor', {static: true})
 	public el: ElementRef<HTMLDivElement>;
+
+	@ViewChild('overViewContainer', { read: ViewContainerRef, static: true })
+	public vcr!: ViewContainerRef;
 
 	@ViewChild('sidePanel', {static: true})
 	public sidePanel: ElementRef<HTMLDivElement>;

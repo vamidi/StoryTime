@@ -774,8 +774,6 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 								}),
 							);
 
-						console.log()
-
 						if (!found && (
 							table && table.metadata.title === this.cell.getValue() || project.tables[tableID].name === this.cell.getValue())
 						) {
