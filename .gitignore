@@ -88,6 +88,7 @@ passwords.txt
 
 # Visual Studio cache directory
 /[Uu]nity/StoryTime/.vs/
+.vs/
 
 # Gradle cache directory
 /[Uu]nity/StoryTime/.gradle/
