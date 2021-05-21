@@ -252,7 +252,8 @@
         "com.unity.animation.rigging": "0.2.7-preview",
         "com.unity.visualeffectgraph": "7.5.3",
         "com.unity.addressables": "1.16.16",
-        "com.unity.localization": "0.10.0-preview"
+        "com.unity.localization": "0.10.0-preview",
+        "com.unity.probuilder": "4.4.0"
       }
     },
     "com.unity.visualeffectgraph": {
