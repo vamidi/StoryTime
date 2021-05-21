@@ -60,6 +60,7 @@ passwords.txt
 /accounts/demo.txt
 
 *.ai
+*.ai.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
