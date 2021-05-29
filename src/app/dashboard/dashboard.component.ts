@@ -5,7 +5,6 @@ import { BreadcrumbsService } from '@app-core/utils';
 import { NgxMenuItem } from '@app-theme/components';
 import { OneColumnLayoutComponent } from '@app-theme/layouts';
 
-
 /**
  * @brief - Front page of the dashboard
  *
@@ -28,8 +27,7 @@ export class DashboardComponent
 
 	public constructor(
 		protected firebaseService: FirebaseService,
-	) {
-	}
+	) {}
 
 	public onRouterOutletActivate(event: Component) {
 		if(this.oneColumnLayoutComponent)

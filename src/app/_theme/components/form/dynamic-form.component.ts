@@ -1,12 +1,15 @@
 import {
 	AfterContentInit,
 	AfterViewInit,
-	Component, ComponentRef,
+	Component,
+	ComponentRef,
 	EventEmitter,
 	Input,
 	OnInit,
 	Output,
-	ViewChild, ViewContainerRef,
+	ViewChild,
+	ViewChildren,
+	ViewContainerRef,
 } from '@angular/core';
 import { BaseFormSettings, FormField } from '@app-core/mock/base-form-settings';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
@@ -15,11 +18,13 @@ import { TextFieldComponent } from '@app-theme/components/form/input/text-field-
 import { DropDownFieldComponent } from '@app-theme/components/form/dropdown/dropdown-input.component';
 import { CheckboxFieldComponent } from '@app-theme/components/form/checkbox/checkbox-input.component';
 import { ButtonFieldComponent } from '@app-theme/components/form/button/button-input.component';
+import { SelectFieldWithBtnComponent } from '@app-theme/components/form/select/select-field-with-btn.component';
 import { BaseFormInputComponent } from './form.component';
 import { UtilsService } from '@app-core/utils';
 import { FormControl } from '@angular/forms';
 import { Option } from '@app-core/data/forms/form-types';
 import { BehaviorSubject } from 'rxjs';
+import { DebugType } from '@app-core/utils/utils.service';
 
 /**
  * @brief - We want to make an form that create dynamic forms on the fly
@@ -72,11 +77,24 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 	@Input()
 	public showLabels = false;
 
-	public questions: Map<string, BaseFormInputComponent<any>> = new Map();
+	@ViewChildren(BaseFormInputComponent, { /* descendants: true, */ read: BaseFormInputComponent })
+	public inputs: any;
+
+	public readonly questions: Map<string, BaseFormInputComponent<any>> = new Map();
+
+	public get Form()
+	{
+		return this.formContainer.form;
+	}
+
+	public get Group()
+	{
+		return this.formContainer.toGroup();
+	}
 
 	public get isValid()
 	{
-		return this.formContainer.toGroup().valid;
+		return this.Group.valid;
 	}
 
 	/**
@@ -90,7 +108,7 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 	private order: number = 0;
 
-	private components: ComponentRef<any>[] = [];
+	private components: ComponentRef<BaseFormInputComponent<any>>[] = [];
 
 	constructor(protected dynamicComponentService: DynamicComponentService) { }
 
@@ -183,6 +201,8 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 		for (const [key, field] of Object.entries<FormField<any>>(this.source.fields))
 		{
+			if(!field) UtilsService.onError(`Make sure ${key} is initialized`);
+
 			let component: ComponentRef<BaseFormInputComponent<any>> = null;
 			switch(field.controlType)
 			{
@@ -197,6 +217,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 				case 'dropdown':
 					component = this.dynamicComponentService.addDynamicComponent(DropDownFieldComponent);
 					break;
+				case 'btn-dropdown':
+					component = this.dynamicComponentService.addDynamicComponent(SelectFieldWithBtnComponent);
+					break;
 				case 'time':
 					break;
 				case 'date':
@@ -207,8 +230,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 				case 'checkbox_multi':
 					break;
 				case 'submitbutton':
+				case 'stepper':
+					component = this.dynamicComponentService.addDynamicComponent(ButtonFieldComponent);
 					break;
-
 			}
 
 			if(component)
@@ -229,6 +253,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 		// sort the container
 		this.formContainer.sort();
+
+		// reorder the view list
+		this.components.forEach((q) => this.dynamicComponentService.move(q.instance.question.order, q));
 	}
 
 	protected configureFormComponent<T>(el: BaseFormInputComponent<any>, field: FormField<T>): FormControl
@@ -267,6 +294,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			if(field.onIconClickEvent)
 				el.question.onIconClickFunc = field.onIconClickEvent;
 
+			if(field.onSelectBtnClick)
+				el.question.onFirstBtnClick = field.onSelectBtnClick;
+
 			if(field.onKeyUpEvent)
 				el.question.onKeyUpFunc = field.onKeyUpEvent;
 
@@ -279,6 +309,13 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			}
 		}
 
+		el.enableFirstBtn = field?.showFirstBtn;
+		if(!field.hasOwnProperty('enableIcon') && field.hasOwnProperty('labelIcon'))
+			UtilsService.onDebug('Icon is set but not active', DebugType.WARN);
+
+		el.enableIcon = field?.enableLabelIcon;
+		el.labelIcon = field?.labelIcon;
+		el.question.order = field.hasOwnProperty('index') ? field.index  : this.order++;
 		if(el.question.key === '')
 		{
 			switch (el.question.controlType)
@@ -286,29 +323,28 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 				case 'textbox':
 				case 'autocomplete':
 				case 'number':
-					el.question.key = 'nieuw_veld' + this.order++;
+					el.question.key = 'nieuw_veld' + el.question.order;
 					break;
 				case 'textarea':
-					el.question.key = 'nieuw_gebied' + this.order++;
+					el.question.key = 'nieuw_gebied' + el.question.order;
 					break;
 				case 'dropdown':
-					el.question.key = 'nieuw_selectie' + this.order++;
+					el.question.key = 'nieuw_selectie' + el.question.order;
 					break;
 				case 'time':
-					el.question.key = 'nieuw_time' + this.order++;
+					el.question.key = 'nieuw_time' + el.question.order;
 					break;
 				case 'date':
-					el.question.key = 'nieuw_date' + this.order++;
+					el.question.key = 'nieuw_date' + el.question.order;
 					break;
 				case 'checkbox':
-					el.question.key = 'nieuw_checkbox' + this.order++;
+					el.question.key = 'nieuw_checkbox' + el.question.order;
 					break;
 				case 'checkbox_multi':
 					break;
 				case 'submitbutton':
-					el.question.key = 'nieuw_knopveld' + this.order++;
+					el.question.key = 'nieuw_knopveld' + el.question.order;
 					break;
-
 			}
 		}
 
@@ -338,6 +374,12 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 					}
 				}
 			}
+		}
+
+		if(el instanceof ButtonFieldComponent)
+		{
+			const elButton = <ButtonFieldComponent>(el);
+			elButton.ghost = field.ghost ?? true;
 		}
 
 		this.questions.set(el.question.key, el);

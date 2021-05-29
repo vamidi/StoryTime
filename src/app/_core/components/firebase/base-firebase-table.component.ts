@@ -1,9 +1,16 @@
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase.service';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { BaseSettings } from '@app-core/mock/base-settings';
-import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UtilsService } from '@app-core/utils';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { NbToastrService } from '@nebular/theme';
+
+import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
+
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
+import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { UtilsService } from '@app-core/utils';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { BehaviourType } from '@app-core/types';
 import {
@@ -12,32 +19,37 @@ import {
 	NumberColumnComponent,
 	BooleanColumnRenderComponent,
 } from '@app-theme/components';
-import { FirebaseRelationService } from '@app-core/utils/firebase-relation.service';
-import { Table } from '@app-core/data/table';
-import { UserService } from '@app-core/data/users.service';
-import { User, UserModel } from '@app-core/data/users';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { Table } from '@app-core/data/state/tables';
+import { UserService } from '@app-core/data/state/users';
+import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
-import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { TablesService } from '@app-core/data/tables.service';
-import { ProjectService } from '@app-core/data/projects.service';
+import { TablesService } from '@app-core/data/state/tables';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 
-import { Util } from 'leaflet';
-import trim = Util.trim;
-import { map } from 'rxjs/operators';
-import { Project } from '@app-core/data/project';
+import { Project } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { ObjectKeyValue, UserPreferences } from '@app-core/utils/utils.service';
+import { UserPreferences } from '@app-core/utils/utils.service';
 import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import {
+	KeyLanguage,
+	// KeyLanguageObject,
+} from '@app-core/data/state/node-editor/languages.model';
+// import {
+// LanguageRenderComponent, LanguageColumnRenderComponent
+// } from '@app-theme/components/render-column-layout/language-column-render.component';
+import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
 import isEqual from 'lodash.isequal';
-import * as firebase from 'firebase';
 
 /**
  * @brief base class to get simple data information
  * from firebase
  */
-export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
+@Component({
+	template: '',
+})
+export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent implements OnDestroy
 {
 	@Input()
 	public gridMode: boolean = true;
@@ -59,6 +71,8 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	{
 		return this.table.getSource;
 	}
+
+	public get languages() { return this.languageService.ProjectLanguages; }
 
 	public settings: BaseSettings = new BaseSettings();
 	/*{
@@ -135,11 +149,11 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 
 	protected userPreferences: UserPreferences = null;
 
-	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
-	protected user: UserModel = new UserModel();
-
 	protected tableID: string = '';
 	protected table: Table = new Table();
+
+	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
+	protected user: UserModel = defaultUser;
 
 	protected set setTblName(tblName: string)
 	{
@@ -161,64 +175,19 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
-		protected projectService: ProjectService,
+		protected projectService: ProjectsService,
 		protected tableService: TablesService,
-		protected tableName: string = '',
+		protected languageService: LanguageService,
+		@Inject(String) protected tableName: string = '',
 	) {
-		if(tableName !== '')
-			this.firebaseService.setTblName(tableName);
+		super(
+			firebaseService, firebaseRelationService, projectService, tableService,
+			userService, userPreferencesService, languageService, tableName,
+		);
 
 		// iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
 		// iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'fa' });
 		// iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-	}
-
-	// ngOnInit inside the base class will get the table.
-	public ngOnInit(): void
-	{
-		this.mainSubscription.add(this.userPreferencesService.getUserPreferences().subscribe((userPreferences) =>
-		{
-			this.userPreferences = { ...userPreferences };
-
-			if(!this.userPreferences.hasOwnProperty('visibleColumns'))
-			{
-				this.userPreferences.visibleColumns = new Map<string, ObjectKeyValue<boolean>>();
-				this.userPreferencesService.setUserPreferences(this.userPreferences);
-			}
-
-			if(this.userPreferences.visibleColumns.length > 0)
-				this.userPreferences.visibleColumns = new Map(this.userPreferences.visibleColumns);
-			else
-				this.userPreferences.visibleColumns = new Map<string, ObjectKeyValue<boolean>>();
-
-			// Indexes
-			if(!this.userPreferences.hasOwnProperty('indexColumns'))
-			{
-				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
-				this.userPreferencesService.setUserPreferences(this.userPreferences);
-			}
-
-			if(this.userPreferences.indexColumns.length > 0)
-				this.userPreferences.indexColumns = new Map(this.userPreferences.indexColumns);
-			else
-				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
-		}));
-
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
-		{
-			// Only push changed users.
-			if(!isEqual(this.user, user))
-			{
-				this.user = user;
-				this.user$.next(this.user);
-				// const canDelete: boolean = !_.isEmpty(_.intersection( ['admin', 'author'], allowedRoles));
-				this.onUserReceived(user);
-			}
-
-			this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.isAdmin;
-			this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.isAdmin;
-			this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.isAdmin;
-		}));
 	}
 
 	public ngOnDestroy()
@@ -236,6 +205,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 */
 	public onCreateConfirm(event: any)
 	{
+		super.onCreateConfirm(event);
 		// Check the permissions as well as the data
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
@@ -280,6 +250,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 */
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
 	{
+		super.onEditConfirm(event, undo);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
 			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
@@ -442,7 +413,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 				{
 					case BehaviourType.INSERT: // if we want to insert new column
 					{
-						const columns: Object = $event.event.columns;
+						const columns: { [key:string]: Column } = $event.event.columns;
 
 						if (columns)
 						{
@@ -467,18 +438,21 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 
 									this.table.forEach((d, index) =>
 									{
-										d.updated_at = UtilsService.timestamp;
-
 										if (index === this.table.length - 1)
 										{
+											const updateData = () =>
+											{
+												d.updated_at = UtilsService.timestamp;
+												return this.tableService.updateData(this.tableID, d.id, d, null, false);
+											};
+
 											this.table.update(d, this.processData(d, key, value, newSettings))
-												.then(() => this.tableService.updateData(this.tableID, d.id, d, null, false)
-													.then(() => this.updateSettings(newSettings)).catch((error) => this.onError(error)));
+												.then(() => updateData())
+												.then(() => this.updateSettings(newSettings)).catch((error) => this.onError(error));
 										}
 										else
 											this.table.update({ ...d }, this.processData({ ...d }, key, value, newSettings))
 												.catch((error) => this.onError(error));
-
 										// array[index] = this.processData({ ...d }, key, value, newSettings);
 									});
 								}
@@ -590,6 +564,11 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		}
 	}
 
+	public onLanguageChange(event: KeyLanguage)
+	{
+		this.languageService.SetLanguage = event;
+	}
+
 	/**
 	 *
 	 * @brief - Process data to change the settings data.
@@ -634,6 +613,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 					},
 				};
 			}
+
 			obj = Object.assign({}, obj);
 			return obj;
 		}
@@ -664,12 +644,11 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	}
 
 	/**
-	 * #brief update the settings with latest columns
+	 * @brief update the settings with latest columns
 	 * @param newSettings
 	 */
 	protected updateSettings(newSettings: BaseSettings)
 	{
-		console.log(newSettings);
 		this.settings = Object.assign({}, newSettings);
 		this.columnData = this.settings.columns;
 	}
@@ -684,7 +663,7 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 	 * @param settings
 	 * @param tblName
 	 */
-	protected getTableData(settings: any = null, tblName = '')
+	protected getTableData(settings: BaseSettings = null, tblName = '')
 	{
 		let tbl = this.tableName;
 
@@ -723,114 +702,11 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		}/*, () => this.router.navigateByUrl('/dashboard/error')*/ ));
 	}
 
-	/**
-	 * @brief - Process table data to generate columns
-	 * @param tableData
-	 * @param verify
-	 * @param overrideTbl
-	 */
-	protected processTableData(tableData: Table, verify: boolean = false, overrideTbl: string = ''): BaseSettings
+	protected processTableData(
+		tableData: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
+	): BaseSettings
 	{
-		// noinspection JSUnusedGlobalSymbols
-		const newSettings: BaseSettings = { ...this.settings };
-
-		let tbl = tableData.title;
-
-		// if we override the tblName
-		if(overrideTbl !== '')
-			tbl = overrideTbl;
-
-		for(const dataKey of Object.keys(tableData.data))
-		{
-			const dataValue = tableData.data[dataKey];
-			// if we need to verify we need to check if it is a valid item
-			if (verify)
-			{
-				for (const [k, value] of Object.entries(dataValue))
-				{
-					const key: string = trim(k);
-
-					// We only need this information once
-					if (!newSettings.columns.hasOwnProperty(key.toString()))
-					{
-						let titleName = key.toString();
-						titleName = titleName.replace(/([A-Z])/g, ' $1').trim();
-						titleName = titleName.charAt(0).toUpperCase() + titleName.substr(1);
-
-						const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
-
-						newSettings.columns[key] =
-							{
-								title: titleName,
-								class: 'input input-form-control',
-								hidden: false,
-								editor: {},
-							};
-
-						let type: string = '';
-
-						if (typeof value === 'string') {
-							type = 'html';
-							newSettings.columns[key].valuePrepareFunction = (cell /*, row */) => {
-								return UtilsService.replaceCharacter(cell,/<\/>/g, '</b>');
-							}
-						}
-
-						if (typeof value === 'number')
-						{
-							type = 'number';
-							// if entry is not found or
-							// if we don't have a relation found make a number column
-							if ((entry === undefined || entry === null)
-								|| entry && !entry.has(key))
-							{
-								// We need a custom renderer for a number input
-								newSettings.columns[key].editor = {
-									type: 'custom',
-									component: NumberColumnComponent,
-								};
-							}
-						}
-
-						// TODO make a render for boolean data
-						if (typeof value === 'boolean')
-						{
-							type = 'string';
-							newSettings.columns[key].editor = {
-								type: 'custom',
-								component: BooleanColumnRenderComponent,
-							};
-						}
-
-						// if we found an entry link it
-						if (entry)
-						{
-							// if we found the relation
-							const pair: StringPair = entry.get(key);
-							this.processRelation(pair, key, newSettings, tbl);
-						}
-
-						if(!newSettings.columns[key].hasOwnProperty('type'))
-							newSettings.columns[key]['type'] = type;
-					}
-				}
-			}
-
-/*
-			const idx = this.data.findIndex((data) => data.id === dataKey);
-			const q = { id: dataKey, ...dataValue };
-			if (idx === -1)
-			{
-				this.data.push(q);
-			}
-			else
-			{
-				// update with new data
-				this.data[idx] = q;
-			}
- */
-		}
-
+		const newSettings = super.processTableData(tableData, verify, settings, overrideTbl);
 
 		for(const key of Object.keys(newSettings.columns))
 		{
@@ -856,79 +732,6 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 		}
 
 		return newSettings;
-	}
-
-	/**
-	 *
-	 * @param pair
-	 * @param key
-	 * @param newSettings
-	 * @param overrideTbl
-	 */
-	protected processRelation(pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '')
-	{
-		if (pair)
-		{
-			let tbl = this.table.metadata.title;
-
-			// if we override the tblName
-			if(overrideTbl !== '')
-				tbl = overrideTbl;
-
-			const project: Project | null = this.projectService.getProjectById(this.table.projectID);
-			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
-			for(const k of Object.keys(project.tables))
-			{
-				if(project.tables[k].name === pair.key)
-				{
-					newPair.key = k;
-					// Add the tables to the service when they not exist
-					this.tableService.addIfNotExists(k).then();
-				}
-			}
-
-			if(newPair.key === '')
-				UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
-
-			// const result = await this.firebaseService.getRef(`tables/${key}/metadata`)
-			// 	.once('value', null, (error) => {
-			// 		UtilsService.onError(error);
-			// 	});
-			//
-			// const tblData: ITableData = result.val();
-			// if(result.exists() && tblData.title === this.tblColumnRelation.key)
-			// {
-			// 	now listen to a certain column
-			// 	'tables'
-				// this.relationRef = this.firebaseService.getItem(+this.id, `tables/${result.ref.parent.key}/data/`);
-				// this.relationReceiver$ = this.relationRef.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
-				// this.relationRef = this.firebaseService.getItem(+this.id, this.tblColumnRelation.key);
-				// console.log(tblData.title, this.tblColumnRelation.key, this.relationReceiver$ !== null);
-				// return Promise.resolve();
-			// }
-
-			const rel = new Relation(
-				this.table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
-			);
-			this.firebaseService.pushRelation(tbl, key, rel);
-
-			newSettings.columns[key]['type'] = 'custom';
-			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
-			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
-				// firebase, tableName, value => id
-				instance.relation = rel;
-			};
-
-			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };
-
-			newSettings.columns[key]['editor'] =
-			{
-				type: 'custom',
-				component: TextColumnComponent,
-				data: { tblName: tbl, relationTable: pair.key, projectID: this.table.projectID, tableID: this.table.id },
-				config: { /* data: { relation: rel }, */ },
-			}
-		}
 	}
 
 	/*
@@ -969,11 +772,16 @@ export abstract class BaseFirebaseTableComponent implements OnInit, OnDestroy
 
 		this.table = this.tableService.setTable(tableData.id, tableData, true);
 		// Get the relations from the database as well.
-		const newSettings: BaseSettings = this.processTableData(this.table, true);
+		const newSettings: BaseSettings = this.processTableData(this.table, true, this.settings);
 		this.settings = Object.assign({}, newSettings);
 	}
 
-	protected onUserReceived(__: User) { }
+	protected onUserReceived(__: User)
+	{
+		this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.isAdmin;
+		this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.isAdmin;
+		this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.isAdmin;
+	}
 
 	protected onTableDataLoaded() { }
 }

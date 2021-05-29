@@ -9,17 +9,28 @@ import {
 import { FormContainer } from '@app-core/data/forms/form-model';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FormQuestionBase } from '@app-core/data/forms/form-types';
-import { DynamicFormComponent } from './dynamic-form.component';
+import { DynamicFormComponent } from '@app-theme/components/form/dynamic-form.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UtilsService } from '@app-core/utils';
+
+export interface IFormInputField<T>
+{
+	// Question of the input component
+	question: FormQuestionBase<T>;
+}
 
 /**
  * @description
  *
  * @example
  */
-export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit, OnChanges
+@Component({
+	template: '',
+})
+export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit, OnChanges, IFormInputField<T>
 {
+	public abstract value: T = null;
+
 	@Input()
 	public parent: DynamicFormComponent = null;
 
@@ -34,6 +45,9 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	@Input()
 	public enableIcon: boolean = false;
+
+	@Input()
+	public enableFirstBtn: boolean = true;
 
 	@Input()
 	public labelIcon: string = '';
@@ -119,7 +133,7 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 		this.question.inputCss = this.inputCss;
 
 		if(!this.myFormGroup)
-			UtilsService.onError('Did you assign all the field to the form container?');
+			UtilsService.onError('Did you assign all the field to the form container?', this.question.key);
 
 	}
 
@@ -145,7 +159,7 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	public ngAfterViewInit()
 	{
 		if(!this.myFormGroup)
-			UtilsService.onError('There is no form group, did you forget to add it?', this);
+			UtilsService.onError(`There is no form group, did you forget to add it? ${this.key}`, this);
 
 		// Notify that we are initialized
 		this.onComponentInit.emit(this);

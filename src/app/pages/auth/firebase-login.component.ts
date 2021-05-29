@@ -7,7 +7,7 @@ import { FirebaseService } from '@app-core/utils/firebase.service';
 import { NbAuthSocialLink } from '@nebular/auth/auth.options';
 import { NbThemeService } from '@nebular/theme';
 // import { auth } from 'firebase/app';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import Persistence = firebase.auth.Auth.Persistence;
 import { UserService } from '@app-core/data/users.service';
@@ -98,7 +98,7 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 
 				if(res.hasOwnProperty('user'))
 					localStorage.setItem('user', JSON.stringify(res.user));
-
+				UtilsService.onDebug(result.getToken(), result.getToken().getPayload());
 				// expire after 3600 seconds (1 hour)
 				if(result.getToken() && result.getToken().getPayload())
 					UtilsService.setItemInLocalStorage('expire_at', result.getToken().getPayload().exp);

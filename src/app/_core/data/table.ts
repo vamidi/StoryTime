@@ -6,6 +6,10 @@ import { map } from 'rxjs/operators';
 import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { FilterCallback } from '@app-core/providers/firebase-filter.config';
 import { UtilsService } from '@app-core/utils';
+import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
+import { DebugType } from '@app-core/utils/utils.service';
+import { FileUpload } from '@app-core/data/file-upload.model';
+import { Data } from 'visualne/types/core/data';
 
 interface IMetaData {
 	created_at: Object;
@@ -23,6 +27,9 @@ export interface ITableData extends IMetaData
 	owner: string;
 	private: boolean;
 	deleted: boolean;
+
+	// Pipeline settings
+	version: IVersion;
 }
 
 export interface Revision<T extends ProxyObject = ProxyObject> {
@@ -53,13 +60,31 @@ export interface TableTemplate<T extends ProxyObject = ProxyObject>
 	[key: string]: T;
 }
 
-export interface ITable<T extends ProxyObject = ProxyObject> {
+export interface ITable<T extends ProxyObject = ProxyObject> extends PipelineAsset {
 	id: string,
 	projectID: string,
 	data: TableTemplate<T>,
 	revisions: { [key: string]: Revision<T> },
 	relations: IRelation,
 	metadata: ITableData,
+}
+
+/**
+ * @brief - Craftable file that belongs to the table.
+ */
+export class CraftableFileUpload extends FileUpload
+{
+	id: string;                 // Id of the file
+	metadata: {
+		name: string,           // name of the file without json
+		projectID: string,      // Project id
+	};
+	itemId: number;             // Story associated with this file.
+	data: Data;                 // JSON data of the story
+
+	constructor(file: File) {
+		super(file);
+	}
 }
 
 export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, Iterable<ProxyObject>
@@ -103,6 +128,13 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		updated_at: {},
 		private: false,
 		deleted: false,
+
+		// Pipeline settings
+		version: {
+			major: 0,
+			minor: 0,
+			patch: 0,
+		},
 	}
 
 	public constructor(data?: ITable<T>)
@@ -161,8 +193,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	 */
 	public push(id: number, obj: T): Promise<T>
 	{
-		if(this.data[id])
-			throw new Error(`${this.metadata.title}: Element already exist in this table`);
+		if(this.data[id]) throw new Error(`${this.metadata.title}: Element already exist in this table ${id}`);
 
 		obj['id'] = id;
 		this.data[id] = obj;
@@ -173,6 +204,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 	public update(element: T, values: any): Promise<T>
 	{
+		console.trace(element, values);
 		const promise = this.getSource.update(element, values);
 
 		promise.then(() =>
@@ -186,24 +218,31 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				}
 			}
 
-		}).catch((error) => console.error(error));
+		}).catch((error) => UtilsService.onError(error));
 
 		return promise;
 	}
 
 	public load(filters: FilterCallback<T>[] = []): Promise<T>
 	{
+		this.loaded = false;
 		const entries = Object.entries(this.data);
 
-		const dataSize = Object.keys(entries[0][1]).length + 1; // becuz id
-
-		// assign the key to the id of the table data.
-		for(const [key, value] of entries)
+		const entry = entries[0];
+		if(entry)
 		{
-			value.id = +key;
+			const dataSize = Object.keys(entry[1]).length + 1; // becuz id
 
-			if(dataSize !== Object.keys(value).length)
-				UtilsService.onError(`${key} data size is not equal in table ${this.metadata.title}`);
+			// assign the key to the id of the table data.
+			for(const [key, value] of entries)
+			{
+				value.id = +key;
+
+				if(dataSize !== Object.keys(value).length) {
+					UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
+				}
+			}
 		}
 
 		const data: T[] = Object.values(this.data);
@@ -218,9 +257,9 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		// Load the source
 		const promise = this.source.load(this.filteredData);
 
-		promise.then(() => {
+		promise.then(() =>
+		{
 			this.source.refresh();
-
 			this.loaded = true;
 		}); // refresh list
 
@@ -302,9 +341,8 @@ export abstract class TableData
 
 export const onSimpleTableMap = map((snapshots: SnapshotAction<any>[]) =>
 {
-	console.log(this);
 	const table: Table = new Table();
-	table.id = this.tableID;
+	// table.id = that.tableID;
 
 	// configure fields
 	snapshots.forEach((snapshot: SnapshotAction<any>) => table[snapshot.key] = snapshot.payload.val());

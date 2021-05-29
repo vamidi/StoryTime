@@ -3,7 +3,7 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { KeyValue } from '@angular/common';
 import { NbMenuItem, NbSpinnerService } from '@nebular/theme';
 import { MENU_ITEMS } from './pages/pages-menu';
@@ -25,9 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy
 		private spinnerService: NbSpinnerService,
 		private firebaseService: FirebaseService,
 		private breadcrumbService: BreadcrumbsService,
-	)
-	{
-	}
+	) { }
 
 	ngOnInit(): void
 	{

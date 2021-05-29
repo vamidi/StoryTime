@@ -12,12 +12,16 @@ A management tool that for creating role-playing games. This tool will work with
 * A Firebase database(free or blaze tier) or an SQL database (PostgreSQL, SQLite or MSSQL).
 * A web host to communicate with Firebase and return JSON data to your framework/engine.
 
+
 # Installation
+
+## NPM Install
+
+> **Ignore clone steps if you have downloaded the latest release of StoryTime.**
 
 ```sh
 # clone our repo
 git clone https://github.com/vamidi/Project-StoryTime.git
-
 
 # change directory to our repo
 cd project-storytime
@@ -25,6 +29,8 @@ cd project-storytime
 # install the repo with npm
 npm install
 ```
+
+## Firebase
 
 * If you don't have a Google account create it. If you already have an account go to the [Firebase Console](https://console.firebase.google.com/u/0/).
 * Login and follow the steps to create a new project.
@@ -136,6 +142,9 @@ The following table describes the configurable environment variables.
 | FIREBASE_MESSAGING_ID   | YOUR_MESSAGING_ID                      | Firebase messaging id.                                            |
 | FIREBASE_APP_ID         | YOUR_APP_ID                            | Firebase app id.                                                  |
 | FIREBASE_MEASUREMENT_ID | YOUR_MEASUREMENT_ID                    | Firebase measurement id.
+| PRISMA_SECRET 	  	  | YOUR_RANDOM_PRISMA_SECRET		   	   | Random secure token that we check in order to make calls to the prisma API
+| PATH_TO_CONFIG 	  	  | ./PATH/TO/YOUR/CONFIG.JSON.FILE		   | Path where the config.json file should be made.
+| REL_PATH_TO_CONFIG 	  | ./REL_PATH/TO/YOUR/CONFIG.JSON.FILE		   | Relative path from the main.ts to the config.json file.
 
 * Go back to Firebase console and in the top left corner click on settings ⚙️ and click afterwards on `project settings` to get part of the credentials needed.
 * Scroll down and copy over apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId and measurementId (optional), to the corresponding variables in the `.env` file
@@ -174,12 +183,15 @@ go to http://localhost:4200 in your browser
 
 ## Production
 
+> **Ignore build steps if you have downloaded the release of StoryTime.**
+
 ```sh
 # Build for production
 npm run build:prod
 ```
 
-* Copy over dist folder to your server where you want to run it from.
+* Fill in the right credentials in `assets/data/config.json` to make API calls.
+* Copy over dist, or the contents of the [release]() folder to your server where you want to run StoryTime from it from.
 * Copy over the server folder to communicate with Firebase through Lumen (Laravel framework) - **WIP**.
 
 ## License

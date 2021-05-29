@@ -1,4 +1,4 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { FirebaseService } from '@app-core/utils/firebase.service';
 import { NavigationEnd, Router } from '@angular/router';
@@ -29,6 +29,9 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
 
+@Component({
+	template: '',
+})
 export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTableComponent
 	implements OnInit, OnDestroy
 {
@@ -68,7 +71,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected snackbarService: NbSnackbarService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
-		protected tableName: string = '',
+		@Inject(String) protected tableName: string = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
 			toastrService, snackbarService, userService,
@@ -320,7 +323,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 			{
 				// if we found the relation
 				const pair: StringPair = event.newData.pair;
-				this.processRelation(pair, key, newSettings);
+				this.processRelation(this.table, pair, key, newSettings);
 			}
 			this.settings = Object.assign({}, newSettings);
 		}
