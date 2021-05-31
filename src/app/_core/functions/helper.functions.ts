@@ -94,7 +94,6 @@ export function createCraftable(): ICraftable
 		childId: 0,
 		parentId: 0,
 		shopRevisionId: 0,
-		craftFile: '',
 		value: 0,
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,

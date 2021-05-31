@@ -22,25 +22,6 @@
 		</nb-card>
 	</div>
 	<div class="wrapper">
-		<div class="side-panel left open" #leftSidePanel>
-			<nb-card class="h-100">
-				<nb-card-header>
-					Item
-					<button nbButton ghost status="success" (click)="insertItem()">
-						<nb-icon icon="plus-outline"></nb-icon>
-					</button>
-				</nb-card-header>
-				<nb-card-body>
-					<!-- All fields of the selected item -->
-					<ngx-dynamic-form [source]="Source" [showLabels]="true"></ngx-dynamic-form>
-				</nb-card-body>
-				<nb-card-footer>
-					<ngx-button-field #submitQuestion (onSubmitFunc)="updateItem()"></ngx-button-field>
-				</nb-card-footer>
-			</nb-card>
-			<!-- Item dropdown -->
-			<!-- Button with save and new -->
-		</div>
 		<div class="side-panel right" #sidePanel>
 			<nb-card class="h-100">
 				<nb-card-header>
@@ -53,15 +34,30 @@
 					<!-- If normal item then we have to specify the following -->
 					<!-- items that we can select -->
 					<div class="form-group {{ itemListQuestion.groupCss }}">
-						<label class="formHeading" for="{{ itemListQuestion.key }}--dropdown">{{ itemListQuestion.text }}</label>
-						<nb-select fullWidth [selected]="defaultOption" (selectedChange)="pickItem($event)">
+						<label class="formHeading" [for]="itemListQuestion.key + '--dropdown'">{{ itemListQuestion.text }}</label>
+						<nb-select id="{{ itemListQuestion.key}}--dropdown" #itemSelectComponent
+								   fullWidth
+								   [selected]="defaultOption"
+								   [disabled]="itemListQuestion.disabled"
+								   (selectedChange)="pickItem($event)">
 <!--							<nb-option [id]="'dialogue-option-new'" [value]="defaultOption">[+] None</nb-option>-->
 							<nb-option [value]="defaultOption">[+] None</nb-option>
 							<nb-option *ngFor="let o of itemListQuestion.options$ | async" [value]="o.value">{{ o.key }}</nb-option>
 						</nb-select>
-						<button nbButton fullWidth status="success" class="mt-2" (click)="updateItem()">Save</button>
 					</div>
+
+					<!-- ITEM FORM -->
+					<!-- All fields of the selected item -->
+					<ngx-dynamic-form #itemFormComponent [source]="ItemSource" [showLabels]="true"></ngx-dynamic-form>
+
+					<!-- CRAFTABLE FORM -->
+					<!-- All fields of the selected item -->
+					<ngx-dynamic-form #craftFormComponent [source]="CraftSource" [showLabels]="true"></ngx-dynamic-form>
+
 				</nb-card-body>
+				<nb-card-footer>
+					<button nbButton fullWidth status="success" class="ml-2" (click)="updateItem()">Save</button>
+				</nb-card-footer>
 			</nb-card>
 		</div>
 		<div #nodeEditor class="node-editor"></div>

@@ -6,16 +6,15 @@ import { Project, StoryFileUpload } from '@app-core/data/state/projects';
 import { CraftableFileUpload } from '@app-core/data/state/tables';
 import { UtilsService } from '@app-core/utils';
 import { FileUpload } from '@app-core/data/file-upload.model';
+import { AngularFireList } from '@angular/fire/database/interfaces';
 
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { UploadMetadata } from '@angular/fire/storage/interfaces';
 import { NbToastrService } from '@nebular/theme';
 
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import { AngularFireList } from '@angular/fire/database/interfaces';
 
 export declare type NbLocationFileType = 'Default' | 'Story' | 'Craftable'
 declare type NbFileType = FileUpload | StoryFileUpload | CraftableFileUpload;
@@ -62,7 +61,9 @@ export class FirebaseStorageService
 	 * @param metadata
 	 */
 	public pushFileToStorage(
-		path: string, fileUpload: NbFileType, location: NbLocationFileType = 'Default', metadata?: UploadMetadata,
+		path: string, fileUpload: NbFileType,
+		location: NbLocationFileType = 'Default',
+		metadata?: firebase.storage.UploadMetadata,
 	): Observable<firebase.storage.UploadTaskSnapshot>
 	{
 		const filePath = `${this.Base}/${path}/${fileUpload.file.name}`;
@@ -76,7 +77,10 @@ export class FirebaseStorageService
 				{
 					fileUpload.url = downloadURL;
 					fileUpload.name = fileUpload.file.name;
-					this.saveFileData(location, fileUpload);
+					if(fileUpload.hasOwnProperty('id'))
+						this.saveFileData(location, fileUpload).then((ref) => fileUpload.id = ref.key);
+					else
+						this.updateFileData(location, fileUpload).then();
 				});
 			}),
 		);
@@ -121,7 +125,7 @@ export class FirebaseStorageService
 	}
 
 	public deleteFile(location: NbLocationFileType, fileUpload: FileUpload): void {
-		this.deleteFileDatabase(location, fileUpload.key)
+		this.deleteFileDatabase(location, fileUpload.id)
 			.then(() => {
 				this.deleteFileStorage(location, fileUpload.name);
 			})
@@ -134,19 +138,35 @@ export class FirebaseStorageService
 	 * @param fileUpload
 	 * @private
 	 */
-	private saveFileData(location: NbLocationFileType, fileUpload: NbFileType): void
+	private saveFileData(location: NbLocationFileType, fileUpload: NbFileType): firebase.database.ThenableReference
 	{
 		switch(location)
 		{
 			case 'Default':
-				this.firebaseService.insert(fileUpload, this.Base);
-				break;
+				return this.firebaseService.insert(fileUpload, this.Base);
 			case 'Story':
-				this.firebaseService.insert(fileUpload, 'stories')
-				break;
+				return this.firebaseService.insert(fileUpload, 'stories');
 			case 'Craftable':
-				this.firebaseService.insert(fileUpload, 'craftables')
-				break;
+				return this.firebaseService.insert(fileUpload, 'craftables');
+		}
+	}
+
+	/**
+	 *
+	 * @param location
+	 * @param fileUpload
+	 * @private
+	 */
+	private updateFileData(location: NbLocationFileType, fileUpload: NbFileType): Promise<void>
+	{
+		switch(location)
+		{
+			case 'Default':
+				return this.firebaseService.update(this.Base, fileUpload);
+			case 'Story':
+				return this.firebaseService.update('stories', fileUpload);
+			case 'Craftable':
+				return this.firebaseService.update('craftables', fileUpload);
 		}
 	}
 

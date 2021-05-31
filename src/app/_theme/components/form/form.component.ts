@@ -24,8 +24,13 @@ export interface IFormInputField<T>
  *
  * @example
  */
+@Component({
+	template: '',
+})
 export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit, OnChanges, IFormInputField<T>
 {
+	public abstract value: T = null;
+
 	@Input()
 	public parent: DynamicFormComponent = null;
 

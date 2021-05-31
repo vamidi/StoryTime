@@ -433,6 +433,33 @@ export class FirebaseService implements OnDestroy
 
 	/**
 	 *
+	 * @param tableName
+	 * @param data
+	 * @param update
+	 */
+	public update(tableName: string, data: Object, update: boolean = true): Promise<void>
+	{
+		let tbl = this.tblName;
+
+		// if we override the tblName
+		if(tableName !== '')
+			tbl = tableName;
+
+		this.lastUsedTblName = tbl;
+
+		if(FirebaseService.checkTbl(tbl))
+		{
+			if(update)
+				return this.afd.object('/' + tbl).update(data);
+			else
+				return this.afd.object('/' + tbl).set(data);
+		}
+
+		return Promise.resolve();
+	}
+
+	/**
+	 *
 	 * @param id
 	 * @param newData
 	 * @param update
@@ -486,27 +513,6 @@ export class FirebaseService implements OnDestroy
 			tbl = tblName;
 
 		return this.afd.object('/' + tbl + '/' + String(id)).remove();
-	}
-
-	public updateTable(tableName: string, data: Object, update: boolean = true): Promise<void>
-	{
-		let tbl = this.tblName;
-
-		// if we override the tblName
-		if(tableName !== '')
-			tbl = tableName;
-
-		this.lastUsedTblName = tbl;
-
-		if(FirebaseService.checkTbl(tbl))
-		{
-			if(update)
-				return this.afd.object('/' + tbl).update(data);
-			else
-				return this.afd.object('/' + tbl).set(data);
-		}
-
-		return Promise.resolve();
 	}
 
 	public revertRevision(tblRef: string, revision: Revision)

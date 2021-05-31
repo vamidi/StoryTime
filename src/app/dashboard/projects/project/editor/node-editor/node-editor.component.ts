@@ -1,7 +1,7 @@
 import {
 	AfterViewInit,
 	ElementRef, OnDestroy,
-	OnInit, ViewChild, ViewContainerRef, NgZone,
+	OnInit, ViewChild, ViewContainerRef, NgZone, Component,
 } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -38,7 +38,9 @@ import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
-
+@Component({
+	template: '',
+})
 export abstract class NodeEditorComponent extends BaseFirebaseComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	// VisualNE Editor
@@ -121,7 +123,10 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		protected componentResolver: DynamicComponentService,
 		protected ngZone: NgZone,
 	) {
-		super(firebaseService, firebaseRelationService, userService, userPreferencesService, languageService);
+		super(
+			firebaseService, firebaseRelationService, projectsService, tableService,
+			userService, userPreferencesService, languageService,
+		);
 	}
 
 	public ngOnInit()
@@ -213,6 +218,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		// delete the output by key
 		this.optionTextAreaComponents.forEach((_, idx) =>
 		{
+			const index = idx === 0 ? idx : idx - 1;
 			this.outputs.splice(idx, 1);
 
 			// remove the subscription
@@ -221,7 +227,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			// this.mainSubscription.remove(sub[1]);
 
 			// detach it from the view container
-			this.vcr.detach(idx);
+			this.vcr.detach(index);
 		});
 		// clear out the outputs
 		this.outputs = [];
@@ -513,7 +519,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		// always open the panel even if we have the same node.
 		this.sidePanel.nativeElement.classList.add('open');
 		this.nodeTitle = node.name;
-
 	}
 
 	protected getQuestionValue(id: number, list: Table, key: string = 'text'): string

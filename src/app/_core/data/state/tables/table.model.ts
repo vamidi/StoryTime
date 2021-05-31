@@ -9,7 +9,6 @@ import { UtilsService } from '@app-core/utils';
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
 import { DebugType } from '@app-core/utils/utils.service';
 import { FileUpload } from '@app-core/data/file-upload.model';
-import { Data } from 'visualne/types/core/data';
 
 interface IMetaData {
 	created_at: Object;
@@ -74,17 +73,7 @@ export interface ITable<T extends ProxyObject = ProxyObject> extends PipelineAss
  */
 export class CraftableFileUpload extends FileUpload
 {
-	id: string;                 // Id of the file
-	metadata: {
-		name: string,           // name of the file without json
-		projectID: string,      // Project id
-	};
 	itemId: number;             // Story associated with this file.
-	data: Data;                 // JSON data of the story
-
-	constructor(file: File) {
-		super(file);
-	}
 }
 
 export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, Iterable<ProxyObject>
@@ -239,8 +228,10 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				value.id = +key;
 
 				if(dataSize !== Object.keys(value).length) {
-					UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
-					UtilsService.onError(`${key} data size is not equal in table ${ this.id }`);
+					// UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					UtilsService.onDebug(
+						`${key} data size is not equal in table ${ this.id }`, DebugType.WARN, dataSize, this.data[0],
+					);
 				}
 			}
 		}
@@ -259,7 +250,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 		promise.then(() =>
 		{
-			console.log(this.filteredData);
 			this.source.refresh();
 			this.loaded = true;
 		}); // refresh list

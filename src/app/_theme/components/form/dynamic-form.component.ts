@@ -80,11 +80,21 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 	@ViewChildren(BaseFormInputComponent, { /* descendants: true, */ read: BaseFormInputComponent })
 	public inputs: any;
 
-	public questions: Map<string, BaseFormInputComponent<any>> = new Map();
+	public readonly questions: Map<string, BaseFormInputComponent<any>> = new Map();
+
+	public get Form()
+	{
+		return this.formContainer.form;
+	}
+
+	public get Group()
+	{
+		return this.formContainer.toGroup();
+	}
 
 	public get isValid()
 	{
-		return this.formContainer.toGroup().valid;
+		return this.Group.valid;
 	}
 
 	/**

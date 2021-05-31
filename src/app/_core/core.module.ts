@@ -5,10 +5,10 @@ import { NB_AUTH_TOKEN_INTERCEPTOR_FILTER, NbAuthModule, NbDummyAuthStrategy } f
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { NbFirebaseAuthModule } from '@nebular/firebase-auth';
 
-import { AngularFireModule } from '@angular/fire';
+import { AngularFireModule, FIREBASE_OPTIONS } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage'
-import { AngularFireDatabase, AngularFireDatabaseModule } from '@angular/fire/database';
+import { /* AngularFireDatabase, */ AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
 
 import { NgxsModule } from '@ngxs/store';
@@ -41,6 +41,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { DatabaseService } from '@app-core/utils/database.service';
 // import { AngularPrismaAuth } from '@app-core/auth/auth.service';
 import { environment } from '../../environments/environment';
+import { AngularPrismaModule } from '@app-core/utils/firebase/AngularPrismaModule';
 // import { AuthModule } from '@app-core/auth/auth.module';
 
 const socialLinks = [
@@ -144,7 +145,7 @@ export const CUSTOM_PROVIDERS = [
 		AngularFireAuthModule,
 		AngularFireFunctionsModule,
 		AngularFireStorageModule,
-		AngularFireModule.initializeApp(environment.firebase),
+		AngularPrismaModule.initializeApp(),
 		// AuthModule.initializeApp(environment.prisma),
 
 		NbFirebaseAuthModule,

@@ -9,7 +9,7 @@ import { EventsTypes } from 'visualne/types/events';
 
 import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService, StoryFileUpload } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { NodeEditorService } from '@app-core/data/state/node-editor';
@@ -105,7 +105,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		},
 		items: {
 			'save': () => this.nodeEditorService.saveStory(),
-			'Load': () => this.nodeEditorService.loadStory(),
+			'Load': () => this.nodeEditorService.loadStory<StoryFileUpload>(),
 		},
 		nodeItems:
 			{
@@ -264,6 +264,8 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			const idx = this.optionTextAreaComponents.push(instance);
 			instance.question.text = hasOutput ? output.name : `Option Out ${idx}`;
 			instance.index = idx - 1;
+
+			console.log(idx, instance.index);
 
 			const outputText = hasOutput ? output.name : `Option Out ${idx} - [NULL]`;
 

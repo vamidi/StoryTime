@@ -1,3 +1,9 @@
+<a name="2020.1.3f2"></a>
+## [2020.1.3f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f2) (2021-20-05)
+- Readme updated with information about new databases support.
+- Ability to load firebase config from file.
+- Bug fixes
+
 <a name="2020.1.3f1"></a>
 ## [2020.1.3f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f1) (2021)
 

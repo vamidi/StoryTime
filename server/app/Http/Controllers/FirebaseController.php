@@ -105,6 +105,9 @@ class FirebaseController extends Controller
 		// TODO get token through bearer
 		$idTokenString = $request->bearerToken();
 
+		if(empty($idTokenString))
+            return response()->json(["error_msg" => "Not authorized"], 401);
+
 		$verifier = IdTokenVerifier::createWithProjectId(env('FIREBASE_PROJECT_ID'));
 
 		try {

@@ -1,19 +1,35 @@
-import { ProxyObject } from '@app-core/data/base';
-import { UtilsService } from '@app-core/utils';
+export interface IFileMetaData
+{
+	customMetadata?: {
+		[/* warning: coerced from ? */ key: string]: string; } | null;
+}
 
-export class FileUpload implements ProxyObject {
-	key!: string;
-	name!: string;
+export interface AnimalProperties {
+	species?: string;
+	id?: string;
+	color?: string;
+}
+
+export class FileUpload {
+	id?: string;
+	name!: string;	// filename + extension
 	url!: string;
 
-	file: File;
+	file!: File;
+	metadata: IFileMetaData
+
+	data!: string;           // JSON data of the story
 
 	// Proxy
-	deleted: boolean = false;
-	created_at: Object = UtilsService.timestamp;
-	updated_at: Object = UtilsService.timestamp;
+	deleted!: boolean;
+	created_at!: number | Object;
+	updated_at!: number | Object;
 
-	constructor(file: File) {
-		this.file = file;
+	constructor(data: any = {})
+	{
+		for (const key in data) {
+			if(data.hasOwnProperty(key))
+				this[key] = data[key];
+		}
 	}
 }

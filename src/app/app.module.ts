@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, Inject, Injectable, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule, HttpRequest } from '@angular/common/http';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { FormsModule } from '@angular/forms';

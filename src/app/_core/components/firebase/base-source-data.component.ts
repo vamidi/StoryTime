@@ -1,7 +1,7 @@
 import { NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { UserData, UserService } from '@app-core/data/state/users';
 
@@ -17,6 +17,9 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
  * for instances that only want to calculate the source data
  * for columns without the view of a table.
  */
+@Component({
+	template: '',
+})
 export class BaseSourceDataComponent extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	public Title: string = '';
@@ -46,7 +49,7 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected languageService: LanguageService,
-		protected tableName: string = '',
+		@Inject(String) protected tableName: string = '',
 	) {
 		super(
 			router, firebaseService, firebaseRelationService, toastrService, snackbarService, userService,

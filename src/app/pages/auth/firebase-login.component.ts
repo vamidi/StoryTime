@@ -1,22 +1,17 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { NB_AUTH_OPTIONS, NbAuthResult, NbAuthService, NbLoginComponent } from '@nebular/auth';
-import { NbAuthSocialLink } from '@nebular/auth/auth.options';
-import { NbThemeService } from '@nebular/theme';
-
-import { Store } from '@ngxs/store';
-
-import firebase from 'firebase/app'
-import 'firebase/auth';
-import Persistence = firebase.auth.Auth.Persistence;
 
 import { UtilsService } from '@app-core/utils';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { NbAuthSocialLink } from '@nebular/auth/auth.options';
+import { NbThemeService } from '@nebular/theme';
+import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 
-import { UserService, GetUser, UserData } from '@app-core/data/state/users';
-import { environment } from '../../../environments/environment';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import Persistence = firebase.auth.Auth.Persistence;
 
 interface AuthSocialLink extends NbAuthSocialLink
 {
@@ -33,21 +28,18 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 
 	showPassword = false;
 
-	private returnUrl: string = '';
-
-	// user$: Observable<UserModel> = this.userService.user$;
+	private returnUrl: string;
 
 	constructor(
-		@Inject(NB_AUTH_OPTIONS) options:{},
-		public router: Router,
 		protected service: NbAuthService,
 		protected themeService: NbThemeService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
 		protected firebaseService: FirebaseService,
-		private store: Store,
+		@Inject(NB_AUTH_OPTIONS) options:{},
 		protected cd: ChangeDetectorRef,
-		private route: ActivatedRoute)
+		private route: ActivatedRoute,
+		protected router: Router)
 	{
 		super(service, options, cd, router);
 		// TODO only if we really want to add google login
@@ -58,16 +50,13 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 		// this.socialLinks.push(link);
 	}
 
-	public ngOnInit()
+	public async ngOnInit(): Promise<void>
 	{
-		this.userPreferencesService.getUserPreferences().subscribe(
-			userPreferences => this.themeService.changeTheme(userPreferences.currentTheme),
-		);
+		const userPreferences = await this.userPreferencesService.getUserPreferences().toPromise();
+		this.themeService.changeTheme(userPreferences.currentTheme);
 
 		// get return url from route parameters or default to '/'
-		this.returnUrl = this.route.snapshot.queryParams.returnUrl ?? '';
-
-		console.log(this.strategy);
+		this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 	}
 
 	public handleLogin(method: string)
@@ -107,23 +96,21 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 			{
 				const res = result.getResponse();
 
-				if(res.hasOwnProperty('user')) {
+				if(res.hasOwnProperty('user'))
 					localStorage.setItem('user', JSON.stringify(res.user));
-				}
-				console.log(result.getToken(), result.getToken().getPayload());
+				UtilsService.onDebug(result.getToken(), result.getToken().getPayload());
 				// expire after 3600 seconds (1 hour)
 				if(result.getToken() && result.getToken().getPayload())
 					UtilsService.setItemInLocalStorage('expire_at', result.getToken().getPayload().exp);
 
 				this.messages = result.getMessages();
 
-				const redirect = this.returnUrl !== '' ? this.returnUrl : result.getRedirect();
+
+				const redirect = this.returnUrl !== '' ? this.returnUrl :  result.getRedirect();
+
 				setTimeout(() => {
-					if(environment.redux) this.store.dispatch(new GetUser());
 					return this.router.navigateByUrl(redirect);
 				}, this.redirectDelay);
-
-
 
 			} else {
 				this.errors = result.getErrors();

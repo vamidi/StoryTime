@@ -125,7 +125,6 @@ export class DropDownFieldComponent extends BaseFormInputComponent<string | numb
 
 		if(this.relationDropDown)
 		{
-			console.log(this.question);
 			this.myFormGroup.controls[this.question.key].setErrors({required: true});
 		}
 	}

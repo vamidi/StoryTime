@@ -105,10 +105,9 @@ export class DataSourceColumnHandler
 							this.source.fields[key] = field;
 							break;
 						}
-						if(this.customFunc) {
-							field = this.customFunc ? this.customFunc(key, column, index) : null;
-							this.source.fields[key] = field;
-						}
+
+						field = this.customFunc ? this.customFunc(key, column, index) : null;
+						this.source.fields[key] = field;
 					} else {
 						if(this.customFunc) {
 							field = this.customFunc ? this.customFunc(key, column, index) : null;

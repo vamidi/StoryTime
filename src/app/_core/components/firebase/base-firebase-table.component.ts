@@ -1,4 +1,4 @@
-import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NbToastrService } from '@nebular/theme';
@@ -34,9 +34,11 @@ import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/fireba
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import {
 	KeyLanguage,
-	KeyLanguageObject,
+	// KeyLanguageObject,
 } from '@app-core/data/state/node-editor/languages.model';
-import { LanguageRenderComponent, LanguageColumnRenderComponent } from '@app-theme/components/render-column-layout/language-column-render.component';
+// import {
+// LanguageRenderComponent, LanguageColumnRenderComponent
+// } from '@app-theme/components/render-column-layout/language-column-render.component';
 import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
 import isEqual from 'lodash.isequal';
 
@@ -44,6 +46,9 @@ import isEqual from 'lodash.isequal';
  * @brief base class to get simple data information
  * from firebase
  */
+@Component({
+	template: '',
+})
 export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent implements OnDestroy
 {
 	@Input()
@@ -173,9 +178,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected languageService: LanguageService,
-		protected tableName: string = '',
+		@Inject(String) protected tableName: string = '',
 	) {
-		super(firebaseService, firebaseRelationService, userService, userPreferencesService, languageService, tableName);
+		super(
+			firebaseService, firebaseRelationService, projectService, tableService,
+			userService, userPreferencesService, languageService, tableName,
+		);
 
 		// iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
 		// iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'fa' });
@@ -724,78 +732,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		}
 
 		return newSettings;
-	}
-
-	protected processRelation(
-		pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '',
-	)
-	{
-		super.processRelation(pair, key, newSettings, overrideTbl);
-
-		if (pair)
-		{
-			let tbl = this.table.metadata.title;
-
-			// if we override the tblName
-			if(overrideTbl !== '')
-				tbl = overrideTbl;
-
-			const project: Project | null = this.projectService.getProjectById(this.table.projectID);
-			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
-			for(const k of Object.keys(project.tables))
-			{
-				if(project.tables[k].name === pair.key)
-				{
-					newPair.key = k;
-					// Add the tables to the service when they not exist
-					this.tableService.addIfNotExists(k).then();
-				}
-			}
-
-			if(newPair.key === '')
-				UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
-
-			// const result = await this.firebaseService.getRef(`tables/${key}/metadata`)
-			// 	.once('value', null, (error) => {
-			// 		UtilsService.onError(error);
-			// 	});
-			//
-			// const tblData: ITableData = result.val();
-			// if(result.exists() && tblData.title === this.tblColumnRelation.key)
-			// {
-			// 	now listen to a certain column
-			// 	'tables'
-			// this.relationRef = this.firebaseService.getItem(+this.id, `tables/${result.ref.parent.key}/data/`);
-			// this.relationReceiver$ = this.relationRef.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
-			// this.relationRef = this.firebaseService.getItem(+this.id, this.tblColumnRelation.key);
-			// console.log(tblData.title, this.tblColumnRelation.key, this.relationReceiver$ !== null);
-			// return Promise.resolve();
-			// }
-
-			const rel = new Relation(
-				this.table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
-			);
-			this.firebaseService.pushRelation(tbl, key, rel);
-
-			newSettings.columns[key]['type'] = 'custom';
-			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
-			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
-				// firebase, tableName, value => id
-				instance.relation = rel;
-			};
-
-			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };
-
-			newSettings.columns[key]['editor'] =
-				{
-					type: 'custom',
-					component: TextColumnComponent,
-					data: {
-						tblName: tbl, relationTable: pair.key, projectID: this.table.projectID, tableID: this.table.id,
-					},
-					config: { /* data: { relation: rel }, */ },
-				}
-		}
 	}
 
 	/*

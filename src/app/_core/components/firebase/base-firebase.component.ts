@@ -1,22 +1,22 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
 import isEqual from 'lodash.isequal';
-import { ProxyObject, StringPair } from '@app-core/data/base';
-import { Table } from '@app-core/data/state/tables';
+import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { BaseSettings } from '@app-core/mock/base-settings';
 import {
 	BooleanColumnRenderComponent,
 	LanguageColumnRenderComponent,
 	LanguageRenderComponent,
-	NumberColumnComponent,
+	NumberColumnComponent, TextColumnComponent, TextRenderComponent,
 } from '@app-theme/components';
 import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { LanguageService } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
@@ -27,6 +27,9 @@ import firebase from 'firebase/app';
  * simple base firebase implementation
  * where the class calculates the user permissions.
  */
+@Component({
+	template: '',
+})
 export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 {
 	protected userPreferences: UserPreferences = null;
@@ -46,10 +49,12 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	protected constructor(
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected projectService: ProjectsService,
+		protected tableService: TablesService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
 		protected languageService: LanguageService,
-		protected tableName: string = '',
+		@Inject(String) protected tableName: string = '',
 	) {
 		if(tableName !== '')
 			this.firebaseService.setTblName(tableName);
@@ -107,27 +112,27 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 	/**
 	 * @brief - Process table data to generate columns
-	 * @param tableData
+	 * @param table
 	 * @param verify
 	 * @param settings
 	 * @param overrideTbl
 	 */
 	protected processTableData(
-		tableData: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
+		table: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
 	): BaseSettings
 	{
 		// noinspection JSUnusedGlobalSymbols
 		const newSettings: BaseSettings = { ...settings };
 
-		let tbl: string = tableData.title;
+		let tbl: string = table.title;
 
 		// if we override the tblName
 		if(overrideTbl !== '')
 			tbl = overrideTbl;
 
-		for(const dataKey of Object.keys(tableData.data))
+		for(const dataKey of Object.keys(table.data))
 		{
-			const dataValue = tableData.data[dataKey];
+			const dataValue = table.data[dataKey];
 			// if we need to verify we need to check if it is a valid item
 			if (verify)
 			{
@@ -215,7 +220,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 						{
 							// if we found the relation
 							const pair: StringPair = entry.get(key);
-							this.processRelation(pair, key, newSettings, tbl);
+							this.processRelation(table, pair, key, newSettings, tbl);
 						}
 
 						if(!newSettings.columns[key].hasOwnProperty('type'))
@@ -230,12 +235,81 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 	/**
 	 * Process the relation between the columns to other tables
+	 * @param table
 	 * @param pair
 	 * @param key
 	 * @param newSettings
 	 * @param overrideTbl
 	 */
-	protected processRelation(pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '') { }
+	protected processRelation(
+		table: Table, pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '',
+	): void
+	{
+		if (pair)
+		{
+			let tbl = table.title;
+
+			// if we override the tblName
+			if(overrideTbl !== '')
+				tbl = overrideTbl;
+
+			const project: Project | null = this.projectService.getProjectById(table.projectID);
+			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
+			for(const k of Object.keys(project.tables))
+			{
+				if(project.tables[k].name === pair.key)
+				{
+					newPair.key = k;
+					// Add the tables to the service when they not exist
+					this.tableService.addIfNotExists(k).then();
+				}
+			}
+
+			// const result = await this.firebaseService.getRef(`tables/${key}/metadata`)
+			// 	.once('value', null, (error) => {
+			// 		UtilsService.onError(error);
+			// 	});
+			//
+			// const tblData: ITableData = result.val();
+			// if(result.exists() && tblData.title === this.tblColumnRelation.key)
+			// {
+			// 	now listen to a certain column
+			// 	'tables'
+			// this.relationRef = this.firebaseService.getItem(+this.id, `tables/${result.ref.parent.key}/data/`);
+			// this.relationReceiver$ = this.relationRef.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
+			// this.relationRef = this.firebaseService.getItem(+this.id, this.tblColumnRelation.key);
+			// console.log(tblData.title, this.tblColumnRelation.key, this.relationReceiver$ !== null);
+			// return Promise.resolve();
+			// }
+
+			if(newPair.key === '')
+				UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
+
+			const rel = new Relation(
+				table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
+			);
+			this.firebaseService.pushRelation(tbl, key, rel);
+
+			newSettings.columns[key]['type'] = 'custom';
+			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
+			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
+				// firebase, tableName, value => id
+				instance.relation = rel;
+			};
+
+			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };
+
+			newSettings.columns[key]['editor'] =
+			{
+				type: 'custom',
+				component: TextColumnComponent,
+				data: {
+					tblName: tbl, relationTable: pair.key, projectID: table.projectID, tableID: table.id,
+				},
+				config: { /* data: { relation: rel }, */ },
+			}
+		}
+	}
 
 	protected insertFirebaseData(
 		event: { data: ProxyObject, confirm?: any },

@@ -231,7 +231,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				this.projects.set(key, newProject);
 
 				// Add item to the list
-				this.items = this.projects;
+				this.items = new Map<string, Project>(this.projects);
 			}
 		}
 

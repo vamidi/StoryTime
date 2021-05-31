@@ -13,6 +13,8 @@ yarn-lock.json
 src/environments/*.ts
 functions/src/environment/*.ts
 
+config.json
+
 .env
 .env.*
 
@@ -61,6 +63,9 @@ passwords.txt
 
 *.ai
 *.ai.meta
+
+# auto generated files
+main.ts
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #

@@ -72,16 +72,16 @@
 						<label class="formHeading d-flex" for="{{ textQuestion.key }}--textbox" *ngIf="textQuestion">
 							<span class="flex-grow-1">{{ textQuestion.text }}</span>
 						</label>
-						<input id="{{ textQuestion.key }}--textbox"
-						       [type]="textQuestion.hidden ? 'hidden' : textQuestion.controlType"
-						       [value]="textQuestion.value"
-						       [placeholder]="textQuestion.text"
-						       [name]="textQuestion.name"
-						       [readOnly]="textQuestion.readOnly"
-						       [attr.disabled]="textQuestion.disabled ? '' : null"
-						       nbInput
-						       fullWidth
-						/>
+						<textarea id="{{ textQuestion.key }}--textbox"
+								[class.hidden]="textQuestion.hidden"
+						       	[value]="textQuestion.value"
+						       	[placeholder]="textQuestion.text"
+						       	[name]="textQuestion.name"
+						       	[readOnly]="textQuestion.readOnly"
+						       	[attr.disabled]="textQuestion.disabled ? '' : null"
+						       	nbInput
+						       	fullWidth
+						></textarea>
 					</div>
 
 				</nb-card-body>

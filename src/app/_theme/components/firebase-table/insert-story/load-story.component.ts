@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Project } from '@app-core/data/state/projects';
+import { Component, Input, OnInit, Type } from '@angular/core';
+import { Project, StoryFileUpload } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
 import { map } from 'rxjs/operators';
+import { FileUpload } from '@app-core/data/file-upload.model';
+import { CraftableFileUpload } from '@app-core/data/state/tables';
 
 @Component({
 	selector: ' ngx-load-story',
@@ -15,9 +17,9 @@ import { map } from 'rxjs/operators';
 	`,
 	],
 })
-export class LoadStoryComponent implements OnInit
+export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload> implements OnInit
 {
-	public get Ref(): NbDialogRef<LoadStoryComponent>
+	public get Ref(): NbDialogRef<LoadStoryComponent<T>>
 	{
 		return this.ref;
 	}
@@ -25,7 +27,7 @@ export class LoadStoryComponent implements OnInit
 	@Input()
 	public childPath: string = 'stories';
 
-	public fileUploads: any[] = [];
+	public fileUploads: T[] = [];
 
 	public onFileClicked(event, idx: number, file: any)
 	{
@@ -47,38 +49,43 @@ export class LoadStoryComponent implements OnInit
 	private project: Project = null;
 
 	constructor(
-		protected ref: NbDialogRef<LoadStoryComponent>,
+		protected ref: NbDialogRef<LoadStoryComponent<T>>,
 		protected storageService: FirebaseStorageService,
 	) { }
 
 	public ngOnInit()
 	{
-		this.storageService.getFiles(`${this.childPath}`, 6).snapshotChanges().pipe(
+		this.storageService.getFiles<T>(`${this.childPath}`, 6).snapshotChanges().pipe(
 			map(changes => {
 				// store the key
-				changes.forEach((c) => console.log({ key: c.payload.key, ...c.payload.val() }));
-				return changes.map(c => ({key: c.payload.key, ...c.payload.val()}));
+				return changes.map(c => {
+					const payload = c.payload.val();
+					if(payload.hasOwnProperty('storyId'))
+						return new StoryFileUpload({ id: c.payload.key, ...payload });
+
+					return new CraftableFileUpload({ id: c.payload.key, ...payload });
+				});
 			}),
-		).subscribe(fileUploads => {
+		).subscribe((fileUploads: T[]) => {
+			console.log(fileUploads);
 			this.fileUploads = fileUploads;
 		});
 	}
 
+	protected create(Ctor: new (...args: any[]) => T, data: any): T
+	{
+		return new Ctor(data);
+	}
+
 	protected loadStory(idx: number, url: string)
 	{
-		console.log(url);
 		this.storageService.getJsonFile(url).then((result) =>
 		{
-			console.log(result);
 			result.text().then((text) =>
 			{
-				console.log(text);
-				const d: { data: string, storyId?: number, itemId?: number } = { data: text };
-				if(this.fileUploads[idx].hasOwnProperty('storyId'))
-					d.storyId = this.fileUploads[idx].storyId;
-				else
-					d.itemId = this.fileUploads[idx].itemId;
-
+				const d: T = this.fileUploads[idx];
+				console.log(d, d instanceof FileUpload);
+				d.data = text;
 				this.ref.close(d);
 			});
 		}, e => UtilsService.onError(e));

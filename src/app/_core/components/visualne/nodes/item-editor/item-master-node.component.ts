@@ -15,7 +15,7 @@ export class ItemMasterNodeComponent extends BaseNodeComponent
 
 	public async builder(node: Node): Promise<void>
 	{
-		node.addInput(new Input('itemIn', `Item Master [${ Number.MAX_SAFE_INTEGER }]`, itemSocket));
+		node.addInput(new Input('itemIn', `Item Master [${ Number.MAX_SAFE_INTEGER }]`, itemSocket, true));
 	}
 
 	public onCreated(node: Node)

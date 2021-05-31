@@ -27,14 +27,12 @@ import { UtilsService } from '@app-core/utils';
 import { CraftableFileUpload, Table } from '@app-core/data/state/tables';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseStorageService, NbLocationFileType } from '@app-core/utils/firebase/firebase-storage.service';
-import { FileUpload } from '@app-core/data/file-upload.model';
 
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import firebase from 'firebase/app';
-
 import debounce from 'lodash.debounce';
-import isEqual from 'lodash.isequal';
+import { IFileMetaData } from '@app-core/data/file-upload.model';
 
 @Injectable()
 export class NodeEditorService
@@ -93,7 +91,7 @@ export class NodeEditorService
 	}
 
 	public fileName: string = '';
-	public currentFileUpload?: StoryFileUpload | FileUpload;
+	public currentFileUpload?: StoryFileUpload | CraftableFileUpload;
 	public container: HTMLDivElement;
 
 	public storyLoaded: BehaviorSubject<IStory> = new BehaviorSubject<IStory>(null);
@@ -281,32 +279,32 @@ export class NodeEditorService
 			this.registerComponent(args);
 	}
 
-	public loadStory(
-		path: string = 'stories', onClose?: (res?: { storyId?: string, itemId?: string, data: string }) => void,
+	public loadStory<T extends StoryFileUpload | CraftableFileUpload>(
+		path: string = 'stories', onClose?: (res?: T) => void,
 	): void
 	{
 		// TODO open a modal with the choose which file.
 		// TODO load the file in the editor.
-		const ref: NbDialogRef<LoadStoryComponent> = this.dialogService.open(LoadStoryComponent, {
+		const ref: NbDialogRef<LoadStoryComponent<StoryFileUpload | CraftableFileUpload>> =
+			this.dialogService.open(LoadStoryComponent, {
 			closeOnEsc: false,
 			context: {
 				childPath: path,
 			},
 		});
 
-		const closeFunc = ref.onClose.subscribe( (res: {
-			storyId?: string,
-			itemId?: string,
-			data: string,
-		}) =>
+		// ref closes the subscription for us.
+		ref.onClose.subscribe( (res: T) =>
 		{
+			console.log('closed window');
 			if(res !== undefined)
 			{
-				const isStory = res.hasOwnProperty('storyId');
+				this.currentFileUpload = res;
+				const isStory = this.currentFileUpload instanceof StoryFileUpload;
 				let selectedItem = null;
-				if(isStory)
+				if(this.currentFileUpload instanceof StoryFileUpload)
 				{
-					this.selectedStory = this.data.stories.find(+res.storyId);
+					this.selectedStory = this.data.stories.find(+this.currentFileUpload.storyId);
 
 					if(this.selectedStory)
 					{
@@ -316,11 +314,11 @@ export class NodeEditorService
 						this.fileName = UtilsService.titleLowerCase(`story_${this.selectedStory.id}_${this.selectedStory.title['en']}`);
 					}
 					else
-						UtilsService.onError(`Story ${res.storyId} can\'t be found`);
+						UtilsService.onError(`Story ${this.currentFileUpload.storyId} can\'t be found`);
 				}
-				else if(res.hasOwnProperty('itemId'))
+				else if(this.currentFileUpload instanceof CraftableFileUpload)
 				{
-					this.selectedCraftItem = this.data.craftables.find(+res.itemId);
+					this.selectedCraftItem = this.data.craftables.find(+this.currentFileUpload.itemId);
 
 					if(this.selectedCraftItem)
 					{
@@ -332,10 +330,10 @@ export class NodeEditorService
 						this.fileName = UtilsService.titleLowerCase(`craftable_${this.selectedCraftItem.id}_${selectedItem.name['en']}`);
 					}
 					else
-						UtilsService.onError(`Craftable ${res.itemId} can\'t be found`);
+						UtilsService.onError(`Craftable ${this.currentFileUpload.itemId} can\'t be found`);
 				}
 
-				if(res.hasOwnProperty('data'))
+				if(this.currentFileUpload.hasOwnProperty('data'))
 				{
 					// parse the response
 					const data: Data = JSON.parse(res.data);
@@ -372,14 +370,14 @@ export class NodeEditorService
 			}
 
 			if(onClose) onClose(res);
-			this.mainSubscription.remove(closeFunc);
 		});
-
-		this.mainSubscription.add(closeFunc);
 	}
 
 	public saveStory()
 	{
+		if(this.selectedStory === null && this.selectedCraftItem === null)
+			return;
+
 		// call the function again. Now with this we make sure it is now saving over and over again.
 		this.saveSnippet();
 		const sub = this.uploadToStorage().subscribe((snapshot) =>
@@ -579,28 +577,40 @@ export class NodeEditorService
 
 		if (file)
 		{
-			const metadata: {
-				customMetadata: { name: string, projectID: string },
-			} = {
+			const metadata: IFileMetaData = {
 				customMetadata: {
 					name: this.fileName, // name of the file without json
 					projectID: this.project.id, // project id
 				},
 			};
 
-			if(this.selectedStory !== null)
+			if(!this.currentFileUpload)
 			{
-				this.currentFileUpload = new StoryFileUpload(file);
-				(<StoryFileUpload>this.currentFileUpload).metadata = metadata.customMetadata;
-				(<StoryFileUpload>this.currentFileUpload).storyId = this.selectedStory.id; // story id;
+				if(this.selectedStory !== null)
+				{
+					this.currentFileUpload = new StoryFileUpload(file);
+				}
+
+				if(this.selectedCraftItem !== null)
+				{
+					this.currentFileUpload = new CraftableFileUpload(file);
+				}
+
+				console.log(this.currentFileUpload);
 			}
 
-			if(this.selectedCraftItem !== null)
-			{
-				this.currentFileUpload = new CraftableFileUpload(file);
-				(<CraftableFileUpload>this.currentFileUpload).metadata = metadata.customMetadata;
-				(<CraftableFileUpload>this.currentFileUpload).itemId = this.selectedCraftItem.id; // item id
-			}
+			this.currentFileUpload.metadata = metadata.customMetadata;
+
+			if(this.currentFileUpload instanceof StoryFileUpload)
+				this.currentFileUpload.storyId = this.selectedStory.id;
+
+			if(this.currentFileUpload instanceof CraftableFileUpload)
+				this.currentFileUpload.itemId = this.selectedCraftItem.id;
+
+
+			this.currentFileUpload.deleted = false;
+			this.currentFileUpload.created_at = UtilsService.timestamp;
+			this.currentFileUpload.updated_at = UtilsService.timestamp;
 
 			const childPath = this.selectedStory ? 'stories' : 'craftables';
 			const type: NbLocationFileType = this.selectedStory ? 'Story' : 'Craftable';

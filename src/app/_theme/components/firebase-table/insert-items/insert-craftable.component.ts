@@ -59,8 +59,6 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 	@Input()
 	public selectedLanguage: KeyLanguage = 'en';
 
-	public table: Table<any> = null;
-
 	// region Craftable form
 	/* ----------------- Craftable form ------------------------- */
 
@@ -115,7 +113,10 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		protected tableService: TablesService,
 		protected cd: ChangeDetectorRef)
 	{
-		super(firebaseService, firebaseRelationService, userService, userPreferencesService, languageService);
+		super(
+			firebaseService, firebaseRelationService, projectService, tableService,
+			userService, userPreferencesService, languageService,
+		);
 	}
 
 	public ngOnInit(): void
@@ -164,31 +165,33 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 
 	/* ----------------- Craft form ------------------------- */
 
-	public onStoryDescriptionChanged(event: string)
-	{
-		// TODO change
-		this.craftable.description[this.selectedLanguage] = event;
-	}
-
 	public createCraftable(): Promise<void|boolean>
 	{
-		const tblName = `tables/${this.craftables.id}`;
-		return this.firebaseService.insertData(tblName + '/data', this.craftable, tblName)
-			.then((data) =>
-				{
+		if (this.craftFormComponent.formContainer.isValid())
+		{
+			const formValue = this.craftFormComponent.Form.value;
+			const keys = Object.keys(this.craftSettings.columns);
+			keys.forEach((key) => {
+				this.craftable[key] = formValue[key];
+			});
+
+			const tblName = `tables/${this.craftables.id}`;
+			return this.firebaseService.insertData(tblName + '/data', this.craftable, tblName)
+			.then((data) => {
 					UtilsService.showToast(
 						this.toastrService,
 						'Item created!',
 						'Craftable item has been successfully created',
 					);
 
-					if(data && typeof data === 'number') {
+					if (data && typeof data === 'number') {
 						this.craftable.id = data;
 					}
 
 					return Promise.resolve(true);
 				},
 			);
+		}
 	}
 
 	public addItem()
@@ -265,11 +268,10 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			this.itemSettings = Object.assign({}, newItemSettings);
 		}
 
-		this.table = this.craftables;
 		const newSettings = this.processTableData(this.craftables, true, this.craftSettings);
 		this.craftSettings = Object.assign({}, newSettings);
 		this.craftHandler.initialize(this.craftSettings.columns,
-			(key, column, index) => this.configureRelation(key, column, index));
+			(key, column, index) => this.configureRelation(this.craftables, key, column, index));
 		this.craftHandler.source.fields['insert'] = {
 			...this.craftHandler.configureField<string>('insert', {
 				title: 'Next',
@@ -285,19 +287,20 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		const selectField = this.craftHandler.source.fields['childId'];
 		selectField.enableLabelIcon = true;
 		selectField.labelIcon = 'plus-outline';
+		selectField.onSelectEvent = (event) => this.craftable.childId = event;
 		selectField.onIconClickEvent = () => this.addItem();
 
 		// this.craftFormComponent.init();
 
-		this.craftStepper.stepControl = this.craftFormComponent.formContainer.form;
+		this.craftStepper.stepControl = this.craftFormComponent.Form;
 	}
 
-	protected configureRelation(key: string, column: Column, index: number): FormField<any>
+	protected configureRelation(table: Table, key: string, column: Column, index: number): FormField<any>
 	{
 		let field: FormField<any>;
 		if (key /* && Number(value) !== Number.MAX_SAFE_INTEGER */)
 		{
-			const relation: Relation = this.firebaseService.getRelation(this.table.metadata.title, key);
+			const relation: Relation = this.firebaseService.getRelation(table.metadata.title, key);
 
 			if (relation)
 			{
@@ -309,11 +312,11 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 				// Set the dropdown to relation
 				field.relationDropDown = true;
 
-				const table: Table = this.tableService.getTableById(relation.tblColumnRelation.key);
+				const table$: Table = this.tableService.getTableById(relation.tblColumnRelation.key);
 
-				if(table)
+				if(table$)
 				{
-					this.onDataReceived(key, table, relation, field);
+					this.onDataReceived(key, table$, relation, field);
 				}
 
 				return field;
@@ -324,19 +327,19 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		return field;
 	}
 
-	protected processRelation(pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '')
+	protected processRelation(table: Table, pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '')
 	{
-		super.processRelation(pair, key, newSettings, overrideTbl);
+		super.processRelation(table, pair, key, newSettings, overrideTbl);
 
-		if (pair && this.table)
+		if (pair)
 		{
-			let tbl = this.table.metadata.title;
+			let tbl = table.metadata.title;
 
 			// if we override the tblName
 			if(overrideTbl !== '')
 				tbl = overrideTbl;
 
-			const project: Project | null = this.projectService.getProjectById(this.table.projectID);
+			const project: Project | null = this.projectService.getProjectById(table.projectID);
 			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
 			for(const k of Object.keys(project.tables))
 			{
@@ -351,7 +354,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			if(newPair.key === '') UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
 
 			const rel = new Relation(
-				this.table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
+				table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
 			);
 			this.firebaseService.pushRelation(tbl, key, rel);
 
@@ -369,7 +372,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 				type: 'custom',
 				component: TextColumnComponent,
 				data: {
-					tblName: tbl, relationTable: pair.key, projectID: this.table.projectID, tableID: this.table.id,
+					tblName: tbl, relationTable: pair.key, projectID: table.projectID, tableID: table.id,
 				},
 				config: { /* data: { relation: rel }, */ },
 			}
@@ -378,11 +381,10 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 
 	protected onDataReceived(key: string, snapshots: Table, relation: Relation, field: FormField<any>)
 	{
-		this.table = snapshots;
 
 		let selected: boolean = false;
 		const item: FirebaseFilter<any> = firebaseFilterConfig.columnFilters.find((name) =>
-			name.table === this.table.metadata.title && name.columns.some((column: string) => column === key),
+			name.table === snapshots.metadata.title && name.columns.some((column: string) => column === key),
 		);
 
 		let filterFunc: FilterCallback<ProxyObject> = null;
@@ -392,7 +394,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			filterFunc = item.filter;
 		}
 
-		this.table.load([
+		snapshots.load([
 			(d: ProxyObject) => !!+d.deleted === false,
 			filterFunc,
 		]).then(() => {

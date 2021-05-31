@@ -1,4 +1,4 @@
-import { OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { NavigationEnd, Router } from '@angular/router';
@@ -30,6 +30,9 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
 
+@Component({
+	template: '',
+})
 export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTableComponent
 	implements OnInit, OnDestroy
 {
@@ -70,7 +73,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected languageService: LanguageService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
-		protected tableName: string = '',
+		@Inject(String) protected tableName: string = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
 			toastrService, snackbarService, userService,
@@ -183,7 +186,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 	public onDeletePressed()
 	{
 		if (confirm('Do you really want to delete this table?')) {
-			this.firebaseService.updateTable(this.tableName, {deleted: true}).then(
+			this.firebaseService.update(this.tableName, {deleted: true}).then(
 				() => UtilsService.showToast(
 					this.toastrService,
 					'Table deleted!',
@@ -335,7 +338,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 			{
 				// if we found the relation
 				const pair: StringPair = event.newData.pair;
-				this.processRelation(pair, key, newSettings);
+				this.processRelation(this.table, pair, key, newSettings);
 			}
 			this.settings = Object.assign({}, newSettings);
 		}
