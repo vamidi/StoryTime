@@ -23,38 +23,14 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 880a163e3a20fbb48aa71546d89bb0e7
-    m_Address: Dialogues Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: f60a77fa6b7a8bd48865dd2d2871439f
-    m_Address: DialogueOptions Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
   - m_GUID: 534666bf16d51db429bfbfbbd7b9a6e5
     m_Address: Item Names Shared Data
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 9d58f987702dcc34ca3102c4bc48a52f
-    m_Address: Item Descriptions Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: 4e531e60398601f459790a3ae2655bd9
-    m_Address: Characters Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
-  - m_GUID: ef1106854641cea41ae5a5e6a76b2bf9
-    m_Address: Stories Shared Data
+  - m_GUID: 342c31ba0a1f3b3448e07ffa97c05d65
+    m_Address: InventoryTabTypes Shared Data
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
@@ -65,8 +41,32 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 342c31ba0a1f3b3448e07ffa97c05d65
-    m_Address: InventoryTabTypes Shared Data
+  - m_GUID: 880a163e3a20fbb48aa71546d89bb0e7
+    m_Address: Dialogues Shared Data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: ef1106854641cea41ae5a5e6a76b2bf9
+    m_Address: Stories Shared Data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: f60a77fa6b7a8bd48865dd2d2871439f
+    m_Address: DialogueOptions Shared Data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 4e531e60398601f459790a3ae2655bd9
+    m_Address: Characters Shared Data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 9d58f987702dcc34ca3102c4bc48a52f
+    m_Address: Item Descriptions Shared Data
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_MainAsset: {fileID: 0}

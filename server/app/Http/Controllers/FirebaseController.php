@@ -5,18 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\Utils;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Kreait\Firebase\Database as FirebaseDatabase;
+use Kreait\Firebase\Storage as FirebaseStorage;
 use Kreait\Firebase\Exception\Database\UnsupportedQuery;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\JWT\Error\IdTokenVerificationFailed;
 use Kreait\Firebase\JWT\IdTokenVerifier;
+use Psr\Http\Message\StreamInterface;
 
 class FirebaseController extends Controller
 {
 	/** @var FirebaseDatabase $database */
 	private $database = null;
+
+    /** @var FirebaseStorage $storage */
+    private $storage = null;
 
 	/** @var array */
 	private $response = [];
@@ -138,86 +146,173 @@ class FirebaseController extends Controller
 	/**
 	 * @param string $project
 	 * @param FirebaseDatabase $firebaseDatabase
+     * @param FirebaseStorage $firebaseStorage
 	 * @param Request $request
 	 * @return JsonResponse
 	 */
-	public function tables(string $project, FirebaseDatabase $firebaseDatabase, Request $request)
+	public function tables(string $project, FirebaseDatabase $firebaseDatabase, FirebaseStorage $firebaseStorage, Request $request)
 	{
-		$this->setDatabase($firebaseDatabase);
+        $this->setDatabase($firebaseDatabase, $firebaseStorage);
 
-		// TODO get token through bearer
-		$idTokenString = $request->bearerToken();
+        // TODO get token through bearer
+        $idTokenString = $request->bearerToken();
 
-		$verifier = IdTokenVerifier::createWithProjectId(env('FIREBASE_PROJECT_ID'));
+        $verifier = IdTokenVerifier::createWithProjectId(env('FIREBASE_PROJECT_ID'));
 
-		try {
-			$verifier->verifyIdToken($idTokenString);
-		} catch (IdTokenVerificationFailed $e)
-		{
-			return response()->json(['error' => $e->getMessage()], 401);
-		}
+        try {
+            $verifier->verifyIdToken($idTokenString);
+        } catch (IdTokenVerificationFailed $e)
+        {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
 
-		try {
-			$tables = $this->database->getReference('tables')
-				->orderByChild('projectID')
-				->equalTo($project)
-				->getSnapshot()
-				->getValue();
+        try {
+            $tables = $this->database->getReference('tables')
+                ->orderByChild('projectID')
+                ->equalTo($project)
+                ->getSnapshot()
+                ->getValue();
 
-			foreach ($tables as $key => $table)
-			{
-				$table['id'] = $key;
+            foreach ($tables as $key => $table)
+            {
+                $table['id'] = $key;
 
-				if(!empty($table["data"]))
-				{
-					$table["data"] = (object)$table["data"];
-				}
+                if(!empty($table["data"]))
+                {
+                    // we are dealing with the story table
+                    // TODO we need to remove unnecessary data.
+                    if($table["metadata"]["title"] === "stories")
+                    {
+                        $promises = [];
 
-				$this->response[] = $table;
-			}
+                        foreach ($table["data"] as $rowId => $row)
+                        {
+                            $storySnapshot = $this->database->getReference('stories')
+                                ->orderByChild('storyId')
+                                ->equalTo($rowId)
+                                ->limitToFirst(1)
+                                ->getSnapshot();
 
-			return response()->json($this->response);
+                            if($storySnapshot->exists())
+                            {
+                                $storyVal = $storySnapshot->getValue();
+                                foreach ($storyVal as $id => $story)
+                                {
+                                    if (isset($story["url"]) && $story["url"] !== "")
+                                    {
+                                        $promise = $this->parseNodeData($story["url"], $table["data"][$rowId]);
+                                        if ($promise !== null) $promises[] = $promise;
+                                    } else
+                                        $table["data"][$rowId]["data"] = (object)null;
+                                }
+                            }
+                        }
 
-		} catch (\Exception $e) {
-			return response()->json(["error_msg" => array($e->getMessage())]);
-		}
+                        // unwrap all promises
+                        Utils::unwrap($promises);
+                    }
+
+                    $table["data"] = (object)$table["data"];
+
+                }
+
+                $this->response[] = $table;
+            }
+
+            return response()->json($this->response);
+
+        } catch (\Exception $e) {
+            return response()->json(["error_msg" => array($e->getMessage())]);
+        } catch (\Throwable $e) {
+            return response()->json(["error_msg" => array($e->getMessage())]);
+        }
 	}
 
 	/**
      * @param string $table
      * @param string $project
-	 * @param FirebaseDatabase $firebaseDatabase
-	 * @param Request $request
+     * @param FirebaseDatabase $firebaseDatabase
+     * @param FirebaseStorage $firebaseStorage
+     * @param Request $request
+     * @param string $tableID
      * @return JsonResponse
 	 */
-	public function table(string $table, string $project, FirebaseDatabase $firebaseDatabase, Request $request)
+    public function table(string $table, string $project, FirebaseDatabase $firebaseDatabase, FirebaseStorage $firebaseStorage, Request $request, string $tableID)
 	{
-		$this->setDatabase($firebaseDatabase);
+        $this->setDatabase($firebaseDatabase, $firebaseStorage);
 
-		if (empty($table))
-			return response()->json(["error_msg" => "No {$table} parameters found"], 401);
+        if (empty($tableID))
+            return response()->json(["error_msg" => "No {$tableID} parameters found"], 401);
 
-		// An ID token given to your backend by a Client application
-		$idTokenString = $request->bearerToken();
+        // An ID token given to your backend by a Client application
+        $idTokenString = $request->bearerToken();
 
-		$verifier = IdTokenVerifier::createWithProjectId(env('FIREBASE_PROJECT_ID'));
+        $verifier = IdTokenVerifier::createWithProjectId(env('FIREBASE_PROJECT_ID'));
 
-		try {
-			$verifier->verifyIdToken($idTokenString);
-		} catch (IdTokenVerificationFailed $e) {
-			return response()->json(['error' => $e->getMessage()], 401);
-		}
+        try {
+            $verifier->verifyIdToken($idTokenString);
+        } catch (IdTokenVerificationFailed $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
 
-		$timestamp = $this->getTimeStamp($request);
+        try {
 
-		try {
-			if (!$this->valuesToArray('tables/'. $table .'/data', $timestamp))
-				return response()->json(["error_msg" => array("There is no (new) data available for table '" . $table . "'")]);
-		} catch (UnsupportedQuery $e) {
-			return response()->json(["error_msg" => $e->getMessage()]);
-		}
+            $snapshot = $this->
+            database->
+            getReference('tables/'. $tableID)->
+            getSnapshot();
 
-		return response()->json($this->response);
+            if (!$snapshot->exists())
+                return response()->json(["error_msg" => array("There is no (new) data available for table '" . $tableID . "'")]);
+
+            $table = $snapshot->getValue();
+
+            $table['id'] = $tableID;
+
+            if(!empty($table["data"]))
+            {
+                if($table["metadata"]["title"] === "stories")
+                {
+                    $promises = [];
+
+                    foreach ($table["data"] as $rowId => $row)
+                    {
+                        $storySnapshot = $this->database->getReference('stories')
+                            ->orderByChild('storyId')
+                            ->equalTo($rowId)
+                            ->limitToFirst(1)
+                            ->getSnapshot();
+
+                        if($storySnapshot->exists())
+                        {
+                            $storyVal = $storySnapshot->getValue();
+                            foreach ($storyVal as $id => $story)
+                            {
+                                if (isset($story["url"]) && $story["url"] !== "")
+                                {
+                                    $promise = $this->parseNodeData($story["url"], $table["data"][$rowId]);
+                                    if ($promise !== null) $promises[] = $promise;
+                                } else
+                                    $table["data"][$rowId]["data"] = (object)null;
+                            }
+                        }
+                    }
+
+
+                    // unwrap all promises
+                    Utils::unwrap($promises);
+                }
+
+                $table["data"] = (object)$table["data"];
+            }
+
+            $this->response = $table;
+
+        } catch (FirebaseException | \Throwable $e) {
+            return response()->json(["error_msg" => $e->getMessage()]);
+        }
+
+        return response()->json($this->response);
 	}
 
 	/**
@@ -290,8 +385,9 @@ class FirebaseController extends Controller
 
 	/**
 	 * @param FirebaseDatabase $firebaseDatabase
-	 */
-	private function setDatabase(FirebaseDatabase $firebaseDatabase)
+     * @param FirebaseStorage|null $firebaseStorage
+     */
+    private function setDatabase(FirebaseDatabase $firebaseDatabase, FirebaseStorage $firebaseStorage = null)
 	{
 		$this->database = $firebaseDatabase;
 		$this->response = [];
@@ -351,4 +447,36 @@ class FirebaseController extends Controller
 
 		return false;
 	}
+
+    /**
+     * @param string $url
+     * @param $rowData
+     * @return PromiseInterface<StreamInterface>|null
+     */
+    private function parseNodeData(string $url, &$rowData): ?PromiseInterface
+    {
+        $defaultBucket = $this->storage->getBucket();
+        $reference = urldecode(current(explode('?', substr(strrchr($url, "/"), 1))));
+        $object = $defaultBucket->object($reference);
+
+        if($object->exists())
+        {
+            return $object->downloadAsStreamAsync()
+                ->then(function (StreamInterface $data) use (&$rowData) {
+                    // Remove unnecessary items
+                    $contents = json_decode($data->getContents());
+                    if (isset($contents->nodes)) {
+                        foreach ($contents->nodes as $nodeId => $node) {
+                            unset($node->position);
+                        }
+                    }
+
+                    //
+                    $rowData["data"] = $contents;
+                }
+                );
+        }
+
+        return null;
+    }
 }
