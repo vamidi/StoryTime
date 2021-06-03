@@ -31,15 +31,36 @@ MonoBehaviour:
     - Locale
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 2a6f987c543687748aeca5727019039a
+  - m_GUID: d5b8099a41fe5e04883d0edb642e80a0
+    m_Address: English (en)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 511c9dfc21eadb242bf56a484d4180d8
+    m_Address: French (fr)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 896a1104cbfba7b48bbd1cc26ae57c81
+    m_Address: German (de)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 9affc082c80589f43a08a77d638cbcdc
     m_Address: Spanish (es)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: 5734df3d3c5686d40b468337df10dfc1
-    m_Address: German (de)
+  - m_GUID: cc2fc4549a22a2b489e1ee4b5f9a841a
+    m_Address: English (en)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
@@ -52,8 +73,15 @@ MonoBehaviour:
     - Locale
     m_MainAsset: {fileID: 0}
     m_TargetAsset: {fileID: 0}
-  - m_GUID: cc2fc4549a22a2b489e1ee4b5f9a841a
-    m_Address: English (en)
+  - m_GUID: 2a6f987c543687748aeca5727019039a
+    m_Address: Spanish (es)
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 5734df3d3c5686d40b468337df10dfc1
+    m_Address: German (de)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale

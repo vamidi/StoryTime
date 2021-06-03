@@ -138,7 +138,7 @@ export class FirebaseRelationService
 		]);
 
 		const taskQuestTaskCompletionTypeTasks: RelationPair = new Map([
-			Pair('parentId', new StringPair('quests', 'title', true)),
+			Pair('parentId', new StringPair('stories', 'title', true)),
 			Pair('typeId', new StringPair('taskCompletionTypes', 'name', true)),
 			Pair('nextId', new StringPair('tasks', 'description', true)),
 			Pair('npc', new StringPair('nonPlayableCharacters', 'name', true)),
