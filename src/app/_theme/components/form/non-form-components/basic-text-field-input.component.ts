@@ -56,21 +56,21 @@ import { TextboxQuestion } from '@app-core/data/forms/form-types';
 	],
 	// changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BasicTextFieldInputComponent implements IFormInputField<string | number>
+export class BasicTextFieldInputComponent<T = string | number> implements IFormInputField<T>
 {
 	@Output()
-	public onKeyUpFunc: EventEmitter<KeyboardEvent>;
+	public onKeyUpFunc: EventEmitter<KeyboardEvent> = new EventEmitter<KeyboardEvent>();
 
 	public set hidden(b: boolean) { this.question.hidden = this.isHidden = b }
 	public get hidden() { return this.isHidden; }
 
 	public index: number = 0;
-	public question: TextboxQuestion = new TextboxQuestion({ type: 'text' });
+	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text' });
 
 	public showLabels = false;
 
 	protected isHidden: boolean = false;
-	protected value: string | number = null;
+	protected value: T = null;
 
 	public trySetTouched(event: any)
 	{
@@ -80,16 +80,9 @@ export class BasicTextFieldInputComponent implements IFormInputField<string | nu
 		}
 	}
 
-	public writeValue(value: string | number): void
+	public writeValue(value: T): void
 	{
-		if(this.question.controlType  === 'number')
-		{
-			this.question.value = this.value = String(value) !== '' ? Number(value) : '';
-		}
-		else
-		{
-			this.question.value = this.value = String(value) ?? '';
-		}
+		this.question.value = this.value = value;
 	}
 
 	public onKeyUp(event: any)

@@ -27,6 +27,9 @@ export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload>
 	@Input()
 	public childPath: string = 'stories';
 
+	@Input()
+	public project: Project = null;
+
 	public fileUploads: T[] = [];
 
 	public onFileClicked(event, idx: number, file: any)
@@ -46,8 +49,6 @@ export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload>
 		return '';
 	}
 
-	private project: Project = null;
-
 	constructor(
 		protected ref: NbDialogRef<LoadStoryComponent<T>>,
 		protected storageService: FirebaseStorageService,
@@ -55,7 +56,7 @@ export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload>
 
 	public ngOnInit()
 	{
-		this.storageService.getFiles<T>(`${this.childPath}`, 6).snapshotChanges().pipe(
+		this.storageService.getFiles<T>(`${this.childPath}`, (ref) => this.searchFn(ref)).snapshotChanges().pipe(
 			map(changes => {
 				// store the key
 				return changes.map(c => {
@@ -84,10 +85,16 @@ export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload>
 			result.text().then((text) =>
 			{
 				const d: T = this.fileUploads[idx];
-				console.log(d, d instanceof FileUpload);
 				d.data = text;
 				this.ref.close(d);
 			});
 		}, e => UtilsService.onError(e));
+	}
+
+	protected searchFn(ref)
+	{
+		return ref.orderByChild('metadata/projectID')
+			.equalTo(this.project.id)
+			.limitToLast(6);
 	}
 }

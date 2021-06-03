@@ -1,0 +1,36 @@
+<div class="form-group {{ eventNameQuestion.groupCss }}">
+	<label *ngIf="eventNameQuestion && !EditMode" class="formHeading w-100 d-flex" for="{{ eventNameQuestion.key }}--textbox">
+		<span class="flex-grow-1">{{ eventNameQuestion.text }}</span>
+		<nb-icon icon="edit-outline" class="click"  (click)="EditMode = 2"></nb-icon>
+		<nb-icon icon="plus-outline" class="click" (click)="EditMode = 1"></nb-icon>
+	</label>
+	<nb-select id="{{ eventListQuestion.key}}--dropdown" #eventSelectComponent
+			   class="mb-2"
+			   [hidden]="EditMode !== 0"
+			   [selected]="eventListQuestion.value"
+			   [disabled]="eventListQuestion.disabled"
+			   (selectedChange)="pickEvent($event)"
+			   fullWidth>
+		<nb-option [value]="defaultOption">[+] None</nb-option>
+		<nb-option *ngFor="let o of eventListQuestion.options$ | async" [value]="o.value">{{ o.key }}</nb-option>
+	</nb-select>
+
+	<input *ngIf="EditMode !== 0" id="{{ eventNameQuestion.key }}--textbox"
+		   class="mb-2"
+		   [type]="eventNameQuestion.hidden ? 'hidden' : eventNameQuestion.controlType"
+		   [value]="eventNameQuestion.value"
+		   [placeholder]="eventNameQuestion.text"
+		   [name]="eventNameQuestion.name"
+		   [readOnly]="eventNameQuestion.readOnly"
+		   [attr.disabled]="eventNameQuestion.disabled ? '' : null"
+		   (change)="setEventName = $event"
+		   nbInput
+		   fullWidth
+	/>
+
+	<ng-container #inputViewContainer class="form-group"></ng-container>
+
+	<button *ngIf="EditMode === 0" nbButton status="primary" class="mt-2" (click)="addInput()">Add Input</button>
+	<button *ngIf="EditMode !== 0" nbButton status="danger" class="mt-2" (click)="cancelEvent()">Cancel</button>
+	<button nbButton status="success" class="mt-2 ml-2" (click)="editEvent()">Save</button>
+</div>

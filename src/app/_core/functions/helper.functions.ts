@@ -1,7 +1,17 @@
-import { ICharacter, ICraftable, IDialogue, IDialogueOption, IItem, IStory } from '@app-core/data/standard-tables';
+import {
+	ICharacter,
+	ICraftable,
+	IDialogue,
+	IDialogueOption,
+	IEvent,
+	IItem,
+	IStory,
+} from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
 
 export function Pair<K, V>(k: K, v: V): readonly [K, V] { return [k, v] }
+
+// TODO make a function that checks for new keys that are created by others.
 
 export function createStory(): IStory
 {
@@ -95,6 +105,20 @@ export function createCraftable(): ICraftable
 		parentId: 0,
 		shopRevisionId: 0,
 		value: 0,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+	}
+}
+
+export function createEvent(): IEvent
+{
+	return {
+		name: '', // name of the event
+		owner: '', // creator of the event
+
+		inputs: [],
+
+		deleted: false,
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,
 	}

@@ -1,6 +1,6 @@
-import { Node, Output } from 'visualne';
+import { Input, Node, Output } from 'visualne';
 import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data';
-import { dialogueSocket } from '@app-core/components/visualne/sockets';
+import { dialogueSocket, execInSocket, execOutSocket } from '@app-core/components/visualne/sockets';
 import { MyNodeComponent } from '@app-theme/components/visualne/node.component';
 import { BaseDialogueNodeComponent } from './base-dialogue-node-component';
 import { DialogueControl } from '../../controls';
@@ -16,7 +16,8 @@ export class StartNodeComponent extends BaseDialogueNodeComponent
 	{
 		await super.builder(node);
 
-		node.addOutput(new Output('dialogueOut', `First Dialogue [${ Number.MAX_SAFE_INTEGER }]`, dialogueSocket));
+		node.addOutput(new Output('ExecOut', '', execOutSocket))
+			.addOutput(new Output('dialogueOut', `First Dialogue [${ Number.MAX_SAFE_INTEGER }]`, dialogueSocket));
 	}
 
 	public worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)

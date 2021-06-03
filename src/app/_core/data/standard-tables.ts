@@ -5,6 +5,7 @@ import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import { Data as VisualNEData } from 'visualne/types/core/data';
 import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
+import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
 
 export interface IDialogue extends ProxyObject
 {
@@ -59,6 +60,21 @@ export interface ICraftable extends ProxyObject
 	parentId: number,
 	shopRevisionId: number,
 	value: number,
+}
+
+export interface IEventInput
+{
+	paramName: string,
+	defaultValue: any;
+	value: any;
+}
+
+export interface IEvent extends ProxyObject
+{
+	name: string, // name of the event
+	owner: string, // creator of the event
+
+	inputs: IEventInput[];
 }
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([]);
@@ -333,6 +349,19 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		0: {
 			deleted: false,
 			name: '',
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: IEvent }>('events', {
+		0: {
+			name: '', // name of the event
+			owner: '', // creator of the event
+
+			inputs: [],
+
+			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},

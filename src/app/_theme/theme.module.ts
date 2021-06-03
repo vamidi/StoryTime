@@ -71,6 +71,7 @@ import {
 	DynamicFormComponent,
 
 	BasicTextFieldInputComponent,
+	BasicDropdownFieldInputComponent,
 
 	NgxMenuComponent,
 	BooleanColumnRenderComponent,
@@ -231,6 +232,7 @@ const CUSTOM_FORM_COMPONENTS = [
 	SelectFieldWithBtnComponent,
 
 	BasicTextFieldInputComponent,
+	BasicDropdownFieldInputComponent,
 ];
 
 const CUSTOM_RENDER_COMPONENTS = [
@@ -290,6 +292,7 @@ const CUSTOM_ENTRY_COMPONENT = [
 	SelectFieldWithBtnComponent,
 
 	BasicTextFieldInputComponent,
+	BasicDropdownFieldInputComponent,
 ]
 
 const PIPES = [

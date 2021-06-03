@@ -88,6 +88,22 @@
 		background: transparent;
 		position: relative;
 
+		&.Exec {
+			border: 3px solid rgb(255, 255, 255);
+			&::before {
+				content: '';
+				position: absolute;
+				width: 0;
+				height: 0;
+				top: 6px;
+				left: 24px;
+				display: inline-block;
+				border-style: solid;
+				border-width: 6px 0 6px 4px;
+				border-color: transparent transparent transparent white;
+			}
+		}
+
 /*
 		&::after {
 			content: '';

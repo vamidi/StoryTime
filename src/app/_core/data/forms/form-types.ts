@@ -125,7 +125,7 @@ export class Option<T>
 	}
 }
 
-export class DropDownQuestion extends FormQuestionBase<string | number | boolean>
+export class DropDownQuestion<T = string | number | boolean> extends FormQuestionBase<T>
 {
 	constructor(data: any)
 	{

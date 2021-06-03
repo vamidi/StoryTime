@@ -17,11 +17,11 @@ import { Option } from '@app-core/data/forms/form-types';
 import { TablesService } from '@app-core/data/state/tables';
 import { Table } from '@app-core/data/state/tables';
 import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { BasicTextFieldInputComponent } from '@app-theme/components';
-import { ICharacter, IDialogue, IDialogueOption, IStory } from '@app-core/data/standard-tables';
+import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/standard-tables';
 import { EventsTypes } from 'visualne/types/events';
 import { ProxyObject } from '@app-core/data/base';
 import { switchMap } from 'rxjs/operators';
@@ -33,10 +33,10 @@ import {
 } from '@app-core/components/visualne';
 import { NodeEditorService } from '@app-core/data/state/node-editor/node-editor.service';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
-import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
 @Component({
 	template: '',
@@ -63,6 +63,11 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		return this.currentNode;
 	}
 
+	public get Project(): Project
+	{
+		return this.project;
+	}
+
 	public get languages() { return this.languageService.ProjectLanguages; }
 
 	public nonStartNode: boolean = true;
@@ -87,6 +92,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 	protected tblDialogueOptions: Table<IDialogueOption> = null;
 	protected stories: Table<IStory> = null;
 	protected characters: Table<ICharacter> = null;
+	public tblEvents: Table<IEvent> = null;
 
 	protected readonly includedTables: string[] = [
 		'dialogues',
@@ -253,6 +259,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 
 		this.nodeEditorService.Editor.bind('saveDialogue');
 		this.nodeEditorService.Editor.bind('saveOption');
+		this.nodeEditorService.Editor.bind('saveEvent');
 
 		this.nodeEditorService.listen(['nodetranslate', 'nodedeselected'], () =>
 		{
@@ -375,6 +382,42 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 
 				if(isEqual(event.data, event.newData))
 					return;
+
+				this.updateFirebaseData(event);
+				this.nodeEditorService.saveSnippet();
+			}
+		});
+
+		ctx.on('saveEvent', ({ fEvent }) =>
+		{
+			console.trace('saving event', fEvent);
+			// change the default tblName
+			// Get the stories table
+			this.tableName = `tables/${this.tblEvents.id}`;
+			// Let firebase search with current table name
+			this.firebaseService.setTblName(this.tableName);
+
+			const customEvent: IEvent = typeof fEvent === 'number'
+				? this.tblEvents.find(fEvent) as IEvent
+				: fEvent !== null ? this.tblEvents.find(fEvent.id) : null;
+
+			if(customEvent)
+			{
+				const event: { data: IEvent, newData: IEvent, confirm?: any } = {
+					data: customEvent,
+					newData: {
+						...customEvent,
+					},
+				};
+
+				// override with the incoming custom event
+				if(typeof fEvent !== 'number') event.newData = { ...event.newData, ...fEvent };
+
+				console.log(isEqual(event.data, event.newData));
+				if(isEqual(event.data, event.newData))
+					return;
+
+				console.log(event, event.newData.name);
 
 				this.updateFirebaseData(event);
 				this.nodeEditorService.saveSnippet();

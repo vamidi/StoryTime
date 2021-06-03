@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
 
-export interface OptionMap {
-	[key: string]: KeyValue<number, number>;
+export interface InputOutputMap<K = number, V = number> {
+	[key: string]: KeyValue<K, V>;
 }

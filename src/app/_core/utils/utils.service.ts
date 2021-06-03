@@ -15,6 +15,8 @@ import 'firebase/database';
 import { Observable } from 'rxjs/Observable';
 import { NbAuthResult } from '@nebular/auth';
 
+import cloneDeep from 'lodash.clonedeep';
+
 export interface ObjectKeyValue<T>
 {
 	[key: string]: T;
@@ -150,6 +152,11 @@ export class UtilsService
 		}
 	}
 
+	static onWarn(msg: any, ...optionalParams: any[])
+	{
+		this.onDebug(msg, DebugType.WARN, optionalParams);
+	}
+
 	static onError(msg: any, ...optionalParams: any[])
 	{
 		this.onDebug(msg, DebugType.ERROR, optionalParams);
@@ -220,15 +227,15 @@ export class UtilsService
 	 */
 	static copyObj<T extends any>(other: T): T
 	{
-		const copy = Object.create(Object.getPrototypeOf(other));
-		const propNames = Object.getOwnPropertyNames(other);
+		// const copy = Object.create(Object.getPrototypeOf(other));
+		// const propNames = Object.getOwnPropertyNames(other);
+		//
+		// propNames.forEach(function(name) {
+		// 	const desc = Object.getOwnPropertyDescriptor(other, name);
+		// 	Object.defineProperty(copy, name, desc);
+		// });
 
-		propNames.forEach(function(name) {
-			const desc = Object.getOwnPropertyDescriptor(other, name);
-			Object.defineProperty(copy, name, desc);
-		});
-
-		return copy;
+		return cloneDeep(other) as T;
 	}
 
 	/**

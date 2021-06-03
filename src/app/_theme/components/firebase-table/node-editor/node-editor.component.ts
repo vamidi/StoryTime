@@ -8,9 +8,9 @@ import { CommentPlugin } from 'visualne-comment-plugin';
 import MinimapPlugin from 'rete-minimap-plugin';
 import HistoryPlugin from 'rete-history-plugin';
 
-import { StartNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/start-node-component';
-import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-node-component';
-import { DialogueOptionNodeComponent } from '@app-core/components/visualne/nodes/quest-editor/dialogue-option-node-component';
+import { StartNodeComponent } from '@app-core/components/visualne/nodes/story-editor/start-node-component';
+import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/story-editor/dialogue-node-component';
+import { DialogueOptionNodeComponent } from '@app-core/components/visualne/nodes/story-editor/dialogue-option-node-component';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';

@@ -439,6 +439,9 @@ export class FirebaseService implements OnDestroy
 	 */
 	public update(tableName: string, data: Object, update: boolean = true): Promise<void>
 	{
+		if(!this.userService.canEdit)
+			throw new Error('You don\'t have the permission!');
+
 		let tbl = this.tblName;
 
 		// if we override the tblName

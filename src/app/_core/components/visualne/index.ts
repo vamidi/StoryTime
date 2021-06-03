@@ -1,6 +1,6 @@
 import { EventsTypes } from 'visualne/types/events';
 // import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
-import { IDialogue, IDialogueOption } from '@app-core/data/standard-tables';
+import { IDialogue, IDialogueOption, IEvent } from '@app-core/data/standard-tables';
 
 export interface AdditionalEvents extends EventsTypes
 {
@@ -13,13 +13,16 @@ export interface AdditionalEvents extends EventsTypes
 		fOption: number | IDialogueOption, // the option in the current dialogue
 		fNextId: number, // the dialogue that is the nextId of the option
 	}
+	saveEvent: {
+		fEvent: number | IEvent,	// The current event
+	},
 }
 
 export * from './controls';
 export * from './nodes/number-component';
-export * from './nodes/quest-editor/dialogue-node-component';
-export * from './nodes/quest-editor/dialogue-option-node-component';
-export * from './nodes/quest-editor/start-node-component';
+export * from './nodes/story-editor/dialogue-node-component';
+export * from './nodes/story-editor/dialogue-option-node-component';
+export * from './nodes/story-editor/start-node-component';
 
 export * from './nodes/item-editor/item-master-node.component';
 export * from './nodes/item-editor/item-node.component';

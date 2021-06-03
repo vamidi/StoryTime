@@ -6,7 +6,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 
 import { Component as VisualNEComponent, Engine, NodeEditor, Plugin } from 'visualne';
-import { Data } from 'visualne/types/core/data';
+import { Data, NodeData, NodesData } from 'visualne/types/core/data';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
 import { SelectionPlugin, SelectionParams } from 'visualne-selection-plugin';
@@ -34,6 +34,9 @@ import firebase from 'firebase/app';
 import debounce from 'lodash.debounce';
 import { IFileMetaData } from '@app-core/data/file-upload.model';
 
+// TODO combine all node editor stuff inside a class because then it reflects
+// back to firebase.
+
 @Injectable()
 export class NodeEditorService
 {
@@ -59,25 +62,22 @@ export class NodeEditorService
 
 	public set Data({ key, value }: { key: string, value: Table })
 	{
-		if(this.data.hasOwnProperty(key))
+		this.data[key] = value;
+		if(this.insertStoryRef)
 		{
-			this.data[key] = value;
-			if(this.insertStoryRef)
+			switch(key)
 			{
-				switch(key)
-				{
-					case 'characters':
-						this.insertStoryRef.componentRef.instance.Characters = this.data[key];
-						break;
-					case 'dialogues':
-						if(this.insertStoryRef.componentRef.instance instanceof InsertStoryComponent)
-							this.insertStoryRef.componentRef.instance.Dialogues = this.data[key];
-						break;
-					case 'craftables':
-						if(this.insertStoryRef.componentRef.instance instanceof InsertCraftableComponent)
-							this.insertStoryRef.componentRef.instance.Craftables = this.data[key];
-						break;
-				}
+				case 'characters':
+					this.insertStoryRef.componentRef.instance.Characters = this.data[key];
+					break;
+				case 'dialogues':
+					if(this.insertStoryRef.componentRef.instance instanceof InsertStoryComponent)
+						this.insertStoryRef.componentRef.instance.Dialogues = this.data[key];
+					break;
+				case 'craftables':
+					if(this.insertStoryRef.componentRef.instance instanceof InsertCraftableComponent)
+						this.insertStoryRef.componentRef.instance.Craftables = this.data[key] as Table<ICraftable>;
+					break;
 			}
 		}
 	}
@@ -115,8 +115,7 @@ export class NodeEditorService
 
 	private data: {
 		characters: Table<ICharacter>, stories: Table<IStory>, dialogues: Table<IDialogue>,
-		items?: Table<IItem>,
-		craftables?: Table<ICraftable>,
+		[key: string]: Table,
 	} = {
 		characters: null,
 		stories: null,
@@ -290,6 +289,7 @@ export class NodeEditorService
 			closeOnEsc: false,
 			context: {
 				childPath: path,
+				project: this.project,
 			},
 		});
 
@@ -300,6 +300,7 @@ export class NodeEditorService
 			if(res !== undefined)
 			{
 				this.currentFileUpload = res;
+				console.log(res);
 				const isStory = this.currentFileUpload instanceof StoryFileUpload;
 				let selectedItem = null;
 				if(this.currentFileUpload instanceof StoryFileUpload)
@@ -318,7 +319,7 @@ export class NodeEditorService
 				}
 				else if(this.currentFileUpload instanceof CraftableFileUpload)
 				{
-					this.selectedCraftItem = this.data.craftables.find(+this.currentFileUpload.itemId);
+					this.selectedCraftItem = this.data.craftables.find(+this.currentFileUpload.itemId) as ICraftable;
 
 					if(this.selectedCraftItem)
 					{
@@ -456,7 +457,7 @@ export class NodeEditorService
 				if(content === InsertCraftableComponent)
 				{
 					// if we are dealing with a craftable item.
-					this.selectedCraftItem = this.data.craftables.find(res.id);
+					this.selectedCraftItem = this.data.craftables.find(res.id) as ICraftable;
 					if(this.selectedCraftItem)
 					{
 						this.nodeEditor.clear();
@@ -584,7 +585,7 @@ export class NodeEditorService
 				},
 			};
 
-			if(!this.currentFileUpload)
+			if(this.currentFileUpload === null)
 			{
 				if(this.selectedStory !== null)
 				{
@@ -595,10 +596,14 @@ export class NodeEditorService
 				{
 					this.currentFileUpload = new CraftableFileUpload(file);
 				}
-
-				console.log(this.currentFileUpload);
 			}
 
+			if(this.currentFileUpload.hasOwnProperty('data'))
+			{
+				delete this.currentFileUpload.data;
+			}
+
+			this.currentFileUpload.file = file;
 			this.currentFileUpload.metadata = metadata.customMetadata;
 
 			if(this.currentFileUpload instanceof StoryFileUpload)

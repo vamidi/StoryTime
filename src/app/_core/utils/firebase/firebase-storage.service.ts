@@ -6,7 +6,7 @@ import { Project, StoryFileUpload } from '@app-core/data/state/projects';
 import { CraftableFileUpload } from '@app-core/data/state/tables';
 import { UtilsService } from '@app-core/utils';
 import { FileUpload } from '@app-core/data/file-upload.model';
-import { AngularFireList } from '@angular/fire/database/interfaces';
+import { AngularFireList, QueryFn } from '@angular/fire/database/interfaces';
 
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -18,6 +18,8 @@ import 'firebase/storage';
 
 export declare type NbLocationFileType = 'Default' | 'Story' | 'Craftable'
 declare type NbFileType = FileUpload | StoryFileUpload | CraftableFileUpload;
+
+const NUMBER_OF_ITEMS = 6
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseStorageService
@@ -78,9 +80,9 @@ export class FirebaseStorageService
 					fileUpload.url = downloadURL;
 					fileUpload.name = fileUpload.file.name;
 					if(fileUpload.hasOwnProperty('id'))
-						this.saveFileData(location, fileUpload).then((ref) => fileUpload.id = ref.key);
-					else
 						this.updateFileData(location, fileUpload).then();
+					else
+						this.saveFileData(location, fileUpload).then((ref) => fileUpload.id = ref.key);
 				});
 			}),
 		);
@@ -109,10 +111,11 @@ export class FirebaseStorageService
 		return ref.listAll().toPromise();
 	}
 
-	public getFiles<T extends FileUpload | StoryFileUpload | CraftableFileUpload>(path: string, numberItems: number)
-		: AngularFireList<T>
+	public getFiles<T extends FileUpload | StoryFileUpload | CraftableFileUpload>(
+		path: string, queryFn: QueryFn = ref => ref.limitToLast(NUMBER_OF_ITEMS),
+	): AngularFireList<T>
 	{
-		return this.firebaseService.getList<T>(path, ref => ref.limitToLast(numberItems));
+		return this.firebaseService.getList<T>(path, queryFn);
 	}
 
 	/**
@@ -157,16 +160,17 @@ export class FirebaseStorageService
 	 * @param fileUpload
 	 * @private
 	 */
-	private updateFileData(location: NbLocationFileType, fileUpload: NbFileType): Promise<void>
+	private updateFileData(location: NbLocationFileType, fileUpload: NbFileType): Promise<void|string>
 	{
+		console.log(location);
 		switch(location)
 		{
 			case 'Default':
 				return this.firebaseService.update(this.Base, fileUpload);
 			case 'Story':
-				return this.firebaseService.update('stories', fileUpload);
+				return this.firebaseService.updateItem(fileUpload.id, fileUpload, true, 'stories');
 			case 'Craftable':
-				return this.firebaseService.update('craftables', fileUpload);
+				return this.firebaseService.updateItem(fileUpload.id, fileUpload, true, 'craftables');
 		}
 	}
 

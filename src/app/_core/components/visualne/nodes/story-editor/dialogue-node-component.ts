@@ -2,9 +2,14 @@ import { KeyValue } from '@angular/common';
 import { Context, Input, Node, OnCreated, OnDestroyed, Output } from 'visualne';
 import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data';
 import { EventsTypes } from 'visualne/types/events';
-import { dialogueOptionSocket, dialogueSocket } from '@app-core/components/visualne/sockets';
+import {
+	dialogueOptionSocket,
+	dialogueSocket,
+	execInSocket,
+	execOutSocket,
+} from '@app-core/components/visualne/sockets';
 import { MyNodeComponent } from '@app-theme/components/visualne/node.component';
-import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
+import { InputOutputMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { BaseDialogueNodeComponent } from './base-dialogue-node-component';
 import { AdditionalEvents } from '@app-core/components/visualne';
 
@@ -20,14 +25,15 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 		await super.builder(node);
 
 		if(!node.data.hasOwnProperty('options'))
-			node.data.options = <OptionMap>{};
+			node.data.options = <InputOutputMap>{};
 
-		node
+		node/*.addInput(new Input('execIn', '', execInSocket)) */
 			.addInput(new Input('dialogueIn', 'In ID [NULL]', dialogueSocket, true))
+			.addOutput(new Output('ExecOut', '', execOutSocket))
 			.addOutput(new Output('dialogueOut', 'Out ID [NULL]' , dialogueSocket, false),
 		);
 
-		const options = Object.keys(node.data.options as OptionMap);
+		const options = Object.keys(node.data.options as InputOutputMap);
 
 		options.forEach((key) =>
 		{
@@ -63,7 +69,7 @@ export class DialogueNodeComponent extends BaseDialogueNodeComponent implements 
 			currentNode.inputs.get('dialogueIn').name = 'In ID [' + ID + ']';
 
 			// get all the out options and set it in the output
-			const optionMap = node.data.options as OptionMap;
+			const optionMap = node.data.options as InputOutputMap;
 			const options = Object.keys(optionMap);
 			if(options.length)
 			{

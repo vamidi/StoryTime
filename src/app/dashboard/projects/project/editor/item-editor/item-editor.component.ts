@@ -212,7 +212,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 
 		}
 
-		if(event === Number.MAX_SAFE_INTEGER)
+		if(event !== Number.MAX_SAFE_INTEGER)
 		{
 			const item = this.items.find(event);
 			this.itemFormComponent.questions.forEach((q, idx, arr) => {
@@ -328,8 +328,10 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 	{
 		this.nodeEditorService.listen('nodecreate', (node: Node) =>
 		{
-			if(this.nodeEditorService.SelectedCraftItem === null)
-				UtilsService.onError('Crafted item is not loaded.');
+			if(this.nodeEditorService.SelectedCraftItem === null) {
+				UtilsService.onWarn('Crafted item is not loaded.');
+				return false;
+			}
 
 			if(node.name === ITEM_NODE_NAME && !node.data.hasOwnProperty('itemId'))
 			{
@@ -363,6 +365,8 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 					);
 				}
 			}
+
+			return true;
 		});
 	}
 

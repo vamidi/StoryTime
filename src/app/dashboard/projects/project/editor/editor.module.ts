@@ -22,6 +22,7 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { EditorComponent } from '@app-dashboard/projects/project/editor/editor.component';
 import { StoryEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/story-editor.component';
 import { ItemEditorComponent } from '@app-dashboard/projects/project/editor/item-editor/item-editor.component';
+import { EventEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/event-editor.component';
 
 /**
  * @brief Modules from libraries
@@ -56,6 +57,7 @@ const LIB_MODULES = [
 		EditorComponent,
 		StoryEditorComponent,
 		ItemEditorComponent,
+		EventEditorComponent,
 	],
 	providers: [
 		DynamicComponentService,
