@@ -29,7 +29,7 @@ namespace Gamekit3D
         public UnityEvent OnDeath, OnReceiveDamage, OnHitWhileInvulnerable, OnBecomeVulnerable, OnResetDamage;
 
         [Tooltip("When this gameObject is damaged, these other gameObjects are notified.")]
-        [EnforceType(typeof(Message.IMessageReceiver))]
+        [DatabaseSync.Attributes.EnforceType(typeof(Message.IMessageReceiver))]
         public List<MonoBehaviour> onDamageMessageReceivers;
 
         protected float m_timeSinceLastHit = 0.0f;
