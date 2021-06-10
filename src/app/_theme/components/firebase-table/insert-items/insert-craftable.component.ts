@@ -114,7 +114,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		protected cd: ChangeDetectorRef)
 	{
 		super(
-			firebaseService, firebaseRelationService, projectService, tableService,
+			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
 			userService, userPreferencesService, languageService,
 		);
 	}
@@ -169,7 +169,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 	{
 		if (this.craftFormComponent.formContainer.isValid())
 		{
-			const formValue = this.craftFormComponent.Form.value;
+			const formValue = this.craftFormComponent.Form.getRawValue();
 			const keys = Object.keys(this.craftSettings.columns);
 			keys.forEach((key) => {
 				this.craftable[key] = formValue[key];
@@ -230,8 +230,9 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 				UtilsService.showToast(
 					this.toastrService,
 					'Warning!',
-					'Something went wrong (check console)',
+					'Something went wrong',
 					'warning',
+					5000,
 				);
 				return;
 			}
@@ -242,7 +243,6 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			UtilsService.deleteProperty(obj, 'id');
 
 			this.tableName = `tables/${this.items.id}`;
-			console.log(obj);
 			// TODO resolve if data is wrong or if we also need to do something with the lastID
 			this.firebaseService.insertData(`${this.tableName}/data`, obj, this.tableName)
 				.then(() => {

@@ -36,6 +36,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { InsertStoryComponent } from '@app-theme/components/firebase-table';
 import { EventNodeComponent } from '@app-core/components/visualne/nodes/events/event-node.component';
 import { DebugType } from '@app-core/utils/utils.service';
+import { EventEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/event-editor.component';
 
 const DIALOGUE_NODE_NAME: string = 'Dialogue';
 const DIALOGUE_OPTION_NODE_NAME: string = 'Dialogue Option';
@@ -71,6 +72,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 
 	@ViewChild('sidePanel', {static: true})
 	public sidePanel: ElementRef<HTMLDivElement>;
+
+	@ViewChild('eventEditorComponent', {static: true})
+	public eventEditorComponent: EventEditorComponent;
 
 	public set setDialogue(event: any) {
 		this.textAreaQuestion.value = event.target.value as string;
@@ -440,6 +444,11 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		}
 	}
 
+	public clearViewContainer() {
+		super.clearViewContainer();
+		if(this.eventEditorComponent) this.eventEditorComponent.clearViewContainer();
+	}
+
 	protected async initializeListeners() {
 		this.nodeEditorService.listen('nodecreate', (node: Node) =>
 		{
@@ -481,8 +490,8 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			return true;
 		});
 
-		this.nodeEditorService.listen('connectioncreated', (connection: Connection) => {
-
+		this.nodeEditorService.listen('connectioncreated', (connection: Connection) =>
+		{
 			const outputNode: Output = connection.output;
 
 			let option: Option<number> | string;

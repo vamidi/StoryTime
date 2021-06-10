@@ -21,7 +21,7 @@ import {
 } from '@app-theme/components/firebase-table';
 
 import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';

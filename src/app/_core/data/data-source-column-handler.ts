@@ -137,7 +137,7 @@ export class DataSourceColumnHandler
 
 	public configureField<T extends string | number | boolean>(
 		key: string, column: Column, type: NbControlTypes, defaultValue: T,
-	index: number = -1): FormField<T>
+	index: number): FormField<T>
 	{
 		let value: T = null;
 		if (column.hasOwnProperty('defaultValue'))
@@ -157,6 +157,7 @@ export class DataSourceColumnHandler
 			}
 		}
 
+		const editable = column.editable ?? true;
 		return {
 			index,
 			value: value ?? defaultValue,
@@ -164,6 +165,7 @@ export class DataSourceColumnHandler
 			controlType: type,
 			readOnly: !!column.defaultValue,
 			hidden: column.hidden,
+			disabled: !editable,
 			text: column.title,
 			placeholder: column.title,
 			required: true,

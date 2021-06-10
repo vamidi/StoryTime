@@ -1,6 +1,6 @@
 import {
 	ICharacter,
-	ICraftable,
+	ICraftable, ICraftCondition,
 	IDialogue,
 	IDialogueOption,
 	IEvent,
@@ -107,6 +107,19 @@ export function createCraftable(): ICraftable
 		value: 0,
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,
+	}
+}
+
+export function createCraftCondition(): ICraftCondition
+{
+	return {
+		deleted: false,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+
+		amount: 0,
+		childId: Number.MAX_SAFE_INTEGER,
+		parentId: Number.MAX_SAFE_INTEGER,
 	}
 }
 

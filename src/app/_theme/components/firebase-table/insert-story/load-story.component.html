@@ -2,7 +2,7 @@
 	<nb-card-header>
 		Load story
 	</nb-card-header>
-	<nb-card-body class="d-flex flex-row">
+	<nb-card-body class="d-flex flex-row flex-wrap">
 		<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let file of fileUploads; let i = index"> <!-- | timeSlice:7" -->
 			<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5); max-height: 80%" (click)="onFileClicked($event, i, file);">
 				<nb-card-body class="d-flex flex-column">

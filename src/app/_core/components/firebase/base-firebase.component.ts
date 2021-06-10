@@ -32,6 +32,11 @@ import firebase from 'firebase/app';
 })
 export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 {
+	public get isAdmin()
+	{
+		return this.userService.isAdmin;
+	}
+
 	protected userPreferences: UserPreferences = null;
 
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
@@ -49,6 +54,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	protected constructor(
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected toastrService: NbToastrService,
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected userService: UserService,
@@ -336,8 +342,53 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	/**
 	 * @brief - Insert new row data
 	 * @param event
+	 * @param tblName
 	 */
-	public onCreateConfirm(event: any) { }
+	public onCreateConfirm(event: any, tblName: string = '')
+	{
+		// Check the permissions as well as the data
+		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
+		{
+			// if we override the tblName
+			if(tblName !== '')
+				this.tableName = tblName;
+
+			const obj: any = { ...event.newData };
+
+			if (event.newData.id === '')
+			{
+				UtilsService.showToast(
+					this.toastrService,
+					'Warning!',
+					'Something went wrong',
+					'warning',
+					5000,
+				);
+				return;
+			}
+
+			obj.deleted = !!+event.newData.deleted;
+
+			// delete the id column
+			UtilsService.deleteProperty(obj, 'id');
+
+			// TODO resolve if data is wrong or if we also need to do something with the lastID
+			this.firebaseService.insertData(this.tableName + '/data', obj, this.tableName)
+			.then(() => {
+					UtilsService.showToast(
+						this.toastrService,
+						'Row inserted!',
+						'Data has been successfully added',
+						'success',
+						5000,
+					)
+				},
+			);
+
+			event.confirm.resolve();
+		} else
+			event.confirm.reject();
+	}
 
 
 	/**

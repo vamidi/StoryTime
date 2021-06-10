@@ -62,6 +62,13 @@ export interface ICraftable extends ProxyObject
 	value: number,
 }
 
+export interface ICraftCondition extends ProxyObject
+{
+	amount: number,
+	childId: number,
+	parentId: number,
+}
+
 export interface IEventInput
 {
 	paramName: string,
@@ -228,7 +235,9 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	Pair( 'Tasks', 	{
 		0: {
 			deleted: false,
-			description: '',
+			description: {
+				en: '',
+			},
 			childId: 0,
 			nextId: 0,
 			hidden: false,
@@ -324,7 +333,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Shop craft conditions
-	Pair( 'shopCraftConditions', {
+	Pair<string, { [key:string]: ICraftCondition }>( 'shopCraftConditions', {
 		0: {
 			deleted: false,
 			amount: 0,

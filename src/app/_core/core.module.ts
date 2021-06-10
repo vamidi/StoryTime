@@ -39,6 +39,7 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 // import { AngularPrismaDatabase, PrismaService } from '@app-core/utils/prisma';
 import { DatabaseService } from '@app-core/utils/database.service';
+import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 // import { AngularPrismaAuth } from '@app-core/auth/auth.service';
 import { environment } from '../../environments/environment';
 import { AngularPrismaModule } from '@app-core/utils/firebase/AngularPrismaModule';
@@ -136,6 +137,7 @@ export const CUSTOM_PROVIDERS = [
 	// AuthGuard,
 	// AngularPrismaAuth,
 	DatabaseService,
+	DynamicComponentService,
 ];
 
 @NgModule({

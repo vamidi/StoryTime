@@ -258,11 +258,26 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	}
 
 	/** ITERATIONS **/
-	public find(id: number, columnName: string = 'id'): T | null
+	public find(id: number, columnName: string = 'id', dataSearch: boolean = false): T | null
 	{
 		if(this.empty) return null;
 
-		return this.filteredData.find((r: ProxyObject) => r[columnName] === id);
+		if(!dataSearch)
+			return this.filteredData.find((r: T) => r[columnName] === id);
+
+		return Object.values(this.data).find((r: T) => r[columnName] === id);
+	}
+
+	public search(
+		predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any, dataSearch: boolean = false,
+	): T | null
+	{
+		if(this.empty) return null;
+
+		if(!dataSearch)
+			return this.filteredData.find(predicate, thisArg);
+
+		return Object.values(this.data).find(predicate, thisArg);
 	}
 
 	public some(id: number): boolean

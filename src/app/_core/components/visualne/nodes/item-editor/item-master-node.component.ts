@@ -1,13 +1,18 @@
-import { Node, Input } from 'visualne';
+import { Node, Input, Context } from 'visualne';
 
 import { itemSocket } from '@app-core/components/visualne/sockets';
 import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data';
 
 import { MyNodeComponent } from '@app-theme/components';
 import { BaseNodeComponent } from '@app-core/components/visualne/nodes/base-node-component';
+import { AdditionalEvents } from '@app-core/components/visualne';
+import { EventsTypes } from 'visualne/types/events';
+import { UtilsService } from '@app-core/utils';
 
 export class ItemMasterNodeComponent extends BaseNodeComponent
 {
+	private inputs: number[] = [];
+
 	constructor()
 	{
 		super('ItemMaster', MyNodeComponent);
@@ -27,11 +32,6 @@ export class ItemMasterNodeComponent extends BaseNodeComponent
 	{
 		const currentNode: Node = this.editor.nodes.find(n => n.id === node.id);
 
-		// Update the input
-		inputs['itemIn'] = [
-			...inputs['itemIn'],
-			currentNode.data.itemId ?? Number.MAX_SAFE_INTEGER,
-		];
 		// update the output
 		if(currentNode)
 		{
@@ -40,6 +40,15 @@ export class ItemMasterNodeComponent extends BaseNodeComponent
 			{
 				const itemIdText: string = currentNode.data.itemId as string ?? 'NULL';
 				el.name = `Item ID [${itemIdText}]`;
+			}
+
+			const itemInputs = inputs['itemIn'] as number[];
+			if(itemInputs && !UtilsService.isEqual(this.inputs, itemInputs))
+			{
+				this.inputs = itemInputs;
+
+				const context: Context<AdditionalEvents & EventsTypes> = this.editor;
+				context.trigger('saveCraftableLinks', { fItems: itemInputs as number[] });
 			}
 
 			// update the renderer

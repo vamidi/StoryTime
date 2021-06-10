@@ -46,6 +46,7 @@ import { DebugType } from '@app-core/utils/utils.service';
 	styleUrls: [
 		'form.component.scss',
 	],
+	providers: [DynamicComponentService],
 })
 export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContentInit
 {
@@ -273,7 +274,9 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			el.question.text = field.text;
 			el.question.errorText = field.errorText ?? '';
 			el.question.name = field.name;
-			el.hidden = el.question.hidden = field.hidden;
+			el.question.hidden = field.hidden;
+			// el.question.hidden
+			el.Hidden = field.hidden;
 			el.question.disabled = field.disabled;
 			el.disabled$.next(field.disabled);
 			el.question.readOnly = field.readOnly;

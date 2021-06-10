@@ -37,10 +37,12 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
+import { UtilsService } from '@app-core/utils';
 
-@Component({
-	template: '',
-})
+// @Component({
+// 	template: '',
+// 	providers: [DynamicComponentService],
+// })
 export abstract class NodeEditorComponent extends BaseFirebaseComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	// VisualNE Editor
@@ -90,9 +92,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 	// Tables
 	protected dialogues: Table<IDialogue> = null;
 	protected tblDialogueOptions: Table<IDialogueOption> = null;
+	public tblEvents: Table<IEvent> = null;
 	protected stories: Table<IStory> = null;
 	protected characters: Table<ICharacter> = null;
-	public tblEvents: Table<IEvent> = null;
 
 	protected readonly includedTables: string[] = [
 		'dialogues',
@@ -130,7 +132,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		protected ngZone: NgZone,
 	) {
 		super(
-			firebaseService, firebaseRelationService, projectsService, tableService,
+			firebaseService, firebaseRelationService, toastrService, projectsService, tableService,
 			userService, userPreferencesService, languageService,
 		);
 	}
@@ -390,7 +392,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 
 		ctx.on('saveEvent', ({ fEvent }) =>
 		{
-			console.trace('saving event', fEvent);
 			// change the default tblName
 			// Get the stories table
 			this.tableName = `tables/${this.tblEvents.id}`;
@@ -413,13 +414,16 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 				// override with the incoming custom event
 				if(typeof fEvent !== 'number') event.newData = { ...event.newData, ...fEvent };
 
-				console.log(isEqual(event.data, event.newData));
 				if(isEqual(event.data, event.newData))
 					return;
 
-				console.log(event, event.newData.name);
-
-				this.updateFirebaseData(event);
+				this.updateFirebaseData(event).then(() => {
+					UtilsService.showToast(
+						this.toastrService,
+						'Event updated!',
+						'Event has successfully been updated',
+					);
+				});
 				this.nodeEditorService.saveSnippet();
 			}
 		});

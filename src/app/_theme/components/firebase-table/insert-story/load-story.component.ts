@@ -67,10 +67,7 @@ export class LoadStoryComponent<T extends StoryFileUpload | CraftableFileUpload>
 					return new CraftableFileUpload({ id: c.payload.key, ...payload });
 				});
 			}),
-		).subscribe((fileUploads: T[]) => {
-			console.log(fileUploads);
-			this.fileUploads = fileUploads;
-		});
+		).subscribe((fileUploads: T[]) => this.fileUploads = fileUploads);
 	}
 
 	protected create(Ctor: new (...args: any[]) => T, data: any): T

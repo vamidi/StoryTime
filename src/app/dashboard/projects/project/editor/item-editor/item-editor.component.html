@@ -54,6 +54,9 @@
 					<!-- All fields of the selected item -->
 					<ngx-dynamic-form #craftFormComponent [source]="CraftSource" [showLabels]="true"></ngx-dynamic-form>
 
+					<!-- Craftable condition FORM -->
+					<ngx-dynamic-form #craftConditionFormComponent [source]="CraftConditionSource" [showLabels]="true"></ngx-dynamic-form>
+
 				</nb-card-body>
 				<nb-card-footer>
 					<button nbButton fullWidth status="success" class="ml-2" (click)="updateItem()">Save</button>

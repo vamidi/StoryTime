@@ -32,7 +32,7 @@
 				</nb-card-header>
 				<nb-card-body>
 					<!-------- Events ------------->
-					<ngx-event-editor *ngIf="CurrentNode && CurrentNode.name === 'Event'"
+					<ngx-event-editor #eventEditorComponent *ngIf="CurrentNode && CurrentNode.name === 'Event'"
 									  [project]="Project"
 									  [currentNode]="CurrentNode" [events]="tblEvents"
 								(onEventUpdated)="updateEvent($event)">

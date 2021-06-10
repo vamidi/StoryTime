@@ -36,6 +36,10 @@ export class DynamicComponentService
 		if (destinationIndex >= len) {
 			destinationIndex = len - 1;
 		}
+
+		if(destinationIndex < 0)
+			destinationIndex = 0;
+
 		// console.log(shift, currentIndex, destinationIndex, componentRef.instance);
 		this.rootViewContainer.move(componentRef.hostView, destinationIndex);
 	}

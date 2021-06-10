@@ -91,7 +91,7 @@ export class NodeEditorService
 	}
 
 	public fileName: string = '';
-	public currentFileUpload?: StoryFileUpload | CraftableFileUpload;
+	public currentFileUpload: StoryFileUpload | CraftableFileUpload = null;
 	public container: HTMLDivElement;
 
 	public storyLoaded: BehaviorSubject<IStory> = new BehaviorSubject<IStory>(null);
@@ -296,11 +296,9 @@ export class NodeEditorService
 		// ref closes the subscription for us.
 		ref.onClose.subscribe( (res: T) =>
 		{
-			console.log('closed window');
 			if(res !== undefined)
 			{
 				this.currentFileUpload = res;
-				console.log(res);
 				const isStory = this.currentFileUpload instanceof StoryFileUpload;
 				let selectedItem = null;
 				if(this.currentFileUpload instanceof StoryFileUpload)
@@ -361,6 +359,8 @@ export class NodeEditorService
 							this.toastrService,
 							isStory ? 'Story Loaded' : 'Item loaded',
 							`${ isStory ? this.selectedStory.title[this.selectedLanguage] : selectedItem.name[this.selectedLanguage] } loaded!`,
+							'success',
+							5000,
 						);
 
 						this.nodeEditor.trigger('process');
@@ -379,6 +379,8 @@ export class NodeEditorService
 		if(this.selectedStory === null && this.selectedCraftItem === null)
 			return;
 
+		const isStory = this.currentFileUpload instanceof StoryFileUpload;
+
 		// call the function again. Now with this we make sure it is now saving over and over again.
 		this.saveSnippet();
 		const sub = this.uploadToStorage().subscribe((snapshot) =>
@@ -388,8 +390,10 @@ export class NodeEditorService
 			{
 				UtilsService.showToast(
 					this.toastrService,
-					'Story saved!',
+					isStory ? 'Story saved!' : 'Item saved!',
 					'Node data has been uploaded successfully',
+					'success',
+					5000,
 				);
 			}
 		});

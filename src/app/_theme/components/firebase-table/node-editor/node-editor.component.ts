@@ -387,6 +387,8 @@ export class NodeEditorComponent implements OnInit, AfterViewInit, OnDestroy
 					this.toastrService,
 					'Story saved!',
 					'Data has all been successfully executed',
+					'success',
+					5000,
 				);
 		}
 	}

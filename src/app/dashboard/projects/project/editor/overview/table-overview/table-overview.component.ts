@@ -26,7 +26,7 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 	templateUrl: './firebase-table-overview.component.html',
 	styleUrls: ['../../../../../../_theme/components/base-table-layout/base-table-layout.component.scss'],
 	providers: [
-		{ provide: SmartTableData, useClass: QuestsSmartTableService},
+		{ provide: SmartTableData, useClass: QuestsSmartTableService },
 	],
 })
 export class TableOverviewComponent extends FirebaseTableFunctionalityComponent implements OnInit, AfterViewInit

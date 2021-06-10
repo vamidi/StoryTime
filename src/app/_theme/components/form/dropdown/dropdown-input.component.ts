@@ -23,7 +23,7 @@ import { ControlValueAccessor } from '@angular/forms';
 			<ngx-label-field
 				[myFormGroup]="myFormGroup"
 				[question]="question"
-				[showLabels]="showLabels && !hidden"
+				[showLabels]="showLabels && !Hidden"
 				[enableIcon]="enableIcon" [labelIcon]="labelIcon"
 				(onIconClick)="onIconClick()">
 			</ngx-label-field>
@@ -34,11 +34,11 @@ import { ControlValueAccessor } from '@angular/forms';
 				fullWidth
 				#selectComponent
 				[placeholder]="question.placeholder"
+				[hidden]="Hidden"
 				[selected]="question.value"
 				[attr.disabled]="question.disabled ? '' : null"
 				[formControlName]="question.key"
 				[required]="question.required"
-				[hidden]="question.hidden"
 				(selectedChange)="onSelect($event)">
 				<nb-option *ngIf="relationDropDown" [value]="defaultValue">None</nb-option>
 				<nb-option *ngFor="let o of question.options$ | async" [disabled]="o.disabled"

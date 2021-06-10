@@ -173,6 +173,18 @@ export class UtilsService
 		return text.length > maxLength ? `${ text.substring(0, maxLength)}...` : text;
 	}
 
+	/**
+	 * @brief - Show notification
+	 * @param service
+	 * @param title - title of the notification
+	 * @param body - body of the notification
+	 * @param type - type of notification
+	 * @param duration - How long the notification should stay on screen.
+	 * @param position - Position on screen.
+	 * @param hasIcon - If it should consist of an icon.
+	 * @param preventDuplicates - Prevent to have duplicate notifications.
+	 * @param destroyByClick - If you can remove notification by clicking.
+	 */
 	public static showToast(
 		service: NbToastrService,
 		title: string,
@@ -397,7 +409,7 @@ export class UtilsService
 	/**
 	 * @brief - get duplicates from two arrays
 	 */
-	public static findDuplicates(arr: any[])
+	public static findDuplicates<T>(arr: T[]): T[]
 	{
 		const sorted_arr = arr.slice().sort(); // You can define the comparing function here.
 		// JS by default uses a crappy string compare.
@@ -420,6 +432,11 @@ export class UtilsService
 	public static excludeDuplicates(arr: any[])
 	{
 		return arr.filter((value, index, self) => self.indexOf(value) === index);
+	}
+
+	public static isEqual(arr: number[], compare: number[])
+	{
+		return arr.length === compare.length && arr.sort().every(el => compare.includes(el))
 	}
 
 	/**

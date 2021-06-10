@@ -1,20 +1,12 @@
-import {
-	AfterViewInit,
-	Component,
-	EventEmitter,
-	Input, OnInit,
-	Output,
-	ViewChild,
-	ViewContainerRef,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { NbSelectComponent, NbToastrService } from '@nebular/theme';
 
-import { TextboxQuestion, Option, DropDownQuestion } from '@app-core/data/forms/form-types';
-import { BasicTextFieldInputComponent, BasicDropdownFieldInputComponent } from '@app-theme/components';
-// import { numSocket } from '@app-core/components/visualne/sockets';
+import { DropDownQuestion, Option, TextboxQuestion } from '@app-core/data/forms/form-types';
+import { BasicDropdownFieldInputComponent, BasicTextFieldInputComponent } from '@app-theme/components';
+import { numSocket } from '@app-core/components/visualne/sockets';
 import { InputOutputMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { UtilsService } from '@app-core/utils';
-import { Node, Input as ReteInput } from 'visualne';
+import { Input as VisualNEInput, Node } from 'visualne';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { defaultUser, User, UserModel, UserService } from '@app-core/data/state/users';
@@ -26,13 +18,17 @@ import { createEvent } from '@app-core/functions/helper.functions';
 import { ProxyObject } from '@app-core/data/base';
 
 import isEqual from 'lodash.isequal';
+import { DebugType } from '@app-core/utils/utils.service';
+import { NodeEditorService } from '@app-core/data/state/node-editor';
 
-export enum EditModeType {
+enum EditModeType {
 	None,
 	New,
 	Edit,
 	Remove,
 }
+
+const MIN_INPUTS = 2;
 
 @Component({
 	selector: 'ngx-event-editor',
@@ -100,11 +96,12 @@ export class EventEditorComponent implements OnInit
 	protected event: IEvent = createEvent();
 	protected eventList: Option<number>[] = [];
 
-	protected readonly excludeOutputs: string[] = [
-		'ExecOut',
+	protected readonly excludeInputs: string[] = [
+		'execIn',
+		'targetIn',
 	];
 
-	protected inputs: ReteInput[] = [];
+	protected inputs: VisualNEInput[] = [];
 	protected inputTextComponents: (BasicTextFieldInputComponent)[] = [];
 	protected currentInputCount: number = 0;
 
@@ -112,6 +109,7 @@ export class EventEditorComponent implements OnInit
 	protected mainSubscription: Subscription = new Subscription();
 
 	constructor(
+		protected nodeEditorService: NodeEditorService,
 		protected toastrService: NbToastrService,
 		protected userService: UserService,
 		protected firebaseService: FirebaseService,
@@ -132,8 +130,6 @@ export class EventEditorComponent implements OnInit
 
 		if(this.currentNode)
 		{
-			this.event = UtilsService.copyObj(this.events.find(this.currentNode.data.eventId as number));
-			this.eventNameQuestion.value = this.event.name;
 			if(!this.eventList.length)
 			{
 				this.events.filteredData.forEach((event) => {
@@ -144,54 +140,89 @@ export class EventEditorComponent implements OnInit
 						selected: false,
 					}));
 				});
+				this.eventListQuestion.options$.next(this.eventList);
+			}
+
+			if(this.currentNode.data.eventId !== Number.MAX_SAFE_INTEGER)
+			{
+				this.event = UtilsService.copyObj(this.events.find(this.currentNode.data.eventId as number));
+				this.eventNameQuestion.value = this.event.name;
 
 				this.eventListQuestion.value = this.event.id;
-				this.eventListQuestion.options$.next(this.eventList);
 				setTimeout(() => this.eventSelectComponent.selectedChange.emit(this.event.id), 500);
 			}
 
 			// First state is to just load everything.
 			this.componentResolver.setRootViewContainerRef(this.vcr);
-
-			this.event.inputs.forEach((input) => {
-				this.addInput({ ...input });
-				this.currentInputCount++;
-			});
+			this.initEvents();
 		}
 	}
 
-	public addInput(input: IEventInput = null): void
+	public clearViewContainer()
 	{
+		if(this.inputTextComponents.length === 0) return;
+
+		// delete the options from the view container
+		// delete the output by key
+		// clear out the events
+		this.currentNode.data.events = {} as InputOutputMap<number, InputEvent>;
+		// clear out the inputs
+		this.inputs.forEach((input) =>
+		{
+			this.currentNode.removeInput(input);
+		});
+		// clear out the view.
+		this.vcr.clear();
+		// clear out the outputs
+		this.inputs = [];
+		// clear out the components
+		this.inputTextComponents = [];
+		// reset the output counter
+		this.currentInputCount = 0;
+
+		this.nodeEditorService.Editor.trigger('process');
+	}
+
+	public addInput(input: VisualNEInput | IEventInput = null): boolean
+	{
+		let updateEvent: boolean = false;
 		if (this.currentNode)
 		{
 			const hasInput = input !== null;
+			const isVisualNEInput = input instanceof VisualNEInput;
 
 			// Create the input field name for the param
 			const textFieldComponentRef = this.componentResolver.addDynamicComponent(BasicTextFieldInputComponent);
 			const textInstance = textFieldComponentRef.instance as BasicTextFieldInputComponent<string>;
-			const idx = this.inputTextComponents.push(textInstance);
-
+			textInstance.index = this.currentInputCount;
 			textInstance.showLabels = true;
 			textInstance.question.text = 'Parameter Name';
-			textInstance.index = idx - 1;
 			this.mainSubscription.add(textInstance.onKeyUpFunc.subscribe(
 				(event: string) => {
+					console.log(textInstance.index, this.event.inputs.length);
 					this.event.inputs[textInstance.index].paramName = event
 				},
 			));
+			this.inputTextComponents.push(textInstance);
 
-			console.log(idx, textInstance.index);
+			UtilsService.onDebug(this.currentInputCount, DebugType.LOG, textInstance.index);
 
-			const inputText = hasInput ? input.paramName : `Input In ${idx} - [NULL]`;
+			let inputText = `Event In ${this.currentInputCount} - [NULL]`;
+			if(hasInput)
+				inputText = input instanceof VisualNEInput ? input.name : input.paramName;
+			const inputMap = this.currentNode.data.events as InputOutputMap<number, IEventInput>;
 
 			// create an input depended on the value we want to pass on.
-			// const inp = hasInput ? input :
-			// 	new ReteInput(`inputIn-${this.currentInputCount++}`, inputText, numSocket, false);
+			const inp =  hasInput && input instanceof VisualNEInput ? input : new VisualNEInput(`inputIn-${this.currentInputCount++}`, inputText, numSocket, false)
 
-			const inputMap = this.currentNode.data.inputs as InputOutputMap;
-			textInstance.question.value = inputText;
+			let inputValue = '';
 
-			// const outputIdx = this.inputs.push(inp);
+			if(hasInput) {
+				inputValue = input instanceof VisualNEInput && inputMap.hasOwnProperty(inp.key)
+					? inputMap[inp.key].value.paramName
+					: (input as IEventInput).paramName;
+			}
+			textInstance.question.value = inputValue;
 
 			/* TODO capture the changes in the options.
 			this.subs.push([
@@ -224,7 +255,9 @@ export class EventEditorComponent implements OnInit
 			const defaultValueTextFieldComponentRef = this.componentResolver.addDynamicComponent(BasicTextFieldInputComponent);
 			const defaultValueTextInstance = defaultValueTextFieldComponentRef.instance as BasicTextFieldInputComponent<number>;
 			// TODO add more types
-			defaultValueTextInstance.writeValue(0);
+			defaultValueTextInstance.writeValue(
+				hasInput && inputMap.hasOwnProperty(inp.key) ? inputMap[inp.key].value.defaultValue : 0,
+			);
 			this.inputTextComponents.push(defaultValueTextInstance);
 
 			defaultValueTextInstance.showLabels = true;
@@ -233,49 +266,69 @@ export class EventEditorComponent implements OnInit
 			const valueTextFieldComponentRef = this.componentResolver.addDynamicComponent(BasicTextFieldInputComponent);
 			const valueTextInstance = valueTextFieldComponentRef.instance as BasicTextFieldInputComponent<number>;
 			// TODO add more types
-			valueTextInstance.writeValue(0);
+			valueTextInstance.writeValue(
+				hasInput && inputMap.hasOwnProperty(inp.key) ? inputMap[inp.key].value.value : 0,
+			);
 			this.inputTextComponents.push(valueTextInstance);
 
 			valueTextInstance.showLabels = true;
 			valueTextInstance.question.text = 'Value';
 
+			this.inputs.push(inp);
+
+			const eventInput: IEventInput = {
+				paramName: textInstance.question.value,
+				defaultValue: defaultValueTextInstance.question.value,
+				value: valueTextInstance.question.value,
+			};
+
+			if(!this.currentNode.inputs.has(inp.key))
+				this.currentNode.addInput(inp);
+
 			if (!hasInput) // only add when we have created a new input
 			{
-				// this.currentNode.addInput(this.inputs[outputIdx - 1]);
-
-				const eventInput: IEventInput = {
-					paramName: textInstance.question.value,
-					defaultValue: defaultValueTextInstance.question.value,
-					value: valueTextInstance.question.value,
-				};
-
 				if(!this.event.hasOwnProperty('inputs'))
 					this.event.inputs = [];
 
-				this.event.inputs.push(eventInput);
-				this.updateEvent();
+				this.event.inputs.push(eventInput)
+				updateEvent = true;
 			}
 
-			// And finally a multi-field that can store all values the player wants.
+			this.onEventSelected(textInstance.index, eventInput);
 
+			// And finally a multi-field that can store all values the player wants.
 			this.currentNode.update();
 
 			// save the snippet again
 			// if (!hasInput) this.nodeEditorService.saveSnippet();
 		}
+
+		return updateEvent;
 	}
 
 	public pickEvent(event: number)
 	{
+		console.log(event);
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
 			if(this.currentNode.data.eventId === event)
 				return;
 
-			this.event =  UtilsService.copyObj(this.events.find(event));
+			this.event = UtilsService.copyObj(this.events.find(event));
+
+			if(!this.event.hasOwnProperty('inputs'))
+				this.event.inputs = [];
 
 			this.currentNode.data.eventId = event;
-			this.currentNode.update();
+			// clear the view
+			this.clearViewContainer();
+			let upd = false;
+			// add input based on the inputs
+			console.log(this.event.inputs.length);
+			this.event.inputs.forEach((input) => {
+				upd = this.addInput(input);
+			});
+			if(upd) this.updateEvent();
 		}
 	}
 
@@ -309,17 +362,55 @@ export class EventEditorComponent implements OnInit
 		this.syncEvent();
 	}
 
+	public onEventSelected(idx: number, event: IEventInput)
+	{
+		const input = this.currentNode.inputs.get(this.inputs[idx].key);
+		console.log(input.key);
+		(this.currentNode.data.events as InputOutputMap<number, IEventInput>)[input.key] = { key: idx, value: event };
+
+		this.currentNode.update();
+		this.nodeEditorService.Editor.trigger('process');
+	}
+
+	public onEventDeleted(idx: number) {
+		// delete the output by key
+		this.currentNode.removeInput(this.inputs[idx]);
+		this.inputs.splice(idx, 1);
+		this.inputTextComponents.splice(idx, 1);
+
+		// remove the subscription
+		// const sub: [Subscription, Subscription] = this.subs[idx];
+
+		// this.mainSubscription.remove(sub[0]);
+		// this.mainSubscription.remove(sub[1]);
+
+		// we need to rearrange the inputs
+		this.inputTextComponents.forEach((_, index, arr) => {
+			this.inputTextComponents[index].index = index;
+		});
+
+		this.vcr.detach(idx);
+
+		this.currentNode.update();
+	}
+
+	protected initEvents()
+	{
+		let upd = false;
+		this.currentNode.inputs.forEach((input) => {
+			if (!this.excludeInputs.includes(input.key)) {
+				upd = this.addInput(input);
+			}
+		});
+
+		if(upd) this.updateEvent();
+	}
+
 	protected updateEvent(): void
 	{
 		if(this.currentNode.data.eventId !== Number.MAX_SAFE_INTEGER)
 		{
 			this.syncEvent();
-
-			UtilsService.showToast(
-				this.toastrService,
-				'Event updated!',
-				'Event has successfully been updated',
-			);
 
 			this.editMode = EditModeType.None;
 			this.onEventUpdated.emit(this.event);
@@ -381,7 +472,6 @@ export class EventEditorComponent implements OnInit
 				input.value = this.inputTextComponents[i * 3 + 2].question.value;
 			}
 		}
-
 	}
 
 	protected getInputValue(id: number, key: string = 'text'): string

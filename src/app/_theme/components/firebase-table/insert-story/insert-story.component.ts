@@ -192,7 +192,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	{
 		// TODO validate?
 		this.characterList.setDisabledState(true);
-		this.characterName.hidden = false;
+		this.characterName.Hidden = false;
 		this.charStepBtn.setDisabledState(true);
 
 	}
@@ -217,7 +217,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	{
 		// TODO validate?
 		this.characterList.setDisabledState(false);
-		this.characterName.hidden = true;
+		this.characterName.Hidden = true;
 		this.charStepBtn.setDisabledState(false);
 	}
 
@@ -242,7 +242,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 					setTimeout(() => this.characterList.selectComponent.selectedChange.emit(this.story.parentId), 500);
 
 					this.characterList.setDisabledState(false);
-					this.characterName.hidden = true;
+					this.characterName.Hidden = true;
 					this.charStepBtn.setDisabledState(false);
 				},
 			);
@@ -305,7 +305,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	{
 		// TODO validate?
 		this.dialogueList.setDisabledState(true);
-		this.dialogueText.hidden = false;
+		this.dialogueText.Hidden = false;
 		this.dialogueStepBtn.setDisabledState(true);
 	}
 
@@ -323,7 +323,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	public cancelDialogueCreation()
 	{
 		this.dialogueList.setDisabledState(false);
-		this.dialogueText.hidden = true;
+		this.dialogueText.Hidden = true;
 		this.dialogueStepBtn.setDisabledState(false);
 		// TODO when this is pressed disable the next button of the stepper
 		// TODO disable the list
@@ -355,7 +355,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 					setTimeout(() => this.dialogueList.selectComponent.selectedChange.emit(this.dialogue.id), 500);
 
 					this.dialogueList.setDisabledState(false);
-					this.dialogueText.hidden = true;
+					this.dialogueText.Hidden = true;
 					this.dialogueStepBtn.setDisabledState(false);
 				},
 			);

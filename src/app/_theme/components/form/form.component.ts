@@ -100,9 +100,8 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	protected disabled: boolean = false;
 	public disabled$ = new BehaviorSubject<boolean>(this.disabled);
 
-	protected isHidden: boolean = false;
-	public set hidden(b: boolean) { this.question.hidden = this.isHidden = b }
-	public get hidden() { return this.isHidden; }
+	public set Hidden(b: boolean) { this.question.hidden = b; }
+	public get Hidden() { return this.question.hidden; }
 	public showLabels = false;
 
 	protected destroy$ = new Subject<void>();

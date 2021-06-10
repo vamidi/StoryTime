@@ -8,14 +8,12 @@ import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BaseSettings, Column } from '@app-core/mock/base-settings';
 import { UtilsService } from '@app-core/utils';
-import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
+import { ProxyObject } from '@app-core/data/base';
 import { BehaviourType } from '@app-core/types';
 import {
-	TextColumnComponent,
-	TextRenderComponent,
 	NumberColumnComponent,
 	BooleanColumnRenderComponent,
 } from '@app-theme/components';
@@ -27,7 +25,6 @@ import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 import { TablesService } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 
-import { Project } from '@app-core/data/state/projects';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { UserPreferences } from '@app-core/utils/utils.service';
 import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/firebase-filter.config';
@@ -56,11 +53,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	@Output()
 	public toggleView: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-	public get isAdmin()
-	{
-		return this.userService.isAdmin;
-	}
 
 	public get getTable(): Table
 	{
@@ -181,7 +173,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		@Inject(String) protected tableName: string = '',
 	) {
 		super(
-			firebaseService, firebaseRelationService, projectService, tableService,
+			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
 			userService, userPreferencesService, languageService, tableName,
 		);
 
@@ -197,50 +189,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 		// unsubscribe listening to the child_added event
 		this.firebaseService.getRef(this.tableName).limitToLast(2).off('child_added');
-	}
-
-	/**
-	 * @brief - Insert new row data
-	 * @param event
-	 */
-	public onCreateConfirm(event: any)
-	{
-		super.onCreateConfirm(event);
-		// Check the permissions as well as the data
-		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
-		{
-			const obj: any = { ...event.newData };
-
-			if (event.newData.id === '')
-			{
-				UtilsService.showToast(
-					this.toastrService,
-					'Warning!',
-					'Something went wrong (check console)',
-					'warning',
-				);
-				return;
-			}
-
-			obj.deleted = !!+event.newData.deleted;
-
-			// delete the id column
-			UtilsService.deleteProperty(obj, 'id');
-
-			// TODO resolve if data is wrong or if we also need to do something with the lastID
-			this.firebaseService.insertData(this.tableName + '/data', obj)
-				.then(() => {
-					UtilsService.showToast(
-						this.toastrService,
-						'Row inserted!',
-						'Data has been successfully added',
-					)
-				},
-			);
-
-			event.confirm.resolve();
-		} else
-			event.confirm.reject();
 	}
 
 	/**
@@ -261,7 +209,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 				UtilsService.showToast(
 					this.toastrService,
 					'Warning!',
-					'Something went wrong (check console)',
+					'Something went wrong',
 					'warning',
 				);
 				return;
@@ -274,6 +222,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 					'Row not updated!',
 					'Data received is the same as the old data',
 					'danger',
+					5000,
 				);
 				return;
 			}

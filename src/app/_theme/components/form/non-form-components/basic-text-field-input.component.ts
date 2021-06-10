@@ -64,7 +64,7 @@ export class BasicTextFieldInputComponent<T = string | number> implements IFormI
 	public set hidden(b: boolean) { this.question.hidden = this.isHidden = b }
 	public get hidden() { return this.isHidden; }
 
-	public index: number = 0;
+	public index: number = -1;
 	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text' });
 
 	public showLabels = false;

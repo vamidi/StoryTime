@@ -112,7 +112,9 @@ export class InsertMultipleDialogComponent implements
 			this.updateBehaviourType(behaviourType)
 		});
 
-		this.sourceHandler.initialize(this.settings.columns, (key, column) => this.configureRelation(key, column));
+		this.sourceHandler.initialize(this.settings.columns, (key, column, index) =>
+			this.configureRelation(key, column, index));
+
 		this.sourceHandler.createFields();
 
 		const insertBtnTitle: string = this.getText(this.behaviourType);
@@ -259,8 +261,6 @@ export class InsertMultipleDialogComponent implements
 				const column: any = value;
 				const controlValue: any = controls[key].value;
 
-				console.log(controlValue, column.type);
-
 				switch (column.type)
 				{
 					case 'number':
@@ -273,7 +273,6 @@ export class InsertMultipleDialogComponent implements
 						break;
 					case 'custom':
 						// Relation value or keyValue language data
-						console.log(value.renderComponent);
 						if(value.renderComponent === LanguageRenderComponent)
 						{
 							data.newData[key] = { 'en': controlValue };
@@ -351,7 +350,7 @@ export class InsertMultipleDialogComponent implements
 		this.behaviourType = behaviourType;
 	}
 
-	protected configureRelation(key: string, column: Column): FormField<any>
+	protected configureRelation(key: string, column: Column, index: number): FormField<any>
 	{
 		let field: FormField<any>;
 		if (key /* && Number(value) !== Number.MAX_SAFE_INTEGER */)
@@ -360,7 +359,7 @@ export class InsertMultipleDialogComponent implements
 
 			if (relation)
 			{
-				field = this.sourceHandler.configureField<number>(key, column, 'dropdown', Number.MAX_SAFE_INTEGER);
+				field = this.sourceHandler.configureField<number>(key, column, 'dropdown', Number.MAX_SAFE_INTEGER, index);
 				field.options$ = new BehaviorSubject([]);
 
 				this.Source.fields[key] = field;
@@ -379,7 +378,7 @@ export class InsertMultipleDialogComponent implements
 			}
 		}
 
-		field = this.sourceHandler.configureField<number>(key, column, 'number', Number.MAX_SAFE_INTEGER);
+		field = this.sourceHandler.configureField<number>(key, column, 'number', Number.MAX_SAFE_INTEGER, index);
 		return field;
 	}
 

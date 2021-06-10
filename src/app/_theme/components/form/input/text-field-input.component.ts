@@ -17,15 +17,17 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 		`
 		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup"
 			 *ngIf="question.controlType !== 'textarea' && question.controlType !== 'autocomplete'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !hidden"></ngx-label-field>
+			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
 
 			<!-- TEXT BOX -->
 
+			<!-- [type]="question.hidden ? 'hidden' : question.controlType" -->
 			<input #inputElement
 				   id="{{ question.key }}--textbox"
 				   [formControlName]="question.key"
 				   (blur)="trySetTouched($event)"
-				   [type]="question.hidden ? 'hidden' : question.controlType"
+				   [hidden]="Hidden"
+				   [type]="question.controlType"
 				   [value]="question.value"
 				   [placeholder]="question.text"
 				   [name]="question.name"
@@ -39,14 +41,14 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 			/>
 
 			<!-- TODO maybe add dynamic content if needed -->
-			<div [class.hidden]="!showButtons || hidden">
+			<div [class.hidden]="!showButtons || Hidden">
 				<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
 				<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
 			</div>
 		</div>
 
 		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'textarea'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !hidden"></ngx-label-field>
+			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
 
 			<!-- TEXT BOX -->
 			<textarea #inputElement id="{{ question.key }}--area"
@@ -66,14 +68,14 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 			</textarea>
 
 			<!-- TODO maybe add dynamic content if needed -->
-			<div [class.hidden]="!showButtons || hidden">
+			<div [class.hidden]="!showButtons || Hidden">
 				<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
 				<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
 			</div>
 		</div>
 
 		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'autocomplete'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !hidden"></ngx-label-field>
+			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
 			<input *ngIf="question.controlType === 'autocomplete'"
 				   [formControl]="control"
 				   nbInput
@@ -102,7 +104,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 	],
 	// changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextFieldComponent extends BaseFormInputComponent<string | number>
+export class TextFieldComponent<T = string | number> extends BaseFormInputComponent<T>
 	implements OnInit, AfterViewInit, ControlValueAccessor
 {
 	@ViewChild('inputElement', { read: ElementRef, static: true })
@@ -115,7 +117,7 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 	public cancelText: string = '';
 
 	@Input()
-	public value: string | number | null = null;
+	public value: T | null = null;
 
 	@Input()
 	public showButtons: boolean = false;
@@ -134,7 +136,7 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 	 */
 	public trySetTouched(event: any)
 	{
-		if (!this.hidden)
+		if (!this.Hidden)
 		{
 			this.onTouched(event.target.value);
 		}
@@ -145,7 +147,7 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 	 *
 	 */
 	@Input()
-	public set setValue(value: string | number)
+	public set setValue(value: T)
 	{
 		this.writeValue(value);
 	}
@@ -154,19 +156,17 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 		return this.value;
 	}
 
-	public writeValue(value: string | number): void
+	public writeValue(value: T): void
 	{
-		if(this.question.controlType  === 'number')
-		{
-			this.question.value = this.value = String(value) !== '' ? Number(value) : '';
-		}
-		else
-		{
-			this.question.value = this.value = String(value) ?? '';
-		}
+		this.question.value = this.value = value;
 
 		if(this.parent.formContainer.get(this.question.key))
-			this.parent.formContainer.get(this.question.key).setValue(this.question.value);
+		{
+			const control = this.parent.formContainer.get(this.question.key);
+			control.setValue(this.value);
+			control.markAsDirty({ onlySelf: true });
+			control.markAsTouched({ onlySelf: true });
+		}
 	}
 
 	/** ControlValueAccessor **/
@@ -187,7 +187,7 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 		this.cd.markForCheck();
 	}
 
-	public question: TextboxQuestion = new TextboxQuestion({ type: 'text' });
+	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text', hidden: false });
 
 	// Events
 	@Output()
@@ -209,7 +209,7 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 	public ngOnInit()
 	{
 		super.ngOnInit();
-		this.onTouched = (value: string | number ) =>
+		this.onTouched = (value: T ) =>
 		{
 			this.writeValue(value);
 		};
@@ -221,11 +221,12 @@ export class TextFieldComponent extends BaseFormInputComponent<string | number>
 
 		setTimeout(() =>
 		{
-			if (this.checkForm() && this.myFormGroup && this.value !== null && this.value !== '')
+			if (this.checkForm() && this.myFormGroup && this.value !== null)
 			{
-				this.myFormGroup.controls[this.question.key].setValue(this.value);
-				this.myFormGroup.controls[this.question.key].markAsDirty({ onlySelf: true });
-				this.myFormGroup.controls[this.question.key].markAsTouched({ onlySelf: true });
+				const control = this.parent.formContainer.get(this.question.key);
+				control.setValue(this.value);
+				control.markAsDirty({ onlySelf: true });
+				control.markAsTouched({ onlySelf: true });
 			}
 		}, 1000);
 	}
