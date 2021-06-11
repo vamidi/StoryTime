@@ -1,11 +1,23 @@
+<a name="2020.1.4f1"></a>
+## [2020.1.4f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4f2) (2021-20-05)
+- Quality of life updates.
+- Bug fixes.
+
+<a name="2020.1.4f1"></a>
+## [2020.1.4f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4f1) (2021-21-05)
+- Added node editor for craftable items.
+- Added events to the story node editor.
+- Server feature updates.
+
+
 <a name="2020.1.3f2"></a>
-## [2020.1.3f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f2) (2021-20-05)
+## [2020.1.3f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f2) (2021-31-03)
 - Readme updated with information about new databases support.
 - Ability to load firebase config from file.
 - Bug fixes
 
 <a name="2020.1.3f1"></a>
-## [2020.1.3f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f1) (2021)
+## [2020.1.3f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f1) (2021-08-03)
 
 
 <a name="2020.1.2f2"></a>
