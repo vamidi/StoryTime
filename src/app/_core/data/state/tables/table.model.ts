@@ -122,7 +122,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		version: {
 			major: 0,
 			minor: 0,
-			patch: 0,
+			release: '0',
 		},
 	}
 

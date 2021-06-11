@@ -65,8 +65,8 @@ export class PipelineService
 			// NaN if either version string is in the wrong format
 			const compare: number = v.metadata.hasOwnProperty('version') ?
 				this.versionCompare(
-				`${v.metadata?.version.major}.${v.metadata?.version.minor}.${v.metadata?.version.patch}`,
-				`${environment.MAJOR}.${environment.MINOR}.${environment.PATCH}`,
+				`${v.metadata?.version.major}.${v.metadata?.version.minor}.${v.metadata?.version.release}`,
+				`${environment.MAJOR}.${environment.MINOR}.${environment.RELEASE}`,
 				)
 			: NaN;
 			if(isNaN(compare) || compare) schedule.resolve(schedule.callbackFn(v, key, a), v, key);

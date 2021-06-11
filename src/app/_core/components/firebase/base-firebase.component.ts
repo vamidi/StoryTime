@@ -1,10 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
+import { NbToastrService } from '@nebular/theme';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
-import isEqual from 'lodash.isequal';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { BaseSettings } from '@app-core/mock/base-settings';
@@ -20,6 +20,7 @@ import { LanguageService, Project, ProjectsService } from '@app-core/data/state/
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
+import isEqual from 'lodash.isequal';
 
 import firebase from 'firebase/app';
 

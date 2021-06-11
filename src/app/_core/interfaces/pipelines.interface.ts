@@ -5,7 +5,7 @@ export interface IVersion
 	//
 	minor: number;
 	//
-	patch: number;
+	release: string;
 }
 
 export interface PipelineAsset

@@ -218,7 +218,7 @@ export class InsertTableComponent implements
 								version: {
 									major: environment.MAJOR,
 									minor: environment.MINOR,
-									patch: environment.PATCH,
+									release: environment.RELEASE,
 								},
 							},
 						};

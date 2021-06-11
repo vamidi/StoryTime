@@ -80,8 +80,6 @@ export interface IEvent extends ProxyObject
 {
 	name: string, // name of the event
 	owner: string, // creator of the event
-
-	inputs: IEventInput[];
 }
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([]);

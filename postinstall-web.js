@@ -26,7 +26,6 @@ const { argv } = require('yargs');
 const { name, version } = require('./package.json');
 const path = require('path');
 const v1parts = version.split('.');
-const final = 2; // version('f');
 
 // read the command line arguments passed with yargs
 const environment = argv.environment;
@@ -65,6 +64,10 @@ export const environment: IEnvironment = {
    title: '${name}',
    production: ${isProduction},
    appVersion: '${version}',
+   redux: ${process.env.REDUX},
+   MAJOR: ${v1parts[0]},
+   MINOR: ${v1parts[1]},
+   RELEASE: '${v1parts[2]}',
    firebase: {
    		apiKey: '${process.env.FIREBASE_API_KEY}',
 		authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',
@@ -93,7 +96,7 @@ const jsonFileContent = `{
    "redux": ${process.env.REDUX},
    "MAJOR": ${v1parts[0]},
    "MINOR": ${v1parts[1]},
-   "PATCH": ${final[0]},
+   "RELEASE": "${v1parts[2]}",
    "provider": "${process.env.DATABASE_PROVIDER}",
    "firebase": {
 \t\t"apiKey": "${process.env.FIREBASE_API_KEY}",

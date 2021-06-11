@@ -429,7 +429,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 				asset.metadata.version = {
 					major: environment.MAJOR,
 					minor: environment.MINOR,
-					patch: environment.PATCH,
+					release: environment.RELEASE,
 				}
 			}
 

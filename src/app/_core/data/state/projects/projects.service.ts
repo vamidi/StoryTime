@@ -505,7 +505,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				asset.metadata.version = {
 					major: environment.MAJOR,
 					minor: environment.MINOR,
-					patch: environment.PATCH,
+					release: environment.RELEASE,
 				}
 			}
 

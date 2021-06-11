@@ -17,9 +17,9 @@ import { IEvent, IEventInput } from '@app-core/data/standard-tables';
 import { createEvent } from '@app-core/functions/helper.functions';
 import { ProxyObject } from '@app-core/data/base';
 
-import isEqual from 'lodash.isequal';
 import { DebugType } from '@app-core/utils/utils.service';
 import { NodeEditorService } from '@app-core/data/state/node-editor';
+import isEqual from 'lodash.isequal';
 
 enum EditModeType {
 	None,
@@ -68,7 +68,6 @@ export class EventEditorComponent implements OnInit
 			this.oldEventId = this.currentNode ? this.currentNode.data.eventId as number: Number.MAX_SAFE_INTEGER;
 			this.eventNameQuestion.value = this.event ? this.event.name : '';
 		}
-		console.log(this.eventNameQuestion);
 		this.editMode = mode;
 	}
 
@@ -183,13 +182,11 @@ export class EventEditorComponent implements OnInit
 		this.nodeEditorService.Editor.trigger('process');
 	}
 
-	public addInput(input: VisualNEInput | IEventInput = null): boolean
+	public addInput(input: VisualNEInput | IEventInput = null): void
 	{
-		let updateEvent: boolean = false;
 		if (this.currentNode)
 		{
 			const hasInput = input !== null;
-			const isVisualNEInput = input instanceof VisualNEInput;
 
 			// Create the input field name for the param
 			const textFieldComponentRef = this.componentResolver.addDynamicComponent(BasicTextFieldInputComponent);
@@ -199,8 +196,8 @@ export class EventEditorComponent implements OnInit
 			textInstance.question.text = 'Parameter Name';
 			this.mainSubscription.add(textInstance.onKeyUpFunc.subscribe(
 				(event: string) => {
-					console.log(textInstance.index, this.event.inputs.length);
-					this.event.inputs[textInstance.index].paramName = event
+					const events = this.currentNode.data.events as InputOutputMap<number, IEventInput>;
+					events[this.inputs[textInstance.index].key].value.paramName = event;
 				},
 			));
 			this.inputTextComponents.push(textInstance);
@@ -285,15 +282,6 @@ export class EventEditorComponent implements OnInit
 			if(!this.currentNode.inputs.has(inp.key))
 				this.currentNode.addInput(inp);
 
-			if (!hasInput) // only add when we have created a new input
-			{
-				if(!this.event.hasOwnProperty('inputs'))
-					this.event.inputs = [];
-
-				this.event.inputs.push(eventInput)
-				updateEvent = true;
-			}
-
 			this.onEventSelected(textInstance.index, eventInput);
 
 			// And finally a multi-field that can store all values the player wants.
@@ -302,13 +290,10 @@ export class EventEditorComponent implements OnInit
 			// save the snippet again
 			// if (!hasInput) this.nodeEditorService.saveSnippet();
 		}
-
-		return updateEvent;
 	}
 
 	public pickEvent(event: number)
 	{
-		console.log(event);
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
 			if(this.currentNode.data.eventId === event)
@@ -322,13 +307,10 @@ export class EventEditorComponent implements OnInit
 			this.currentNode.data.eventId = event;
 			// clear the view
 			this.clearViewContainer();
-			let upd = false;
 			// add input based on the inputs
-			console.log(this.event.inputs.length);
 			this.event.inputs.forEach((input) => {
-				upd = this.addInput(input);
+				this.addInput(input);
 			});
-			if(upd) this.updateEvent();
 		}
 	}
 
@@ -396,14 +378,11 @@ export class EventEditorComponent implements OnInit
 
 	protected initEvents()
 	{
-		let upd = false;
 		this.currentNode.inputs.forEach((input) => {
 			if (!this.excludeInputs.includes(input.key)) {
-				upd = this.addInput(input);
+				this.addInput(input);
 			}
 		});
-
-		if(upd) this.updateEvent();
 	}
 
 	protected updateEvent(): void
@@ -464,6 +443,7 @@ export class EventEditorComponent implements OnInit
 		// update the input
 		if(this.inputTextComponents.length)
 		{
+			/*
 			for(let i = 0; i < this.event.inputs.length; i++)
 			{
 				const input = this.event.inputs[i];
@@ -471,6 +451,7 @@ export class EventEditorComponent implements OnInit
 				input.defaultValue = this.inputTextComponents[i * 3 + 1].question.value;
 				input.value = this.inputTextComponents[i * 3 + 2].question.value;
 			}
+			 */
 		}
 	}
 

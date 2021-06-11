@@ -1,5 +1,3 @@
-import { InjectionToken } from '@angular/core';
-
 export interface IEnvironment
 {
 	title?: string,
@@ -8,7 +6,7 @@ export interface IEnvironment
 	redux?: boolean,
 	MAJOR?: number,
 	MINOR?: number,
-	PATCH?: number,
+	RELEASE?: string,
 	provider?: string,
 	firebase?: {
 		apiKey?: string,

@@ -162,7 +162,7 @@ export class InsertProjectComponent
 							version: {
 								major: environment.MAJOR,
 								minor: environment.MINOR,
-								patch: environment.PATCH,
+								release: environment.RELEASE,
 							},
 						},
 					};
@@ -197,7 +197,7 @@ export class InsertProjectComponent
 									version: {
 										major: environment.MAJOR,
 										minor: environment.MINOR,
-										patch: environment.PATCH,
+										release: environment.RELEASE,
 									},
 								},
 							};

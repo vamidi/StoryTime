@@ -187,6 +187,9 @@ class FirebaseController extends Controller
 
                         foreach ($table["data"] as $rowId => $row)
                         {
+                            // set every data prop to null;
+                            $table["data"][$rowId]["data"] = (object)null;
+
                             $storySnapshot = $this->database->getReference('stories')
                                 ->orderByChild('storyId')
                                 ->equalTo($rowId)
@@ -202,8 +205,7 @@ class FirebaseController extends Controller
                                     {
                                         $promise = $this->parseNodeData($story["url"], $table["data"][$rowId]);
                                         if ($promise !== null) $promises[] = $promise;
-                                    } else
-                                        $table["data"][$rowId]["data"] = (object)null;
+                                    }
                                 }
                             }
                         }

@@ -5,7 +5,7 @@ import { EventsTypes } from 'visualne/types/events';
 import {
 	dialogueOptionSocket,
 	dialogueSocket,
-	execInSocket,
+	// execInSocket,
 	execOutSocket,
 } from '@app-core/components/visualne/sockets';
 import { MyNodeComponent } from '@app-theme/components/visualne/node.component';
