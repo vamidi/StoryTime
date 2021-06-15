@@ -3,16 +3,16 @@
 # StoryTime
 **StoryTime** is a structured data management tool that for creating role-playing games. This tool will work with Unity3D &amp; Unreal engine 4
 
+![StoryTime](./installation/storytime.png)
+
+![StoryTime node editor](./installation/storytime-editor.png)
+
 ## Join Our Discord!
 For help, support, discussion, and chill times, come and join the StoryTime community [Discord](https://discord.gg/SgJ8X5s)!
 
 [Download the latest version here](https://github.com/vamidi/StoryTime/releases/)
 
-[Documentation](https://valencio-masaki16.gitbook.io/storytime/)
-
-![StoryTime](./installation/storytime.png)
-
-![StoryTime node editor](./installation/storytime-editor.png)
+### [Documentations](https://valencio-masaki16.gitbook.io/storytime/)
 
 ## Features
 StoryTime allows users to edit data that are normally stored as raw JSON. It also supports creating stories or craftables in a node editor style.
