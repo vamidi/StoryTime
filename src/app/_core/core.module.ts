@@ -43,6 +43,7 @@ import { DynamicComponentService } from '@app-core/utils/dynamic-component.servi
 // import { AngularPrismaAuth } from '@app-core/auth/auth.service';
 import { environment } from '../../environments/environment';
 import { AngularPrismaModule } from '@app-core/utils/firebase/AngularPrismaModule';
+import { ElectronService } from '@app-core/utils/electron.service';
 // import { AuthModule } from '@app-core/auth/auth.module';
 
 const socialLinks = [
@@ -138,6 +139,7 @@ export const CUSTOM_PROVIDERS = [
 	// AngularPrismaAuth,
 	DatabaseService,
 	DynamicComponentService,
+	ElectronService,
 ];
 
 @NgModule({
