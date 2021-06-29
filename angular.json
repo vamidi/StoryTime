@@ -70,8 +70,15 @@
 							"node_modules/visualne-selection-plugin/dist/visualne-selection-plugin.min.js",
 							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
 							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js"
-						]
+							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
+							"node_modules/waypoints/lib/noframework.waypoints.min.js"
+						],
+						"vendorChunk": true,
+						"extractLicenses": false,
+						"buildOptimizer": false,
+						"sourceMap": true,
+						"optimization": false,
+						"namedChunks": true
 					},
 					"configurations": {
 						"production": {
@@ -79,9 +86,8 @@
 							"outputHashing": "all",
 							"sourceMap": false,
 							"namedChunks": false,
-							"aot": true,
 							"extractLicenses": true,
-							"vendorChunk": true,
+							"vendorChunk": false,
 							"buildOptimizer": false,
 							"fileReplacements": [
 								{
@@ -90,7 +96,8 @@
 								}
 							]
 						}
-					}
+					},
+					"defaultConfiguration": ""
 				},
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
@@ -134,7 +141,8 @@
 							"node_modules/visualne-connection-plugin/dist/visualne-connection-plugin.min.js",
 							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
 							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js"
+							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
+							"node_modules/waypoints/lib/noframework.waypoints.min.js"
 						],
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.css",
