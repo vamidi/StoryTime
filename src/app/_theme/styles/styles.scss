@@ -40,7 +40,7 @@
 
 	@include nb-overrides();
 
-	//@include nb-snackbar-theme();
+	@include nb-snackbar-theme();
 
 	.form-control {
 		color: nb-theme(text-basic-color);
@@ -59,5 +59,11 @@
 
 	.modal-lg {
 		max-width: 1490px !important;
+	}
+
+	nb-window.context-window-story-editor {
+		width: 1000px;
+		max-height: 800px;
+		overflow-y: auto;
 	}
 }

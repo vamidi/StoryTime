@@ -181,17 +181,17 @@ class FirebaseController extends Controller
                 {
                     // we are dealing with the story table
                     // TODO we need to remove unnecessary data.
-                    if($table["metadata"]["title"] === "stories")
+                    $title = $table["metadata"]["title"] === "stories" ? "stories" : "craftables";
+                    $query = $title === "stories" ? 'storyId' : "itemId";
+                    if($title === "stories" || $title === "items")
                     {
                         $promises = [];
 
                         foreach ($table["data"] as $rowId => $row)
                         {
-                            // set every data prop to null;
                             $table["data"][$rowId]["data"] = (object)null;
-
-                            $storySnapshot = $this->database->getReference('stories')
-                                ->orderByChild('storyId')
+                            $storySnapshot = $this->database->getReference($title)
+                                ->orderByChild($query)
                                 ->equalTo($rowId)
                                 ->limitToFirst(1)
                                 ->getSnapshot();
@@ -273,14 +273,16 @@ class FirebaseController extends Controller
 
             if(!empty($table["data"]))
             {
-                if($table["metadata"]["title"] === "stories")
+                $title = $table["metadata"]["title"] === "stories" ? "stories" : "craftables";
+                $query = $title === "stories" ? 'storyId' : "itemId";
+                if($table["metadata"]["title"] === "stories" || $table["metadata"]["title"] === "shopCraftables")
                 {
                     $promises = [];
 
                     foreach ($table["data"] as $rowId => $row)
                     {
-                        $storySnapshot = $this->database->getReference('stories')
-                            ->orderByChild('storyId')
+                        $storySnapshot = $this->database->getReference($title)
+                            ->orderByChild($query)
                             ->equalTo($rowId)
                             ->limitToFirst(1)
                             ->getSnapshot();
@@ -298,6 +300,8 @@ class FirebaseController extends Controller
                                     $table["data"][$rowId]["data"] = (object)null;
                             }
                         }
+                        else
+                            $table["data"][$rowId]["data"] = (object)null;
                     }
 
 
