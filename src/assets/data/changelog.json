@@ -1,6 +1,6 @@
 [
 	{
-		"title": "2020.1.4f2 (2021-20-05)", "children": [
+		"title": "2020.1.4f2 (2021-21-05)", "children": [
 			{ "title": "Changes", "children": [
 						{ "title": "Quality of life updates." },
 						{ "title": "Bug fixes." }
@@ -13,7 +13,7 @@
 		]
 	},
 	{
-		"title": "2020.1.4f2 (2021-20-05)", "children": [
+		"title": "2020.1.4f1 (2021-20-05)", "children": [
 			{ "title": "Changes", "children": [
 					{ "title": "Added node editor for craftable items." },
 					{ "title": "Added events to the story node editor." },

@@ -21,7 +21,7 @@ import { DropDownFieldComponent } from '@app-theme/components/form/dropdown/drop
 				[labelClass]="'flex-grow-1'"
 				[myFormGroup]="myFormGroup"
 				[question]="question"
-				[showLabels]="showLabels && !hidden"
+				[showLabels]="showLabels && !Hidden"
 				[enableIcon]="enableIcon" [labelIcon]="labelIcon"
 				(onIconClick)="onIconClick()">
 			</ngx-label-field>

@@ -70,11 +70,18 @@
 							"node_modules/visualne-selection-plugin/dist/visualne-selection-plugin.min.js",
 							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
 							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js"
+							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
+							"node_modules/waypoints/lib/noframework.waypoints.min.js"
 						],
 						"customWebpackConfig": {
 							"path": "./angular.webpack.js"
-						}
+						},
+						"vendorChunk": true,
+						"extractLicenses": false,
+						"buildOptimizer": false,
+						"sourceMap": true,
+						"optimization": false,
+						"namedChunks": true
 					},
 					"configurations": {
 						"dev": {
@@ -106,10 +113,9 @@
 							"outputHashing": "all",
 							"sourceMap": false,
 							"namedChunks": false,
-							"aot": true,
 							"extractLicenses": true,
 							"vendorChunk": false,
-							"buildOptimizer": true,
+							"buildOptimizer": false,
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
@@ -117,7 +123,8 @@
 								}
 							]
 						}
-					}
+					},
+					"defaultConfiguration": ""
 				},
 				"serve": {
 					"builder": "@angular-builders/custom-webpack:dev-server",
@@ -164,7 +171,8 @@
 							"node_modules/visualne-connection-plugin/dist/visualne-connection-plugin.min.js",
 							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
 							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js"
+							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
+							"node_modules/waypoints/lib/noframework.waypoints.min.js"
 						],
 						"styles": [
 							"node_modules/bootstrap/dist/css/bootstrap.css",

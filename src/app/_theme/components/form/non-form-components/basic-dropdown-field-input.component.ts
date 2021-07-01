@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IFormInputField } from '@app-theme/components/form/form.component';
 import { TextboxQuestion } from '@app-core/data/forms/form-types';
 
@@ -37,14 +37,23 @@ import { TextboxQuestion } from '@app-core/data/forms/form-types';
 })
 export class BasicDropdownFieldInputComponent<T = string | number | boolean> implements IFormInputField<T>
 {
+	@Input()
+	public enableIcon: boolean = false;
+
+	@Input()
+	public labelIcon: string = '';
+
 	@Output()
 	public onSelectFunc: EventEmitter<any>;
+
+	@Output()
+	public onIconClickFunc: EventEmitter<void> = new EventEmitter<void>();
 
 	public set hidden(b: boolean) { this.question.hidden = this.isHidden = b }
 	public get hidden() { return this.isHidden; }
 
 	public index: number = 0;
-	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text' });
+	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text' });z
 
 	public relationDropDown: boolean = false;
 	public readonly defaultValue: number = Number.MAX_SAFE_INTEGER;
@@ -62,5 +71,13 @@ export class BasicDropdownFieldInputComponent<T = string | number | boolean> imp
 	{
 		if(this.onSelectFunc)
 			this.onSelectFunc.emit(event);
+	}
+
+	public onIconClick()
+	{
+		this.question.onIconClickFunc();
+
+		if (this.onIconClickFunc)
+			this.onIconClickFunc.emit();
 	}
 }

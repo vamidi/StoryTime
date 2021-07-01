@@ -26,7 +26,6 @@ export function createStory(): IStory
 		deleted: false,
 		parentId: Number.MAX_SAFE_INTEGER,
 		childId: Number.MAX_SAFE_INTEGER,
-		storyFile: '',
 		typeId: Number.MAX_SAFE_INTEGER,
 		taskId: Number.MAX_SAFE_INTEGER,
 		created_at: UtilsService.timestamp,

@@ -1,23 +1,44 @@
-![StoryTime logo](./installation/storytime_logo.jpg)
+![StoryTime logo](./installation/storytime_logo-96x96.png)
 
-# StoryTime 2020.1.3f2
-A management tool that for creating role-playing games. This tool will work with Unity3D &amp; Unreal engine 4
+# StoryTime
+**StoryTime** is a structured data management tool that for creating role-playing games. This tool will work with Unity3D &amp; Unreal engine 4
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/vamidicreations)
+
+![StoryTime](./installation/storytime.png)
+
+![StoryTime node editor](./installation/storytime-editor.png)
+
+## Join Our Discord!
+For help, support, discussion, and chill times, come and join the StoryTime community [Discord](https://discord.gg/SgJ8X5s)!
+
+[Download the latest version here](https://github.com/vamidi/StoryTime/releases/)
+
+### [Documentations](https://valencio-masaki16.gitbook.io/storytime/)
+
+## Features
+StoryTime allows users to edit data that are normally stored as raw JSON. It also supports creating stories or craftables in a node editor style.
+Each table contains the data and metadata that defines the table. Users can also have access to versioning to see all the changes!
+Everything is stored locally/online and easy to adapt in in-house environments.
+
+## About / Why
+It started as a school project where designers wanted to work with spreadsheets to create game data, but this became tedious, hard to manage, and hard to
+collaborate in. So, I wanted to have an application that is able to edit data simular to spreadsheets, but also structured and indexable.
+Aside from managing data, I also wanted to have plugins where I provide integration in Unity or Unreal where designers can immediately use their data in their games.
+Lastly StoryTime also wants to provide easy building block for large complex components such as inventory, crafting or dialogues systems. 
 
 ## Requirements
-
-> **Support for SQL is in development!**
 
 * Make sure you have Node version >= 10.0 and (NPM >= 5 or Yarn ) [url](https://nodejs.org/en/download/)
 * Your game engine of choice where you can receive JSON from the API.
 * A Firebase database(free or blaze tier) or an SQL database (PostgreSQL, SQLite or MSSQL).
 * A web host to communicate with Firebase and return JSON data to your framework/engine.
 
-
 # Installation
 
 ## NPM Install
 
-> **Ignore clone steps if you have downloaded the latest release of StoryTime.**
+> **Ignore clone steps if you have downloaded the latest [release](https://github.com/vamidi/StoryTime/releases/) of StoryTime.**
 
 ```sh
 # clone our repo
@@ -193,6 +214,16 @@ npm run build:prod
 * Fill in the right credentials in `assets/data/config.json` to make API calls.
 * Copy over dist, or the contents of the [release]() folder to your server where you want to run StoryTime from it from.
 * Copy over the server folder to communicate with Firebase through Lumen (Laravel framework) - **WIP**.
+
+## [Roadmap](https://open.codecks.io/storytime)
+* Electron application.
+* Support for SQL.
+* Support for importing/exporting tables.
+* Multiple column type support.
+* Unreal engine 4/5 support.
+
+## Games
+* [KARI - STRANDED ON THE SHORES OF VANAHEIM](https://www.youtube.com/watch?v=NawQhWyXno0)
 
 ## License
 
