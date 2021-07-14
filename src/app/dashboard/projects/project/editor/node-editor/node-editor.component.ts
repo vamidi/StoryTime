@@ -246,7 +246,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		this.currentOutputCount = 0;
 	}
 
-	protected abstract async initializeListeners();
+	protected abstract initializeListeners();
 
 	protected initializeCtxData(): any
 	{
