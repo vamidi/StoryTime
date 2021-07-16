@@ -4,9 +4,6 @@
 /out-tsc
 /release
 
-package-lock.json
-yarn-lock.json
-
 # dependencies
 /node_modules
 
