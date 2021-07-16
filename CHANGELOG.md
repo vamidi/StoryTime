@@ -1,3 +1,18 @@
+<a name="2020.1.5f1"></a>
+## [2020.1.5f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f1) (2021-16-07)
+
+### Breaking Changes
+- Minimal required `Angular` version to `12`.
+- Minimal required `tslib` version is `2.1.0`.
+
+### Features
+- Electron app with built-in server. [see electron branch](https://github.com/vamidi/StoryTime/tree/master-electron).
+- Unity3D manager app in StoryTime package to manage all data from one place!
+- Added CI/CD features for automated builds.
+
+### Bug Fixes
+- Bug fixes.
+
 <a name="2020.1.4f2"></a>
 ## [2020.1.4f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4f2) (2021-21-05)
 - Quality of life updates.
