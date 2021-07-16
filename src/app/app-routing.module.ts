@@ -19,7 +19,6 @@ import {
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
 import { NgxInviteComponent } from './pages/invitation/invite.component';
-import { HomeComponent } from './home.component';
 
 // const adminOnly = () => hasCustomClaim('admin');
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth/login']);

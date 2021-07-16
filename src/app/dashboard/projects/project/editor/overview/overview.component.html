@@ -32,7 +32,7 @@
 			</nb-card-body>
 		</nb-card>
 	</div>
-	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let data of tableData">
+	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let data of Table">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onListItemClicked($event, data);">
 			<nb-card-header>
 				<div class="d-flex flex-row">
@@ -68,5 +68,5 @@
 		</nb-card>
 	</div>
 </div>
-<ngx-firebase-table *ngIf="!gridMode" #firebaseTableComponent (toggleView)="toggleView($event)" [gridMode]="gridMode"></ngx-firebase-table>
+<ngx-firebase-table *ngIf="!gridMode" #firebaseTableComponent (toggleView)="toggleView.emit($event)" [gridMode]="gridMode"></ngx-firebase-table>
 

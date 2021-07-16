@@ -39,10 +39,10 @@ import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
 import { UtilsService } from '@app-core/utils';
 
-// @Component({
-// 	template: '',
-// 	providers: [DynamicComponentService],
-// })
+@Component({
+	template: '',
+	providers: [DynamicComponentService],
+})
 export abstract class NodeEditorComponent extends BaseFirebaseComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	// VisualNE Editor
