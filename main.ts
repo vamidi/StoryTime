@@ -1,8 +1,8 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
+import * as url from 'url';
 import { server } from './src/api/server';
 
-const { url } = require('url');
 
 // Initialize remote module
 require('@electron/remote/main').initialize();

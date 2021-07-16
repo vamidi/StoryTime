@@ -119,12 +119,23 @@ const jsonFileContent = `{
 }
 `;
 
-fs.writeFile(`${process.env.PATH_TO_CONFIG}`, jsonFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
+const PATH_TO_CONFIG = `./src/assets/data/config.json`;
+fs.writeFile(PATH_TO_CONFIG, jsonFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
 	if (err) {
 		console.log(err);
 	}
-	console.log(`Wrote variables to ${process.env.PATH_TO_CONFIG}`);
+	console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
 });
+
+const REL_PATH_TO_CONFIG = isProduction ?
+	`
+		let PATH_TO_CONFIG = '';
+		if(!!(window && window.process && window.process.type))
+		{
+		\tconst path = window.require('path');
+		\tPATH_TO_CONFIG = path.join(process.resourcesPath, 'assets/data', 'config.json');
+		}
+	` : 'const PATH_TO_CONFIG = \'./assets/data/config.json\'';
 
 // Write to main.ts file
 const mainFileContent = `/**
@@ -141,7 +152,8 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { APP_CONFIG } from '@app-core/data/app.config';
 
-fetch('${process.env.REL_PATH_TO_CONFIG}')
+${REL_PATH_TO_CONFIG}
+fetch(PATH_TO_CONFIG)
 .then((response) => response.json())
 .then((config) => {
 \tif (environment.production) {

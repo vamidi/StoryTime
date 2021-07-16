@@ -4,6 +4,13 @@
 		"buildResources": "src/assets",
 		"output": "release/"
 	},
+	"extraResources": [
+		{
+			"from": "./src/assets/data",
+			"to": "assets/data",
+			"filter": "**/*"
+		}
+	],
 	"appId": "com.vamidicreations.storytime",
 	"files": [
 		"**/*",
@@ -15,7 +22,12 @@
 		"!*.md",
 		"!package.json",
 		"!package-lock.json",
-		"!src/",
+		"!src/*.*",
+		"!src/app",
+		"!src/assets",
+		"!src/environments",
+		"src/api/*",
+		"!src/api/*.ts",
 		"!e2e/",
 		"!hooks/",
 		"!_config.yml",
@@ -28,18 +40,17 @@
 		"!*.map"
 	],
 	"win": {
-		"icon": "dist/assets/icons",
+		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
 		"target": ["portable"]
 	},
 	"portable": {
-		"splashImage": "dist/assets/icons/electron.bmp"
 	},
 	"mac": {
-		"icon": "dist/assets/icons",
+		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
 		"target": ["dmg"]
 	},
 	"linux": {
-		"icon": "dist/assets/icons",
+		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
 		"target": ["AppImage"]
 	}
 }
