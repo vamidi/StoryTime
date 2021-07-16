@@ -8,13 +8,13 @@ import {
 import { Location } from '@angular/common';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { NodeEditorComponent, NodeInspectorComponent } from '@app-theme/components/firebase-table/node-editor';
+import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-editor';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { UtilsService } from '@app-core/utils';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { NbToastrService } from '@nebular/theme';
 import { ProxyObject } from '@app-core/data/base';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { TablesService } from '@app-core/data/state/tables';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
@@ -40,9 +40,6 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 	// Node editor
 	@ViewChildren('nodeEditor')
 	public nodeEditor: QueryList<NodeEditorComponent>;
-
-	@ViewChild('nodeInspector', { static: true })
-	public nodeInspector: NodeInspectorComponent = null;
 
 	public title: string = '';
 	// public AddTitle: string = '';
@@ -150,11 +147,7 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		}
 	}
 
-	public ngAfterViewInit(): void
-	{
-		if (this.nodeEditor && this.nodeInspector)
-			this.nodeInspector.setNodeEditor(this.nodeEditor.first);
-	}
+	public ngAfterViewInit(): void {}
 
 	public onSave()
 	{

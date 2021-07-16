@@ -21,7 +21,7 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { Revision } from '@app-core/data/state/tables';
 import { TablesService } from '@app-core/data/state/tables';
 
-import { IUserTicket, UserData, Roles, UserModel, UserService } from '@app-core/data/state/users';
+import { IUserTicket, Roles, UserModel, UserService } from '@app-core/data/state/users';
 import { LanguageService, Project } from '@app-core/data/state/projects';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Option } from '@app-core/data/forms/form-types';
@@ -35,8 +35,8 @@ import intersection from 'lodash.intersection';
 
 @Component({
 	selector: 'ngx-change-project-settings-dialog',
-	templateUrl: './change-project-settings.component.html',
-	styleUrls:['./change-project-settings.component.scss'],
+	templateUrl: 'change-project-settings.component.html',
+	styleUrls:['change-project-settings.component.scss'],
 	// styleUrls: ['./change-table-settings.component.scss'],
 })
 export class ChangeProjectSettingsComponent implements
@@ -109,7 +109,8 @@ export class ChangeProjectSettingsComponent implements
 	) {
 	}
 
-	public ngOnInit(): void {
+	public ngOnInit(): void
+	{
 		const columns = Object.entries(this.settings.columns);
 
 		// only include hidden values that we can see

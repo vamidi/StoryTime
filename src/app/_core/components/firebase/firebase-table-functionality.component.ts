@@ -146,7 +146,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		this.currentPaging.page = this.table.getSource.getPaging().page;
 	}
 
-	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
+	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false)
 	{
 		super.onEditConfirm(event, undo);
 		// stay on the same page

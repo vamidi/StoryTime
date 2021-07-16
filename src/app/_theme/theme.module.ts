@@ -101,7 +101,7 @@ import {
 	ChangeTableSettingsComponent,
 	ChangeProjectSettingsComponent,
 	RevisionDialogComponent,
-	TableColumnRendererComponent, NodeInspectorComponent,
+	TableColumnRendererComponent,
 } from './components/firebase-table/index';
 
 import {
@@ -218,7 +218,6 @@ const COMPONENTS = [
 
 	// Rendering component
 	MyNodeComponent,
-	NodeInspectorComponent,
 ];
 
 const CUSTOM_FORM_COMPONENTS = [

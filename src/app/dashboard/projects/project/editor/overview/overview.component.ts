@@ -33,6 +33,8 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 })
 export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 {
+	public get Table() { return this.table; }
+
 	public cardOptions: Map<number, NbMenuItem[]> = new Map<number, NbMenuItem[]>();
 
 	@ViewChildren('firebaseTableComponent')

@@ -397,7 +397,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	 * @param event
 	 * @param undo - To show the undo redo option.
 	 */
-	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean) { }
+	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false) { }
 
 	protected onUserReceived(__: User) { }
 }
