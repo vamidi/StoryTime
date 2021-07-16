@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { MiscellaneousModule } from '../pages/miscellaneous/miscellaneous.module';
-import { HomeComponent } from '../home.component';
 import { NoPermissionComponent } from '../pages/miscellaneous/no-permissions/no-permission.component';
 
 @NgModule({

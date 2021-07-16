@@ -39,10 +39,10 @@ import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
 import { UtilsService } from '@app-core/utils';
 
-// @Component({
-// 	template: '',
-// 	providers: [DynamicComponentService],
-// })
+@Component({
+	template: '',
+	providers: [DynamicComponentService],
+})
 export abstract class NodeEditorComponent extends BaseFirebaseComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	// VisualNE Editor
@@ -246,7 +246,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		this.currentOutputCount = 0;
 	}
 
-	protected abstract async initializeListeners();
+	protected abstract initializeListeners();
 
 	protected initializeCtxData(): any
 	{

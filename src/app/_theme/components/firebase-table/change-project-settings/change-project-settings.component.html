@@ -99,7 +99,7 @@
 										<div *ngFor="let value of member.value.oldValue | keyvalue">
 											<pre [style.background-color]="member.value.oldValue[value.key] !== member.value.newValue[value.key] ? 'indianred': ''">{{ value.key }} {{ value.value }}</pre>
 										</div>
-										<button type="button" nbButton status="Danger" (click)="revert(member.value)"> Revoke </button>
+										<!-- <button type="button" nbButton status="Danger" (click)="revert(member.value)">Revoke</button>-->
 									</div>
 								</div>
 							</nb-accordion-item-body>

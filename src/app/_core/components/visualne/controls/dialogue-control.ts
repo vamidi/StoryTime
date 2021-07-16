@@ -22,7 +22,7 @@ import assign from 'lodash.assign';
 @Component({
 	template: `
 		<div class="form-group" *ngIf="dialogues.length !== 0">
-			<p class="text-alternate text-wrap">{{ getValue(getDialogue(dialogueId)) }}</p>
+			<!-- <p class="text-alternate text-wrap">{{ getValue(getDialogue(dialogueId)) }}</p> -->
 		</div>
 	`,
 	styleUrls: ['./dialogue-control.scss'],

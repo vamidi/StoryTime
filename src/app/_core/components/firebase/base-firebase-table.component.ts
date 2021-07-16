@@ -196,7 +196,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param event
 	 * @param undo - To show the undo redo option.
 	 */
-	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean)
+	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false)
 	{
 		super.onEditConfirm(event, undo);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))

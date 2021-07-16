@@ -7,11 +7,11 @@ import { InsertColumnComponent } from './insert-column/insert-column.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { NodeEditorComponent, NodeInspectorComponent } from './node-editor';
+import { NodeEditorComponent } from './node-editor';
 
 import { ChangeTableSettingsComponent } from './change-table-settings/change-table-settings.component';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -41,9 +41,6 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	// Node editor
 	@ViewChildren('nodeEditor')
 	public nodeEditor: QueryList<NodeEditorComponent> = null;
-
-	@ViewChild('nodeInspector', {static: true})
-	public nodeInspector: NodeInspectorComponent = null;
 
 	@ViewChild('smartTableComponent', { static: false })
 	public smartTableComponent: any = null;
@@ -82,9 +79,5 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	/**
 	 * After the view has been initialized.
 	 */
-	public ngAfterViewInit(): void
-	{
-		if (this.nodeEditor && this.nodeInspector)
-			this.nodeInspector.setNodeEditor(this.nodeEditor.first);
-	}
+	public ngAfterViewInit(): void {}
 }
