@@ -41,9 +41,14 @@
 	],
 	"win": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
-		"target": ["portable"]
+		"target": ["nsis"]
+	},
+	"nsis": {
+		"oneClick": false,
+		"perMachine": true,
 	},
 	"portable": {
+
 	},
 	"mac": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
