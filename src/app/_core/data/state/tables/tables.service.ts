@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
-import { ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
+import { IColumn, ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { DebugType, QueryablePromise } from '@app-core/utils/utils.service';
@@ -15,6 +15,7 @@ import { environment } from '../../../../../environments/environment';
 
 import isEqual from 'lodash.isequal';
 import pick from 'lodash.pick';
+import { Utils } from 'ngx-bootstrap/utils';
 
 @Injectable({ providedIn: 'root'})
 export class TablesService extends TableData implements Iterable<Table>, IPipelineSchedule
@@ -217,6 +218,58 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 				}
 			}
 
+
+			// Only execute in debug mode
+			if(!environment.production)
+			{
+				let update = false;
+				// grab the first element in the list
+				const row: ProxyObject = table.data[0];
+				// get the table properties
+				const properties = Object.entries(row);
+				for(const [propKey, propValue] of properties)
+				{
+					const columnDefition: IColumn = {
+						name: UtilsService.title(UtilsService.replaceCharacter(propKey, /_/g, ' ')),
+						description: '',
+						type: null,
+						defaultValue: propValue,
+					};
+
+					// get the type of the column
+					switch(typeof propValue)
+					{
+						case 'undefined':
+							UtilsService.onWarn(`Propertie ${propValue} is undefined`);
+							break;
+						case 'object':
+						case 'boolean':
+						case 'function':
+						case 'symbol':
+						case 'bigint':
+							columnDefition.type = 'custom';
+							break;
+						case 'number':
+							columnDefition.type = 'number';
+							break;
+						case 'string':
+							columnDefition.type = 'string';
+							break;
+					}
+
+					// See if column key exists
+					if(!table.columns[propKey])
+					{
+						update = true;
+						table.columns[propKey] = columnDefition;
+					}
+				}
+				if(update) {
+					UtilsService.onDebug('updating table');
+					this.update(table.id);
+				}
+			}
+
 			// Set the breadcrumbs
 			// this.breadcrumbService.removeBreadcrumbsRoute(`/dashboard/projects/${table.projectID}/tables`);
 			this.breadcrumbService.addFriendlyNameForRoute(`/dashboard/projects/${table.projectID}/tables`, 'Tables');
@@ -243,7 +296,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 		if(this.tables.has(key))
 		{
 			const table: ITable = pick(this.tables.get(key),
-				['id', 'projectID', 'data', 'revisions', 'relations', 'metadata']);
+				['id', 'projectID', 'data', 'revisions', 'relations', 'columns', 'metadata']);
 
 			return this.firebaseService.updateItem(key, table, true, `tables`);
 		}

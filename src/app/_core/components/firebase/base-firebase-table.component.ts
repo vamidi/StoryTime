@@ -378,7 +378,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 									if (this.table.length === 0) // if there is no data we need to put in default data
 									{
-										this.table.push(0, this.processData({
+										this.table.push(0, BaseSettings.processData({
 											created_at: 0,
 											deleted: false,
 											updated_at: 0,
@@ -395,12 +395,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 												return this.tableService.updateData(this.tableID, d.id, d, null, false);
 											};
 
-											this.table.update(d, this.processData(d, key, value, newSettings))
+											this.table.update(d, BaseSettings.processData(d, key, value, newSettings))
 												.then(() => updateData())
 												.then(() => this.updateSettings(newSettings)).catch((error) => this.onError(error));
 										}
 										else
-											this.table.update({ ...d }, this.processData({ ...d }, key, value, newSettings))
+											this.table.update({ ...d }, BaseSettings.processData({ ...d }, key, value, newSettings))
 												.catch((error) => this.onError(error));
 										// array[index] = this.processData({ ...d }, key, value, newSettings);
 									});
@@ -520,61 +520,11 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	/**
 	 *
-	 * @brief - Process data to change the settings data.
-	 * @param obj
-	 * @param key
-	 * @param value
-	 * @param additionalSettings
-	 */
-	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: BaseSettings)
-	{
-		if (!obj.hasOwnProperty(key))
-		{
-			if (value.type.toLowerCase() === 'string')
-			{
-				obj[key] = '';
-			}
-
-			if (value.type.toLowerCase() === 'number')
-			{
-				// TODO make this value max_integer when this is marked as foreign key.
-				obj[key] = 0;
-				additionalSettings.columns[key] = {
-					...additionalSettings.columns[key],
-					editor: {
-						type: 'custom',
-						component: NumberColumnComponent,
-					},
-				};
-			}
-			if (value.type.toLowerCase() === 'boolean')
-			{
-				obj[key] = false;
-
-				// the column should be string because we render string.
-				// In the end we send true of false bool to the server.
-				additionalSettings.columns[key].type = 'string';
-				additionalSettings.columns[key] = {
-					...additionalSettings.columns[key],
-					editor: {
-						type: 'custom',
-						component: BooleanColumnRenderComponent,
-					},
-				};
-			}
-
-			obj = Object.assign({}, obj);
-			return obj;
-		}
-	}
-
-	/**
-	 *
 	 * @param newSettings
 	 * @param overrideTitle
 	 * @protected
 	 */
-	protected processColumnData(newSettings: BaseSettings, overrideTitle: string = '')
+	protected sortColumnData(newSettings: BaseSettings, overrideTitle: string = '')
 	{
 		let tbl = this.table.metadata.title;
 

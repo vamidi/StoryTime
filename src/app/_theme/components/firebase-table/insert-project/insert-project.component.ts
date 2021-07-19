@@ -22,12 +22,13 @@ import { IProject, Project } from '@app-core/data/state/projects';
 import { UserModel } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { ITable, TableTemplate } from '@app-core/data/state/tables';
+import { Column, IColumn, ITable, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/standard-tables';
 import { BehaviorSubject } from 'rxjs';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { environment } from '../../../../../environments/environment';
+import { ProxyObject } from '@app-core/data/base';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -178,6 +179,50 @@ export class InsertProjectComponent
 						// Add tables for the project.
 						standardTables.forEach((tableData: TableTemplate, strTable: string) =>
 						{
+							const columnData: { [key:string]: Column } = {};
+							// if we updated to version 2020.1.5f2 continue.
+							if(UtilsService.versionCompare(environment.appVersion, '2020.1.5f2') >= 0)
+							{
+								// grab the first element in the list
+								const row: ProxyObject = tableData.data[0];
+								// get the table properties
+								const properties = Object.entries(row);
+								for(const [propKey, propValue] of properties)
+								{
+									const columnDefition: Column = {
+										name: UtilsService.title(UtilsService.replaceCharacter(propKey, /_/g, ' ')),
+										description: '',
+										type: null,
+										defaultValue: propValue,
+									};
+
+									// get the type of the column
+									switch(typeof propValue)
+									{
+										case 'undefined':
+											UtilsService.onWarn(`Propertie ${propValue} is undefined`);
+											break;
+										case 'object':
+										case 'boolean':
+										case 'function':
+										case 'symbol':
+										case 'bigint':
+											columnDefition.type = 'custom';
+											break;
+										case 'number':
+											columnDefition.type = 'number';
+											break;
+										case 'string':
+											columnDefition.type = 'string';
+											break;
+									}
+
+									// See if column key exists
+									if(!columnData[propKey])
+										columnData[propKey] = columnDefition;
+								}
+							}
+
 							const table: ITable =
 							{
 								id: '',
@@ -185,6 +230,7 @@ export class InsertProjectComponent
 								data: tableData,
 								revisions: {},
 								relations: {},
+								columns: columnData,
 								metadata: {
 									title: strTable,
 									description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',

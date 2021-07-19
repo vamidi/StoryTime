@@ -265,7 +265,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		}
 
 		// Reorder the columns based on the localstorage if we have them.
-		this.processColumnData(newSettings, this.indexColumnPrefName);
+		this.sortColumnData(newSettings, this.indexColumnPrefName);
 
 		this.settings = Object.assign({}, newSettings);
 	}
