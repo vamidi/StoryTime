@@ -3,8 +3,8 @@ import { NbMenuService } from '@nebular/theme';
 
 @Component({
 	selector: 'ngx-no-permissions',
-	styleUrls: ['./no-permissions.component.scss'],
-	templateUrl: './no-permissions.component.html',
+	styleUrls: ['no-permissions.component.scss'],
+	templateUrl: 'no-permissions.component.html',
 })
 export class NoPermissionComponent
 {

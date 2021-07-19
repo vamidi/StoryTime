@@ -83,13 +83,11 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 						if(snapshot instanceof Table)
 						{
 							const relationData: Table = snapshot;
-							console.log(relationData);
 
 							if (relationData && relationData.data[this.relation.id].hasOwnProperty(this.relation.tblColumnRelation.value))
 							{
 								const relData = relationData.data[this.relation.id][this.relation.tblColumnRelation.value];
 
-								console.log(relationData);
 								this.resolveRelData(relData);
 							} else console.log(`Column name: ${this.relation.tblColumnRelation.key}, ${this.relation.tblColumnRelation.value} could not be found!`);
 
