@@ -26,10 +26,6 @@ const redirectLoggedInToDatabase = () => redirectLoggedInTo(['dashboard/']);
 // const belongsToAccount = (next) => hasCustomClaim(`account-${next.params.id}`);
 
 const routes: Routes = [
-	// {
-	// 	path: '',
-	// 	component: HomeComponent,
-	// },
 	{
 		path: 'dashboard',
 		component: DashboardComponent,

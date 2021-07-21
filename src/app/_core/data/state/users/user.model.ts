@@ -36,7 +36,7 @@ export interface Roles {
 	subscriber?: boolean, // – somebody who can only manage their profile.
 	// TODO see if we need this
 	contributor?: boolean, // – somebody who can write and manage their own tables but cannot publish them.
-	reader?: boolean,
+	reader?: boolean, // somebody that can only read public tables and projects.
 }
 
 export const onlySuper = ['superAdmin']

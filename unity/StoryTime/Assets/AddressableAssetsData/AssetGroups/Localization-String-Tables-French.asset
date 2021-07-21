@@ -10,16 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Localization-StringTables
+  m_Name: Localization-String-Tables-French
   m_EditorClassIdentifier: 
-  m_GroupName: Localization-StringTables
+  m_GroupName: Localization-String-Tables-French
   m_Data:
     m_SerializedData: []
-  m_GUID: b6ea3282f9e534a44a9b4e03a7edca64
-  m_SerializeEntries: []
+  m_GUID: e4a26a471d2e0e54e80999ef674c9ec3
+  m_SerializeEntries:
+  - m_GUID: e22165dec89b9d34a9d6ee71cb9bfb5b
+    m_Address: Dialogues_fr
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-fr
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 467f285105c95b34191df8312e5c2e6e, type: 2}
-    - {fileID: 11400000, guid: 155926ef1f0b0184b95bb0237f9be22d, type: 2}
+    - {fileID: 11400000, guid: f2cdd6aa8347e33428e24c8412d8b2c5, type: 2}
+    - {fileID: 11400000, guid: 3085565540945d8429b58361959823ea, type: 2}

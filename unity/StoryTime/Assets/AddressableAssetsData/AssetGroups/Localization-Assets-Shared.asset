@@ -16,47 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f392da04566e02748ad7b9dd3324c32d
-  m_SerializeEntries:
-  - m_GUID: 534666bf16d51db429bfbfbbd7b9a6e5
-    m_Address: Item Names Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 342c31ba0a1f3b3448e07ffa97c05d65
-    m_Address: InventoryTabTypes Shared Data
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: 69e23fdc1ef6b8247b783f65e888b41e
-    m_Address: StoryDescriptions Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 880a163e3a20fbb48aa71546d89bb0e7
-    m_Address: Dialogues Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: ef1106854641cea41ae5a5e6a76b2bf9
-    m_Address: Stories Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: f60a77fa6b7a8bd48865dd2d2871439f
-    m_Address: DialogueOptions Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 4e531e60398601f459790a3ae2655bd9
-    m_Address: Characters Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 9d58f987702dcc34ca3102c4bc48a52f
-    m_Address: Item Descriptions Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 4e7ebdfa10b67e04b97ed9f15524fef8
-    m_Address: NavigationStates Shared Data
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: aa5b18277a15a4113950a3cc2f1e9909
-    m_Address: Interactions Shared Data
-    m_ReadOnly: 1
-    m_SerializedLabels: []
+  m_SerializeEntries: []
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
