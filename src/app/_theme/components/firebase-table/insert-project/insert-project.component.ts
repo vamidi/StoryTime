@@ -28,6 +28,7 @@ import { standardTables, standardTablesDescription } from '@app-core/data/standa
 import { BehaviorSubject } from 'rxjs';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { environment } from '../../../../../environments/environment';
+import { Validators } from '@angular/forms';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -94,7 +95,12 @@ export class InsertProjectComponent
 			value: this.project ? this.project.metadata.title : '',
 			controlType: 'textbox',
 			errorText: 'Project name is required',
-			asyncValidator: [ CustomProjectValidators.validateProject(this.user, this.firebaseService) ],
+			validatorOrOpts: [
+				Validators.required,
+			],
+			asyncValidator: [
+				// CustomProjectValidators.validateProject(this.user, this.firebaseService)
+			],
 		});
 
 		this.formComponent.addInput(this.tableDescriptionField, {
@@ -175,57 +181,57 @@ export class InsertProjectComponent
 						// set the id of the project
 						project.id = result.key;
 
-						// Add tables for the project.
-						standardTables.forEach((tableData: TableTemplate, strTable: string) =>
-						{
-							const table: ITable =
-							{
-								id: '',
-								projectID: project.id,
-								data: tableData,
-								revisions: {},
-								relations: {},
-								metadata: {
-									title: strTable,
-									description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
-									lastUID: 0,
-									owner: this.user.uid,
-									created_at: UtilsService.timestamp,
-									updated_at: UtilsService.timestamp,
-									private: false,
-									deleted: false,
-									version: {
-										major: environment.MAJOR,
-										minor: environment.MINOR,
-										release: environment.RELEASE,
-									},
-								},
-							};
-
-							this.firebaseService.insert(table, 'tables').then((tblResult) =>
-							{
-								// set the id of the project
-								table.id = tblResult.key;
-								project.tables[table.id] = {
-									enabled: true,
-									name: table.metadata.title,
-									description: table.metadata.description,
-								};
-
-								// update the project with newly made tables
-								// Add the project also to the user meta data
-								this.firebaseService.updateItem(project.id, project, true, 'projects').then();
-							});
-						});
-
 						if(!this.user.hasOwnProperty('projects'))
 							this.user = { ...this.user, projects: { } };
 
 						this.user.projects[project.id] = { roles: { admin: true, editor: true, author: true, subscriber: true } };
 
 						// Add the project also to the user meta data
-						this.firebaseService.updateItem(this.user.uid, this.user, true, 'users').then(() =>
+						this.firebaseService.updateItem(`${this.user.uid}/projects/${project.id}`, this.user.projects[project.id], true, 'users').then(() =>
 						{
+							// Add tables for the project.
+							standardTables.forEach((tableData: TableTemplate, strTable: string) =>
+							{
+								const table: ITable =
+									{
+										id: '',
+										projectID: project.id,
+										data: tableData,
+										revisions: {},
+										relations: {},
+										metadata: {
+											title: strTable,
+											description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
+											lastUID: 0,
+											owner: this.user.uid,
+											created_at: UtilsService.timestamp,
+											updated_at: UtilsService.timestamp,
+											private: false,
+											deleted: false,
+											version: {
+												major: environment.MAJOR,
+												minor: environment.MINOR,
+												release: environment.RELEASE,
+											},
+										},
+									};
+
+								this.firebaseService.insert(table, 'tables').then((tblResult) =>
+								{
+									// set the id of the project
+									table.id = tblResult.key;
+									project.tables[table.id] = {
+										enabled: true,
+										name: table.metadata.title,
+										description: table.metadata.description,
+									};
+
+									// update the project with newly made tables
+									// Add the project also to the user meta data
+									this.firebaseService.updateItem(project.id, project, true, 'projects').then();
+								});
+							});
+
 							UtilsService.showToast(this.ToastrService, 'Project created',
 								`Project ${project.metadata.title} created!`);
 						});

@@ -248,7 +248,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
 					return {title: UtilsService.title(table.name), data: { method: 'tables', id: t }}
-				}).sort((a, b) => UtilsService.sortAlphabeticFunc(a, b, 'title')),
+				}), // .sort((a, b) => UtilsService.sortAlphabeticFunc(a, b, 'title')),
 			);
 
 			this.mainSubscription.add(this.menuService.onItemClick()
