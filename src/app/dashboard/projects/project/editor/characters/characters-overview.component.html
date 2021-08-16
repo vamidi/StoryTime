@@ -15,11 +15,12 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let character of getTable">
+		{{ character | json }}
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onCharacterClicked($event, character);">
 			<nb-card-header>
 				<div class="d-flex flex-row">
 					<div>
-						<h4 class="d-inline-block">{{ character.name }}</h4>
+						<h4 class="d-inline-block">{{ getName(character.name) }}</h4>
 					</div>
 					<div class="btn-group align-self-start ml-auto" dropdown>
 						<button id="button-basic" dropdownToggle type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"

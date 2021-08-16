@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
-import { CharactersComponent } from './characters-overview.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NbButtonModule, NbCardModule, NbIconModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ThemeModule } from '@app-theme/theme.module';
 import { StoriesComponent } from './stories/stories.component';
 import { StoryComponent } from './stories/story/story.component';
-import { CharactersRoutingsModule } from './characters-routings.module';
-import { ThemeModule } from '@app-theme/theme.module';
-import { NbButtonModule, NbCardModule, NbIconModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
+import { CharactersComponent } from './characters-overview.component';
+import { CharacterComponent } from '@app-dashboard/projects/project/editor/characters/character/character.component';
+import { CharactersRoutingModule } from './characters-routing.module';
 import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-editor';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { EchartsModule } from '@app-core/components/echarts/echarts.module';
 
 @NgModule({
 	imports: [
-		CharactersRoutingsModule,
+		CharactersRoutingModule,
+
 		ThemeModule,
 		NbCardModule,
 		ReactiveFormsModule,
@@ -20,10 +23,13 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 		NbSpinnerModule,
 		NbIconModule,
 		BsDropdownModule.forRoot(),
+
+		EchartsModule,
 	],
 	declarations: [
 		// Story addition
 		CharactersComponent,
+		CharacterComponent,
 		StoriesComponent,
 		StoryComponent,
 

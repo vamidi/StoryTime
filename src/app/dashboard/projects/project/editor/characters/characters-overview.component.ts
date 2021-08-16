@@ -7,11 +7,12 @@ import {
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { ICharacter } from '@app-core/data/standard-tables';
 
 @Component({
 	selector: 'ngx-characters-overview',
@@ -37,7 +38,7 @@ export class CharactersComponent extends BaseSourceDataComponent implements OnIn
 		protected router: Router,
 	) {
 		super(router, toastrService, snackbarService, userService, userPreferencesService, projectService,
-			tableService, firebaseService, firebaseRelationService, languageService, 'characters');
+			tableService, firebaseService, firebaseRelationService, languageService, 'tables/-MCRBgLEN83fE5mrtXWZ');
 	}
 
 	public ngOnInit(): void
@@ -55,7 +56,12 @@ export class CharactersComponent extends BaseSourceDataComponent implements OnIn
 		this.getTableData(this.settings);
 	}
 
-	public onCharacterClicked(event:any, characterObj: any)
+	getName(prop: any)
+	{
+		return prop['en'];
+	}
+
+	public onCharacterClicked(event:any, characterObj: ICharacter)
 	{
 		// console.log(event.target, event.target.parentElement, event.currentTarget, event.target === event.currentTarget);
 		// to prevent propagation
@@ -67,7 +73,7 @@ export class CharactersComponent extends BaseSourceDataComponent implements OnIn
 			event.target.parentElement.parentElement === event.currentTarget
 		)
 		{
-			this.router.navigate(['stories/', characterObj.name.toLowerCase()],
+			this.router.navigate(['stories/', characterObj.name['en'].toLowerCase()],
 				{state: {characterId: characterObj.id}, relativeTo: this.activatedRoute})
 				.then();
 		}
