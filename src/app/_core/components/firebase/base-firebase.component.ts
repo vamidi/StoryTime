@@ -150,10 +150,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 					// We only need this information once
 					if (!newSettings.columns.hasOwnProperty(key.toString()))
 					{
-						let titleName = key.toString();
-						titleName = titleName.replace(/([A-Z])/g, ' $1').trim();
-						titleName = titleName.charAt(0).toUpperCase() + titleName.substr(1);
-
+						const titleName = UtilsService.title(key.toString());
 						const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
 
 						newSettings.columns[key] =

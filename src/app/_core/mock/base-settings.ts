@@ -30,9 +30,44 @@ export interface Column {
 	valuePrepareFunction?: (cell , row) => string,
 }
 
-export class BaseSettings
+export interface ISettings
 {
-	mode?: string = 'inline'; /* external */
+	mode?: 'inline' | 'external';
+	selectMode?: string;
+	noDataMessage?: string;
+	actions?: {
+		add?: boolean,
+		edit?: boolean,
+		delete?: boolean,
+		position?: 'left' | 'right',
+		width?: string,
+		custom?: {name: string, title: string}[],
+	};
+	add?: {
+		addButtonContent?: string,
+		createButtonContent?: string,
+		cancelButtonContent?: string,
+		confirmCreate?: boolean,
+		width?: string,
+	};
+	edit?: {
+		editButtonContent?: string,
+		saveButtonContent?: string,
+		cancelButtonContent?: string,
+		confirmSave?: boolean,
+		width?: string,
+	},
+	delete?: {
+		deleteButtonContent?: string,
+		confirmDelete?: boolean,
+		width?: string,
+	};
+	columns: { [key: string]: Column };
+}
+
+export class BaseSettings implements ISettings
+{
+	mode?: 'inline' | 'external' = 'inline'; /* external */
 	selectMode?: string = ''; // 'multi';
 	noDataMessage?: string = 'No items found'; // default: -> 'No data found'
 	actions?: any = {

@@ -15,7 +15,7 @@ import { ThemeModule } from '@app-theme/theme.module';
 
 import { EditorRoutingModule } from './editor.routing.module';
 
-import { CharactersModule } from './characters/characters.module';
+import { GameEditorModule } from './character-editor/game-editor.module';
 import { EditorComponent } from '@app-dashboard/projects/project/editor/editor.component';
 import { StoryEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/story-editor.component';
 import { ItemEditorComponent } from '@app-dashboard/projects/project/editor/item-editor/item-editor.component';
@@ -48,7 +48,7 @@ const LIB_MODULES = [
 
 		// Own modules
 		EditorRoutingModule,
-		CharactersModule,
+		GameEditorModule,
 	],
 	declarations:[
 		EditorComponent,

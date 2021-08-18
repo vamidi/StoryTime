@@ -353,7 +353,8 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 		el.question.id = ++this.order;
 		el.showLabels = this.showLabels;
-		el.setValue = el.question.value;
+		el.value = el.question.value;
+		// el.setValue = el.question.value;
 
 		if(el instanceof DropDownFieldComponent)
 		{

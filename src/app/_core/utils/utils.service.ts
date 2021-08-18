@@ -22,18 +22,6 @@ export interface ObjectKeyValue<T>
 	[key: string]: T;
 }
 
-/*
-export function convertToBoolProperty(val: any): boolean {
-	if (typeof val === 'string') {
-		val = val.toLowerCase().trim();
-
-		return (val === 'true' || val === '');
-	}
-
-	return !!val;
-}
-*/
-
 export declare type NbThemeNames = 'default' | 'dark' | 'cosmic' | 'corporate';
 export interface UserPreferences
 {
@@ -99,6 +87,11 @@ export class QueryablePromise<T> extends Promise<T>
 	}
 }
 
+export interface IEvaluation
+{
+	readonly expression: string;
+	evaluate(rex?: { [key:string]: number }): number;
+}
 
 @Injectable()
 export class UtilsService
@@ -124,6 +117,150 @@ export class UtilsService
 	private intervalId: any = null;  // For setting interval time between we check for authorization code or token
 	private loopCount = 600;   // the count until which the check will be done, or after window be closed automatically.
 	private intervalLength = 100;   // the gap in which the check will be done for code.
+
+	/**
+	 * @brief Parser class to transform formula's into equations and return the value.
+	 */
+	static Parser = class
+	{
+		/**
+		 *
+		 * @param expression
+		 */
+		public static parse(expression: string): IEvaluation
+		{
+			return {
+				expression,
+				evaluate: (rex) => UtilsService.Parser.evaluate(expression, rex),
+			};
+		}
+
+		/**
+		 *
+		 * @param expression
+		 * @param rex
+		 * @param debug
+		 */
+		public static evaluate(expression: string, rex?: { [key:string]: number }, debug: boolean = false): number
+		{
+			// trim all whitespaces include trailing ones
+			expression = UtilsService.replaceCharacter(expression.trim(), / /g, '');
+			if(rex)
+			{
+				const keys: string[] = Object.keys(rex);
+				keys.forEach((k) => expression = UtilsService.replaceCharacter(expression, new RegExp(k, 'gi'), rex[k].toString()));
+			}
+			return UtilsService.Parser.parsePlusSeparatedExpression(expression, debug);
+		}
+
+		private static split(expression: string, operator: '-' | '+' | '*' | '/')
+		{
+			const result = [];
+			let braces = 0;
+			let currentChunk = '';
+			for (let i = 0; i < expression.length; ++i)
+			{
+				const curCh = expression[i];
+				if (curCh === '(')
+				{
+					braces++;
+				} else if (curCh === ')') {
+					braces--;
+				}
+				if (braces === 0 && operator === curCh)
+				{
+					result.push(currentChunk);
+					currentChunk = '';
+				} else currentChunk += curCh;
+			}
+			if (currentChunk !== '')
+			{
+				result.push(currentChunk);
+			}
+			return result;
+		};
+
+		private static parseMinusSeparatedExpression(expression, debug: boolean)
+		{
+			const numbersString = UtilsService.Parser.split(expression, '-');
+			const numbers = numbersString.map(noStr =>
+			{
+				if(debug)
+					console.log(noStr);
+
+				if(noStr.includes('/'))
+					return UtilsService.Parser.parseDivisionSeparatedExpression(noStr, debug);
+
+				return UtilsService.Parser.parseMultiplicationSeparatedExpression(noStr, debug);
+			});
+			const initialValue = numbers[0];
+			return numbers.slice(1).reduce((acc, no) => acc - no, initialValue);
+		};
+
+		// * +
+		private static parsePlusSeparatedExpression(expression, debug: boolean)
+		{
+			const numbersString = UtilsService.Parser.split(expression, '+');
+			const numbers = numbersString.map(noStr =>
+			{
+				// debugger
+				if(debug)
+					console.log(noStr);
+
+				return UtilsService.Parser.parseMinusSeparatedExpression(noStr, debug)
+			});
+			const initialValue = 0.0;
+			return numbers.reduce((acc, no) => acc + no, initialValue);
+		};
+
+		// this will only take strings containing * operator [ no + ]
+		private static parseMultiplicationSeparatedExpression(expression: string, debug: boolean)
+		{
+			const numbersString = UtilsService.Parser.split(expression, '*');
+			const numbers = numbersString.map(noStr =>
+			{
+				if (noStr[0] === '(')
+				{
+					const expr = noStr.substr(1, noStr.length - 2);
+
+					// recursive call to the main function
+					return UtilsService.Parser.parsePlusSeparatedExpression(expr, debug);
+				}
+				return +noStr;
+			});
+
+			const initialValue = 1.0;
+			return numbers.reduce((acc, no) =>  acc * no, initialValue);
+		};
+
+		private static parseDivisionSeparatedExpression(expression: string, debug: boolean)
+		{
+			const numbersString = UtilsService.Parser.split(expression, '/');
+			const numbers: number[] = numbersString.map(noStr =>
+			{
+				if (noStr[0] === '(')
+				{
+					const expr = noStr.substr(1, noStr.length - 2);
+
+					// recursive call to the main function
+					return UtilsService.Parser.parsePlusSeparatedExpression(expr, debug);
+				}
+
+				if(noStr.includes('*'))
+					return UtilsService.Parser.parsePlusSeparatedExpression(noStr, debug);
+
+				return +noStr;
+			});
+
+			const initialValue = numbers[0];
+			const accumulated =  numbers
+				.slice(1).reduce((acc, no) => { if(debug) console.log(acc, no); return acc / no }, initialValue);
+			if(debug)
+				console.log(numbers, accumulated);
+
+			return accumulated;
+		}
+	}
 
 	static onDebug(msg: any, type: DebugType = DebugType.LOG, ...optionalParams: any[])
 	{
@@ -329,7 +466,7 @@ export class UtilsService
 	 */
 	static replaceCharacter(str: string, regex: string | RegExp, char: string)
 	{
-		if(str !== '' && char !== '') // /\s+/g
+		if(str !== '') // /\s+/g
 			return str.replace(regex, char);
 
 		return str;

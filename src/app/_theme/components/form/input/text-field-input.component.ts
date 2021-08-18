@@ -38,6 +38,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 				   (keyup)="onKeyUpFunc($event)"
 				   nbInput
 				   fullWidth
+				   autofocus
 			/>
 
 			<!-- TODO maybe add dynamic content if needed -->
@@ -64,7 +65,8 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 					  [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
 					  (keyup)="onKeyUpFunc($event)"
 					  nbInput
-					  fullWidth>
+					  fullWidth
+					  autofocus>
 			</textarea>
 
 			<!-- TODO maybe add dynamic content if needed -->
@@ -225,8 +227,8 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 			{
 				const control = this.parent.formContainer.get(this.question.key);
 				control.setValue(this.value);
-				control.markAsDirty({ onlySelf: true });
-				control.markAsTouched({ onlySelf: true });
+				// control.markAsDirty({ onlySelf: true });
+				// control.markAsTouched({ onlySelf: true });
 			}
 		}, 1000);
 	}

@@ -459,11 +459,10 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 				promises.push(this.tableService.addIfNotExists(tables[i]));
 			}
 			else this.loadTable(t);
-
 		}
 
-		return new Promise((resolve) => {
-
+		return new Promise((resolve) =>
+		{
 			Promise.all(promises).then((values: Table[] | boolean[]) =>
 			{
 				values.forEach((value: Table | boolean) =>

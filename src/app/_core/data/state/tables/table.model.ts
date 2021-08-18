@@ -156,11 +156,16 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		return UtilsService.camelize(this.metadata.title);
 	}
 
-	public forEach(callbackfn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
+	/**
+	 * Loop through the filtered data.
+	 * @param callbackFn
+	 * @param thisArg
+	 */
+	public forEach(callbackFn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
 	{
 		this.filteredData.forEach((value, index, arr) =>
 		{
-			callbackfn(value, index, arr);
+			callbackFn(value, index, arr);
 		}, thisArg)
 	}
 

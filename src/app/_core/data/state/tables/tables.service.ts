@@ -15,6 +15,9 @@ import { environment } from '../../../../../environments/environment';
 
 import isEqual from 'lodash.isequal';
 import pick from 'lodash.pick';
+import { ICharacterClass } from '@app-core/data/standard-tables';
+import { Project } from '@app-core/data/state/projects';
+import { ChildEvent } from '@angular/fire/database/interfaces';
 
 @Injectable({ providedIn: 'root'})
 export class TablesService extends TableData implements Iterable<Table>, IPipelineSchedule
@@ -182,6 +185,62 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 		return observableOf(this.recentTables);
 	}
 
+
+	/**
+	 * @brief - Load tables from a specific project.
+	 * @param project - Project to load the tables from.
+	 * @NOTE - Included tables must be lower case!
+	 * @param includedTables - The tables we want to search. empty searches everyone.
+	 * @param successfulCallbackContext - Callback when we load the table.
+	 */
+	public loadTablesFromProject(
+		project: Project, includedTables: string[] = [],
+		successfulCallbackContext?: (value: Table) => void,
+	): Promise<void>
+	{
+		const tables = Object.keys(project.tables);
+		const promises: Promise<Table | boolean>[] = [];
+		for(let i = 0; i < tables.length; i++)
+		{
+			const tbl = project.tables[tables[i]];
+			const t: Table | null = this.getTableById(tables[i]);
+
+			if(
+				// if it empty or the name exists in the array.
+				(includedTables.includes(tbl.name.toLowerCase()))
+				&& (t === null || !t.loaded)
+			)
+			{
+				promises.push(this.addIfNotExists(tables[i]));
+			}
+			else {
+				if(successfulCallbackContext) successfulCallbackContext(t);
+			}
+		}
+
+		return new Promise((resolve) =>
+		{
+			Promise.all(promises).then((values: Table[] | boolean[]) =>
+			{
+				values.forEach((value: Table | boolean) =>
+				{
+					if(value instanceof Table && successfulCallbackContext)
+					{
+						successfulCallbackContext(value);
+					}
+				});
+				resolve();
+			})
+		});
+	}
+
+	/**
+	 * @brief - Insert the table into the collection.
+	 * Also gives the user to the option to set it as the current table.
+	 * @param key
+	 * @param newTable
+	 * @param current
+	 */
 	public setTable(key: string, newTable: Table, current: boolean = false): Table
 	{
 		let table: Table | null;
@@ -231,6 +290,30 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 		}
 
 		return table;
+	}
+
+	/**
+	 * @brief - Listen to table events
+	 * @param table
+	 * @param events
+	 */
+	public listenToTableData(table:Table, events: ChildEvent[] = ['child_added', 'child_changed', 'child_removed'])
+	{
+		// TODO make a listener list to see if we don't have duplicates
+		return this.firebaseService.getTableData$(
+		`tables/${table.id}/data`, events)
+			.subscribe((snapshots) =>
+			{
+				for(let i = 0; i < snapshots.length; i++)
+				{
+					const snapshot = snapshots[i];
+					if(!events.includes(snapshot.type as ChildEvent))
+						continue;
+
+					table.push(+snapshot.key, snapshot.payload.val()).then();
+				}
+			},
+		);
 	}
 
 	/**
@@ -373,7 +456,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 	}
 
 	/**
-	 * @brief -
+	 * @brief - iterate through the collection
 	 */
 	[Symbol.iterator](): Iterator<Table>
 	{
@@ -439,6 +522,12 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 		return false;
 	}
 
+	/**
+	 * @brief - Method to update tables that are outdated.
+	 * @param key
+	 * @param asset
+	 * @private
+	 */
 	private updateDialogueTblForLocalization(key, asset: Table)
 	{
 		if (asset.metadata.title === 'dialogues' ||

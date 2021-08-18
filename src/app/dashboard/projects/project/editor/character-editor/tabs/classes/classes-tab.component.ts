@@ -1,35 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { AngularFireAction } from '@angular/fire/database';
-import { NbThemeService } from '@nebular/theme';
-
-import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-
-import { Project, ProjectsService } from '@app-core/data/state/projects';
-import { UserService } from '@app-core/data/state/users';
-import { TablesService } from '@app-core/data/state/tables';
-import { BackendService } from '@app-core/utils/backend/backend.service';
-import { UtilsService } from '@app-core/utils';
 import { EchartsConfig } from '@app-core/components/echarts';
-import { ProxyObject } from '@app-core/data/base';
-import * as _ from 'lodash';
+import { BaseTabComponent } from '@app-dashboard/projects/project/editor/character-editor/tabs/Base/base-tab.component';
+import { UtilsService } from '@app-core/utils';
+import { Project, ProjectsService } from '@app-core/data/state/projects';
+import { NbThemeService } from '@nebular/theme';
+import { ActivatedRoute } from '@angular/router';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { UserService } from '@app-core/data/state/users';
 
 @Component({
-	selector: 'ngx-character',
-	templateUrl: 'character.component.html',
+	selector: 'ngx-classes-tab',
+	templateUrl: 'classes-tab.component.html',
 })
-export class CharacterComponent implements OnInit
+export class ClassesTabComponent extends BaseTabComponent implements OnInit
 {
 	public eCharLevelOptions: EchartsConfig = {}
 
 	public eCharStats: EchartsConfig = {};
-
-	public charData: ProxyObject = null;
-
-	protected mainSubscription: Subscription = new Subscription();
-
-	protected project: Project = new Project();
 
 	/**
 	 * @typedef {[key:string]: { formula: string, base: number, rate: number, flat: number } }
@@ -77,107 +64,72 @@ export class CharacterComponent implements OnInit
 
 	protected conditionalGrowth:
 		{ [key:string]: { condition: string, level: number, minMaxLevel?: number, growthValue: string | number }[] } =
-	{
-		'TP': [
-			{
-				condition: '==',
-				level: 91,
-				growthValue: 0.01,
-			},
-			{
-				condition: '>=',
-				level: 92,
-				minMaxLevel: 110,
-				growthValue: 0.015,
-			},
-			{
-				condition: '==',
-				level: 111,
-				growthValue: 0.02,
-			},
-			{
-				condition: '==',
-				level: 112,
-				growthValue: 0.02,
-			},
-			{
-				condition: '>=',
-				level: 113,
-				minMaxLevel: 123,
-				growthValue: 'prev + 0.005',
-			},
-			{
-				condition: '==',
-				level: 122,
-				growthValue: 0.06,
-			},
-			{
-				condition: '>=',
-				level: 124,
-				minMaxLevel: 200,
-				growthValue: 0.07,
-			},
-		],
-	}
+		{
+			'TP': [
+				{
+					condition: '==',
+					level: 91,
+					growthValue: 0.01,
+				},
+				{
+					condition: '>=',
+					level: 92,
+					minMaxLevel: 110,
+					growthValue: 0.015,
+				},
+				{
+					condition: '==',
+					level: 111,
+					growthValue: 0.02,
+				},
+				{
+					condition: '==',
+					level: 112,
+					growthValue: 0.02,
+				},
+				{
+					condition: '>=',
+					level: 113,
+					minMaxLevel: 123,
+					growthValue: 'prev + 0.005',
+				},
+				{
+					condition: '==',
+					level: 122,
+					growthValue: 0.06,
+				},
+				{
+					condition: '>=',
+					level: 124,
+					minMaxLevel: 200,
+					growthValue: 0.07,
+				},
+			],
+		}
 
-	protected modifiers: { [key: string]: any } = {
+	protected modifiers: { [key: string]: any } = {};
 
-	};
-
-	/**
-	*/
-	constructor(
-		public tablesService: TablesService,
+	public constructor(
+		protected route: ActivatedRoute,
+		protected firebaseService: FirebaseService,
 		protected userService: UserService,
 		protected projectsService: ProjectsService,
-		protected firebaseService: BackendService,
-		protected router: Router,
-		protected activatedRoute: ActivatedRoute,
-		private themeService: NbThemeService,
-	)
-	{
+		protected themeService: NbThemeService,
+	) {
+		super(route, firebaseService, userService, projectsService);
 	}
 
-	public ngOnInit(): void
+
+	public ngOnInit()
 	{
-		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
-		const tableID = map.get('id');
-		const id = map.get('charId');
-		const projectID = this.activatedRoute.parent.snapshot.paramMap.get('id');
+		super.ngOnInit();
 
-		// Important or data will not be cached
-		this.firebaseService.getRef(`tables/${tableID}/data/${id}`).on('value', (snapshot) => {
-			if(snapshot.exists())
-			{
-				this.charData = snapshot.val();
-			}
-		});
-
-		this.mainSubscription.add(this.userService.getUser().pipe(
-			switchMap(() =>
-				this.projectsService.getProject() ?
-				this.projectsService.getProject$() :
-				this.firebaseService.getItem(projectID, `projects`).snapshotChanges(),
-			),
-		).subscribe((snapshot: Project | AngularFireAction<any>) =>
+		this.mainSubscription.add(this.project$.subscribe((project: Project) =>
 		{
-			console.log(snapshot, typeof snapshot, snapshot instanceof Project);
-			let project = null;
-			if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+			if(project)
 			{
-				project = snapshot;
-			} else if(snapshot.payload.exists())
-			{
-				project = snapshot.payload.val()
-			}
-
-			if (project && !_.isEqual(this.project, project) && project.hasOwnProperty('tables'))
-			{
-				this.project = { ...project };
 				this.configureStats();
 			}
-
-			this.userService.setUserPermissions(this.projectsService);
 		}));
 	}
 

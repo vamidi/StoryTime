@@ -42,16 +42,20 @@ export interface ICharacter extends ProxyObject
 {
 	name: KeyLanguageObject;
 	description: KeyLanguageObject;
+	class: number,
+	initialLevel: number,
+	maxLevel: number,
 }
 
 export interface IItem extends ProxyObject
 {
-	name: KeyLanguageObject;
-	description: KeyLanguageObject;
+	description: KeyLanguageObject,
 	effectPrimaryValue: number,
 	effectTypeId: number,
+	name: KeyLanguageObject,
 	sellValue: number,
 	sellable: boolean,
+	typeId: number, /** @type IItemType */
 }
 
 export interface ICraftable extends ProxyObject
@@ -82,7 +86,69 @@ export interface IEvent extends ProxyObject
 	owner: string, // creator of the event
 }
 
-export const standardTablesDescription: Map<string, string> = new Map<string, string>([]);
+export interface ICharacterClass extends ProxyObject
+{
+	className: string, // Class name -  Name of the class.
+	expCurve: string, // - Exp curve - How fast this class can evolve.
+}
+
+export interface IItemInventoryType extends ProxyObject
+{
+	// Recipe,
+	// Utensil,
+	// Ingredient,
+	// Customisation,
+	// Dish,
+	name: KeyLanguageObject, // the name of the type --> recipe, utensil, ingredient etc.
+}
+
+export interface IItemInventoryActionType extends ProxyObject
+{
+	// Cook,
+	// Craft,
+	// Use,
+	// Equip,
+	// DoNothing
+	name: KeyLanguageObject, // The type of action for in the inventory
+}
+
+export interface IITemTabType extends ProxyObject
+{
+	// None,
+	// Customization --> Character customization
+	// Artifacts --> Accessories to boost the character
+	// Upgrades --> Upgrade materials to level up items.
+	// FoodItems --> Items that can be consumed
+	// Recipes --> Crafting or cooking recipes
+	// Materials --> Gadgets that can be used to activate something
+	// Stories --> Items that the player needs to use.
+	name: KeyLanguageObject, // the name of the type
+
+}
+
+export interface IInventoryTabType extends ProxyObject
+{
+	name: KeyLanguageObject, // the name of the tab.
+	description: KeyLanguageObject,
+	slotCount: number, // the amount of items it can carry.
+	type: number, /** @type IITemTabType */
+}
+
+/**
+ * @brief - represent a group for the items.
+ */
+export interface IItemType extends ProxyObject
+{
+	name: KeyLanguageObject, // item name type --> armor, sword
+	actionName: KeyLanguageObject, // the action name we show when interacting with an item.
+	actionType: number, /** @type IItemInventoryActionType --> the kind of action to perform in the inventory. */
+	type: number, /** @type IItemInventoryType --> The type what the item represent in the inventory */
+}
+
+export const standardTablesDescription: Map<string, string> = new Map<string, string>([
+	Pair('classes', 'Defines the classes a character can have in the game.'),
+	Pair('itemTypes', 'Represents group for the items'),
+]);
 
 export const standardTables: Map<string, TableTemplate> = new Map<string, TableTemplate>([
 	// Dialogues
@@ -112,8 +178,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			description: {
 				'en': '',
 			},
+			typeId: Number.MAX_SAFE_INTEGER,
 			sellValue: 0,
 			sellable: true,
+
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},
@@ -121,6 +189,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	// characters
 	Pair<string, { [key: number]: ICharacter }>( 'characters', 	{
 		0: {
+			class: Number.MAX_SAFE_INTEGER,
 			deleted: false,
 			name: {
 				'en': '',
@@ -128,6 +197,8 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			description: {
 				'en': '',
 			},
+			initialLevel: 0,
+			maxLevel: 0,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},
@@ -368,6 +439,135 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 
 			inputs: [],
 
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: ICharacterClass }>( 'classes', {
+		0: {
+			className: '',
+			expCurve: '',
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: IITemTabType }>('itemTabTypes', {
+		0: {
+			name: {
+				en: 'None',
+			},
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+
+	Pair<string, { [key: number]: IInventoryTabType }>('inventoryTabs', {
+		0: {
+			name: {
+				en: 'None',
+			},
+			description: {
+				en: 'No definition for the tab',
+			},
+			slotCount: 0,
+			type: Number.MAX_SAFE_INTEGER,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: IItemType }>('itemTypes', {
+		0: {
+			name: {
+				en: 'Sword',
+			},
+			actionName: {
+				en: '',
+			},
+			actionType: Number.MAX_SAFE_INTEGER,
+			type: Number.MAX_SAFE_INTEGER,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		1: {
+			name: {
+				en: 'Shield',
+			},
+			actionName: {
+				en: '',
+			},
+			actionType: Number.MAX_SAFE_INTEGER,
+			type: Number.MAX_SAFE_INTEGER,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		2: {
+			name: {
+				en: 'Armor',
+			},
+			actionName: {
+				en: '',
+			},
+			actionType: Number.MAX_SAFE_INTEGER,
+			type: Number.MAX_SAFE_INTEGER,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: IItemInventoryActionType }>('inventoryActions', {
+		0: {
+			name: {
+				en: 'Do Nothing',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		1: {
+			name: {
+				en: 'Cook',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		2: {
+			name: {
+				en: 'Craft',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		3: {
+			name: {
+				en: 'Use',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		4: {
+			name: {
+				en: 'Equip',
+			},
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,

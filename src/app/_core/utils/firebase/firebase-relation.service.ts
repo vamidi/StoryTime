@@ -120,6 +120,10 @@ export class FirebaseRelationService
 			Pair('dialogueId', new StringPair('dialogues', 'text', true)),
 		]);
 
+		const characters: RelationPair = new Map([
+			Pair('class', new StringPair('classes', 'className', true)),
+		]);
+
 		const storyCharacterDialogues: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
 			Pair('childId', new StringPair('dialogues', 'text', true)),
@@ -196,7 +200,8 @@ export class FirebaseRelationService
 			Pair('dialogueOptions', dialogueOptionDialogues),
 			Pair('dialogueQuests', dialogueQuests),
 			Pair('dialogueEvents', dialogueEvents),
-			Pair('stories', storyCharacterDialogues),
+
+			Pair('characters', characters),
 
 			Pair('quests', questQuestTypes),
 			Pair('questEvents', questEvents),
@@ -206,6 +211,7 @@ export class FirebaseRelationService
 			Pair('enemies', enemies),
 
 			Pair('shops', shopCharacter),
+			Pair('stories', storyCharacterDialogues),
 			Pair('shopPrices', shopPricesShopItems),
 			Pair('shopCraftables', shopCraftablesShopItem),
 			Pair('shopCraftConditions', shopCraftConditionsShopCraftablesitems),

@@ -74,6 +74,9 @@ export function createCharacter(): ICharacter
 		description: {
 			'en': '',
 		},
+		class: Number.MAX_SAFE_INTEGER,
+		initialLevel: 0,
+		maxLevel: 0,
 	};
 }
 
@@ -89,6 +92,7 @@ export function createItem(): IItem
 		description: {
 			'en': '',
 		},
+		typeId: Number.MAX_SAFE_INTEGER,
 		sellValue: 0,
 		sellable: true,
 		created_at: UtilsService.timestamp,

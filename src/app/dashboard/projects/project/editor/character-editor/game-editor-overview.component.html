@@ -1,0 +1,38 @@
+<div class="row">
+	<div class="col-lg-12">
+		<ngx-breadcrumbs></ngx-breadcrumbs>
+	</div>
+	<div class="col-lg-12">
+		<h1>Game Editor</h1>
+	</div>
+	<div class="col-lg-12">
+		<nb-card style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<nb-vertical-tabset>
+					<nb-tab tabTitle="Characters">
+						<ngx-character-tab [characterSettings]="settings" [characters]="getTable.filteredData" (onCreateConfirm)="onCreateConfirm($event)"></ngx-character-tab>
+					</nb-tab>
+					<nb-tab tabTitle="Enemies">
+						<p>List of <strong>Enemies</strong>.</p>
+					</nb-tab>
+					<nb-tab tabTitle="Classes">
+						<ngx-classes-tab [characters]="getTable.filteredData"></ngx-classes-tab>
+					</nb-tab>
+					<nb-tab tabTitle="Skills">
+						<p>List of <strong>Skills</strong>.</p>
+					</nb-tab>
+					<nb-tab tabTitle="Items">
+						<p>List of <strong>Items</strong>.</p>
+					</nb-tab>
+					<nb-tab tabTitle="Weapons">
+						<p>List of <strong>Weapons</strong>.</p>
+					</nb-tab>
+					<nb-tab tabTitle="Armors">
+						<p>List of <strong>Armors</strong>.</p>
+					</nb-tab>
+				</nb-vertical-tabset>
+			</nb-card-body>
+		</nb-card>
+	</div>
+</div>
+

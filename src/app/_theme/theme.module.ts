@@ -101,7 +101,8 @@ import {
 	ChangeTableSettingsComponent,
 	ChangeProjectSettingsComponent,
 	RevisionDialogComponent,
-	TableColumnRendererComponent,
+	TableColumnRendererComponent, InsertTraitComponent,
+	InsertEquipmentComponent,
 } from './components/firebase-table/index';
 
 import {
@@ -197,6 +198,8 @@ const COMPONENTS = [
 	InsertItemsDialogComponent,
 	InsertMultipleDialogComponent,
 	InsertColumnComponent,
+	InsertEquipmentComponent,
+	InsertTraitComponent,
 	InsertRelationDialogComponent,
 	InsertProjectComponent,
 	InsertStoryComponent,
