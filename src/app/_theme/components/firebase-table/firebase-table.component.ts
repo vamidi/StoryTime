@@ -68,7 +68,7 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	public isTable()
 	{
 		// if the table name is empty false --> true
-		return this.tableName !== 'game-db';
+		return this.tableId !== 'game-db';
 	}
 
 	public ngOnInit()

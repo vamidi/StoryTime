@@ -1,91 +1,59 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 
-import {
-	InsertEquipmentComponent,
-	InsertMultipleDialogComponent,
-	InsertTraitComponent,
-} from '@app-theme/components/firebase-table';
+import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 
-import { ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { UserService } from '@app-core/data/state/users';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BaseTabComponent } from '@app-dashboard/projects/project/editor/character-editor/tabs/Base/base-tab.component';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
-import { NbDialogService } from '@nebular/theme';
-import { ICharacter, ICharacterClass, IItem, IItemType } from '@app-core/data/standard-tables';
-import { BehaviourType } from '@app-core/types';
-import { BehaviorSubject } from 'rxjs';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { ICharacter, ICharacterClass } from '@app-core/data/standard-tables';
 import { Relation, StringPair } from '@app-core/data/base';
 import { UtilsService } from '@app-core/utils';
-import { TextColumnComponent, TextRenderComponent } from '@app-theme/components';
+import {
+	DropDownFieldComponent,
+	DynamicFormComponent,
+	TextColumnComponent,
+	TextFieldComponent,
+	TextRenderComponent,
+} from '@app-theme/components';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
+import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
+import { BaseFormSettings } from '@app-core/mock/base-form-settings';
+import { Option } from '@app-core/data/forms/form-types';
 
 @Component({
 	selector: 'ngx-character-tab',
 	templateUrl: 'character-tab.component.html',
+	styleUrls: ['./../base/base-tab.component.scss'],
 })
 export class CharacterTabComponent extends BaseTabComponent implements OnInit
 {
-	public get GetClasses(): Table<ICharacterClass>
-	{
-		return this.characterClasses;
-	}
-
 	@Input()
 	public characterSettings: BaseSettings = null;
 
-	@Output()
-	public onCreateConfirm: EventEmitter<any> = new EventEmitter<any>();
-	@Output()
-	public onEditConfirm: EventEmitter<any> = new EventEmitter<any>();
-	@Output()
-	public onDeleteConfirm: EventEmitter<any> = new EventEmitter<any>();
+	@ViewChild(DynamicFormComponent, { static: true })
+	public formComponent: DynamicFormComponent = null;
 
-	public defaultValue: number = Number.MAX_SAFE_INTEGER;
+	@ViewChild('characterNameField', { static: true})
+	public characterNameField: TextFieldComponent = null;
 
-	public settings: ISettings = {
-		mode: 'external',
-		selectMode: '', // 'multi';
-		noDataMessage: 'No items found', // default: -> 'No data found'
-		actions: {
-			add: true,
-			edit: true,
-			delete: true,
-			position: 'right',
-		},
-		add: {
-			addButtonContent: '<i class="nb-plus"></i>',
-			createButtonContent: '<i class="nb-checkmark"></i>',
-			cancelButtonContent: '<i class="nb-close"></i>',
-			confirmCreate: true,
-			width: '50px',
-		},
-		edit: {
-			editButtonContent: '<i class="nb-edit"></i>',
-			saveButtonContent: '<i class="nb-checkmark"></i>',
-			cancelButtonContent: '<i class="nb-close"></i>',
-			confirmSave: true,
-			width: '50px',
-		},
-		delete: {
-			deleteButtonContent: '<i class="nb-trash"></i>',
-			confirmDelete: true,
-			width: '50px',
-		},
-		columns: {
-			type: {
-				title: 'Type',
-			},
-			equipment: {
-				title: 'Equipment',
-			},
-		},
-	};
+	@ViewChild('classField', { static: true})
+	public classField: DropDownFieldComponent<number> = null;
 
-	public source: LocalDataSource = new LocalDataSource();
+	@ViewChild('initialLevelField', { static: true})
+	public initialLevelField: TextFieldComponent<number> = null;
+
+	@ViewChild('maxLevelField', { static: true})
+	public maxLevelField: TextFieldComponent<number> = null;
+
+	@ViewChild('descriptionField', { static: true})
+	public descriptionField: TextFieldComponent = null;
 
 	public traitSettings: ISettings = {
 		mode: 'external',
@@ -128,15 +96,14 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	public traitSource: LocalDataSource = new LocalDataSource();
 
-	public selectedCharacter: ICharacter = null;
-
-	protected items: Table<IItem> = null;
-	protected itemTypes: Table<IItemType> = null;
+	public source: BaseFormSettings = {
+		title: 'Project Settings',
+		alias: 'project-settings',
+		requiredText: 'Settings',
+		fields: {},
+	};
 
 	private characterClasses: Table<ICharacterClass> = null;
-
-	private behaviourType: BehaviourType = BehaviourType.INSERT
-	private behaviourSubject: BehaviorSubject<BehaviourType> = new BehaviorSubject<BehaviourType>(this.behaviourType);
 
 	/**
 	 * @brief -
@@ -152,21 +119,100 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 		protected projectsService: ProjectsService,
 
-		private dialogService: NbDialogService,
+		protected dialogService: NbDialogService,
+
+		protected toastrService: NbToastrService,
+		protected snackbarService: NbSnackbarService,
+		protected userPreferencesService: UserPreferencesService,
+		protected tableService: TablesService,
+		protected languageService: LanguageService,
 	)
 	{
-		super(route, firebaseService, userService, projectsService);
+		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
+			userPreferencesService, tableService, firebaseRelationService, languageService, '-MhSKPfKb9XeqqYrW74q');
 	}
 
 	public ngOnInit()
 	{
 		super.ngOnInit();
-		this.includedTables.push('classes', 'items', 'itemtypes');
+
+		this.formComponent.showLabels = true;
+
+		// Text box question
+		this.formComponent.addInput<string>(this.characterNameField, {
+			controlType: 'textbox',
+			value: '',
+			name: 'name',
+			text: 'Name',
+			placeholder: 'Name',
+			errorText: 'This must be filled in',
+			required: true,
+			disabled: true,
+		});
+
+		// Text box question
+		this.formComponent.addInput<number>(this.classField, {
+			controlType: 'dropdown',
+			value: this.defaultValue,
+			name: 'class',
+			text: 'Class',
+			placeholder: 'Class',
+			errorText: 'This must be filled in',
+			required: true,
+			disabled: true,
+		});
+
+		this.formComponent.addInput<number>(this.initialLevelField, {
+			controlType: 'number',
+			value: 0,
+			name: 'initial-level',
+			text: 'Initial level',
+			placeholder: 'Initial level',
+			errorText: 'This must be filled in',
+			required: true,
+			disabled: true,
+		});
+
+		this.formComponent.addInput<number>(this.maxLevelField, {
+			controlType: 'number',
+			value: 0,
+			name: 'max-level',
+			text: 'Max level',
+			placeholder: 'Max level',
+			errorText: 'This must be filled in',
+			required: true,
+			disabled: true,
+		});
+
+		this.formComponent.addInput<string>(this.descriptionField, {
+			controlType: 'textarea',
+			value: '',
+			name: 'description',
+			text: 'Description',
+			placeholder: 'Description',
+			errorText: 'This must be filled in',
+			required: false,
+			disabled: true,
+		});
+
 		this.project$.subscribe((project) => {
 			if(project)
-				this.tablesService.loadTablesFromProject(project, this.includedTables, (table) => this.loadTable(table))
-					.then();
-		})
+				this.tablesService.loadTablesFromProject(project, ['classes'], (table) => this.loadTable(table))
+					.then(() => {
+						const options: Option<number>[] = [];
+						this.characterClasses.forEach((charClass) => {
+							options.push(new Option({
+								key: charClass.className,
+								value: charClass.id,
+								selected: false,
+							}));
+						});
+						this.classField.question.options$.next(options);
+					});
+
+			// Important or data will not be caught.
+			this.getTableData(this.settings);
+		});
 	}
 
 	protected loadTable(value: Table)
@@ -183,34 +229,6 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 				this.tablesService.listenToTableData(this.characterClasses, ['child_added']),
 			);
 		}
-
-		if(value.metadata.title.toLowerCase() === 'items')
-		{
-			// store the dialogues.
-			this.items = <Table<IItem>>value;
-
-			// Listen to incoming data
-			this.mainSubscription.add(
-				this.tablesService.listenToTableData(this.items, ['child_added']),
-			);
-
-			const pair: StringPair = new StringPair(this.items.id, 'name', true);
-			this.settings = Object.assign({}, this.process(this.items, pair, 'equipment', this.settings));
-		}
-
-		if(value.metadata.title.toLowerCase() === 'itemtypes')
-		{
-			// store the dialogues.
-			this.itemTypes = <Table<IItemType>>value;
-
-			// Listen to incoming data
-			this.mainSubscription.add(
-				this.tablesService.listenToTableData(this.itemTypes, ['child_added']),
-			);
-
-			const pair: StringPair = new StringPair(this.itemTypes.id, 'name', true);
-			this.settings = Object.assign({}, this.process(this.itemTypes, pair, 'type', this.settings));
-		}
 	}
 
 	getName(prop: any)
@@ -220,6 +238,7 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	public addMultiple()
 	{
+		console.log(this.tableId);
 		const ref = this.dialogService.open(InsertMultipleDialogComponent, {
 			context: {
 				title: 'Add a new character',
@@ -229,46 +248,33 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 		});
 
 		// Otherwise scope will make this undefined in the method
-		ref.componentRef.instance.insertEvent.subscribe((event: any) => this.onCreateConfirm.emit(event));
+		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
+			this.onCreateConfirm(event, '-MCRBgLEN83fE5mrtXWZ'));
 	}
 
 	public createEquipment(event: { source: LocalDataSource})
 	{
-		const ref = this.dialogService.open(InsertEquipmentComponent,
+		const ref = this.dialogService.open(InsertMultipleDialogComponent,
 			{
 				context: {
-					behaviourType$: this.behaviourSubject,
-					behaviourType: this.behaviourType,
-					project: this.project,
-					items: this.items,
-					itemTypes: this.itemTypes,
+					title: 'Add a new equipment',
+					tblName: 'equipments',
+					settings: this.settings,
 				},
 			});
 
 		const instance = ref.componentRef.instance;
-		instance.saveEvent.subscribe(($event: any) => this.onCreateEquipmentConfirm($event));
+		instance.insertEvent.subscribe(($event: any) => this.onCreateConfirm($event, this.table.id));
 		instance.closeEvent.subscribe(() => ref.close());
 		ref.componentRef.onDestroy(() => {
-			instance.saveEvent.unsubscribe();
+			instance.insertEvent.unsubscribe();
 			instance.closeEvent.unsubscribe();
 		});
 	}
 
-	/**
-	 * @brief
-	 * @param event - Object, consist of:
-	 * newData: Object - data entered in a new row
-	 * source: DataSource - table data source
-	 * confirm: Deferred - Deferred object with resolve(newData: Object) and reject() methods.
-	 */
-	public onCreateEquipmentConfirm(event: { newData: any })
-	{
-		this.source.add({ type: event.newData.typeId, equipment: event.newData.equipment })
-			.then(() => this.source.refresh());
-	}
-
 	public createTrait(event: { source: LocalDataSource})
 	{
+		/*
 		const ref = this.dialogService.open(InsertTraitComponent,
 			{
 				context: {
@@ -287,14 +293,10 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 			instance.saveEvent.unsubscribe();
 			instance.closeEvent.unsubscribe();
 		});
+		 */
 	}
 
 	public onCreate(event: { source: LocalDataSource })
-	{
-
-	}
-
-	public onChangelogConfirm(event)
 	{
 
 	}
@@ -304,13 +306,32 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	}
 
-
 	public onCharacterClicked(event: number)
 	{
+		super.onCharacterClicked(event);
+
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			this.selectedCharacter = this.characters[event] as ICharacter;
+			if(this.selectedCharacter)
+			{
+				this.characterNameField.setValue = this.selectedCharacter.name['en'];
+				this.classField.setValue = this.selectedCharacter.classId;
+				this.initialLevelField.setValue = this.selectedCharacter.initialLevel;
+				this.maxLevelField.setValue = this.selectedCharacter.maxLevel;
+				this.descriptionField.setValue = this.selectedCharacter.description['en'];
+				// second parameter specifying whether to perform 'AND' or 'OR' search
+				// (meaning all columns should contain search query or at least one)
+				// 'AND' by default, so changing to 'OR' by setting false here
+			}
 		}
+
+		this.getSource.setFilter([
+			// fields we want to include in the search
+			{
+				field: 'characterId',
+				search: this.selectedCharacter !== null ? this.selectedCharacter.id.toString() : 'NaN',
+			},
+		], false);
 	}
 
 	public onEditConfirmed(event: any)
@@ -323,6 +344,16 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 	{
 		event.stopPropagation();
 		console.log('deleting');
+	}
+
+	protected override validateCharacter() {
+		super.validateCharacter();
+
+		this.characterNameField.setDisabledState(this.selectedCharacter === null);
+		this.classField.setDisabledState(this.selectedCharacter === null);
+		this.initialLevelField.setDisabledState(this.selectedCharacter === null);
+		this.maxLevelField.setDisabledState(this.selectedCharacter === null);
+		this.descriptionField.setDisabledState(this.selectedCharacter === null);
 	}
 
 	protected process(table: Table, pair: StringPair, key: string, settings: ISettings = null)
@@ -359,5 +390,51 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 		}
 
 		return newSettings;
+	}
+
+	public onSendForm()
+	{
+		if(this.formComponent.isValid)
+		{
+			const dbCharacter = this.characters.find(this.selectedCharacter.id);
+			const event = {
+				data: dbCharacter,
+				newData: null,
+				confirm: {
+					resolve: () => {
+						this.characters.update(dbCharacter, this.selectedCharacter).then();
+						return true;
+					},
+					reject: (): boolean => true,
+				},
+			};
+
+			this.selectedCharacter.name['en'] = this.characterNameField.getValue as string;
+			this.selectedCharacter.class = this.classField.getValue;
+			this.selectedCharacter.initialLevel = this.initialLevelField.getValue;
+			this.selectedCharacter.maxLevel = this.maxLevelField.getValue;
+			this.selectedCharacter.description['en'] = this.descriptionField.getValue as string;
+
+			event.newData = this.selectedCharacter;
+			this.onEditConfirm(event,true, this.characters.id);
+		}
+	}
+
+	protected override onDataReceived(tableData: Table)
+	{
+		// Filter is being reset, that is why this function exist.
+		super.onDataReceived(tableData);
+
+		if(
+			tableData.hasOwnProperty('data') && Object.values(tableData.data).length !== 0
+		) {
+			this.getSource.setFilter([
+				// fields we want to include in the search
+				{
+					field: 'characterId',
+					search: this.selectedCharacter !== null ? this.selectedCharacter.id.toString() : 'NaN',
+				},
+			], false);
+		}
 	}
 }

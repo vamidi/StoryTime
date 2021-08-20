@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EchartsConfig } from '@app-core/components/echarts/echarts.config';
+import { EChartsOption } from 'echarts';
 
 @Component({
 	selector: 'ngx-echarts-radar',
@@ -10,5 +10,5 @@ import { EchartsConfig } from '@app-core/components/echarts/echarts.config';
 export class EchartsRadarComponent
 {
 	@Input()
-	options: EchartsConfig = {};
+	options: EChartsOption = {};
 }

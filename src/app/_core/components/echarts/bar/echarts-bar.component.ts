@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { EchartsConfig } from '@app-core/components/echarts/echarts.config';
+import { EChartsOption } from 'echarts';
 
 @Component({
 	selector: 'ngx-echarts-bar',
@@ -11,7 +11,7 @@ import { EchartsConfig } from '@app-core/components/echarts/echarts.config';
 export class EchartsBarComponent implements AfterViewInit, OnDestroy
 {
 	@Input()
-	options: EchartsConfig = {};
+	options: EChartsOption = {};
 	themeSubscription: any;
 
 	constructor(private theme: NbThemeService) {}
@@ -50,9 +50,7 @@ export class EchartsBarComponent implements AfterViewInit, OnDestroy
 							},
 						},
 						axisLabel: {
-							textStyle: {
-								color: echarts.textColor,
-							},
+							color: echarts.textColor,
 						},
 					},
 				],
@@ -70,9 +68,7 @@ export class EchartsBarComponent implements AfterViewInit, OnDestroy
 							},
 						},
 						axisLabel: {
-							textStyle: {
-								color: echarts.textColor,
-							},
+							color: echarts.textColor,
 						},
 					},
 				],

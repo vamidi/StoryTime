@@ -42,7 +42,7 @@ export interface ICharacter extends ProxyObject
 {
 	name: KeyLanguageObject;
 	description: KeyLanguageObject;
-	class: number,
+	classId: number,
 	initialLevel: number,
 	maxLevel: number,
 }
@@ -92,6 +92,28 @@ export interface ICharacterClass extends ProxyObject
 	expCurve: string, // - Exp curve - How fast this class can evolve.
 }
 
+/**
+ * @brief - Parameters that belongs to a class.
+ */
+export interface IParameterCurve extends ProxyObject
+{
+	alias: string, // Key value we use for the object in the JSON.
+	base: number, // base value we are going to use in our formula.
+	class: number, // Where the curve belongs to.
+	paramName: string, // The name of the parameter,
+	paramFormula: string, // formula that is going to be parsed.
+	rate: number, // The rate that we are going to use in our formula, this determines the speed of growth.
+	flat: number, // Flat number that we going to add to the value of the formula,
+}
+
+export interface ISkill extends ProxyObject
+{
+	classId: number, // The class that is associated with this skill
+	skillName: '', // The name of the skill
+	level: 0, // The level requirement of the skill
+	note: '', // Notes that designer can leave behind.
+}
+
 export interface IItemInventoryType extends ProxyObject
 {
 	// Recipe,
@@ -123,7 +145,6 @@ export interface IITemTabType extends ProxyObject
 	// Materials --> Gadgets that can be used to activate something
 	// Stories --> Items that the player needs to use.
 	name: KeyLanguageObject, // the name of the type
-
 }
 
 export interface IInventoryTabType extends ProxyObject
@@ -143,6 +164,13 @@ export interface IItemType extends ProxyObject
 	actionName: KeyLanguageObject, // the action name we show when interacting with an item.
 	actionType: number, /** @type IItemInventoryActionType --> the kind of action to perform in the inventory. */
 	type: number, /** @type IItemInventoryType --> The type what the item represent in the inventory */
+}
+
+export interface IEquipment extends ProxyObject
+{
+	characterId: number, /** @type ICharacter - The character that is linked to this equipment. */
+	equipment: number, /** @type IItem - The equipment of the character  */
+	typeId: number, /** @type IItemType - The item type */
 }
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([
@@ -189,7 +217,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	// characters
 	Pair<string, { [key: number]: ICharacter }>( 'characters', 	{
 		0: {
-			class: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
 			deleted: false,
 			name: {
 				'en': '',
@@ -456,6 +484,74 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 
+	Pair<string, { [key: number]: IParameterCurve }>('parameterCurves', {
+		0: {
+			alias: 'MP',
+			base: 65,
+			class: Number.MAX_SAFE_INTEGER,
+			flat: 0,
+			paramName: 'Magic Points',
+			paramFormula: 'base + (level * level * 6 / 105) + level * 12 * (rate - flat)',
+			rate: 0.12,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		1: {
+			alias: 'ATK',
+			base: 160,
+			class: Number.MAX_SAFE_INTEGER,
+			flat: 0,
+			paramName: 'Attack',
+			paramFormula: 'level * base + level * level * level * rate',
+			rate: 0.1149999,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		2: {
+			alias: 'HP',
+			base: 540,
+			class: Number.MAX_SAFE_INTEGER,
+			flat: 0,
+			paramName: 'Health Points',
+			paramFormula: 'level * base + level * level * level * rate',
+			rate: 0.1109999,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		3: {
+			alias: 'DEF',
+			base: 140,
+			class: Number.MAX_SAFE_INTEGER,
+			flat: 0,
+			paramName: 'Defense',
+			paramFormula: 'level * base + level * level * level * rate',
+			rate: 0.1129999,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: ISkill }>('skills', {
+		0: {
+			classId: Number.MAX_SAFE_INTEGER,
+			skillName: '',
+			level: 0,
+			note: '',
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
 	Pair<string, { [key: number]: IITemTabType }>('itemTabTypes', {
 		0: {
 			name: {
@@ -568,6 +664,18 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: {
 				en: 'Equip',
 			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: IEquipment }>('equipments', {
+		0: {
+			characterId: Number.MAX_SAFE_INTEGER,
+			equipment: Number.MAX_SAFE_INTEGER,
+			typeId: Number.MAX_SAFE_INTEGER,
+
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+	NbAccordionModule,
 	NbButtonModule,
 	NbCardModule,
 	NbIconModule, NbInputModule,
@@ -35,6 +36,7 @@ const NB_MODULES = [
 	NbSpinnerModule,
 	NbIconModule,
 	NbInputModule,
+	NbAccordionModule,
 	NbTabsetModule,
 	NbTooltipModule,
 	NbVerticalTabSetModule,

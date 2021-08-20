@@ -10,13 +10,13 @@
 			<nb-card-body>
 				<nb-vertical-tabset>
 					<nb-tab tabTitle="Characters">
-						<ngx-character-tab [characterSettings]="settings" [characters]="getTable.filteredData" (onCreateConfirm)="onCreateConfirm($event)"></ngx-character-tab>
+						<ngx-character-tab [characterSettings]="settings" [characters]="getTable"></ngx-character-tab>
 					</nb-tab>
 					<nb-tab tabTitle="Enemies">
 						<p>List of <strong>Enemies</strong>.</p>
 					</nb-tab>
-					<nb-tab tabTitle="Classes">
-						<ngx-classes-tab [characters]="getTable.filteredData"></ngx-classes-tab>
+					<nb-tab tabTitle="Classes" active>
+						<ngx-classes-tab [characters]="getTable"></ngx-classes-tab>
 					</nb-tab>
 					<nb-tab tabTitle="Skills">
 						<p>List of <strong>Skills</strong>.</p>

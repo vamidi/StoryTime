@@ -175,8 +175,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 				this.craftable[key] = formValue[key];
 			});
 
-			const tblName = `tables/${this.craftables.id}`;
-			return this.firebaseService.insertData(tblName + '/data', this.craftable, tblName)
+			return this.tableService.insertData(this.craftables.id, this.craftable)
 			.then((data) => {
 					UtilsService.showToast(
 						this.toastrService,
@@ -242,9 +241,9 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			// delete the id column
 			UtilsService.deleteProperty(obj, 'id');
 
-			this.tableName = `tables/${this.items.id}`;
+			this.tableId = `tables/${this.items.id}`;
 			// TODO resolve if data is wrong or if we also need to do something with the lastID
-			this.firebaseService.insertData(`${this.tableName}/data`, obj, this.tableName)
+			this.tableService.insertData(this.tableId, obj)
 				.then(() => {
 						UtilsService.showToast(
 							this.toastrService,

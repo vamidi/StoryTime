@@ -17,162 +17,113 @@
 		</nb-card>
 
 		<button class="my-2 mr-2" nbButton status="danger">Delete</button>
-		<button class="my-2" nbButton status="success">Save</button>
+		<button nbButton class="my-2"
+		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
+		        (click)="onSendForm()"
+		        type='submit'
+		        [disabled]="formComponent.Form && formComponent.dirty && !formComponent.Form.valid">Save</button>
 	</div>
 
 	<div class="col-lg-8">
-		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-			<nb-card-header>
-				General settings
-			</nb-card-header>
-			<nb-card-body>
-				<div class="row my-2">
-					<div class="col-sm-6">
-						<div class="form-control-group">
-							<label class="label" for="name-text-box">Name:</label>
 
-							<input nbInput
-							       fullWidth
-							       id="name-text-box"
-							       type="text"
-							       required="required"
-							       placeholder="Name"
-							       [value]="selectedCharacter?.name['en']"
-							/>
-							<!--
-							 (blur)="trySetTouched($event)"
-							[status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
-							[required]="getConfigValue('forms.validation.email.required')"
-							[attr.aria-invalid]="email.invalid && email.touched ? true : null" -->
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-control-group">
-							<label class="label" for="input-email">Nickname:</label>
-							<input nbInput
-							       fullWidth
-							       type="email"
-							       name="email"
-							       id="input-email"
-							       pattern=".+@.+\..+"
-							       placeholder="Nickname"
-							       autofocus/>
-							<!--
-							       [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
-							       [required]="getConfigValue('forms.validation.email.required')"
-							       [attr.aria-invalid]="email.invalid && email.touched ? true : null"
-							-->
-						</div>
-					</div>
-				</div>
-				<div class="row my-2">
-					<div class="col-sm-4">
-						<div class="form-control-group">
-							<label class="label" for="input-class">Class:</label>
+		<nb-accordion multi>
+			<!-- Character General settings -->
 
-							<nb-select id="input-class" fullWidth [selected]="defaultValue">
-								<nb-option [value]="defaultValue">None</nb-option>
-								<nb-option *ngFor="let characterClass of GetClasses" [value]="characterClass.id">{{ characterClass.className }}</nb-option>
-							</nb-select>
-							<!--
-							       [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
-							       [required]="getConfigValue('forms.validation.email.required')"
-							       [attr.aria-invalid]="email.invalid && email.touched ? true : null"
-							-->
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
+				<nb-accordion-item-header>
+					General settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-text-field #characterNameField></ngx-text-field>
+							</div>
+							<!--						<ngx-text-field medium #nickNameField></ngx-text-field>-->
+							<div class="col-sm-6">
+								<div class="form-control-group">
+									<label class="label" for="input-email">Nickname:</label>
+									<input nbInput
+									       fullWidth
+									       type="email"
+									       name="email"
+									       id="input-email"
+									       pattern=".+@.+\..+"
+									       placeholder="Nickname"
+									       autofocus/>
+									<!--
+										   [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
+										   [required]="getConfigValue('forms.validation.email.required')"
+										   [attr.aria-invalid]="email.invalid && email.touched ? true : null"
+									-->
+								</div>
+							</div>
 						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="form-control-group">
-							<label class="label" for="input-email">Initial level:</label>
-							<input nbInput
-							       fullWidth
-							       type="number"
-							       name="initial-level"
-							       id="input-min-level"
-							       placeholder="Initial level"
-							       [value]="selectedCharacter?.initialLevel"
-							       autofocus/>
-							<!--
-							       [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
-							       [required]="getConfigValue('forms.validation.email.required')"
-							       [attr.aria-invalid]="email.invalid && email.touched ? true : null"
-							-->
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #classField></ngx-dropdown-field>
+								<div class="form-control-group">
+
+									<!--
+										   [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
+										   [required]="getConfigValue('forms.validation.email.required')"
+										   [attr.aria-invalid]="email.invalid && email.touched ? true : null"
+									-->
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #initialLevelField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #maxLevelField></ngx-text-field>
+							</div>
 						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="form-control-group">
-							<label class="label" for="input-max-level">Max level:</label>
-							<input nbInput
-							       fullWidth
-							       type="number"
-							       name="max-level"
-							       id="input-max-level"
-							       pattern=".+@.+\..+"
-							       placeholder="Name"
-							       [value]="selectedCharacter?.maxLevel"
-							       autofocus/>
-							<!--
-							       [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
-							       [required]="getConfigValue('forms.validation.email.required')"
-							       [attr.aria-invalid]="email.invalid && email.touched ? true : null"
-							-->
+						<div class="row my-2">
+							<div class="col-sm-12">
+								<ngx-text-field #descriptionField></ngx-text-field>
+							</div>
 						</div>
-					</div>
-				</div>
-				<div class="row my-2">
-					<div class="col-sm-12">
-						<div class="form-control-group">
-							<!-- character.description -->
-							<label class="label" for="profile--area">Description:</label>
-							<textarea id="profile--area"
-							          placeholder="Description"
-							          required="required"
-							          nbInput
-							          fullWidth
-							          [value]="selectedCharacter?.description['en']">
-							</textarea>
-						</div>
-					</div>
-				</div>
-			</nb-card-body>
-		</nb-card>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
 
-		<!-- Character equipment -->
+			<!-- Character General settings -->
 
-		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-			<nb-card-header nbTooltip="This section defines the items that the character will have at the start of the game." nbTooltipPlacement="top" nbTooltipStatus="basic">
-				Character Equipment
-			</nb-card-header>
-			<nb-card-body>
-				<ng2-smart-table
-					[settings]="settings" [source]="source"
-					(create)="createEquipment($event)"
-					(createConfirm)="onCreateEquipmentConfirm($event)"
-					(editConfirm)="onEditConfirm.emit($event)"
-					(deleteConfirm)="onDeleteConfirm.emit($event)"
-					(custom)="onChangelogConfirm($event)"
-					(onColumnOrderChanged)="onColumnOrderChange($event)">
-				</ng2-smart-table>
-			</nb-card-body>
-		</nb-card>
+			<!-- Character equipment -->
 
-		<!-- Character Traits -->
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the items that the character will have at the start of the game." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Character Equipment
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="settings" [source]="getSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
 
-		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-			<nb-card-header nbTooltip="Traits defines the properties the character will receive in the game immediately" nbTooltipPlacement="top" nbTooltipStatus="basic">
-				Character Traits
-			</nb-card-header>
-			<nb-card-body>
-				<ng2-smart-table
-					[settings]="traitSettings" [source]="traitSource"
-					(create)="createTrait($event)"
-					(custom)="onChangelogConfirm($event)"
-					(onColumnOrderChanged)="onColumnOrderChange($event)">
-					<!-- (createConfirm)="onCreateConfirm($event)"
-					(editConfirm)="onEditConfirm($event)"
-					(deleteConfirm)="onDeleteConfirm($event)" -->
-				</ng2-smart-table>
-			</nb-card-body>
-		</nb-card>
+			<!-- Character Traits -->
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="Traits defines the properties the character will receive in the game immediately" nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Character Traits
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="traitSettings" [source]="traitSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+		</nb-accordion>
 	</div>
 </div>

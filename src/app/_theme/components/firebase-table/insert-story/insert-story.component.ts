@@ -10,7 +10,7 @@ import { ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
 import { ICharacter, IDialogue, IStory } from '@app-core/data/standard-tables';
 import { UtilsService } from '@app-core/utils';
-import { Table } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import {
 	ButtonFieldComponent,
 	DropDownFieldComponent,
@@ -160,6 +160,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 		protected toastrService: NbToastrService,
 		protected firebaseService: FirebaseService,
 		protected projectService: ProjectsService,
+		protected tablesService: TablesService,
 		protected cd: ChangeDetectorRef)
 	{
 
@@ -223,8 +224,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	public insertCharacter()
 	{
-		const tblName = `tables/${this.characters.id}`;
-		this.firebaseService.insertData(tblName + '/data', this.character, tblName)
+		this.tablesService.insertData(this.characters.id, this.character)
 			.then((data) =>
 				{
 					UtilsService.showToast(
@@ -280,7 +280,7 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 	public createStory(): Promise<void|boolean>
 	{
 		const tblName = `tables/${this.stories.id}`;
-		return this.firebaseService.insertData(tblName + '/data', this.story, tblName)
+		return this.tablesService.insertData(this.stories.id, this.story)
 			.then((data) =>
 				{
 					UtilsService.showToast(
@@ -333,9 +333,8 @@ export class InsertStoryComponent implements OnInit, AfterViewInit
 
 	public insertDialogue()
 	{
-		const tblName = `tables/${this.dialogues.id}`;
-		this.firebaseService.setTblName(tblName);
-		this.firebaseService.insertData(tblName + '/data', this.dialogue, tblName)
+		this.firebaseService.setTblName(this.dialogues.id);
+		this.tablesService.insertData(this.dialogues.id, this.dialogue)
 			.then((data) =>
 				{
 					UtilsService.showToast(

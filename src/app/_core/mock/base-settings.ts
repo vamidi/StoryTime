@@ -17,6 +17,7 @@ export interface Column {
 	addable?: boolean,
 
 	editable?: boolean,
+	filter?: boolean,
 	hidden?: boolean,
 
 	editor?: {
@@ -111,6 +112,7 @@ export class BaseSettings implements ISettings
 			editable: false,
 			addable: false,
 			width: '50px',
+			filter:false,
 			hidden: false,
 			defaultValue: Number.MAX_SAFE_INTEGER,
 		},
@@ -119,6 +121,7 @@ export class BaseSettings implements ISettings
 			type: 'string',
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: false,
 			editor: {
@@ -132,6 +135,7 @@ export class BaseSettings implements ISettings
 			renderComponent: DateColumnComponent,
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: Math.floor(Date.now() / 1000),
 		},
@@ -141,6 +145,7 @@ export class BaseSettings implements ISettings
 			renderComponent: DateColumnComponent,
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: Math.floor(Date.now() / 1000),
 		},

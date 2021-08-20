@@ -31,6 +31,7 @@ export class EditorComponent implements OnInit
 
 		// We need the project already to exists
 
+		console.log(id);
 		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 		{
 			that.currentState.project.id = id;

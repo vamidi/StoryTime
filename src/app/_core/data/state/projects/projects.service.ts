@@ -185,6 +185,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		// if we don't have the project, grab it again.
 		if(!this.projects.has(key))
 		{
+			console.log(key);
 			return this.firebaseService.getRef('projects/' + key).once('value')
 			.then((result) =>
 			{
@@ -259,6 +260,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			this.breadcrumbService.addCallbackForRouteRegex('/dashboard/projects/-[a-zA-Z]', (id) =>
 				id === this.project.id ? this.project.metadata.title : id);
 
+			console.log(project.id);
 			this.firebaseService.getRef(`projects/${project.id}/metadata/updated_at`).on('value', (snapshot) => {
 				this.project.metadata.updated_at = snapshot.val();
 				this.project$.next(this.project);
@@ -291,7 +293,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			return this.firebaseService.updateItem(key, table, true, `projects`);
 		}
 
-		return Promise.reject(`Couldn't find table ${key}`);
+		return Promise.reject(`294 - Couldn't find table ${key}`);
 	}
 
 	public loadProject(key: string, onProjectLoaded: Function)

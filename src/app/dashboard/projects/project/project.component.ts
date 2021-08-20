@@ -109,6 +109,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 			const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 			const id = map.get('id');
 
+			console.log(id);
 			this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 			{
 				that.currentState.project.id = id;

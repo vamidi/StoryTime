@@ -86,9 +86,9 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		this.currentState = this.location.getState();
 
 		// Get the stories table
-		this.tableName = 'dialogues';
+		this.tableId = 'dialogues';
 		// Let firebase search with current table name
-		this.firebaseService.setTblName(this.tableName);
+		this.firebaseService.setTblName(this.tableId);
 
 		if(!this.currentState.hasOwnProperty('childId'))
 		{

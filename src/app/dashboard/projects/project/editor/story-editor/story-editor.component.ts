@@ -310,9 +310,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			{
 				this.currentNode.addOutput(this.outputs[outputIdx - 1]);
 				// Add the option also to the table.
-				this.tableName = `tables/${this.tblDialogueOptions.id}`;
+				this.tableId = `tables/${this.tblDialogueOptions.id}`;
 				// Let firebase search with current table name
-				this.firebaseService.setTblName(this.tableName);
+				this.firebaseService.setTblName(this.tableId);
 
 				const event: { data: ProxyObject, confirm?: any } = { data: createDialogueOption() };
 				this.insertFirebaseData(event)
@@ -458,9 +458,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			}
 
 			if (node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId')) {
-				this.tableName = `tables/${this.dialogues.id}`;
+				this.tableId = `tables/${this.dialogues.id}`;
 				// Let firebase search with current table name
-				this.firebaseService.setTblName(this.tableName);
+				this.firebaseService.setTblName(this.tableId);
 
 				const event: { data: ProxyObject, confirm?: any } = {data: createDialogue()};
 				this.insertFirebaseData(event)
@@ -520,7 +520,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			// Listen to incoming data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.tblEvents.id}/data`, ['child_added', 'child_changed'])
-			.subscribe((snapshots) =>
+			.subscribe(({ snapshots }) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{

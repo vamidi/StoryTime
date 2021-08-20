@@ -43,10 +43,15 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
 	protected user: UserModel = defaultUser;
 
-	protected set setTblName(tblName: string)
+	/**
+	 *
+	 * @param tblId
+	 * @protected
+	 */
+	protected set setTblName(tblId: string)
 	{
-		this.tableName = tblName;
-		this.firebaseService.setTblName(this.tableName);
+		this.tableId = tblId;
+		this.firebaseService.setTblName(this.tableId);
 	}
 
 	// Main subscription to all events
@@ -61,10 +66,10 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
 		protected languageService: LanguageService,
-		@Inject(String) protected tableName: string = '',
+		@Inject(String) protected tableId = '',
 	) {
-		if(tableName !== '')
-			this.firebaseService.setTblName(tableName);
+		if(tableId !== '')
+			this.firebaseService.setTblName(tableId);
 	}
 
 	public ngOnInit(): void
@@ -157,6 +162,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 						{
 							title: titleName,
 							class: 'input input-form-control',
+							filter: false,
 							hidden: false,
 							editor: {},
 						};
@@ -320,7 +326,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	): Promise<number>
 	{
 		const obj: ProxyObject = { ...event.data };
-		return this.firebaseService.insertData(`${this.tableName}/data`, obj, this.tableName);
+		return this.tableService.insertData(this.tableId, obj);
 	}
 
 	protected updateFirebaseData(
@@ -333,23 +339,25 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		// TODO resolve if data is wrong or if we also need to do something with the lastID
 		// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
 		return this.firebaseService.updateData(
-			event.newData.id,this.tableName + '/revisions', obj, oldObj, this.tableName + '/data');
+			event.newData.id,this.tableId + '/revisions', obj, oldObj, this.tableId + '/data');
 	}
 
 
 	/**
 	 * @brief - Insert new row data
 	 * @param event
-	 * @param tblName
+	 * @param tableId
 	 */
-	public onCreateConfirm(event: any, tblName: string = '')
+	public onCreateConfirm(event: any, tableId: string = '')
 	{
 		// Check the permissions as well as the data
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
+			let tblId = this.tableId;
+
 			// if we override the tblName
-			if(tblName !== '')
-				this.tableName = tblName;
+			if(tableId !== '')
+				tblId = tableId;
 
 			const obj: any = { ...event.newData };
 
@@ -371,7 +379,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			UtilsService.deleteProperty(obj, 'id');
 
 			// TODO resolve if data is wrong or if we also need to do something with the lastID
-			this.firebaseService.insertData(this.tableName + '/data', obj, this.tableName)
+			this.tableService.insertData(tblId, obj)
 			.then(() => {
 					UtilsService.showToast(
 						this.toastrService,

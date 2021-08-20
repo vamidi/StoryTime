@@ -1,11 +1,10 @@
-import { InjectionToken, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule, PathLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { NB_AUTH_TOKEN_INTERCEPTOR_FILTER, NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
+import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { NbFirebaseAuthModule } from '@nebular/firebase-auth';
 
-import { AngularFireModule, FIREBASE_OPTIONS } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage'
 import { /* AngularFireDatabase, */ AngularFireDatabaseModule } from '@angular/fire/database';

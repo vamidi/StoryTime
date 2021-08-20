@@ -241,7 +241,7 @@ export class InsertTableComponent implements
 							this.firebaseService.updateItem(id, data, true, 'projects').then();
 
 							UtilsService.showToast(this.toastrService, 'Table created',
-								`Table ${table.metadata.title} created!`);
+								`Table ${table.metadata.title} created!`, 'success');
 
 							this.firebaseService.onTableAddEvent.emit();
 						}).catch((e) => console.log(e));
@@ -269,7 +269,7 @@ export class InsertTableComponent implements
 						// Insert projects into project in to the projects child.
 						this.firebaseService.updateItem(table.id, table, true, 'tables').then(() => {
 							UtilsService.showToast(this.toastrService, 'Table updated',
-								`Table ${ table.metadata.title } updated!`);
+								`Table ${ table.metadata.title } updated!`, 'success');
 						});
 					}
 				}

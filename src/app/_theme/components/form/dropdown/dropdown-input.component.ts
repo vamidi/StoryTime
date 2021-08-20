@@ -72,6 +72,10 @@ export class DropDownFieldComponent<T = string | number | boolean> extends BaseF
 	{
 		this.writeValue(value);
 	}
+	public get getValue(): T
+	{
+		return this.value;
+	}
 
 	@Output()
 	public onSelectFunc: EventEmitter<any> = new EventEmitter<any>();
@@ -115,13 +119,6 @@ export class DropDownFieldComponent<T = string | number | boolean> extends BaseF
 	public ngOnInit()
 	{
 		super.ngOnInit();
-
-		this.disabled$.subscribe((disabled: boolean) =>
-		{
-			this.question.disabled = disabled;
-			this.question.trigger('disableCheck',
-				{ control: this.myFormGroup.controls[this.question.key], event: this.question.disabled });
-		});
 
 		if(this.onOptionsChanged)
 			this.question.options$.subscribe((options) => this.onOptionsChanged(options));

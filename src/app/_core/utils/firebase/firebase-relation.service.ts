@@ -158,6 +158,16 @@ export class FirebaseRelationService
 			Pair('category', new StringPair('enemyCategories', 'name', true)),
 		]);
 
+		const equipments: RelationPair = new Map([
+			Pair('characterId', new StringPair('characters', 'name', true)),
+			Pair('equipment', new StringPair('items', 'name', true)),
+			Pair('typeId', new StringPair('itemTypes', 'name', true)),
+		]);
+
+		const parameterCurves: RelationPair = new Map([
+			Pair('classId', new StringPair('classes', 'className', true)),
+		]);
+
 		/* Shop System */
 		const shopCharacter: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
@@ -177,6 +187,10 @@ export class FirebaseRelationService
 			// TODO this should be link to a deeper connection
 			Pair('parentId', new StringPair('shopCraftables', 'childId', true)),
 			Pair('childId', new StringPair('items', 'name', true)),
+		]);
+
+		const skills: RelationPair = new Map([
+			Pair('classId', new StringPair('classes', 'className', true)),
 		]);
 
 		const itemEffectTypeItemTypes: RelationPair = new Map([
@@ -203,22 +217,28 @@ export class FirebaseRelationService
 
 			Pair('characters', characters),
 
-			Pair('quests', questQuestTypes),
-			Pair('questEvents', questEvents),
-			Pair('tasks', taskQuestTaskCompletionTypeTasks),
-			Pair('taskEvents', taskEvents),
+			Pair('items', itemEffectTypeItemTypes),
 
 			Pair('enemies', enemies),
+			Pair('equipments', equipments),
+
+			Pair('parameterCurves', parameterCurves),
+
+			Pair('quests', questQuestTypes),
+			Pair('questEvents', questEvents),
+
+			Pair('recipes', recipes),
+			Pair('recipeCraftConditions', recipesCraftCondition),
 
 			Pair('shops', shopCharacter),
 			Pair('stories', storyCharacterDialogues),
 			Pair('shopPrices', shopPricesShopItems),
 			Pair('shopCraftables', shopCraftablesShopItem),
 			Pair('shopCraftConditions', shopCraftConditionsShopCraftablesitems),
-			Pair('items', itemEffectTypeItemTypes),
+			Pair('skills', skills),
 
-			Pair('recipes', recipes),
-			Pair('recipeCraftConditions', recipesCraftCondition),
+			Pair('tasks', taskQuestTaskCompletionTypeTasks),
+			Pair('taskEvents', taskEvents),
 		]);
 
 		const questTableRelation: TableRelation = new TableRelation(

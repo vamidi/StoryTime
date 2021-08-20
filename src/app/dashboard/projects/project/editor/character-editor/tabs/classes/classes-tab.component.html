@@ -1,34 +1,115 @@
 <div class="row">
 	<div class="col-lg-12">
-		<h1>Classes</h1>
+		<h1 class="mt-0 mb-4">Classes Editor</h1>
 	</div>
 
-	<div class="col-lg-12">
+	<div class="col-lg-2">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-			<nb-card-header>
-				Character name
-			</nb-card-header>
 			<nb-card-body>
-				<!-- TODO see if we need this
-				<ngx-echarts-radar [options]="eCharLevelOptions"></ngx-echarts-radar>
-				-->
-				<ngx-echarts-area-stack [options]="eCharLevelOptions"></ngx-echarts-area-stack>
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Character</button>
+				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onCharacterClicked($event)">
+					<nb-option [value]="defaultValue">None</nb-option>
+					<nb-option *ngFor="let character of characters; let i = index;" [value]="i">
+						000{{ i + 1 }} {{ character.name['en'] }}
+					</nb-option>
+				</nb-select>
 			</nb-card-body>
 		</nb-card>
+
+		<button class="my-2 mr-2" nbButton status="danger">Delete</button>
+		<button nbButton class="my-2"
+		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
+		        (click)="onSendForm()"
+		        type='submit'
+		        [disabled]="formComponent.Form && formComponent.dirty && !formComponent.Form.valid">Save</button>
 	</div>
 
-	<!-- START Character Stats -->
+	<div class="col-lg-10">
+		<nb-accordion multi>
+			<nb-accordion-item class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
+				<nb-accordion-item-header>
+					General settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-5">
+								<ngx-text-field #characterNameField></ngx-text-field>
+							</div>
+							<div class="col-sm-7">
+								<ngx-text-field #characterExperienceCurveField></ngx-text-field>
+							</div>
+						</div>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
 
-	<div class="col-lg-12">
-		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-			<nb-card-header>
-				Character Stats
-			</nb-card-header>
-			<nb-card-body>
-				<ngx-echarts-area-stack [options]="eCharStats"></ngx-echarts-area-stack>
-			</nb-card-body>
-		</nb-card>
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Stat Curves
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+
+					<div class="row" *ngIf="selectedCharacter === null">
+						<div class="col-lg-12">
+							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+								<nb-card-body>
+									<h5>No character selected!</h5>
+								</nb-card-body>
+							</nb-card>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-12" *ngIf="eCharLevelOptions !== null">
+							<h5>Experience Curve</h5>
+
+							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+								<nb-card-body>
+									<ngx-echarts-area-stack [options]="eCharLevelOptions"></ngx-echarts-area-stack>
+								</nb-card-body>
+							</nb-card>
+						</div>
+					</div>
+
+					<div class="row">
+						<!-- START Character Stats -->
+
+						<div class="col-lg-12" *ngIf="characterCurves.length > 0">
+							<h5>Parameter Curves</h5>
+						</div>
+						<div class="col-lg-4" *ngFor="let curve of characterCurves; let i = index">
+							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+								<nb-card-header>
+									{{ curve.paramName }}
+								</nb-card-header>
+								<nb-card-body>
+									<!-- TODO make a for loop for each of the stat curve that has been made on the character -->
+									<ngx-echarts-area-stack [options]="characterConfigs[i]"></ngx-echarts-area-stack>
+								</nb-card-body>
+							</nb-card>
+						</div>
+
+						<!-- END Character Stats -->
+					</div>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Skills
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="settings" [source]="getSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+		</nb-accordion>
 	</div>
-
-	<!-- END Character Stats -->
 </div>

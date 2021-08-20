@@ -7,9 +7,10 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { UserService } from '@app-core/data/state/users';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
-import { TablesService } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { ICharacter } from '@app-core/data/standard-tables';
 
 @Component({
 	selector: 'ngx-characters-overview',
@@ -27,6 +28,11 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 })
 export class GameEditorOverviewComponent extends BaseSourceDataComponent implements OnInit
 {
+	public override get getTable(): Table<ICharacter>
+	{
+		return this.table as Table<ICharacter>;
+	}
+
 	constructor(
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
@@ -42,7 +48,7 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 	) {
 		// TODO change this and grab the table which is link to the character table.
 		super(router, toastrService, snackbarService, userService, userPreferencesService, projectService,
-			tableService, firebaseService, firebaseRelationService, languageService, 'tables/-MCRBgLEN83fE5mrtXWZ');
+			tableService, firebaseService, firebaseRelationService, languageService, '-MCRBgLEN83fE5mrtXWZ');
 	}
 
 	public ngOnInit(): void

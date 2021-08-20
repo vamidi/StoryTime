@@ -74,7 +74,7 @@ export function createCharacter(): ICharacter
 		description: {
 			'en': '',
 		},
-		class: Number.MAX_SAFE_INTEGER,
+		classId: Number.MAX_SAFE_INTEGER,
 		initialLevel: 0,
 		maxLevel: 0,
 	};

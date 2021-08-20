@@ -91,7 +91,7 @@ export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 
 				this.tableRelData = this.firebaseRelationService.getTableRelationData().get(this.routerTblUrl);
 
-				this.setTblName = this.tableName;
+				this.setTblName = this.tableId;
 
 				this.changeTitle();
 

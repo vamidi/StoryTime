@@ -350,7 +350,7 @@ export abstract class TableData
 	protected tableData: Collection<Table> = new Collection();
 }
 
-export const onSimpleTableMap = map((snapshots: SnapshotAction<any>[]) =>
+export const onSimpleTableMap = map(({ snapshots }) =>
 {
 	const table: Table = new Table();
 	// table.id = that.tableID;

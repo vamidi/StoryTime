@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-import { NbThemeService } from '@nebular/theme';
-import { EchartsConfig } from '@app-core/components/echarts';
+import { Component, Input } from '@angular/core';
+import { EChartsOption } from 'echarts';
 
 @Component({
 	selector: 'ngx-echarts-line',
@@ -11,5 +10,5 @@ import { EchartsConfig } from '@app-core/components/echarts';
 export class EchartsLineComponent
 {
 	@Input()
-	options: EchartsConfig = {};
+	options: EChartsOption = {};
 }

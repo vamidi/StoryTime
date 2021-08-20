@@ -1,14 +1,26 @@
 import { Component, Input } from '@angular/core';
-import { EchartsConfig } from '@app-core/components/echarts/echarts.config';
+import { EChartsOption } from 'echarts';
 
 @Component({
 	selector: 'ngx-echarts-area-stack',
 	template: `
-		<div echarts [options]="options" class="echart"></div>
+		<div echarts [options]="options" class="echart" [initOpts]="initOpts" [autoResize]="autoResize"></div>
 	`,
 })
 export class EchartsAreaStackComponent
 {
 	@Input()
-	options: EchartsConfig = {};
+	public options: EChartsOption = {};
+
+	@Input()
+	public initOpts: {
+		devicePixelRatio?: number;
+		renderer?: string;
+		width?: number | string;
+		height?: number | string;
+		locale?: string;
+	} = {};
+
+	@Input()
+	public autoResize: boolean = true;
 }

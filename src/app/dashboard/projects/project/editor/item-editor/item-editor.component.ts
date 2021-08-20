@@ -331,7 +331,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.craftables.id}/data`, ['child_added'])
-			.subscribe((snapshots) =>
+			.subscribe(({ snapshots }) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
@@ -374,7 +374,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.tblCraftConditions.id}/data`, ['child_added'])
-			.subscribe((snapshots) =>
+			.subscribe(({ snapshots }) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
@@ -407,7 +407,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.items.id}/data`, ['child_added'])
-			.subscribe((snapshots) =>
+			.subscribe(({ snapshots }) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
@@ -507,10 +507,10 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			}
 
 			// change the default tblName
-			this.tableName = `tables/${this.tblCraftConditions.id}`;
+			this.tableId = `tables/${this.tblCraftConditions.id}`;
 
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// loop through the items.
 			const promises: Promise<void | string | number | firebase.database.Reference>[] = [];
@@ -652,9 +652,9 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.items.id}`;
+			this.tableId = `tables/${this.items.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 			// stack up the promises
 			const promises = [];
 
@@ -695,9 +695,9 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.tblCraftConditions.id}`;
+			this.tableId = `tables/${this.tblCraftConditions.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// change the conditionId
 			// find the current condition

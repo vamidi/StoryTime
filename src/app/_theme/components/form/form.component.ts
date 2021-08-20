@@ -76,7 +76,7 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	public setDisabledState(isDisabled: boolean): void
 	{
-		this.disabled = isDisabled;
+		this.question.disabled = this.disabled =  isDisabled;
 		this.disabled$.next(this.disabled);
 		this.cd.markForCheck();
 	}
@@ -87,6 +87,10 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	 */
 	public abstract set setValue(value: T);
 	public abstract writeValue(value: T);
+	public get getValue(): T
+	{
+		return this.value;
+	}
 
 	/*
   	 * @docs-private
@@ -127,6 +131,14 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	{
 		if(this.parent)
 			this.myFormGroup = this.parent.formContainer.form;
+
+		this.disabled$.subscribe((disabled: boolean) =>
+		{
+			this.question.disabled = this.disabled = disabled;
+			this.question.trigger('disableCheck',
+				{ control: this.myFormGroup.controls[this.question.key], event: this.question.disabled });
+		});
+
 
 		this.question.groupCss = this.groupCss;
 		this.question.inputCss = this.inputCss;

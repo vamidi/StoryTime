@@ -98,6 +98,11 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 		return this.Group.valid;
 	}
 
+	public get dirty()
+	{
+		return this.Group.dirty;
+	}
+
 	/**
 	 * @brief - Returning the question of the form
 	 * @param key - key value to search in the map.

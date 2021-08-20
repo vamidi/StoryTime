@@ -147,6 +147,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 		const id = map.get('id');
 
+		console.log(id);
 		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 		{
 			this.currentState.project.id = id;
@@ -312,9 +313,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.dialogues.id}`;
+			this.tableId = `tables/${this.dialogues.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// change the dialogueId
 			// find the current dialogue
@@ -358,9 +359,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.tblDialogueOptions.id}`;
+			this.tableId = `tables/${this.tblDialogueOptions.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// change the dialogueId
 			// find the dialogue
@@ -394,9 +395,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.tblEvents.id}`;
+			this.tableId = `tables/${this.tblEvents.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			const customEvent: IEvent = typeof fEvent === 'number'
 				? this.tblEvents.find(fEvent) as IEvent
@@ -500,7 +501,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			// Listen to incoming data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.dialogues.id}/data`, ['child_added'])
-				.subscribe((snapshots) =>
+				.subscribe(({ snapshots }) =>
 					{
 						for(let i = 0; i < snapshots.length; i++)
 						{
@@ -536,7 +537,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.characters.id}/data`, ['child_added'])
-				.subscribe((snapshots) =>
+				.subscribe(({ snapshots }) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
