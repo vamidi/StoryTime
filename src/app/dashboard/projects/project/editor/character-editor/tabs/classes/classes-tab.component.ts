@@ -4,7 +4,7 @@ import { LineSeriesOption } from 'echarts/types/src/chart/line/LineSeries';
 import { BaseTabComponent } from '@app-dashboard/projects/project/editor/character-editor/tabs/Base/base-tab.component';
 import { UtilsService } from '@app-core/utils';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
-import { NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbMenuService, NbSelectComponent, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { UserService } from '@app-core/data/state/users';
@@ -12,10 +12,16 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { IParameterCurve } from '@app-core/data/standard-tables';
+import { ICharacterClass, IParameterCurve, ISkill } from '@app-core/data/standard-tables';
 
 import { DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
+import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
+import { BaseSettings } from '@app-core/mock/base-settings';
+import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
+import { filter } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { BehaviourType } from '@app-core/types';
 
 @Component({
 	selector: 'ngx-classes-tab',
@@ -24,14 +30,26 @@ import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 })
 export class ClassesTabComponent extends BaseTabComponent implements OnInit
 {
+	public get getSkillTbl(): Table<ISkill>
+	{
+		return this.skills;
+	}
+
+	public get getSkillSettings(): BaseSettings
+	{
+		return this.skillsSettings;
+	}
+
 	@ViewChild(DynamicFormComponent, { static: true })
 	public formComponent: DynamicFormComponent = null;
 
-	@ViewChild('characterNameField', { static: true})
-	public characterNameField: TextFieldComponent = null;
+	@ViewChild('classNameField', { static: true})
+	public classNameField: TextFieldComponent = null;
 
-	@ViewChild('characterExperienceCurveField', { static: true})
-	public characterExperienceCurveField: TextFieldComponent = null;
+	@ViewChild('classExperienceCurveField', { static: true})
+	public classExperienceCurveField: TextFieldComponent = null;
+
+	public selectedClass: ICharacterClass = null;
 
 	public source: BaseFormSettings = {
 		title: 'Class Settings',
@@ -40,12 +58,18 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 		fields: {},
 	};
 
+	public cardOptions: Map<number | string, NbMenuItem[]> = new Map<number | string, NbMenuItem[]>();
+
 	public eCharLevelOptions: EChartsOption = null;
 
-	public characterCurves: IParameterCurve[] = [];
-	public characterConfigs: EChartsOption[] = [];
+	public classCurves: IParameterCurve[] = [];
+	public classConfigs: EChartsOption[] = [];
 
+	protected parameterCurvesSettings: BaseSettings = new BaseSettings();
 	protected parameterCurves: Table<IParameterCurve> = null;
+
+	protected skillsSettings: BaseSettings = new BaseSettings();
+	protected skills: Table<ISkill> = null;
 
 	// Health Points or HP - represents the amount of damage a character can take before dying or being knocked out.
 	// Magic Points or MP -
@@ -112,6 +136,7 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 		protected userService: UserService,
 		protected projectsService: ProjectsService,
 		protected themeService: NbThemeService,
+		protected menuService: NbMenuService,
 
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
@@ -121,32 +146,37 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 		protected languageService: LanguageService,
 	) {
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-			userPreferencesService, tableService, firebaseRelationService, languageService, '-MhYQ7zqYvJ1lD6I-aSI');
+			userPreferencesService, tableService, firebaseRelationService, languageService, '-MhJZ87ovi4ki7Lqdh9o');
 	}
 
 	public ngOnInit()
 	{
 		super.ngOnInit();
 
+		this.mainSubscription.add(this.menuService.onItemClick()
+			.pipe(
+				filter(({ tag }) => tag === 'open-parameter-menu'),
+			).subscribe(({ item: { title, data } }) => this.onCardOptionClicked(title, data)));
+
 		this.formComponent.showLabels = true;
 
 		// Text box question
-		this.formComponent.addInput<string>(this.characterNameField, {
+		this.formComponent.addInput<string>(this.classNameField, {
 			controlType: 'textbox',
 			value: '',
-			name: 'name',
-			text: 'Name',
-			placeholder: 'Name',
+			name: 'class-name',
+			text: 'Class name',
+			placeholder: 'Class name',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
 		});
 
 		// Text box question
-		this.formComponent.addInput<string>(this.characterExperienceCurveField, {
+		this.formComponent.addInput<string>(this.classExperienceCurveField, {
 			controlType: 'textbox',
 			value: '',
-			name: 'character-exp',
+			name: 'class-exp',
 			text: 'Class Experience',
 			placeholder: 'Experience curve',
 			errorText: 'This must be filled in',
@@ -158,49 +188,161 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 		{
 			if(project)
 			{
-				this.tableService.loadTablesFromProject(project, ['parametercurves'], (table) => this.loadTable(table))
+				this.tableService.loadTablesFromProject(project, ['parametercurves', 'skills'], (table) => this.loadTable(table))
 					.then();
 
 				// Important or data will not be caught.
 				this.getTableData(this.settings);
-				console.log(this.settings);
 			}
 		}));
-
 	}
 
-	public onCharacterClicked(event: number)
+	public addMultiple()
 	{
-		super.onCharacterClicked(event);
+		super.addMultiple({
+			context: {
+				title: 'Add a new class',
+				tblName: 'classes',
+				settings: this.settings,
+			},
+		});
+	}
 
-		this.characterCurves = [];
-		this.characterConfigs = [];
+	/**
+	 * @brief - when we click on a class
+	 * @param event
+	 */
+	public onClassClicked(event: number)
+	{
+		this.selectedClass = null;
+		this.classCurves = [];
+		this.classConfigs = [];
 		this.eCharLevelOptions = null;
-		if(event !== Number.MAX_SAFE_INTEGER && this.selectedCharacter !== null)
+		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			if(event !== Number.MAX_SAFE_INTEGER)
+			this.selectedClass = UtilsService.copyObj(this.table.find(event)) as ICharacterClass;
+			if(this.selectedClass)
 			{
-				if(this.selectedCharacter)
-				{
-					this.characterNameField.setValue = this.selectedCharacter.name['en'];
-					this.characterExperienceCurveField.setValue = this.project.gameStats.formulaPlayers;
-				}
+				this.classNameField.setValue = this.selectedClass.className['en'];
+				this.classExperienceCurveField.setValue = this.selectedClass.expCurve;
+				// second parameter specifying whether to perform 'AND' or 'OR' search
+				// (meaning all columns should contain search query or at least one)
+				// 'AND' by default, so changing to 'OR' by setting false here
+				this.configureStats();
+				this.validate();
 			}
+		} else this.validate();
 
-			this.configureStats();
-		}
-		this.getSource.setFilter([
+		this.skills.getSource.setFilter([
 			// fields we want to include in the search
 			{
 				field: 'classId',
-				search: this.selectedCharacter !== null ? this.selectedCharacter.classId.toString() : 'NaN',
+				search: this.selectedClass !== null ? this.selectedClass.id.toString() : 'NaN',
 			},
 		], false);
 	}
 
+	public insertStat()
+	{
+		const ref = this.dialogService.open(InsertMultipleDialogComponent,{
+			context: {
+				title: 'Add a new stat',
+				tblName: 'parameterCurves',
+				settings: this.parameterCurvesSettings,
+			},
+		});
+
+
+		// Otherwise scope will make this undefined in the method
+		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
+		{
+			switch(event.insertType)
+			{
+				case BehaviourType.INSERT:
+					this.onCreateConfirm(event, this.parameterCurves.id);
+					break;
+				case BehaviourType.UPDATE:
+				default:
+					this.onEditConfirm(event, true, this.parameterCurves.id);
+					break;
+			}
+		});
+	}
+
+	public getCardOption(id: number): NbMenuItem[]
+	{
+		if(!this.cardOptions.has(id))
+		{
+			const menu: NbMenuItem[] = [{ title: 'Edit', data: { id: id } }, { title: 'Delete', data: { id: id } }];
+			this.cardOptions.set(id, menu);
+		}
+
+		return this.cardOptions.get(id);
+	}
+
+	public onCardOptionClicked(title: string, data: any)
+	{
+		const paramCurve = { ...this.parameterCurves.find(data.id) } as IParameterCurve;
+		switch(title.toLowerCase())
+		{
+			case 'edit':
+				const ref = this.dialogService.open(InsertMultipleDialogComponent, {
+					context: {
+						title: 'Update stat',
+						tblName: this.parameterCurves.title,
+						settings: this.parameterCurvesSettings,
+						data: paramCurve,
+						behaviourType$: new BehaviorSubject<BehaviourType>(BehaviourType.UPDATE),
+					},
+				});
+
+				// Otherwise scope will make this undefined in the method
+				ref.componentRef.instance.insertEvent.subscribe((event: any) =>
+				{
+					switch(event.insertType)
+					{
+						case BehaviourType.INSERT:
+							this.onCreateConfirm(event);
+							break;
+						case BehaviourType.UPDATE:
+						default:
+							this.onEditConfirm(event, true);
+							break;
+					}
+				});
+				break;
+			case 'delete':
+				if (window.confirm('Are you sure you want to delete?'))
+				{
+					this.onDeleteConfirm({ data: paramCurve }, null, this.parameterCurves.id);
+				}
+				break;
+		}
+	}
+
 	public onSendForm()
 	{
+		if(this.formComponent.isValid)
+		{
+			const dbClass = this.table.find(this.selectedClass.id);
+			const event = {
+				data: dbClass,
+				newData: null,
+				confirm: {
+					resolve: () => {
+						this.table.update(dbClass, this.selectedClass).then();
+						return true;
+					},
+					reject: (): boolean => true,
+				},
+			};
 
+			this.selectedClass.className['en'] = this.classNameField.getValue;
+			this.selectedClass.expCurve = this.classExperienceCurveField.getValue as string;
+
+			event.newData = this.selectedClass;
+			this.onEditConfirm(event,true);
+		}
 	}
 
 	protected override onDataReceived(tableData: Table)
@@ -215,18 +357,18 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 				// fields we want to include in the search
 				{
 					field: 'characterId',
-					search: this.selectedCharacter !== null ? this.selectedCharacter.classId.toString() : 'NaN',
+					search: this.selectedClass !== null ? this.selectedClass.id.toString() : 'NaN',
 				},
 			], false);
 		}
 	}
 
-	protected override validateCharacter()
+	protected override validate()
 	{
-		super.validateCharacter();
+		super.validate();
 
-		this.characterNameField.setDisabledState(this.selectedCharacter === null);
-		this.characterExperienceCurveField.setDisabledState(this.selectedCharacter === null);
+		this.classNameField.setDisabledState(this.selectedClass === null);
+		this.classExperienceCurveField.setDisabledState(this.selectedClass === null);
 	}
 
 	protected loadTable(value: Table)
@@ -242,6 +384,28 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 			this.mainSubscription.add(
 				this.tableService.listenToTableData(this.parameterCurves, ['child_added']),
 			);
+
+			const newItemSettings = this.processTableData(
+				this.parameterCurves, true, this.parameterCurvesSettings,
+			);
+			this.parameterCurvesSettings = Object.assign({}, newItemSettings);
+		}
+
+		if(value.metadata.title.toLowerCase() === 'skills')
+		{
+			// store the dialogues.
+			this.skills = <Table<ISkill>>value;
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.skills, ['child_added']),
+			);
+
+			this.skillsSettings.actions.add = true;
+			const newItemSettings = this.processTableData(
+				this.skills, true, this.skillsSettings,
+			);
+			this.skillsSettings = Object.assign({}, newItemSettings);
 		}
 	}
 
@@ -256,10 +420,10 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 
 		this.parameterCurves.forEach((stat) =>
 		{
-			if(stat.classId === this.selectedCharacter.classId)
+			if(this.selectedClass.id === stat.classId)
 			{
-				this.characterCurves.push(stat);
-				this.characterConfigs.push({});
+				this.classCurves.push(stat);
+				this.classConfigs.push({});
 				stats.push({
 					name: stat.paramName,
 					type: 'line',
@@ -290,9 +454,10 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 			maxXAxis.push(level.toString());
 
 			// Calculate the stats
-			this.parameterCurves.forEach((stat, index) =>
+			let index = 0;
+			this.parameterCurves.forEach((stat) =>
 			{
-				if(stat.classId === this.selectedCharacter.classId)
+				if(this.selectedClass.id === stat.classId)
 				{
 					// set the name of the stat obj
 
@@ -335,6 +500,7 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 
 					// console.log({name: k, level: level, stat: calc, flat: calculateGrowth })
 					stats[index].data.push(calc);
+					index++;
 				}
 			});
 		}
@@ -357,7 +523,7 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 			stats.forEach((stat, index, arr) =>
 			{
 				arr[index].areaStyle = { opacity: echarts.areaOpacity };
-				this.characterConfigs[index] = {
+				this.classConfigs[index] = {
 					animations: true,
 					backgroundColor: echarts.bg,
 						color: [colors[index]],
@@ -372,9 +538,9 @@ export class ClassesTabComponent extends BaseTabComponent implements OnInit
 						},
 						legend: {
 							left: 'left',
-							data: Object.values(this.characterCurves).filter((s, idx) => {
+							data: Object.values(this.classCurves).filter((s, idx) => {
 								return idx === index;
-							}).map((s) => s.name),
+							}).map((s) => s.paramName),
 							textStyle: {
 								color: echarts.textColor,
 							},

@@ -27,38 +27,8 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-es
-  - m_GUID: ebd4148e51211854fb129cd73d21c4c2
-    m_Address: DialogueOptions_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
   - m_GUID: 0e063ac6525e0bb4bb84e9f10dc4d404
     m_Address: Characters_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
-  - m_GUID: 72f339f7485b72443971faee3029cd09
-    m_Address: Item Descriptions_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
-  - m_GUID: b3c58a535d934f94a87d39c96b6adad5
-    m_Address: StoryDescriptions_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
-  - m_GUID: 5d609c6d14c954d4e8a4e8a61caa8aa6
-    m_Address: Interactions_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
-  - m_GUID: c2c9d40e89cbdc746a48cd980259ec43
-    m_Address: Item Names_es
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-es
-  - m_GUID: aba8b949b23b9ca4895faec6d80221f8
-    m_Address: Stories_es
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-es

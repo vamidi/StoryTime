@@ -190,7 +190,7 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	public onSelect: EventEmitter<any> = new EventEmitter<any>();
 
 	constructor(@Inject(NB_DOCUMENT) protected document,
-				protected hostRef: ElementRef<HTMLElement>,
+	            protected hostRef: ElementRef<HTMLElement>,
 				protected cd: ChangeDetectorRef,
 				protected focusMonitor: FocusMonitor,
 				protected renderer: Renderer2,
@@ -202,6 +202,8 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	public ngOnInit()
 	{
 		super.ngOnInit();
+
+		// nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic"
 
 		this.onTouched = (value: T ) =>
 		{

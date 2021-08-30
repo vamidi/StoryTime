@@ -45,7 +45,7 @@ export const onlyReader = ['reader'];
 export const onlyEdit = ['superAdmin', 'admin', 'editor'];
 export const onlyDelete = onlySuper;
 
-interface IUserData {
+export interface IUserData {
 	displayName?: string;
 	email: string;
 	firstName: string;

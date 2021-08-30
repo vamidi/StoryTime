@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { ICharacter } from '@app-core/data/standard-tables';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { switchMap } from 'rxjs/operators';
@@ -14,14 +14,14 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import * as _ from 'lodash';
+import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
+import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 
 @Component({ template: '' })
 export abstract class BaseTabComponent extends BaseSourceDataComponent implements OnInit, OnDestroy
 {
 	@Input()
 	public characters: Table<ICharacter> = null;
-
-	public selectedCharacter: ICharacter = null;
 
 	public get charData(): ICharacter
 	{
@@ -63,14 +63,13 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 	{
 		super.ngOnInit();
 
-		/*
 		const map: ParamMap = this.route.snapshot.paramMap;
 		const tableID = map.get('id');
 		const id = map.get('charId');
 		this.projectId = Number.parseInt(this.route.parent.snapshot.paramMap.get('id') as string, 0);
 
 		// Important or data will not be cached
-		console.trace(tableID, id);
+		/*
 		this.firebaseService.getRef(`tables/${tableID}/data/${id}`).on('value', (snapshot) => {
 			if(snapshot.exists())
 			{
@@ -80,21 +79,27 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 		*/
 
 		this.mainSubscription.add(this.userService.getUser().pipe(
-			switchMap(() =>
-				this.projectsService.getProject() ?
-					this.projectsService.getProject$() :
-					this.firebaseService.getItem(this.projectId, `projects`).snapshotChanges(),
-			),
+			switchMap(() => {
+				if(this.projectService.getProject())
+					return this.projectService.getProject$();
+				else if(!isNaN(this.projectId))
+					return this.firebaseService.getItem(this.projectId, `projects`).snapshotChanges();
+				else
+					return of(null)
+			}),
 		).subscribe((snapshot: Project | AngularFireAction<any>) =>
 		{
 			// console.log(snapshot, typeof snapshot, snapshot instanceof Project);
 			let project = null;
-			if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+			if(snapshot !== null )
 			{
-				project = snapshot;
-			} else if(snapshot.payload.exists())
-			{
-				project = snapshot.payload.val()
+				if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+				{
+					project = snapshot;
+				} else if(snapshot.payload.exists())
+				{
+					project = snapshot.payload.val()
+				}
 			}
 
 			if (project && !_.isEqual(this.project, project) && project.hasOwnProperty('tables'))
@@ -118,18 +123,14 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 
 	}
 
-	public onCharacterClicked(event: number)
+	protected validate() { }
+
+	public addMultiple<T>(userConfig?: Partial<NbDialogConfig<Partial<T> | string>>)
 	{
-		this.selectedCharacter = null;
-		if(event !== Number.MAX_SAFE_INTEGER)
-		{
-			this.selectedCharacter = { ...this.characters.find(event) } as ICharacter;
-			this.validateCharacter();
-		}
-		else this.validateCharacter();
+		const ref = this.dialogService.open(InsertMultipleDialogComponent, userConfig);
+
+		// Otherwise scope will make this undefined in the method
+		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
+			this.onCreateConfirm(event, this.tableId));
 	}
-
-	protected validateCharacter() { }
-
-	public addMultiple() { }
 }

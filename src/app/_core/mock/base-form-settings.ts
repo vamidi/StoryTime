@@ -1,5 +1,6 @@
-import { NbControlTypes, Option } from '@app-core/data/forms/form-types';
 import { AbstractControlOptions, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
+import { NbAdjustment, NbPosition, NbComponentOrCustomStatus } from '@nebular/theme';
+import { NbControlTypes, Option } from '@app-core/data/forms/form-types';
 import { BehaviorSubject } from 'rxjs';
 
 export declare type NbSortingDirection = 'ASC' | 'DESC';

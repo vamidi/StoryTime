@@ -690,4 +690,26 @@ export class UtilsService
 		// Cast to a File() type
 		return <File>blobFile;
 	}
+
+	/** ENCRYPTION **/
+
+	/**
+	 * @brief - Hash string
+	 * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+	 * @param word
+	 */
+	public static hashCode(word: string): number
+	{
+		if(word === null || typeof word === undefined)
+			return 0;
+
+		let hash = 0, i, chr;
+		if (word.length === 0) return hash;
+		for (i = 0; i < word.length; i++) {
+			chr   = word.charCodeAt(i);
+			hash  = ((hash << 5) - hash) + chr;
+			hash |= 0; // Convert to 32 bit integer
+		}
+		return hash;
+	}
 }

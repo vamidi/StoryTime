@@ -112,6 +112,7 @@ export class InsertMultipleDialogComponent implements
 			this.updateBehaviourType(behaviourType)
 		});
 
+		this.sourceHandler = new DataSourceColumnHandler(this.sourceHandler.source, this.data);
 		this.sourceHandler.initialize(this.settings.columns, (key, column, index) =>
 			this.configureRelation(key, column, index));
 

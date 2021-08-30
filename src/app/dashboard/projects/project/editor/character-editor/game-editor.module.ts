@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
 	NbAccordionModule,
 	NbButtonModule,
-	NbCardModule,
+	NbCardModule, NbContextMenuModule,
 	NbIconModule, NbInputModule,
 	NbSelectModule,
 	NbSpinnerModule,
@@ -17,7 +17,8 @@ import { StoryComponent } from './stories/story/story.component';
 import { GameEditorOverviewComponent } from './game-editor-overview.component';
 import {
 	CharacterTabComponent,
-	ClassesTabComponent,
+	ClassesTabComponent, SkillsTabComponent,
+	ItemsTabComponent, WeaponsTabComponent,
 } from '@app-dashboard/projects/project/editor/character-editor/tabs';
 import { GameEditorRoutingModule } from './game-editor-routing.module';
 import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-editor';
@@ -37,12 +38,21 @@ const NB_MODULES = [
 	NbIconModule,
 	NbInputModule,
 	NbAccordionModule,
+	NbContextMenuModule,
 	NbTabsetModule,
 	NbTooltipModule,
 	NbVerticalTabSetModule,
 
 	Ng2SmartTableModule,
-]
+];
+
+const TabComponents = [
+	CharacterTabComponent,
+	ClassesTabComponent,
+	SkillsTabComponent,
+	ItemsTabComponent,
+	WeaponsTabComponent,
+];
 
 @NgModule({
 	imports: [
@@ -56,8 +66,7 @@ const NB_MODULES = [
 	declarations: [
 		// Story addition
 		GameEditorOverviewComponent,
-		CharacterTabComponent,
-		ClassesTabComponent,
+		...TabComponents,
 		StoriesComponent,
 		StoryComponent,
 

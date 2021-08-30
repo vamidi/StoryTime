@@ -55,6 +55,8 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 	@ViewChild('descriptionField', { static: true})
 	public descriptionField: TextFieldComponent = null;
 
+	public selectedCharacter: ICharacter = null;
+
 	public traitSettings: ISettings = {
 		mode: 'external',
 		selectMode: '', // 'multi';
@@ -238,7 +240,6 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	public addMultiple()
 	{
-		console.log(this.tableId);
 		const ref = this.dialogService.open(InsertMultipleDialogComponent, {
 			context: {
 				title: 'Add a new character',
@@ -249,7 +250,7 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 		// Otherwise scope will make this undefined in the method
 		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
-			this.onCreateConfirm(event, '-MCRBgLEN83fE5mrtXWZ'));
+			this.onCreateConfirm(event, this.characters.id));
 	}
 
 	public createEquipment(event: { source: LocalDataSource})
@@ -308,10 +309,10 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	public onCharacterClicked(event: number)
 	{
-		super.onCharacterClicked(event);
-
+		this.selectedCharacter = null;
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
+			this.selectedCharacter = { ...this.characters.find(event) } as ICharacter;
 			if(this.selectedCharacter)
 			{
 				this.characterNameField.setValue = this.selectedCharacter.name['en'];
@@ -322,8 +323,9 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)
 				// 'AND' by default, so changing to 'OR' by setting false here
+				this.validate();
 			}
-		}
+		} else this.validate();
 
 		this.getSource.setFilter([
 			// fields we want to include in the search
@@ -346,8 +348,8 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 		console.log('deleting');
 	}
 
-	protected override validateCharacter() {
-		super.validateCharacter();
+	protected override validate() {
+		super.validate();
 
 		this.characterNameField.setDisabledState(this.selectedCharacter === null);
 		this.classField.setDisabledState(this.selectedCharacter === null);

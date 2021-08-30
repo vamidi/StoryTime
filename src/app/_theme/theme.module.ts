@@ -22,7 +22,7 @@ import {
 	NbFormFieldModule,
 	NbToggleModule,
 	NbAutocompleteModule,
-	NbStepperModule, NbSpinnerModule,
+	NbStepperModule, NbSpinnerModule, NbTooltipModule, NbOverlayModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -157,6 +157,7 @@ const NB_MODULES = [
 	NbToggleModule,
 	NbAutocompleteModule,
 	NbStepperModule,
+	NbTooltipModule,
 	NbSnackbarModule.forRoot(),
 ];
 

@@ -308,8 +308,8 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	/**
 	 * @brief - Delete a row from the table
-	 * @param event
-	 * @param callback
+	 * @param event - Data
+	 * @param callback - Callback when the deletion is complete.
 	 * @param tableId - Override to delete data somewhere else.
 	 */
 	public onDeleteConfirm(event: { data: ProxyObject, confirm?: any }, callback = () => {}, tableId: string = '')

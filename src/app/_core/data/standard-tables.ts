@@ -109,8 +109,23 @@ export interface IParameterCurve extends ProxyObject
 export interface ISkill extends ProxyObject
 {
 	classId: number, // The class that is associated with this skill
-	skillName: '', // The name of the skill
+	skillName: KeyLanguageObject, // The name of the skill
 	level: 0, // The level requirement of the skill
+	description: {
+		en: '', // Description of the skill in game.
+	},
+	skillType: 0, // type of the skill
+	scope: 0, // Turn based only, but this is for how many enemies we can attack.
+	occasion: 0, // When/where we can use the skill.
+	speed: 0, // basically priorities how quick the player can attack with this skill.
+	successRate: 0, // The success rate of the attack in %.
+	repeat: 0, // How many times you repeat the moves.
+
+	dmgType: 0, // What kind of damage is this. elemental or physical.
+	formula: '', // Formula we use for when we use this skill.
+	variance: 0, // how much % off -/+ we can be from the final result when calculated the dmg.
+	critical: 0, // See if this has a chance of hitting critical.
+
 	note: '', // Notes that designer can leave behind.
 }
 
@@ -542,9 +557,26 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	Pair<string, { [key: number]: ISkill }>('skills', {
 		0: {
 			classId: Number.MAX_SAFE_INTEGER,
-			skillName: '',
+			skillName: {
+				en: '',
+			},
 			level: 0,
-			note: '',
+			description: {
+				en: '', // Description of the skill in game.
+			},
+			skillType: 0, // type of the skill
+			scope: 0, // Turn based only, but this is for how many enemies we can attack.
+			occasion: 0, // When/where we can use the skill.
+			speed: 0, // basically priorities how quick the player can attack with this skill.
+			successRate: 0, // The success rate of the attack in %.
+			repeat: 0, // How many times you repeat the moves.
+
+			dmgType: 0, // What kind of damage is this. elemental or physical.
+			formula: '', // Formula we use for when we use this skill.
+			variance: 0, // how much % off -/+ we can be from the final result when calculated the dmg.
+			critical: 0, // See if this has a chance of hitting critical.
+
+			note: '', // Notes that designer can leave behind.
 
 			deleted: false,
 			created_at: UtilsService.timestamp,

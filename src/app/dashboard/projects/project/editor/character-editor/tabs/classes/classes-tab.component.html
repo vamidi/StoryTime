@@ -6,11 +6,11 @@
 	<div class="col-lg-2">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
-				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Character</button>
-				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onCharacterClicked($event)">
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Class</button>
+				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onClassClicked($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
-					<nb-option *ngFor="let character of characters; let i = index;" [value]="i">
-						000{{ i + 1 }} {{ character.name['en'] }}
+					<nb-option *ngFor="let charClass of getTable; let i = index;" [value]="i">
+						000{{ i + 1 }} {{ charClass.className['en'] }}
 					</nb-option>
 				</nb-select>
 			</nb-card-body>
@@ -34,10 +34,10 @@
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<div class="row my-2">
 							<div class="col-sm-5">
-								<ngx-text-field #characterNameField></ngx-text-field>
+								<ngx-text-field #classNameField></ngx-text-field>
 							</div>
 							<div class="col-sm-7">
-								<ngx-text-field #characterExperienceCurveField></ngx-text-field>
+								<ngx-text-field #classExperienceCurveField></ngx-text-field>
 							</div>
 						</div>
 					</ngx-dynamic-form>
@@ -49,12 +49,11 @@
 					Stat Curves
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-
-					<div class="row" *ngIf="selectedCharacter === null">
+					<div class="row" *ngIf="selectedClass === null">
 						<div class="col-lg-12">
 							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 								<nb-card-body>
-									<h5>No character selected!</h5>
+									<h5>No class selected!</h5>
 								</nb-card-body>
 							</nb-card>
 						</div>
@@ -75,17 +74,32 @@
 					<div class="row">
 						<!-- START Character Stats -->
 
-						<div class="col-lg-12" *ngIf="characterCurves.length > 0">
+						<div class="col-lg-12" *ngIf="classCurves.length > 0">
 							<h5>Parameter Curves</h5>
 						</div>
-						<div class="col-lg-4" *ngFor="let curve of characterCurves; let i = index">
+
+						<div class="col-lg-4 d-flex align-items-stretch">
 							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-								<nb-card-header>
-									{{ curve.paramName }}
+								<nb-card-body>
+									<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="insertStat()">
+										<i class="add-column nb-plus text-basic"></i>
+									</button>
+								</nb-card-body>
+							</nb-card>
+						</div>
+
+						<div class="col-lg-4" *ngFor="let curve of classCurves; let i = index">
+							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+								<nb-card-header class="d-flex flex-row">
+									<h5>{{ curve.paramName }}</h5>
+									<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+									        class="btn-group align-self-start mt-auto ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(curve.id)" nbContextMenuTag="open-parameter-menu">
+										<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+									</button>
 								</nb-card-header>
 								<nb-card-body>
 									<!-- TODO make a for loop for each of the stat curve that has been made on the character -->
-									<ngx-echarts-area-stack [options]="characterConfigs[i]"></ngx-echarts-area-stack>
+									<ngx-echarts-area-stack [options]="classConfigs[i]"></ngx-echarts-area-stack>
 								</nb-card-body>
 							</nb-card>
 						</div>
@@ -95,16 +109,16 @@
 				</nb-accordion-item-body>
 			</nb-accordion-item>
 
-			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" *ngIf="getSkillTbl">
 				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
 					Skills
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
 					<ng2-smart-table
-						[settings]="settings" [source]="getSource"
-						(createConfirm)="onCreateConfirm($event, getTable.id)"
-						(editConfirm)="onEditConfirm($event, false, getTable.id)"
-						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						[settings]="getSkillSettings" [source]="getSkillTbl.getSource"
+						(createConfirm)="onCreateConfirm($event, getSkillTbl.id)"
+						(editConfirm)="onEditConfirm($event, false, getSkillTbl.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getSkillTbl.id)"
 						(custom)="onChangelogConfirm($event)"
 						(onColumnOrderChanged)="onColumnOrderChange($event)">
 					</ng2-smart-table>
