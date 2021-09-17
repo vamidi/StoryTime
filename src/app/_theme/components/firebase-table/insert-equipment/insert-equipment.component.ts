@@ -19,7 +19,7 @@ import {
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { Table, TablesService } from '@app-core/data/state/tables';
-import { IItem, IItemType } from '@app-core/data/standard-tables';
+import { IItem, IItemType } from '@app-core/data/database/interfaces';
 import { Project } from '@app-core/data/state/projects';
 import { BehaviorSubject, Subscription } from 'rxjs';
 

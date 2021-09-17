@@ -10,7 +10,7 @@ import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data'
 import { InputOutputMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { BaseNodeComponent } from '@app-core/components/visualne/nodes/base-node-component';
 import { MyNodeComponent } from '@app-theme/components';
-import { IEventInput } from '@app-core/data/standard-tables';
+import { IEventInput } from '@app-core/data/database/interfaces';
 
 
 export class EventNodeComponent extends BaseNodeComponent

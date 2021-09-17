@@ -7,7 +7,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { Table, TablesService } from '@app-core/data/state/tables';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import {
 	BooleanColumnRenderComponent,
 	LanguageColumnRenderComponent,
@@ -130,11 +130,11 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	 * @param overrideTbl
 	 */
 	protected processTableData(
-		table: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
-	): BaseSettings
+		table: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
+	): ISettings
 	{
 		// noinspection JSUnusedGlobalSymbols
-		const newSettings: BaseSettings = { ...settings };
+		const newSettings: ISettings = { ...settings };
 
 		let tbl: string = table.title;
 
@@ -252,7 +252,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	 * @param overrideTbl
 	 */
 	protected processRelation(
-		table: Table, pair: StringPair, key: string, newSettings: BaseSettings, overrideTbl: string = '',
+		table: Table, pair: StringPair, key: string, newSettings: ISettings, overrideTbl: string = '',
 	): void
 	{
 		if (pair)

@@ -12,7 +12,7 @@ import {
 import { NbDialogRef } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { FormQuestionBase, Option } from '@app-core/data/forms/form-types';
-import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { BehaviourType } from '@app-core/types';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import { BehaviorSubject } from 'rxjs';
@@ -52,7 +52,7 @@ export class InsertMultipleDialogComponent implements
 	 * @brief - This is the settings to generate the bulk form
 	 */
 	@Input()
-	public settings: BaseSettings;
+	public settings: ISettings;
 
 	@Input()
 	public data: any = {};

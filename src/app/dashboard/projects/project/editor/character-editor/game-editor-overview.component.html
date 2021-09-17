@@ -9,13 +9,13 @@
 		<nb-card style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
 				<nb-vertical-tabset>
-					<nb-tab tabTitle="Characters">
+					<nb-tab tabTitle="Characters" active>
 						<ngx-character-tab [characterSettings]="settings" [characters]="getTable"></ngx-character-tab>
 					</nb-tab>
 					<nb-tab tabTitle="Enemies">
-						<p>List of <strong>Enemies</strong>.</p>
+						<ngx-enemies-tab [characters]="getTable"></ngx-enemies-tab>
 					</nb-tab>
-					<nb-tab tabTitle="Classes" active>
+					<nb-tab tabTitle="Classes">
 						<ngx-classes-tab [characters]="getTable"></ngx-classes-tab>
 					</nb-tab>
 					<nb-tab tabTitle="Skills">

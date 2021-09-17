@@ -166,6 +166,8 @@ export class FirebaseRelationService
 
 		const parameterCurves: RelationPair = new Map([
 			Pair('classId', new StringPair('classes', 'className', true)),
+			Pair('enemyId', new StringPair('enemies', 'name', true)),
+			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
 		]);
 
 		/* Shop System */
@@ -198,6 +200,12 @@ export class FirebaseRelationService
 			Pair('typeId', new StringPair('itemTypes', 'name', true)),
 		]);
 
+		const itemDrops: RelationPair = new Map([
+			Pair('name', new StringPair('items', 'name', true)),
+			Pair('enemyId', new StringPair('enemies', 'name', true)),
+			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
+		])
+
 		const recipes: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
 			Pair('childId', new StringPair('items', 'name', true)),
@@ -218,6 +226,7 @@ export class FirebaseRelationService
 			Pair('characters', characters),
 
 			Pair('items', itemEffectTypeItemTypes),
+			Pair('itemDrops', itemDrops),
 
 			Pair('enemies', enemies),
 			Pair('equipments', equipments),

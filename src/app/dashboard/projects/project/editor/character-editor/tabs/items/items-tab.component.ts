@@ -21,16 +21,15 @@ import {
 	TextFieldComponent,
 } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { IItem } from '@app-core/data/standard-tables';
+import { IItem } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
-import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 
 @Component({
 	selector: 'ngx-items-tab',
 	templateUrl: 'items-tab.component.html',
 	styleUrls: ['./../base/base-tab.component.scss'],
 })
-export class ItemsTabComponent extends BaseTabComponent implements OnInit
+export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 {
 	@ViewChild(DynamicFormComponent, { static: true })
 	public formComponent: DynamicFormComponent = null;
@@ -100,8 +99,6 @@ export class ItemsTabComponent extends BaseTabComponent implements OnInit
 		fields: {},
 	};
 
-	public selectedItem: IItem = null;
-
 	constructor(
 		protected router: Router,
 		protected route: ActivatedRoute,
@@ -158,58 +155,58 @@ export class ItemsTabComponent extends BaseTabComponent implements OnInit
 	{
 		super.validate();
 
-		this.itemNameField.setDisabledState(this.selectedItem === null);
-		this.itemDescriptionField.setDisabledState(this.selectedItem === null);
-		this.itemTypeField.setDisabledState(this.selectedItem === null);
-		this.itemCostField.setDisabledState(this.selectedItem === null);
-		this.itemConsumableField.setDisabledState(this.selectedItem === null);
-		this.itemSellableField.setDisabledState(this.selectedItem === null);
-		this.scopeField.setDisabledState(this.selectedItem === null);
-		this.occasionField.setDisabledState(this.selectedItem === null);
-		this.speedField.setDisabledState(this.selectedItem === null);
-		this.successRateField.setDisabledState(this.selectedItem === null);
-		this.repeatField.setDisabledState(this.selectedItem === null);
-		this.magicCostGain.setDisabledState(this.selectedItem === null);
-		this.hitTypeField.setDisabledState(this.selectedItem === null);
-		this.animationField.setDisabledState(this.selectedItem === null);
-		this.dmgTypeField.setDisabledState(this.selectedItem === null);
-		this.formulaField.setDisabledState(this.selectedItem === null);
-		this.varianceField.setDisabledState(this.selectedItem === null);
-		this.critField.setDisabledState(this.selectedItem === null);
+		this.itemNameField.setDisabledState(this.selectedObject === null);
+		this.itemDescriptionField.setDisabledState(this.selectedObject === null);
+		this.itemTypeField.setDisabledState(this.selectedObject === null);
+		this.itemCostField.setDisabledState(this.selectedObject === null);
+		this.itemConsumableField.setDisabledState(this.selectedObject === null);
+		this.itemSellableField.setDisabledState(this.selectedObject === null);
+		this.scopeField.setDisabledState(this.selectedObject === null);
+		this.occasionField.setDisabledState(this.selectedObject === null);
+		this.speedField.setDisabledState(this.selectedObject === null);
+		this.successRateField.setDisabledState(this.selectedObject === null);
+		this.repeatField.setDisabledState(this.selectedObject === null);
+		this.magicCostGain.setDisabledState(this.selectedObject === null);
+		this.hitTypeField.setDisabledState(this.selectedObject === null);
+		this.animationField.setDisabledState(this.selectedObject === null);
+		this.dmgTypeField.setDisabledState(this.selectedObject === null);
+		this.formulaField.setDisabledState(this.selectedObject === null);
+		this.varianceField.setDisabledState(this.selectedObject === null);
+		this.critField.setDisabledState(this.selectedObject === null);
 	}
 
 
-	public onItemSelected(event: any)
+	public onActiveSelection(event: number)
 	{
-		this.selectedItem = null;
+		super.onActiveSelection(event);
 		// this.classCurves = [];
 		// this.classConfigs = [];
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			this.selectedItem = UtilsService.copyObj(this.table.find(event)) as IItem;
-			if(this.selectedItem)
+			this.selectedObject = UtilsService.copyObj(this.table.find(event)) as IItem;
+			if(this.selectedObject)
 			{
 				// effectPrimaryValue: number,
 				// effectTypeId: number,
 
-				this.itemNameField.setValue = this.selectedItem.name['en'];
-				this.itemDescriptionField.setValue = this.selectedItem.description['en'];
-				this.itemTypeField.setValue = this.selectedItem.typeId;
-				this.itemSellableField.setValue = this.selectedItem.sellable;
-				this.itemCostField.setValue = this.selectedItem.sellValue;
+				this.itemNameField.setValue = this.selectedObject.name[this.selectedLanguage];
+				this.itemDescriptionField.setValue = this.selectedObject.description[this.selectedLanguage];
+				this.itemTypeField.setValue = this.selectedObject.typeId;
+				this.itemSellableField.setValue = this.selectedObject.sellable;
+				this.itemCostField.setValue = this.selectedObject.sellValue;
 				// this.skillTechnicalCostField.setValue = this.selectedSkill.expCurve;
-				this.scopeField.setValue = this.selectedItem.scope;
-				this.occasionField.setValue = this.selectedItem.occasion;
-				this.speedField.setValue = this.selectedItem.speed;
-				this.successRateField.setValue = this.selectedItem.successRate;
-				this.repeatField.setValue = this.selectedItem.repaet;
+				this.scopeField.setValue = this.selectedObject.scope;
+				this.occasionField.setValue = this.selectedObject.occasion;
+				this.speedField.setValue = this.selectedObject.speed;
+				this.successRateField.setValue = this.selectedObject.successRate;
+				this.repeatField.setValue = this.selectedObject.repaet;
 				// this.magicCostGain.setValue = this.selectedSkill.expCurve;
 				// this.hitTypeField.setValue = this.selectedSkill.hitType;
 				// this.animationField.setValue = this.selectedSkill.expCurve;
-				this.dmgTypeField.setValue = this.selectedItem.dmgType;
-				this.formulaField.setValue = this.selectedItem.formula;
-				this.varianceField.setValue = this.selectedItem.variance;
-				this.critField.setValue = this.selectedItem.critical;
+				this.dmgTypeField.setValue = this.selectedObject.dmgType;
+				this.formulaField.setValue = this.selectedObject.formula;
+				this.varianceField.setValue = this.selectedObject.variance;
+				this.critField.setValue = this.selectedObject.critical;
 
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)

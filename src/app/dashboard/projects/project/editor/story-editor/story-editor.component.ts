@@ -23,7 +23,7 @@ import {
 	StartNodeComponent,
 } from '@app-core/components/visualne';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
-import { IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/standard-tables';
+import { IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { InputOutputMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { BasicTextFieldInputComponent } from '@app-theme/components';

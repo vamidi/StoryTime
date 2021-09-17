@@ -18,10 +18,10 @@ import { DynamicComponentService } from '@app-core/utils/dynamic-component.servi
 import { ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { BaseFormSettings, FormField } from '@app-core/mock/base-form-settings';
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
-import { ICraftable, ICraftCondition, IDialogue, IItem } from '@app-core/data/standard-tables';
+import { ICraftable, ICraftCondition, IItem } from '@app-core/data/database/interfaces';
 import { DynamicFormComponent } from '@app-theme/components';
 import { DataSourceColumnHandler } from '@app-core/data/data-source-column-handler';
-import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
 import { InsertCraftableComponent, InsertItemsDialogComponent } from '@app-theme/components/firebase-table';
@@ -107,9 +107,9 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 		{ text: 'Item name', value: Number.MAX_SAFE_INTEGER, disabled: true, type: 'number' },
 	);
 
-	public itemSettings: BaseSettings = new BaseSettings();
-	public craftSettings: BaseSettings = new BaseSettings();
-	public craftConditionSettings: BaseSettings = new BaseSettings();
+	public itemSettings: ISettings = new BaseSettings();
+	public craftSettings: ISettings = new BaseSettings();
+	public craftConditionSettings: ISettings = new BaseSettings();
 
 	public defaultOption: number = Number.MAX_SAFE_INTEGER;
 
@@ -753,7 +753,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			arr.get(idx).Hidden = hide;
 		});
 
-		const enableQuestions = (questions: Map<string, BaseFormInputComponent<any>>, settings: BaseSettings) =>
+		const enableQuestions = (questions: Map<string, BaseFormInputComponent<any>>, settings: ISettings) =>
 		{
 			questions.forEach((_, idx) =>
 			{

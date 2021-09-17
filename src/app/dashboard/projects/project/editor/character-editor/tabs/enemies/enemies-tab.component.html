@@ -1,18 +1,28 @@
 <div class="row">
 	<div class="col-lg-12">
-		<h1 class="mt-0 mb-4">Classes Editor</h1>
+		<h1 class="mt-0 mb-4">Enemy Editor</h1>
 	</div>
 
 	<div class="col-lg-2">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
-				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Class</button>
-				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
+				<label class="formHeading w-100 d-flex" for="localization"><span class="flex-grow-1">Localization</span></label>
+				<nb-select id="localization" fullWidth selected="en"
+				           (selectedChange)="onLanguageChange($event)">
+					<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+				</nb-select>
+
+				<!-- Character selection -->
+
+				<label class="formHeading w-100 d-flex" for="select-enemy"><span class="flex-grow-1">Select an enemy</span></label>
+				<nb-select fullWidth id="select-enemy" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
-					<nb-option *ngFor="let charClass of getTable; let i = index;" [value]="i">
-						000{{ i + 1 }} {{ getLanguageProperty(charClass.className) }}
+					<nb-option *ngFor="let enemy of getTable; let i = index;" [value]="i">
+						000{{ i + 1 }} {{ getLanguageProperty(enemy.name) }}
 					</nb-option>
 				</nb-select>
+
+				<button id="add-character" class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Enemy</button>
 			</nb-card-body>
 		</nb-card>
 
@@ -25,7 +35,10 @@
 	</div>
 
 	<div class="col-lg-10">
+
 		<nb-accordion multi>
+			<!-- Character General settings -->
+
 			<nb-accordion-item class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
 				<nb-accordion-item-header>
 					General settings
@@ -33,16 +46,26 @@
 				<nb-accordion-item-body>
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<div class="row my-2">
-							<div class="col-sm-5">
-								<ngx-text-field #classNameField></ngx-text-field>
+							<div class="col-sm-6">
+								<ngx-text-field #enemyNameField></ngx-text-field>
 							</div>
-							<div class="col-sm-7">
-								<ngx-text-field #classExperienceCurveField></ngx-text-field>
+							<div class="col-sm-6">
+								<ngx-dropdown-field #enemyCategoryField></ngx-dropdown-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-text-field #expRewardField></ngx-text-field>
+							</div>
+							<div class="col-sm-6">
+								<ngx-text-field #moneyRewardField></ngx-text-field>
 							</div>
 						</div>
 					</ngx-dynamic-form>
 				</nb-accordion-item-body>
 			</nb-accordion-item>
+
+			<!-- END Character General settings -->
 
 			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 				<nb-accordion-item-header nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic">
@@ -51,30 +74,17 @@
 				<nb-accordion-item-body>
 					<div class="row" *ngIf="selectedObject === null">
 						<div class="col-lg-12">
-							<h5>No class selected!</h5>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-lg-12" *ngIf="eCharLevelOptions !== null">
-							<h5>Experience Curve</h5>
-
-							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-								<nb-card-body>
-									<ngx-echarts-area-stack [options]="eCharLevelOptions"></ngx-echarts-area-stack>
-								</nb-card-body>
-							</nb-card>
+							<h5>No Enemy selected!</h5>
 						</div>
 					</div>
 
 					<div class="row">
 						<!-- START Character Stats -->
-
 						<div class="col-lg-12" *ngIf="curves.length > 0">
 							<h5>Parameter Curves</h5>
 						</div>
 
-						<div class="col-lg-4 d-flex align-items-stretch"  *ngIf="selectedObject !== null">
+						<div class="col-lg-4 d-flex align-items-stretch" *ngIf="selectedObject !== null">
 							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 								<nb-card-body>
 									<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="insertStat()">
@@ -105,21 +115,41 @@
 				</nb-accordion-item-body>
 			</nb-accordion-item>
 
-			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" *ngIf="getSkillTbl">
-				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
-					Skills
+			<!-- Character equipment -->
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the items the enemy can drop during/after the battle." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Drop Items
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<ng2-smart-table
-						[settings]="getSkillSettings" [source]="getSkillTbl.getSource"
-						(createConfirm)="onCreateConfirm($event, getSkillTbl.id)"
-						(editConfirm)="onEditConfirm($event, false, getSkillTbl.id)"
-						(deleteConfirm)="onDeleteConfirm($event, null, getSkillTbl.id)"
+					<ng2-smart-table #itemSmartTableComponent
+						[settings]="itemDropsSettings" [source]="itemDrops.getSource"
+						(createConfirm)="onCreateConfirm($event, itemDrops.id)"
+						(editConfirm)="onEditConfirm($event, false, itemDrops.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, itemDrops.id)"
 						(custom)="onChangelogConfirm($event)"
 						(onColumnOrderChanged)="onColumnOrderChange($event)">
 					</ng2-smart-table>
 				</nb-accordion-item-body>
 			</nb-accordion-item>
+
+			<!-- Action Patterns -->
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="Actions defines which attack the enemy can do and when." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Action Patterns
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="actionSettings" [source]="actionSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item> -->
 		</nb-accordion>
 	</div>
 </div>

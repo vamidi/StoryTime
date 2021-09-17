@@ -64,6 +64,9 @@ export interface ISettings
 		width?: string,
 	};
 	columns: { [key: string]: Column };
+
+	// Functions
+	getColumn?: (columnName: string) => Column;
 }
 
 export class BaseSettings implements ISettings
@@ -150,4 +153,18 @@ export class BaseSettings implements ISettings
 			defaultValue: Math.floor(Date.now() / 1000),
 		},
 	};
+
+
+	/**
+	 * @brief - Retrieve the column of this object.
+	 * @param columnName
+	 */
+	public getColumn = (columnName: string) => {
+		if(this.columns.hasOwnProperty(columnName))
+		{
+			return this.columns[columnName];
+		}
+
+		return null;
+	}
 }

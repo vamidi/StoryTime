@@ -16,7 +16,7 @@ import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../environments/environment';
@@ -279,7 +279,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 
 	protected configureSettings()
 	{
-		const newSettings: BaseSettings = { ...this.settings };
+		const newSettings: ISettings = { ...this.settings };
 
 		newSettings.mode = 'external';
 

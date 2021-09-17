@@ -8,7 +8,7 @@ import { NbDialogRef, NbStepComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
-import { ICharacter, IDialogue, IStory } from '@app-core/data/standard-tables';
+import { ICharacter, IDialogue, IStory } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import {

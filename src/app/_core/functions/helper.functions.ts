@@ -6,7 +6,7 @@ import {
 	IEvent,
 	IItem,
 	IStory,
-} from '@app-core/data/standard-tables';
+} from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 
 export function Pair<K, V>(k: K, v: V): readonly [K, V] { return [k, v] }

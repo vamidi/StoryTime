@@ -1,6 +1,6 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
-import { ICharacter } from '@app-core/data/standard-tables';
+import { ICharacter } from '@app-core/data/database/interfaces';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
@@ -16,9 +16,14 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import * as _ from 'lodash';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
+import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
+import { ProxyObject } from '@app-core/data/base';
+import { DynamicFormComponent } from '@app-theme/components';
+import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 
 @Component({ template: '' })
-export abstract class BaseTabComponent extends BaseSourceDataComponent implements OnInit, OnDestroy
+export abstract class BaseTabComponent<T extends ProxyObject>
+	extends BaseSourceDataComponent implements OnInit, OnDestroy
 {
 	@Input()
 	public characters: Table<ICharacter> = null;
@@ -28,7 +33,12 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 		return this.characterData;
 	}
 
+	public selectedObject: T = null;
+
 	public defaultValue: number = Number.MAX_SAFE_INTEGER;
+
+	public abstract formComponent: DynamicFormComponent;
+	public abstract source: BaseFormSettings = null;
 
 	protected characterData: ICharacter = null;
 
@@ -38,6 +48,8 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 	protected projectId: number = Number.MAX_SAFE_INTEGER;
 
 	protected project: Project = null;
+
+	protected selectedLanguage: KeyLanguage = 'en';
 
 	protected constructor(
 		protected route: ActivatedRoute,
@@ -118,14 +130,25 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 		this.mainSubscription.unsubscribe();
 	}
 
+	/**
+	 * @brief - public access from the html.
+	 */
+	public getLanguageProperty(prop: KeyLanguageObject): string
+	{
+		return this.languageService.getLanguageFromProperty(prop, this.selectedLanguage);
+	}
+
 	public onChangelogConfirm(event)
 	{
 
 	}
 
-	protected validate() { }
+	public onActiveSelection(event: number)
+	{
+		this.selectedObject = null;
+	}
 
-	public addMultiple<T>(userConfig?: Partial<NbDialogConfig<Partial<T> | string>>)
+	public addMultiple<C>(userConfig?: Partial<NbDialogConfig<Partial<C> | string>>)
 	{
 		const ref = this.dialogService.open(InsertMultipleDialogComponent, userConfig);
 
@@ -133,4 +156,15 @@ export abstract class BaseTabComponent extends BaseSourceDataComponent implement
 		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
 			this.onCreateConfirm(event, this.tableId));
 	}
+
+	public onLanguageChange(event: KeyLanguage)
+	{
+		super.onLanguageChange(event);
+
+		this.selectedLanguage = event;
+		if(this.selectedObject !== null)
+			this.onActiveSelection(this.selectedObject.id);
+	}
+
+	protected validate() { }
 }

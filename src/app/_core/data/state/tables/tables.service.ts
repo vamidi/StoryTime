@@ -13,11 +13,11 @@ import { PipelineService } from '@app-core/utils/pipeline.service';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 import { environment } from '../../../../../environments/environment';
 
-import isEqual from 'lodash.isequal';
-import pick from 'lodash.pick';
-import { ICharacterClass } from '@app-core/data/standard-tables';
 import { Project } from '@app-core/data/state/projects';
 import { ChildEvent } from '@angular/fire/database/interfaces';
+
+import isEqual from 'lodash.isequal';
+import pick from 'lodash.pick';
 
 @Injectable({ providedIn: 'root'})
 export class TablesService extends TableData implements Iterable<Table>, IPipelineSchedule {

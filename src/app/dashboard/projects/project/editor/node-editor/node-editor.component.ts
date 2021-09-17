@@ -21,7 +21,7 @@ import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { BasicTextFieldInputComponent } from '@app-theme/components';
-import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/standard-tables';
+import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
 import { EventsTypes } from 'visualne/types/events';
 import { ProxyObject } from '@app-core/data/base';
 import { switchMap } from 'rxjs/operators';

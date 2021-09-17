@@ -6,13 +6,23 @@
 	<div class="col-lg-4">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
-				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Character</button>
-				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onCharacterClicked($event)">
+				<label class="formHeading w-100 d-flex" for="localization"><span class="flex-grow-1">Localization</span></label>
+				<nb-select id="localization" fullWidth selected="en"
+				           (selectedChange)="onLanguageChange($event)">
+					<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+				</nb-select>
+
+				<!-- Character selection -->
+
+				<label class="formHeading w-100 d-flex" for="select-character"><span class="flex-grow-1">Select a character</span></label>
+				<nb-select fullWidth id="select-character" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
 					<nb-option *ngFor="let character of characters; let i = index;" [value]="i">
-						000{{ i + 1 }} {{ getName(character.name) }}
+						000{{ i + 1 }} {{ getLanguageProperty(character.name) }}
 					</nb-option>
 				</nb-select>
+
+				<button id="add-character" class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Character</button>
 			</nb-card-body>
 		</nb-card>
 

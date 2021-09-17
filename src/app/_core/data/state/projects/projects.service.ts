@@ -16,7 +16,12 @@ import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 import pick from 'lodash.pick';
 import { PipelineService } from '@app-core/utils/pipeline.service';
 import { environment } from '../../../../../environments/environment';
-import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import {
+	KeyLanguage,
+	KeyLanguageObject,
+	SystemLanguage,
+	systemLanguages,
+} from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
 
 @Injectable({ providedIn: 'root'})
@@ -540,6 +545,17 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 @Injectable({ providedIn: 'root' })
 export class LanguageService
 {
+	public static GetLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
+	{
+		if(prop.hasOwnProperty(lang))
+			return prop[lang];
+
+		if(prop.hasOwnProperty(this.fallBackLanguage))
+			return prop[this.fallBackLanguage];
+
+		return '';
+	}
+
 	public set SetLanguage(lang: KeyLanguage)
 	{
 		this.selectedLanguage = lang; this.selectedLanguage$.next(this.selectedLanguage);
@@ -573,5 +589,12 @@ export class LanguageService
 
 	private selectedLanguage: KeyLanguage = null;
 
+	private static fallBackLanguage: KeyLanguage = 'en';
+
 	constructor(protected projectsService: ProjectsService) {}
+
+	public getLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
+	{
+		return LanguageService.GetLanguageFromProperty(prop, lang);
+	}
 }

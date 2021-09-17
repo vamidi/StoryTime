@@ -10,7 +10,7 @@ import { LanguageService, ProjectsService } from '@app-core/data/state/projects'
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import { ICharacter } from '@app-core/data/standard-tables';
+import { ICharacter } from '@app-core/data/database/interfaces';
 
 @Component({
 	selector: 'ngx-characters-overview',

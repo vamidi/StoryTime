@@ -1,192 +1,16 @@
 // Will grow overtime
 import { TableTemplate } from '@app-core/data/state/tables';
-import { ProxyObject } from '@app-core/data/base';
 import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
-import { Data as VisualNEData } from 'visualne/types/core/data';
-import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
-import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';
-
-export interface IDialogue extends ProxyObject
-{
-	characterId: number,
-	nextId: number,
-	parentId: number,
-	text: KeyLanguageObject,
-}
-
-export interface IDialogueOption extends ProxyObject
-{
-	childId: number,
-	parentId: number,
-	text: KeyLanguageObject,
-}
-
-export interface IStory extends ProxyObject
-{
-	parentId: number; 					// character ID
-	childId: number; 					// dialogue start node
-	description: KeyLanguageObject; 	// description of the story
-	title: KeyLanguageObject;			// title of the story
-	typeId: number, 					// type of quest it is main story or somethings different, the player decide.
-	taskId: number,						// Where the first task is.
-}
-
-export interface IStoryData
-{
-	storyId: number,
-	data: VisualNEData,
-}
-
-export interface ICharacter extends ProxyObject
-{
-	name: KeyLanguageObject;
-	description: KeyLanguageObject;
-	classId: number,
-	initialLevel: number,
-	maxLevel: number,
-}
-
-export interface IItem extends ProxyObject
-{
-	description: KeyLanguageObject,
-	effectPrimaryValue: number,
-	effectTypeId: number,
-	name: KeyLanguageObject,
-	sellValue: number,
-	sellable: boolean,
-	typeId: number, /** @type IItemType */
-}
-
-export interface ICraftable extends ProxyObject
-{
-	childId: number,
-	parentId: number,
-	shopRevisionId: number,
-	value: number,
-}
-
-export interface ICraftCondition extends ProxyObject
-{
-	amount: number,
-	childId: number,
-	parentId: number,
-}
-
-export interface IEventInput
-{
-	paramName: string,
-	defaultValue: any;
-	value: any;
-}
-
-export interface IEvent extends ProxyObject
-{
-	name: string, // name of the event
-	owner: string, // creator of the event
-}
-
-export interface ICharacterClass extends ProxyObject
-{
-	className: string, // Class name -  Name of the class.
-	expCurve: string, // - Exp curve - How fast this class can evolve.
-}
-
-/**
- * @brief - Parameters that belongs to a class.
- */
-export interface IParameterCurve extends ProxyObject
-{
-	alias: string, // Key value we use for the object in the JSON.
-	base: number, // base value we are going to use in our formula.
-	class: number, // Where the curve belongs to.
-	paramName: string, // The name of the parameter,
-	paramFormula: string, // formula that is going to be parsed.
-	rate: number, // The rate that we are going to use in our formula, this determines the speed of growth.
-	flat: number, // Flat number that we going to add to the value of the formula,
-}
-
-export interface ISkill extends ProxyObject
-{
-	classId: number, // The class that is associated with this skill
-	skillName: KeyLanguageObject, // The name of the skill
-	level: 0, // The level requirement of the skill
-	description: {
-		en: '', // Description of the skill in game.
-	},
-	skillType: 0, // type of the skill
-	scope: 0, // Turn based only, but this is for how many enemies we can attack.
-	occasion: 0, // When/where we can use the skill.
-	speed: 0, // basically priorities how quick the player can attack with this skill.
-	successRate: 0, // The success rate of the attack in %.
-	repeat: 0, // How many times you repeat the moves.
-
-	dmgType: 0, // What kind of damage is this. elemental or physical.
-	formula: '', // Formula we use for when we use this skill.
-	variance: 0, // how much % off -/+ we can be from the final result when calculated the dmg.
-	critical: 0, // See if this has a chance of hitting critical.
-
-	note: '', // Notes that designer can leave behind.
-}
-
-export interface IItemInventoryType extends ProxyObject
-{
-	// Recipe,
-	// Utensil,
-	// Ingredient,
-	// Customisation,
-	// Dish,
-	name: KeyLanguageObject, // the name of the type --> recipe, utensil, ingredient etc.
-}
-
-export interface IItemInventoryActionType extends ProxyObject
-{
-	// Cook,
-	// Craft,
-	// Use,
-	// Equip,
-	// DoNothing
-	name: KeyLanguageObject, // The type of action for in the inventory
-}
-
-export interface IITemTabType extends ProxyObject
-{
-	// None,
-	// Customization --> Character customization
-	// Artifacts --> Accessories to boost the character
-	// Upgrades --> Upgrade materials to level up items.
-	// FoodItems --> Items that can be consumed
-	// Recipes --> Crafting or cooking recipes
-	// Materials --> Gadgets that can be used to activate something
-	// Stories --> Items that the player needs to use.
-	name: KeyLanguageObject, // the name of the type
-}
-
-export interface IInventoryTabType extends ProxyObject
-{
-	name: KeyLanguageObject, // the name of the tab.
-	description: KeyLanguageObject,
-	slotCount: number, // the amount of items it can carry.
-	type: number, /** @type IITemTabType */
-}
-
-/**
- * @brief - represent a group for the items.
- */
-export interface IItemType extends ProxyObject
-{
-	name: KeyLanguageObject, // item name type --> armor, sword
-	actionName: KeyLanguageObject, // the action name we show when interacting with an item.
-	actionType: number, /** @type IItemInventoryActionType --> the kind of action to perform in the inventory. */
-	type: number, /** @type IItemInventoryType --> The type what the item represent in the inventory */
-}
-
-export interface IEquipment extends ProxyObject
-{
-	characterId: number, /** @type ICharacter - The character that is linked to this equipment. */
-	equipment: number, /** @type IItem - The equipment of the character  */
-	typeId: number, /** @type IItemType - The item type */
-}
+import {
+	ICharacter, ICharacterClass, IClassParameterCurve,
+	ICraftable, ICraftCondition,
+	IDialogue,
+	IDialogueOption, IEnemy, IEnemyParameterCurve, IEquipment, IEvent, IInventoryTabType,
+	IItem,
+	IItemDrop, IItemInventoryActionType, IITemTabType, IItemType, ISkill,
+	IStory,
+} from '@app-core/data/database/interfaces';
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([
 	Pair('classes', 'Defines the classes a character can have in the game.'),
@@ -195,7 +19,7 @@ export const standardTablesDescription: Map<string, string> = new Map<string, st
 
 export const standardTables: Map<string, TableTemplate> = new Map<string, TableTemplate>([
 	// Dialogues
-	Pair<string, { [key: number]: IDialogue }>('dialogues',{
+	Pair<string, { [key: number]: IDialogue }>('dialogues', {
 		0: {
 			deleted: false,
 			characterId: 0,
@@ -210,7 +34,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Items
-	Pair<string, { [key: number]: IItem }>( 'items', 	{
+	Pair<string, { [key: number]: IItem }>('items', {
 		0: {
 			deleted: false,
 			effectPrimaryValue: 0,
@@ -229,8 +53,23 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 	}),
+	// Item drops
+	Pair<string, { [key: number]: IItemDrop }>('itemDrops', {
+		0: {
+			chance: false,
+			deleted: false,
+			enemyId: Number.MAX_SAFE_INTEGER,
+			enemyCategoryId: Number.MAX_SAFE_INTEGER,
+			function: '',
+			name: Number.MAX_SAFE_INTEGER,
+			percentage: 100,
+
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
 	// characters
-	Pair<string, { [key: number]: ICharacter }>( 'characters', 	{
+	Pair<string, { [key: number]: ICharacter }>('characters', {
 		0: {
 			classId: Number.MAX_SAFE_INTEGER,
 			deleted: false,
@@ -247,7 +86,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Dialogue Options
-	Pair<string, { [key: number]: IDialogueOption }>( 'dialogueOptions', 	{
+	Pair<string, { [key: number]: IDialogueOption }>('dialogueOptions', {
 		0: {
 			deleted: false,
 			childId: 0,
@@ -260,7 +99,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Dialogue Option Events
-	Pair( 'dialogueOptionEvents', 	{
+	Pair('dialogueOptionEvents', {
 		0: {
 			deleted: false,
 			characterId: 0,
@@ -272,7 +111,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// QuestTypes
-	Pair( 'questTypes', 	{
+	Pair('questTypes', {
 		0: {
 			deleted: false,
 			name: 'Main',
@@ -305,7 +144,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Quest Events
-	Pair( 'questEvents', 	{
+	Pair('questEvents', {
 		0: {
 			deleted: false,
 			questId: 0,
@@ -317,7 +156,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	}),
 	// Stories / Quests
 	// Stories does not need to contain a quest.
-	Pair<string, { [key: number]: IStory }>( 'stories',{
+	Pair<string, { [key: number]: IStory }>('stories', {
 		0: {
 			deleted: false,
 			childId: 0, 						// the dialogue is will start
@@ -344,7 +183,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	}),
 	*/
 	// Tasks
-	Pair( 'Tasks', 	{
+	Pair('Tasks', {
 		0: {
 			deleted: false,
 			description: {
@@ -402,7 +241,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Task events
-	Pair( 'taskEvents', 	{
+	Pair('taskEvents', {
 		0: {
 			name: '',
 			characterId: 0,
@@ -414,7 +253,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Effect types
-	Pair( 'effectTypes', 	{
+	Pair('effectTypes', {
 		0: {
 			deleted: false,
 			name: 'None',
@@ -423,7 +262,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Shops
-	Pair( 'shops', 	{
+	Pair('shops', {
 		0: {
 			deleted: false,
 			name: '',
@@ -433,7 +272,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Shop craftables
-	Pair<string, { [key:string]: ICraftable }>( 'shopCraftables', 	{
+	Pair<string, { [key: number]: ICraftable }>('shopCraftables', {
 		0: {
 			deleted: false,
 			childId: 0,
@@ -445,7 +284,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Shop craft conditions
-	Pair<string, { [key:string]: ICraftCondition }>( 'shopCraftConditions', {
+	Pair<string, { [key: number]: ICraftCondition }>('shopCraftConditions', {
 		0: {
 			deleted: false,
 			amount: 0,
@@ -456,20 +295,27 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 	// Enemies
-	Pair( 'enemies', {
+	Pair<string, { [key: number]: IEnemy }>('enemies', {
 		0: {
 			deleted: false,
-			name: '',
+			name: {
+				en: '',
+			},
 			category: 0,
+			exp: 0,
+			money: 0,
+
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},
 	}),
 	// Enemy categories
-	Pair( 'enemyCategories', {
+	Pair('enemyCategories', {
 		0: {
 			deleted: false,
-			name: '',
+			name: {
+				en: '',
+			},
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},
@@ -488,9 +334,11 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 
-	Pair<string, { [key: number]: ICharacterClass }>( 'classes', {
+	Pair<string, { [key: number]: ICharacterClass }>('classes', {
 		0: {
-			className: '',
+			className: {
+				en: '',
+			},
 			expCurve: '',
 
 			deleted: false,
@@ -499,11 +347,15 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 
-	Pair<string, { [key: number]: IParameterCurve }>('parameterCurves', {
+	/**
+	 * @brief - Parameter curves
+	 * This can either belong to a class or an enemy.
+ 	 */
+	Pair<string, { [key: number]: IClassParameterCurve | IEnemyParameterCurve }>('parameterCurves', {
 		0: {
 			alias: 'MP',
 			base: 65,
-			class: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
 			paramName: 'Magic Points',
 			paramFormula: 'base + (level * level * 6 / 105) + level * 12 * (rate - flat)',
@@ -516,7 +368,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		1: {
 			alias: 'ATK',
 			base: 160,
-			class: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
 			paramName: 'Attack',
 			paramFormula: 'level * base + level * level * level * rate',
@@ -529,7 +381,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		2: {
 			alias: 'HP',
 			base: 540,
-			class: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
 			paramName: 'Health Points',
 			paramFormula: 'level * base + level * level * level * rate',
@@ -542,7 +394,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		3: {
 			alias: 'DEF',
 			base: 140,
-			class: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
 			paramName: 'Defense',
 			paramFormula: 'level * base + level * level * level * rate',

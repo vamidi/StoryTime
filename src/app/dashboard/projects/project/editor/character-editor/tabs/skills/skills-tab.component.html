@@ -7,10 +7,10 @@
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
 				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Skill</button>
-				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onSkillSelected($event)">
+				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
 					<nb-option *ngFor="let skill of getTable; let i = index;" [value]="i">
-						000{{ i + 1 }} {{ skill.skillName['en'] }}
+						000{{ i + 1 }} {{ getLanguageProperty(skill.skillName) }}
 					</nb-option>
 				</nb-select>
 			</nb-card-body>

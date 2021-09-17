@@ -16,7 +16,7 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { TablesService } from '@app-core/data/state/tables';
 import { DropDownFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { ICharacterClass, ISkill } from '@app-core/data/standard-tables';
+import { ISkill } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 
 @Component({
@@ -24,7 +24,7 @@ import { UtilsService } from '@app-core/utils';
 	templateUrl: 'skills-tab.component.html',
 	styleUrls: ['./../base/base-tab.component.scss'],
 })
-export class SkillsTabComponent extends BaseTabComponent implements OnInit
+export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnInit
 {
 	@ViewChild(DynamicFormComponent, { static: true })
 	public formComponent: DynamicFormComponent = null;
@@ -91,8 +91,6 @@ export class SkillsTabComponent extends BaseTabComponent implements OnInit
 		fields: {},
 	};
 
-	public selectedSkill: ISkill = null;
-
 	constructor(
 		protected router: Router,
 		protected route: ActivatedRoute,
@@ -149,53 +147,54 @@ export class SkillsTabComponent extends BaseTabComponent implements OnInit
 	{
 		super.validate();
 
-		this.skillNameField.setDisabledState(this.selectedSkill === null);
-		this.skillDescriptionField.setDisabledState(this.selectedSkill === null);
-		this.skillTypeField.setDisabledState(this.selectedSkill === null);
-		this.skillMagicCostField.setDisabledState(this.selectedSkill === null);
-		this.skillTechnicalCostField.setDisabledState(this.selectedSkill === null);
-		this.scopeField.setDisabledState(this.selectedSkill === null);
-		this.occasionField.setDisabledState(this.selectedSkill === null);
-		this.speedField.setDisabledState(this.selectedSkill === null);
-		this.successRateField.setDisabledState(this.selectedSkill === null);
-		this.repeatField.setDisabledState(this.selectedSkill === null);
-		this.magicCostGain.setDisabledState(this.selectedSkill === null);
-		this.hitTypeField.setDisabledState(this.selectedSkill === null);
-		this.animationField.setDisabledState(this.selectedSkill === null);
-		this.dmgTypeField.setDisabledState(this.selectedSkill === null);
-		this.formulaField.setDisabledState(this.selectedSkill === null);
-		this.varianceField.setDisabledState(this.selectedSkill === null);
-		this.critField.setDisabledState(this.selectedSkill === null);
+		this.skillNameField.setDisabledState(this.selectedObject === null);
+		this.skillDescriptionField.setDisabledState(this.selectedObject === null);
+		this.skillTypeField.setDisabledState(this.selectedObject === null);
+		this.skillMagicCostField.setDisabledState(this.selectedObject === null);
+		this.skillTechnicalCostField.setDisabledState(this.selectedObject === null);
+		this.scopeField.setDisabledState(this.selectedObject === null);
+		this.occasionField.setDisabledState(this.selectedObject === null);
+		this.speedField.setDisabledState(this.selectedObject === null);
+		this.successRateField.setDisabledState(this.selectedObject === null);
+		this.repeatField.setDisabledState(this.selectedObject === null);
+		this.magicCostGain.setDisabledState(this.selectedObject === null);
+		this.hitTypeField.setDisabledState(this.selectedObject === null);
+		this.animationField.setDisabledState(this.selectedObject === null);
+		this.dmgTypeField.setDisabledState(this.selectedObject === null);
+		this.formulaField.setDisabledState(this.selectedObject === null);
+		this.varianceField.setDisabledState(this.selectedObject === null);
+		this.critField.setDisabledState(this.selectedObject === null);
 	}
 
 
-	public onSkillSelected(event: any)
+	public onActiveSelection(event: number)
 	{
-		this.selectedSkill = null;
+		super.onActiveSelection(event);
+
 		// this.classCurves = [];
 		// this.classConfigs = [];
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			this.selectedSkill = UtilsService.copyObj(this.table.find(event)) as ISkill;
-			if(this.selectedSkill)
+			this.selectedObject = UtilsService.copyObj(this.table.find(event)) as ISkill;
+			if(this.selectedObject)
 			{
-				this.skillNameField.setValue = this.selectedSkill.skillName['en'];
-				this.skillDescriptionField.setValue = this.selectedSkill.description['en'];
-				this.skillTypeField.setValue = this.selectedSkill.skillType;
-				// this.skillMagicCostField.setValue = this.selectedSkill.expCurve;
-				// this.skillTechnicalCostField.setValue = this.selectedSkill.expCurve;
-				this.scopeField.setValue = this.selectedSkill.scope;
-				this.occasionField.setValue = this.selectedSkill.occasion;
-				this.speedField.setValue = this.selectedSkill.speed;
-				this.successRateField.setValue = this.selectedSkill.successRate;
-				this.repeatField.setValue = this.selectedSkill.repaet;
-				// this.magicCostGain.setValue = this.selectedSkill.expCurve;
-				// this.hitTypeField.setValue = this.selectedSkill.hitType;
-				// this.animationField.setValue = this.selectedSkill.expCurve;
-				this.dmgTypeField.setValue = this.selectedSkill.dmgType;
-				this.formulaField.setValue = this.selectedSkill.formula;
-				this.varianceField.setValue = this.selectedSkill.variance;
-				this.critField.setValue = this.selectedSkill.critical;
+				this.skillNameField.setValue = this.selectedObject.skillName[this.selectedLanguage];
+				this.skillDescriptionField.setValue = this.selectedObject.description[this.selectedLanguage];
+				this.skillTypeField.setValue = this.selectedObject.skillType;
+				// this.skillMagicCostField.setValue = this.selectedObject.expCurve;
+				// this.skillTechnicalCostField.setValue = this.selectedObject.expCurve;
+				this.scopeField.setValue = this.selectedObject.scope;
+				this.occasionField.setValue = this.selectedObject.occasion;
+				this.speedField.setValue = this.selectedObject.speed;
+				this.successRateField.setValue = this.selectedObject.successRate;
+				this.repeatField.setValue = this.selectedObject.repaet;
+				// this.magicCostGain.setValue = this.selectedObject.expCurve;
+				// this.hitTypeField.setValue = this.selectedObject.hitType;
+				// this.animationField.setValue = this.selectedObject.expCurve;
+				this.dmgTypeField.setValue = this.selectedObject.dmgType;
+				this.formulaField.setValue = this.selectedObject.formula;
+				this.varianceField.setValue = this.selectedObject.variance;
+				this.critField.setValue = this.selectedObject.critical;
 
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)

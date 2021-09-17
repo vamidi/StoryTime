@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { UtilsService } from '@app-core/utils';
 import { ProxyObject } from '@app-core/data/base';
 import { BehaviourType } from '@app-core/types';
@@ -66,7 +66,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	public get languages() { return this.languageService.ProjectLanguages; }
 
-	public settings: BaseSettings = new BaseSettings();
+	public settings: ISettings = new BaseSettings();
 	/*{
 		mode: 'internal',
 		actions: {
@@ -375,7 +375,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			if ($event['type'] !== undefined) {
 				const type: BehaviourType = $event.type;
 
-				const newSettings: BaseSettings =
+				const newSettings: ISettings =
 				{
 					...this.settings,
 					columns: {
@@ -551,7 +551,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param value
 	 * @param additionalSettings
 	 */
-	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: BaseSettings)
+	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: ISettings)
 	{
 		if (!obj.hasOwnProperty(key))
 		{
@@ -599,7 +599,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param overrideTitle
 	 * @protected
 	 */
-	protected processColumnData(newSettings: BaseSettings, overrideTitle: string = '')
+	protected processColumnData(newSettings: ISettings, overrideTitle: string = '')
 	{
 		let tbl = this.table.metadata.title;
 
@@ -621,7 +621,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @brief update the settings with latest columns
 	 * @param newSettings
 	 */
-	protected updateSettings(newSettings: BaseSettings)
+	protected updateSettings(newSettings: ISettings)
 	{
 		this.settings = Object.assign({}, newSettings);
 		this.columnData = this.settings.columns;
@@ -637,7 +637,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param settings
 	 * @param tblName
 	 */
-	protected getTableData(settings: BaseSettings = null, tblName = '')
+	protected getTableData(settings: ISettings = null, tblName = '')
 	{
 		let tbl = this.tableId;
 
@@ -677,8 +677,8 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	}
 
 	protected processTableData(
-		tableData: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
-	): BaseSettings
+		tableData: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
+	): ISettings
 	{
 		const newSettings = super.processTableData(tableData, verify, settings, overrideTbl);
 
@@ -746,15 +746,13 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 		this.table = this.tableService.setTable(tableData.id, tableData, true);
 		// Get the relations from the database as well.
-		const newSettings: BaseSettings = this.processTableData(this.table, true, this.settings);
+		const newSettings: ISettings = this.processTableData(this.table, true, this.settings);
 		this.settings = Object.assign({}, newSettings);
 	}
 
 	protected onUserReceived(__: User)
 	{
-		this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.isAdmin;
-		this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.isAdmin;
-		this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.isAdmin;
+		this.validateSettings(this.settings);
 	}
 
 	protected onTableDataLoaded()
@@ -765,12 +763,24 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		// then he can make changes to the table,
 		// if the has made the table he is also able to change things
 		// TODO see if we need the action add
-		this.settings.actions.add = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
-		this.settings.actions.edit = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
-		this.settings.actions.delete = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+		this.validateSettings(this.settings, true);
+	}
 
-		this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.userService.isAdmin;
-		this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.userService.isAdmin;
-		this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.userService.isAdmin;
+	protected validateSettings(settings: ISettings, verifyUser: boolean = false)
+	{
+		if(verifyUser)
+		{
+			// If the user has a canEdit privileges
+			// then he can make changes to the table,
+			// if the has made the table he is also able to change things
+			// TODO see if we need the action add
+			settings.actions.add    = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+			settings.actions.edit   = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+			settings.actions.delete = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+		}
+
+		settings.columns.deleted.hidden     = settings.columns.deleted.hidden || !this.userService.isAdmin;
+		settings.columns.created_at.hidden  = settings.columns.created_at.hidden || !this.userService.isAdmin;
+		settings.columns.updated_at.hidden  = settings.columns.updated_at.hidden || !this.userService.isAdmin;
 	}
 }

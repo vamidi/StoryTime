@@ -16,9 +16,9 @@ import { StoriesComponent } from './stories/stories.component';
 import { StoryComponent } from './stories/story/story.component';
 import { GameEditorOverviewComponent } from './game-editor-overview.component';
 import {
-	CharacterTabComponent,
+	CharactersTabComponent,
 	ClassesTabComponent, SkillsTabComponent,
-	ItemsTabComponent, WeaponsTabComponent,
+	ItemsTabComponent, WeaponsTabComponent, EnemiesTabComponent,
 } from '@app-dashboard/projects/project/editor/character-editor/tabs';
 import { GameEditorRoutingModule } from './game-editor-routing.module';
 import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-editor';
@@ -47,11 +47,12 @@ const NB_MODULES = [
 ];
 
 const TabComponents = [
-	CharacterTabComponent,
+	CharactersTabComponent,
 	ClassesTabComponent,
 	SkillsTabComponent,
 	ItemsTabComponent,
 	WeaponsTabComponent,
+	EnemiesTabComponent,
 ];
 
 @NgModule({

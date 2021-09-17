@@ -11,7 +11,7 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BaseTabComponent } from '@app-dashboard/projects/project/editor/character-editor/tabs/Base/base-tab.component';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { ICharacter, ICharacterClass } from '@app-core/data/standard-tables';
+import { ICharacter, ICharacterClass } from '@app-core/data/database/interfaces';
 import { Relation, StringPair } from '@app-core/data/base';
 import { UtilsService } from '@app-core/utils';
 import {
@@ -29,10 +29,10 @@ import { Option } from '@app-core/data/forms/form-types';
 
 @Component({
 	selector: 'ngx-character-tab',
-	templateUrl: 'character-tab.component.html',
+	templateUrl: 'characters-tab.component.html',
 	styleUrls: ['./../base/base-tab.component.scss'],
 })
-export class CharacterTabComponent extends BaseTabComponent implements OnInit
+export class CharactersTabComponent extends BaseTabComponent<ICharacter> implements OnInit
 {
 	@Input()
 	public characterSettings: BaseSettings = null;
@@ -54,8 +54,6 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	@ViewChild('descriptionField', { static: true})
 	public descriptionField: TextFieldComponent = null;
-
-	public selectedCharacter: ICharacter = null;
 
 	public traitSettings: ISettings = {
 		mode: 'external',
@@ -197,14 +195,14 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 			disabled: true,
 		});
 
-		this.project$.subscribe((project) => {
+		this.mainSubscription.add(this.project$.subscribe((project) => {
 			if(project)
 				this.tablesService.loadTablesFromProject(project, ['classes'], (table) => this.loadTable(table))
 					.then(() => {
 						const options: Option<number>[] = [];
 						this.characterClasses.forEach((charClass) => {
 							options.push(new Option({
-								key: charClass.className,
+								key: this.languageService.getLanguageFromProperty(charClass.className, this.selectedLanguage),
 								value: charClass.id,
 								selected: false,
 							}));
@@ -214,7 +212,7 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 			// Important or data will not be caught.
 			this.getTableData(this.settings);
-		});
+		}));
 	}
 
 	protected loadTable(value: Table)
@@ -231,11 +229,6 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 				this.tablesService.listenToTableData(this.characterClasses, ['child_added']),
 			);
 		}
-	}
-
-	getName(prop: any)
-	{
-		return prop['en'];
 	}
 
 	public addMultiple()
@@ -307,19 +300,24 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 
 	}
 
-	public onCharacterClicked(event: number)
+	public onActiveSelection(event: number)
 	{
-		this.selectedCharacter = null;
+		super.onActiveSelection(event);
+
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			this.selectedCharacter = { ...this.characters.find(event) } as ICharacter;
-			if(this.selectedCharacter)
+			this.selectedObject = { ...this.characters.find(event) } as ICharacter;
+			if(this.selectedObject)
 			{
-				this.characterNameField.setValue = this.selectedCharacter.name['en'];
-				this.classField.setValue = this.selectedCharacter.classId;
-				this.initialLevelField.setValue = this.selectedCharacter.initialLevel;
-				this.maxLevelField.setValue = this.selectedCharacter.maxLevel;
-				this.descriptionField.setValue = this.selectedCharacter.description['en'];
+				this.characterNameField.setValue =
+					this.languageService.getLanguageFromProperty(this.selectedObject.name, this.selectedLanguage);
+
+				this.classField.setValue = this.selectedObject.classId;
+				this.initialLevelField.setValue = this.selectedObject.initialLevel;
+				this.maxLevelField.setValue = this.selectedObject.maxLevel;
+				this.descriptionField.setValue =
+					this.languageService.getLanguageFromProperty(this.selectedObject.description, this.selectedLanguage);
+
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)
 				// 'AND' by default, so changing to 'OR' by setting false here
@@ -331,7 +329,7 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 			// fields we want to include in the search
 			{
 				field: 'characterId',
-				search: this.selectedCharacter !== null ? this.selectedCharacter.id.toString() : 'NaN',
+				search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
 			},
 		], false);
 	}
@@ -348,14 +346,15 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 		console.log('deleting');
 	}
 
-	protected override validate() {
+	protected override validate()
+	{
 		super.validate();
 
-		this.characterNameField.setDisabledState(this.selectedCharacter === null);
-		this.classField.setDisabledState(this.selectedCharacter === null);
-		this.initialLevelField.setDisabledState(this.selectedCharacter === null);
-		this.maxLevelField.setDisabledState(this.selectedCharacter === null);
-		this.descriptionField.setDisabledState(this.selectedCharacter === null);
+		this.characterNameField.setDisabledState(this.selectedObject === null);
+		this.classField.setDisabledState(this.selectedObject === null);
+		this.initialLevelField.setDisabledState(this.selectedObject === null);
+		this.maxLevelField.setDisabledState(this.selectedObject === null);
+		this.descriptionField.setDisabledState(this.selectedObject === null);
 	}
 
 	protected process(table: Table, pair: StringPair, key: string, settings: ISettings = null)
@@ -398,26 +397,31 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 	{
 		if(this.formComponent.isValid)
 		{
-			const dbCharacter = this.characters.find(this.selectedCharacter.id);
+			const dbCharacter: ICharacter = this.characters.find(this.selectedObject.id);
 			const event = {
 				data: dbCharacter,
 				newData: null,
 				confirm: {
 					resolve: () => {
-						this.characters.update(dbCharacter, this.selectedCharacter).then();
+						this.characters.update(dbCharacter, this.selectedObject).then();
 						return true;
 					},
 					reject: (): boolean => true,
 				},
 			};
 
-			this.selectedCharacter.name['en'] = this.characterNameField.getValue as string;
-			this.selectedCharacter.class = this.classField.getValue;
-			this.selectedCharacter.initialLevel = this.initialLevelField.getValue;
-			this.selectedCharacter.maxLevel = this.maxLevelField.getValue;
-			this.selectedCharacter.description['en'] = this.descriptionField.getValue as string;
+			// set the name
+			this.selectedObject.name[this.selectedLanguage] = this.characterNameField.getValue as string;
+			// set the class id
+			this.selectedObject.class = this.classField.getValue;
+			// set the initial level the player starts with
+			this.selectedObject.initialLevel = this.initialLevelField.getValue;
+			// set the max level the player can reach
+			this.selectedObject.maxLevel = this.maxLevelField.getValue;
+			// set the description
+			this.selectedObject.description[this.selectedLanguage] = this.descriptionField.getValue as string;
 
-			event.newData = this.selectedCharacter;
+			event.newData = this.selectedObject;
 			this.onEditConfirm(event,true, this.characters.id);
 		}
 	}
@@ -434,7 +438,7 @@ export class CharacterTabComponent extends BaseTabComponent implements OnInit
 				// fields we want to include in the search
 				{
 					field: 'characterId',
-					search: this.selectedCharacter !== null ? this.selectedCharacter.id.toString() : 'NaN',
+					search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
 				},
 			], false);
 		}

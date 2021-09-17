@@ -16,7 +16,7 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { TablesService } from '@app-core/data/state/tables';
 import { DropDownFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { IEquipment } from '@app-core/data/standard-tables';
+import { IEquipment } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 
 @Component({
@@ -24,7 +24,7 @@ import { UtilsService } from '@app-core/utils';
 	templateUrl: 'weapons-tab.component.html',
 	styleUrls: ['./../base/base-tab.component.scss'],
 })
-export class WeaponsTabComponent extends BaseTabComponent implements OnInit
+export class WeaponsTabComponent extends BaseTabComponent<IEquipment> implements OnInit
 {
 	@ViewChild(DynamicFormComponent, { static: true })
 	public formComponent: DynamicFormComponent = null;
@@ -52,8 +52,6 @@ export class WeaponsTabComponent extends BaseTabComponent implements OnInit
 		requiredText: 'Fill in all the fields',
 		fields: {},
 	};
-
-	public selectedWeapon: IEquipment = null;
 
 	constructor(
 		protected router: Router,
@@ -111,26 +109,27 @@ export class WeaponsTabComponent extends BaseTabComponent implements OnInit
 	{
 		super.validate();
 
-		this.weaponNameField.setDisabledState(this.selectedWeapon === null);
-		this.weaponDescriptionField.setDisabledState(this.selectedWeapon === null);
-		this.weaponTypeField.setDisabledState(this.selectedWeapon === null);
-		this.weaponCostField.setDisabledState(this.selectedWeapon === null);
-		this.animationField.setDisabledState(this.selectedWeapon === null);
+		this.weaponNameField.setDisabledState(this.selectedObject === null);
+		this.weaponDescriptionField.setDisabledState(this.selectedObject === null);
+		this.weaponTypeField.setDisabledState(this.selectedObject === null);
+		this.weaponCostField.setDisabledState(this.selectedObject === null);
+		this.animationField.setDisabledState(this.selectedObject === null);
 	}
 
-	public onWeaponSelected(event: any)
+	public onActiveSelection(event: number)
 	{
-		this.selectedWeapon = null;
+		this.onActiveSelection(event);
+
 		// this.classCurves = [];
 		// this.classConfigs = [];
 		if(event !== Number.MAX_SAFE_INTEGER)
 		{
-			this.selectedWeapon = UtilsService.copyObj(this.table.find(event)) as IEquipment;
-			if(this.selectedWeapon)
+			this.selectedObject = UtilsService.copyObj(this.table.find(event)) as IEquipment;
+			if(this.selectedObject)
 			{
-				this.weaponNameField.setValue = this.selectedWeapon.name['en'];
-				this.weaponDescriptionField.setValue = this.selectedWeapon.description['en'];
-				this.weaponTypeField.setValue = this.selectedWeapon.typeId;
+				this.weaponNameField.setValue = this.selectedObject.name[this.selectedLanguage];
+				this.weaponDescriptionField.setValue = this.selectedObject.description[this.selectedLanguage];
+				this.weaponTypeField.setValue = this.selectedObject.typeId;
 				// this.weaponCostField.setValue =
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)

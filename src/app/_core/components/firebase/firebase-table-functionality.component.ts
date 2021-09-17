@@ -8,7 +8,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 
 import { UtilsService } from '@app-core/utils';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { BehaviourType } from '@app-core/types';
 import {
@@ -330,7 +330,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		if(event.hasOwnProperty('newData'))
 		{
 			// noinspection JSUnusedGlobalSymbols
-			const newSettings: BaseSettings = { ...this.settings };
+			const newSettings: ISettings = { ...this.settings };
 
 			// We only need this information once
 			const key: string = event.newData?.key;
@@ -349,7 +349,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		if(event.hasOwnProperty('newData'))
 		{
 			// noinspection JSUnusedGlobalSymbols
-			const newSettings: BaseSettings = { ...this.settings };
+			const newSettings: ISettings = { ...this.settings };
 
 			// We only need this information once
 			const key: string = event.newData?.key;
