@@ -3,14 +3,16 @@ import { TableTemplate } from '@app-core/data/state/tables';
 import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import {
+	DmgType,
 	ICharacter, ICharacterClass, IClassParameterCurve,
 	ICraftable, ICraftCondition,
 	IDialogue,
-	IDialogueOption, IEnemy, IEnemyParameterCurve, IEquipment, IEvent, IInventoryTabType,
+	IDialogueOption, IEnemy, IEnemyActionPattern, IEnemyParameterCurve, IEquipment, IEvent, IInventoryTabType,
 	IItem,
-	IItemDrop, IItemInventoryActionType, IITemTabType, IItemType, ISkill,
+	IItemDrop, IITemTabType, IItemType, ISkill,
 	IStory,
 } from '@app-core/data/database/interfaces';
+import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([
 	Pair('classes', 'Defines the classes a character can have in the game.'),
@@ -48,6 +50,18 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			typeId: Number.MAX_SAFE_INTEGER,
 			sellValue: 0,
 			sellable: true,
+
+			scope: 0,
+			occasion: 0,
+			speed: 0,
+			successRate: 0,
+
+			critical: false,
+			dmgParameter: 0,
+			dmgType: 0,
+			formula: '',
+			repeat: 0,
+			variance: 0,
 
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
@@ -320,6 +334,21 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 	}),
+	// Enemy attack pattern
+	Pair<string, { [key: number]: IEnemyActionPattern }>('enemyActionPatterns', {
+		0: {
+			deleted: false,
+
+			skillId: Number.MAX_SAFE_INTEGER,
+			rating: 0,
+			enemyId: Number.MAX_SAFE_INTEGER,
+			enemyCategoryId: Number.MAX_SAFE_INTEGER,
+			conditionFunction: '',
+
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
 
 	Pair<string, { [key: number]: IEvent }>('events', {
 		0: {
@@ -357,7 +386,9 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			base: 65,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: 'Magic Points',
+			paramName: {
+				en: 'Magic Points',
+			},
 			paramFormula: 'base + (level * level * 6 / 105) + level * 12 * (rate - flat)',
 			rate: 0.12,
 
@@ -370,7 +401,9 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			base: 160,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: 'Attack',
+			paramName: {
+				en: 'Attack',
+			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1149999,
 
@@ -383,7 +416,9 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			base: 540,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: 'Health Points',
+			paramName: {
+				en: 'Health Points',
+			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1109999,
 
@@ -396,7 +431,9 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			base: 140,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: 'Defense',
+			paramName: {
+				en: 'Defense',
+			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1129999,
 
@@ -409,26 +446,33 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	Pair<string, { [key: number]: ISkill }>('skills', {
 		0: {
 			classId: Number.MAX_SAFE_INTEGER,
-			skillName: {
+			name: {
 				en: '',
 			},
 			level: 0,
 			description: {
 				en: '', // Description of the skill in game.
 			},
-			skillType: 0, // type of the skill
-			scope: 0, // Turn based only, but this is for how many enemies we can attack.
-			occasion: 0, // When/where we can use the skill.
-			speed: 0, // basically priorities how quick the player can attack with this skill.
-			successRate: 0, // The success rate of the attack in %.
-			repeat: 0, // How many times you repeat the moves.
 
-			dmgType: 0, // What kind of damage is this. elemental or physical.
-			formula: '', // Formula we use for when we use this skill.
-			variance: 0, // how much % off -/+ we can be from the final result when calculated the dmg.
-			critical: 0, // See if this has a chance of hitting critical.
+			magicCurve: Number.MAX_SAFE_INTEGER,
+			magicCost: 0,
 
-			note: '', // Notes that designer can leave behind.
+			skillType: 0,               // type of the skill
+			scope: 0,                   // Turn based only, but this is for how many enemies we can attack.
+			occasion: 0,                // When/where we can use the skill.
+			speed: 0,                   // basically priorities how quick the player can attack with this skill.
+			successRate: 0,             // The success rate of the attack in %.
+			repeat: 0,                  // How many times you repeat the moves.
+
+			dmgParameter: Number.MAX_SAFE_INTEGER,
+			dmgType: DmgType.Damage,    // What kind of damage is this. elemental or physical.
+			formula: '',                // Formula we use for when we use this skill.
+			variance: 0,                // how much % off -/+ we can be from the final result when calculated the dmg.
+			critical: false,            // See if this has a chance of hitting critical.
+
+			note: {
+				en: '',
+			},                          // Notes that designer can leave behind.
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
@@ -469,13 +513,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	Pair<string, { [key: number]: IItemType }>('itemTypes', {
 		0: {
 			name: {
-				en: 'Sword',
+				en: 'None',
 			},
-			actionName: {
-				en: '',
-			},
-			actionType: Number.MAX_SAFE_INTEGER,
-			type: Number.MAX_SAFE_INTEGER,
+			actionType: 0,
+			inventoryType: 0,
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
@@ -483,13 +524,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 		1: {
 			name: {
-				en: 'Shield',
+				en: 'Cook',
 			},
-			actionName: {
-				en: '',
-			},
-			actionType: Number.MAX_SAFE_INTEGER,
-			type: Number.MAX_SAFE_INTEGER,
+			actionType: 1,
+			inventoryType: 0,
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
@@ -497,20 +535,39 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 		2: {
 			name: {
-				en: 'Armor',
+				en: 'Craft',
 			},
-			actionName: {
-				en: '',
+			actionType: 2,
+			inventoryType: 2,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		3: {
+			name: {
+				en: 'Use',
 			},
-			actionType: Number.MAX_SAFE_INTEGER,
-			type: Number.MAX_SAFE_INTEGER,
+			actionType: 2,
+			inventoryType: 4,
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		4: {
+			name: {
+				en: 'Equip',
+			},
+			actionType: 4,
+			inventoryType: 1,
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
 		},
 	}),
-
+/*
 	Pair<string, { [key: number]: IItemInventoryActionType }>('inventoryActions', {
 		0: {
 			name: {
@@ -553,11 +610,14 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 	}),
-
+*/
 	Pair<string, { [key: number]: IEquipment }>('equipments', {
 		0: {
+			name: {
+				en: '',
+			},
 			characterId: Number.MAX_SAFE_INTEGER,
-			equipment: Number.MAX_SAFE_INTEGER,
+			categoryId: Number.MAX_SAFE_INTEGER,
 			typeId: Number.MAX_SAFE_INTEGER,
 
 			deleted: false,

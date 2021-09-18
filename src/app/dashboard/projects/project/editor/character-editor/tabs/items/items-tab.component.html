@@ -42,25 +42,25 @@
 						</div>
 						<div class="row my-2">
 							<!-- TODO this must be defined -->
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 								<ngx-dropdown-field #itemTypeField></ngx-dropdown-field>
 							</div>
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 								<ngx-text-field #itemCostField></ngx-text-field>
 							</div>
-							<div class="col-sm-4">
+							<div class="col-sm-3">
+								<ngx-checkbox-field #itemSellableField></ngx-checkbox-field>
+							</div>
+							<div class="col-sm-3">
 								<ngx-checkbox-field #itemConsumableField></ngx-checkbox-field>
 							</div>
 						</div>
 						<div class="row my-2">
-							<div class="col-sm-4">
+							<div class="col-sm-6">
 								<ngx-dropdown-field #scopeField></ngx-dropdown-field>
 							</div>
-							<div class="col-sm-4">
+							<div class="col-sm-6">
 								<ngx-dropdown-field #occasionField></ngx-dropdown-field>
-							</div>
-							<div class="col-sm-4">
-								<ngx-checkbox-field #itemSellableField></ngx-checkbox-field>
 							</div>
 						</div>
 					</ngx-dynamic-form>
@@ -74,19 +74,15 @@
 				<nb-accordion-item-body>
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<div class="row my-2">
-							<div class="col-sm-3">
+							<div class="col-sm-4">
 								<ngx-text-field #speedField></ngx-text-field>
 							</div>
-							<div class="col-sm-3">
+							<div class="col-sm-4">
 								<ngx-text-field #successRateField></ngx-text-field>
 							</div>
 							<!-- TODO this must be defined -->
-							<div class="col-sm-3">
-								<ngx-dropdown-field #repeatField></ngx-dropdown-field>
-							</div>
-							<!-- Gain -->
-							<div class="col-sm-3">
-								<ngx-text-field #magicCostGain></ngx-text-field>
+							<div class="col-sm-4">
+								<ngx-text-field #repeatField></ngx-text-field>
 							</div>
 						</div>
 						<div class="row my-2">
@@ -108,6 +104,9 @@
 				<nb-accordion-item-body>
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-dropdown-field #dmgParameterField></ngx-dropdown-field>
+							</div>
 							<div class="col-sm-6">
 								<ngx-dropdown-field #dmgTypeField></ngx-dropdown-field>
 							</div>

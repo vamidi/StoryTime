@@ -13,11 +13,13 @@ import {
 } from '@nebular/theme';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { TablesService } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { DropDownFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { ISkill } from '@app-core/data/database/interfaces';
+import { DmgType, IClassParameterCurve, IEnemyParameterCurve, ISkill } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
+import { Option } from '@app-core/data/forms/form-types';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'ngx-skills-tab',
@@ -30,59 +32,66 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 	public formComponent: DynamicFormComponent = null;
 
 	@ViewChild('skillNameField', { static: true})
-	public skillNameField: TextFieldComponent = null;
+	public skillNameField: TextFieldComponent<string> = null;
 
 	@ViewChild('skillDescriptionField', { static: true})
-	public skillDescriptionField: TextFieldComponent = null;
+	public skillDescriptionField: TextFieldComponent<string> = null;
+
+	@ViewChild('skillNoteField', { static: true})
+	public skillNoteField: TextFieldComponent<string> = null;
 
 	/** */
 
 	@ViewChild('skillTypeField', { static: true})
-	public skillTypeField: DropDownFieldComponent = null;
+	public skillTypeField: DropDownFieldComponent<number> = null;
+
+	@ViewChild('skillMagicField', { static: true})
+	public skillMagicField: DropDownFieldComponent<number> = null;
 
 	@ViewChild('skillMagicCostField', { static: true})
-	public skillMagicCostField: TextFieldComponent = null;
-
-	@ViewChild('skillTechnicalCostField', { static: true})
-	public skillTechnicalCostField: TextFieldComponent = null;
+	public skillMagicCostField: TextFieldComponent<number> = null;
 
 	@ViewChild('scopeField', { static: true})
 	public scopeField: DropDownFieldComponent = null;
 
 	@ViewChild('occasionField', { static: true})
-	public occasionField: DropDownFieldComponent = null;
+	public occasionField: DropDownFieldComponent<number> = null;
 
 	/** */
 	@ViewChild('speedField', { static: true})
-	public speedField: TextFieldComponent = null;
+	public speedField: TextFieldComponent<number> = null;
 
 	@ViewChild('successRateField', { static: true})
-	public successRateField: TextFieldComponent = null;
+	public successRateField: TextFieldComponent<number> = null;
 
 	@ViewChild('repeatField', { static: true})
-	public repeatField: DropDownFieldComponent = null;
+	public repeatField: TextFieldComponent<number> = null;
 
 	@ViewChild('magicCostGain', { static: true})
-	public magicCostGain: TextFieldComponent = null;
+	public magicCostGain: TextFieldComponent<number> = null;
 
 	@ViewChild('hitTypeField', { static: true})
-	public hitTypeField: DropDownFieldComponent = null;
+	public hitTypeField: DropDownFieldComponent<string> = null;
 
 	@ViewChild('animationField', { static: true})
-	public animationField: DropDownFieldComponent = null;
+	public animationField: DropDownFieldComponent<string> = null;
 
 	/** */
+
+	@ViewChild('dmgParameterField', { static: true})
+	public dmgParameterField: DropDownFieldComponent<number> = null;
+
 	@ViewChild('dmgTypeField', { static: true})
-	public dmgTypeField: DropDownFieldComponent = null;
+	public dmgTypeField: DropDownFieldComponent<number> = null;
 
 	@ViewChild('formulaField', { static: true})
-	public formulaField: TextFieldComponent = null;
+	public formulaField: TextFieldComponent<string> = null;
 
 	@ViewChild('varianceField', { static: true})
-	public varianceField: TextFieldComponent = null;
+	public varianceField: TextFieldComponent<number> = null;
 
 	@ViewChild('critField', { static: true})
-	public critField: DropDownFieldComponent = null;
+	public critField: DropDownFieldComponent<boolean> = null;
 
 	public source: BaseFormSettings = {
 		title: 'Skill Settings',
@@ -90,6 +99,8 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		requiredText: 'Fill in all the fields',
 		fields: {},
 	};
+
+	protected parameterCurves: Table<IClassParameterCurve | IEnemyParameterCurve> = null;
 
 	constructor(
 		protected router: Router,
@@ -121,8 +132,11 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		{
 			if(project)
 			{
-				// this.tableService.loadTablesFromProject(project, ['parametercurves', 'skills'], (table) => this.loadTable(table))
-				// 	.then();
+				this.tableService.loadTablesFromProject(project, ['parametercurves'], (table) => this.loadTable(table))
+					.then()
+					.finally(() => {
+
+					});
 
 				// Important or data will not be caught.
 				this.getTableData(this.settings);
@@ -143,15 +157,42 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		});
 	}
 
+	protected loadTable(value: Table)
+	{
+		if(value === null) return;
+
+		if(value.metadata.title.toLowerCase() === 'parametercurves')
+		{
+			this.parameterCurves = <Table<IClassParameterCurve | IEnemyParameterCurve>>value;
+
+			const options: Option<number>[] = [];
+			this.parameterCurves.forEach((curve) => {
+				options.push(new Option({
+					key: this.languageService.getLanguageFromProperty(curve.paramName, this.selectedLanguage),
+					value: curve.id,
+					selected: false,
+				}));
+			});
+			this.skillMagicField.question.options$.next(options);
+			this.dmgParameterField.question.options$.next(options);
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.parameterCurves, ['child_added']),
+			);
+		}
+	}
+
 	protected override validate()
 	{
 		super.validate();
 
 		this.skillNameField.setDisabledState(this.selectedObject === null);
 		this.skillDescriptionField.setDisabledState(this.selectedObject === null);
+		this.skillNoteField.setDisabledState(this.selectedObject === null);
 		this.skillTypeField.setDisabledState(this.selectedObject === null);
+		this.skillMagicField.setDisabledState(this.selectedObject === null);
 		this.skillMagicCostField.setDisabledState(this.selectedObject === null);
-		this.skillTechnicalCostField.setDisabledState(this.selectedObject === null);
 		this.scopeField.setDisabledState(this.selectedObject === null);
 		this.occasionField.setDisabledState(this.selectedObject === null);
 		this.speedField.setDisabledState(this.selectedObject === null);
@@ -160,6 +201,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		this.magicCostGain.setDisabledState(this.selectedObject === null);
 		this.hitTypeField.setDisabledState(this.selectedObject === null);
 		this.animationField.setDisabledState(this.selectedObject === null);
+		this.dmgParameterField.setDisabledState(this.selectedObject === null);
 		this.dmgTypeField.setDisabledState(this.selectedObject === null);
 		this.formulaField.setDisabledState(this.selectedObject === null);
 		this.varianceField.setDisabledState(this.selectedObject === null);
@@ -178,23 +220,31 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			this.selectedObject = UtilsService.copyObj(this.table.find(event)) as ISkill;
 			if(this.selectedObject)
 			{
-				this.skillNameField.setValue = this.selectedObject.skillName[this.selectedLanguage];
-				this.skillDescriptionField.setValue = this.selectedObject.description[this.selectedLanguage];
+				this.skillNameField.setValue =
+					this.languageService.getLanguageFromProperty(this.selectedObject.name, this.selectedLanguage);
+
+				this.skillDescriptionField.setValue =
+					this.languageService.getLanguageFromProperty(this.selectedObject.description, this.selectedLanguage);
+
+				this.skillNoteField.setValue =
+					this.languageService.getLanguageFromProperty(this.selectedObject.note, this.selectedLanguage);
+
 				this.skillTypeField.setValue = this.selectedObject.skillType;
-				// this.skillMagicCostField.setValue = this.selectedObject.expCurve;
-				// this.skillTechnicalCostField.setValue = this.selectedObject.expCurve;
+				this.skillMagicField.setValue = this.selectedObject.magicCurve;
+				this.skillMagicCostField.setValue = this.selectedObject.magicCost;
 				this.scopeField.setValue = this.selectedObject.scope;
 				this.occasionField.setValue = this.selectedObject.occasion;
 				this.speedField.setValue = this.selectedObject.speed;
 				this.successRateField.setValue = this.selectedObject.successRate;
-				this.repeatField.setValue = this.selectedObject.repaet;
-				// this.magicCostGain.setValue = this.selectedObject.expCurve;
-				// this.hitTypeField.setValue = this.selectedObject.hitType;
-				// this.animationField.setValue = this.selectedObject.expCurve;
+				this.repeatField.setValue = this.selectedObject.repeat;
+				this.dmgParameterField.setValue = this.selectedObject.dmgParameter;
 				this.dmgTypeField.setValue = this.selectedObject.dmgType;
 				this.formulaField.setValue = this.selectedObject.formula;
 				this.varianceField.setValue = this.selectedObject.variance;
 				this.critField.setValue = this.selectedObject.critical;
+				// this.magicCostGain.setValue = this.selectedObject.expCurve;
+				// this.hitTypeField.setValue = this.selectedObject.hitType;
+				// this.animationField.setValue = this.selectedObject.expCurve;
 
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)
@@ -206,7 +256,39 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 
 	public onSendForm()
 	{
+		if(this.formComponent.isValid)
+		{
+			const dbClass = this.table.find(this.selectedObject.id) as ISkill;
+			const event = {
+				data: dbClass,
+				newData: null,
+				confirm: {
+					resolve: () => {
+						this.table.update(dbClass, this.selectedObject).then();
+						return true;
+					},
+					reject: (): boolean => true,
+				},
+			};
 
+			this.selectedObject.name[this.selectedLanguage] = this.skillNameField.getValue;
+			this.selectedObject.description[this.selectedLanguage] = this.skillDescriptionField.getValue;
+			this.selectedObject.magicCurve = this.skillMagicField.getValue;
+			this.selectedObject.magicCost = this.skillMagicCostField.getValue;
+			// this.selectedObject.scope = this.scopeField.getValue;
+			// this.selectedObject.occasion = this.occasionField.getValue;
+			this.selectedObject.speed = this.speedField.getValue;
+			this.selectedObject.successRate = this.successRateField.getValue;
+			this.selectedObject.repeat = this.repeatField.getValue;
+			this.selectedObject.dmgParameter = this.dmgParameterField.getValue;
+			this.selectedObject.dmgType = this.dmgTypeField.getValue;
+			this.selectedObject.formula = this.formulaField.getValue;
+			this.selectedObject.variance = this.varianceField.getValue;
+			this.selectedObject.critical = this.critField.getValue;
+
+			event.newData = this.selectedObject;
+			this.onEditConfirm(event,true);
+		}
 	}
 
 	protected initForm()
@@ -232,9 +314,20 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Skill description',
 			placeholder: 'Skill description',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
+
+		this.formComponent.addInput(this.skillNoteField, {
+			controlType: 'textarea',
+			value: '',
+			name: 'note',
+			text: 'Note',
+			placeholder: 'Note',
+			errorText: 'This must be filled in',
+			required: false,
+			disabled: true,
+		})
 
 		this.formComponent.addInput<string>(this.skillTypeField, {
 			controlType: 'dropdown',
@@ -243,27 +336,27 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Skill Type',
 			placeholder: 'Skill Type',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.skillMagicCostField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.skillMagicField, {
+			controlType: 'dropdown',
+			value: Number.MAX_SAFE_INTEGER,
 			name: 'skill-mp-cost',
-			text: 'Skill Magic cost',
-			placeholder: 'Skill Magic Cost',
+			text: 'Parameter alias',
+			placeholder: 'Select an alias that represents the magic cost',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.skillTechnicalCostField, {
-			controlType: 'textbox',
+		this.formComponent.addInput<string>(this.skillMagicCostField, {
+			controlType: 'number',
 			value: '',
 			name: 'skill-tp-cost',
-			text: 'Skill technical points cost',
-			placeholder: 'Skill technical points cost',
+			text: 'Skill magic points cost',
+			placeholder: 'Skill magic points cost',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
@@ -276,7 +369,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Scope',
 			placeholder: 'Scope',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -287,13 +380,13 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Occasion',
 			placeholder: 'Occasion',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.speedField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.speedField, {
+			controlType: 'number',
+			value: 0,
 			name: 'speed',
 			text: 'Speed',
 			placeholder: 'Speed',
@@ -302,9 +395,9 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.successRateField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.successRateField, {
+			controlType: 'number',
+			value: 0,
 			name: 'success-rate',
 			text: 'Success rate',
 			placeholder: 'Success rate',
@@ -313,9 +406,9 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.repeatField, {
-			controlType: 'dropdown',
-			value: '',
+		this.formComponent.addInput<number>(this.repeatField, {
+			controlType: 'number',
+			value: 0,
 			name: 'repeat',
 			text: 'Repeat',
 			placeholder: 'Repeat',
@@ -324,9 +417,9 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.magicCostGain, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.magicCostGain, {
+			controlType: 'number',
+			value: 0,
 			name: 'magic-gain',
 			text: 'Magic cost gain',
 			placeholder: 'Magic cost gain',
@@ -335,6 +428,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			disabled: true,
 		});
 
+		// TODO see if we really need this.
 		this.formComponent.addInput<string>(this.hitTypeField, {
 			controlType: 'dropdown',
 			value: '',
@@ -342,7 +436,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Hit Type',
 			placeholder: 'Hit Type',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -353,19 +447,47 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Animation',
 			placeholder: 'Animation',
 			errorText: 'This must be filled in',
+			required: false,
+			disabled: true,
+		});
+
+		this.formComponent.addInput(this.dmgParameterField, {
+			controlType: 'dropdown',
+			value: 0,
+			name: 'damage-parameter',
+			text: 'Damage parameter',
+			placeholder: 'Damage parameter',
+			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.dmgTypeField, {
+		this.formComponent.addInput<number>(this.dmgTypeField, {
 			controlType: 'dropdown',
-			value: '',
+			value: 0,
 			name: 'damage-type',
 			text: 'Damage type',
 			placeholder: 'Damage type',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
+			options$: new BehaviorSubject<Option<number>[]>([
+				new Option({
+					key: 'Damage',
+					value: DmgType.Damage,
+					selected: true,
+				}),
+				new Option({
+					key: 'Recover',
+					value: DmgType.Recover,
+					selected: false,
+				}),
+				new Option({
+					key: 'Drain',
+					value: DmgType.Drain,
+					selected: false,
+				}),
+			]),
 		});
 
 		/**
@@ -392,13 +514,13 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			text: 'Formula',
 			placeholder: 'Formula',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.varianceField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.varianceField, {
+			controlType: 'number',
+			value: 0,
 			name: 'variance',
 			text: 'Variance',
 			placeholder: 'Variance',
@@ -407,15 +529,27 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.critField, {
+		this.formComponent.addInput<boolean>(this.critField, {
 			controlType: 'dropdown',
-			value: '',
+			value: false,
 			name: 'critical',
 			text: 'Critical Hits',
 			placeholder: 'Critical hits',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
+			options$: new BehaviorSubject<Option<boolean>[]>([
+				new Option({
+					key: 'false',
+					value: false,
+					selected: true,
+				}),
+				new Option({
+					key: 'true',
+					value: true,
+					selected: false,
+				}),
+			]),
 		});
 	}
 }

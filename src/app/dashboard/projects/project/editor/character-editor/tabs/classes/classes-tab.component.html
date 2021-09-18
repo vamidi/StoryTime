@@ -87,7 +87,7 @@
 						<div class="col-lg-4" *ngFor="let curve of curves; let i = index">
 							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 								<nb-card-header class="d-flex flex-row">
-									<h5>{{ curve.paramName }}</h5>
+									<h5>{{ getLanguageProperty(curve.paramName) }}</h5>
 									<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
 									        class="btn-group align-self-start mt-auto ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(curve.id)" nbContextMenuTag="open-parameter-menu">
 										<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>

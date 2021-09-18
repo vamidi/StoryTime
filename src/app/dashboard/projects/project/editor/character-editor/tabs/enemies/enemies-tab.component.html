@@ -97,7 +97,7 @@
 						<div class="col-lg-4" *ngFor="let curve of curves; let i = index">
 							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 								<nb-card-header class="d-flex flex-row">
-									<h5>{{ curve.paramName }}</h5>
+									<h5>{{ getLanguageProperty(curve.paramName) }}</h5>
 									<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
 									        class="btn-group align-self-start mt-auto ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(curve.id)" nbContextMenuTag="open-parameter-menu">
 										<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
@@ -141,10 +141,10 @@
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
 					<ng2-smart-table
-						[settings]="actionSettings" [source]="actionSource"
-						(createConfirm)="onCreateConfirm($event, getTable.id)"
-						(editConfirm)="onEditConfirm($event, false, getTable.id)"
-						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						[settings]="actionSettings" [source]="enemyActionPatterns.getSource"
+						(createConfirm)="onCreateConfirm($event, enemyActionPatterns.id)"
+						(editConfirm)="onEditConfirm($event, false, enemyActionPatterns.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, enemyActionPatterns.id)"
 						(custom)="onChangelogConfirm($event)"
 						(onColumnOrderChanged)="onColumnOrderChange($event)">
 					</ng2-smart-table>

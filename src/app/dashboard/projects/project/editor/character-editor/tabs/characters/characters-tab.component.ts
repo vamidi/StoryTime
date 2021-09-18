@@ -60,9 +60,9 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 		selectMode: '', // 'multi';
 		noDataMessage: 'No items found', // default: -> 'No data found'
 		actions: {
-			add: true,
-			edit: true,
-			delete: true,
+			add: false,
+			edit: false,
+			delete: false,
 			position: 'right',
 		},
 		add: {

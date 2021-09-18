@@ -10,7 +10,7 @@
 				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
 					<nb-option *ngFor="let skill of getTable; let i = index;" [value]="i">
-						000{{ i + 1 }} {{ getLanguageProperty(skill.skillName) }}
+						000{{ i + 1 }} {{ getLanguageProperty(skill.name) }}
 					</nb-option>
 				</nb-select>
 			</nb-card-body>
@@ -31,13 +31,16 @@
 					General settings
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
 						<div class="row my-2">
 							<div class="col-sm-12">
 								<ngx-text-field #skillNameField></ngx-text-field>
 							</div>
 							<div class="col-sm-12">
 								<ngx-text-field #skillDescriptionField></ngx-text-field>
+							</div>
+							<div class="col-sm-12">
+								<ngx-text-field #skillNoteField></ngx-text-field>
 							</div>
 						</div>
 						<div class="row my-2">
@@ -46,10 +49,10 @@
 								<ngx-dropdown-field #skillTypeField></ngx-dropdown-field>
 							</div>
 							<div class="col-sm-4">
-								<ngx-text-field #skillMagicCostField></ngx-text-field>
+								<ngx-dropdown-field #skillMagicField></ngx-dropdown-field>
 							</div>
 							<div class="col-sm-4">
-								<ngx-text-field #skillTechnicalCostField></ngx-text-field>
+								<ngx-text-field #skillMagicCostField></ngx-text-field>
 							</div>
 						</div>
 						<div class="row my-2">
@@ -69,7 +72,7 @@
 					Invocation
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
 						<div class="row my-2">
 							<div class="col-sm-3">
 								<ngx-text-field #speedField></ngx-text-field>
@@ -79,7 +82,7 @@
 							</div>
 							<!-- TODO this must be defined -->
 							<div class="col-sm-3">
-								<ngx-dropdown-field #repeatField></ngx-dropdown-field>
+								<ngx-text-field #repeatField></ngx-text-field>
 							</div>
 							<!-- Gain -->
 							<div class="col-sm-3">
@@ -103,8 +106,11 @@
 					Damage Settings
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
 						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-dropdown-field #dmgParameterField></ngx-dropdown-field>
+							</div>
 							<div class="col-sm-6">
 								<ngx-dropdown-field #dmgTypeField></ngx-dropdown-field>
 							</div>

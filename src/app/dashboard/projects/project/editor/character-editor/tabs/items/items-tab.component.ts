@@ -13,7 +13,7 @@ import {
 } from '@nebular/theme';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { TablesService } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import {
 	CheckboxFieldComponent,
 	DropDownFieldComponent,
@@ -21,8 +21,17 @@ import {
 	TextFieldComponent,
 } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { IItem } from '@app-core/data/database/interfaces';
+import {
+	DmgType,
+	IClassParameterCurve,
+	IEnemyParameterCurve,
+	IItem,
+	IItemType,
+	ISkill,
+} from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
+import { Option } from '@app-core/data/forms/form-types';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'ngx-items-tab',
@@ -35,18 +44,18 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	public formComponent: DynamicFormComponent = null;
 
 	@ViewChild('itemNameField', { static: true})
-	public itemNameField: TextFieldComponent = null;
+	public itemNameField: TextFieldComponent<string> = null;
 
 	@ViewChild('itemDescriptionField', { static: true})
-	public itemDescriptionField: TextFieldComponent = null;
+	public itemDescriptionField: TextFieldComponent<string> = null;
 
 	/** */
 
 	@ViewChild('itemTypeField', { static: true})
-	public itemTypeField: DropDownFieldComponent = null;
+	public itemTypeField: DropDownFieldComponent<number> = null;
 
 	@ViewChild('itemCostField', { static: true})
-	public itemCostField: TextFieldComponent = null;
+	public itemCostField: TextFieldComponent<number> = null;
 
 	@ViewChild('itemConsumableField', { static: true})
 	public itemConsumableField: CheckboxFieldComponent = null;
@@ -55,23 +64,20 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	public itemSellableField: CheckboxFieldComponent = null;
 
 	@ViewChild('scopeField', { static: true})
-	public scopeField: DropDownFieldComponent = null;
+	public scopeField: DropDownFieldComponent<number> = null;
 
 	@ViewChild('occasionField', { static: true})
-	public occasionField: DropDownFieldComponent = null;
+	public occasionField: DropDownFieldComponent<number> = null;
 
 	/** */
 	@ViewChild('speedField', { static: true})
-	public speedField: TextFieldComponent = null;
+	public speedField: TextFieldComponent<number> = null;
 
 	@ViewChild('successRateField', { static: true})
-	public successRateField: TextFieldComponent = null;
+	public successRateField: TextFieldComponent<number> = null;
 
 	@ViewChild('repeatField', { static: true})
-	public repeatField: DropDownFieldComponent = null;
-
-	@ViewChild('magicCostGain', { static: true})
-	public magicCostGain: TextFieldComponent = null;
+	public repeatField: TextFieldComponent<number> = null;
 
 	@ViewChild('hitTypeField', { static: true})
 	public hitTypeField: DropDownFieldComponent = null;
@@ -80,17 +86,21 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	public animationField: DropDownFieldComponent = null;
 
 	/** */
+
+	@ViewChild('dmgParameterField', { static: true})
+	public dmgParameterField: DropDownFieldComponent<number> = null;
+
 	@ViewChild('dmgTypeField', { static: true})
-	public dmgTypeField: DropDownFieldComponent = null;
+	public dmgTypeField: DropDownFieldComponent<number> = null;
 
 	@ViewChild('formulaField', { static: true})
-	public formulaField: TextFieldComponent = null;
+	public formulaField: TextFieldComponent<string> = null;
 
 	@ViewChild('varianceField', { static: true})
-	public varianceField: TextFieldComponent = null;
+	public varianceField: TextFieldComponent<number> = null;
 
 	@ViewChild('critField', { static: true})
-	public critField: DropDownFieldComponent = null;
+	public critField: DropDownFieldComponent<boolean> = null;
 
 	public source: BaseFormSettings = {
 		title: 'Skill Settings',
@@ -98,6 +108,9 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		requiredText: 'Fill in all the fields',
 		fields: {},
 	};
+
+	protected parameterCurves: Table<IClassParameterCurve | IEnemyParameterCurve> = null;
+	protected itemTypes: Table<IItemType> = null;
 
 	constructor(
 		protected router: Router,
@@ -129,8 +142,8 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		{
 			if(project)
 			{
-				// this.tableService.loadTablesFromProject(project, ['parametercurves', 'skills'], (table) => this.loadTable(table))
-				// 	.then();
+				this.tableService.loadTablesFromProject(project, ['itemtypes', 'parametercurves'], (table) => this.loadTable(table))
+					.then();
 
 				// Important or data will not be caught.
 				this.getTableData(this.settings);
@@ -151,6 +164,52 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		});
 	}
 
+	protected loadTable(value: Table)
+	{
+		if(value === null) return;
+
+		if(value.metadata.title.toLowerCase() === 'parametercurves')
+		{
+			this.parameterCurves = <Table<IClassParameterCurve | IEnemyParameterCurve>>value;
+
+			const options: Option<number>[] = [];
+			this.parameterCurves.forEach((curve) => {
+				options.push(new Option({
+					key: this.languageService.getLanguageFromProperty(curve.paramName, this.selectedLanguage),
+					value: curve.id,
+					selected: false,
+				}));
+			});
+			this.dmgParameterField.question.options$.next(options);
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.parameterCurves, ['child_added']),
+			);
+		}
+
+		if(value.metadata.title.toLowerCase() === 'itemtypes')
+		{
+			// store the dialogues.
+			this.itemTypes = <Table<IItemType>>value;
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.itemTypes, ['child_added']),
+			);
+
+			const options: Option<number>[] = [];
+			this.itemTypes.forEach((type) => {
+				options.push(new Option({
+					key: this.languageService.getLanguageFromProperty(type.name, this.selectedLanguage),
+					value: type.id,
+					selected: false,
+				}));
+			});
+			this.itemTypeField.question.options$.next(options);
+		}
+	}
+
 	protected override validate()
 	{
 		super.validate();
@@ -166,9 +225,9 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		this.speedField.setDisabledState(this.selectedObject === null);
 		this.successRateField.setDisabledState(this.selectedObject === null);
 		this.repeatField.setDisabledState(this.selectedObject === null);
-		this.magicCostGain.setDisabledState(this.selectedObject === null);
 		this.hitTypeField.setDisabledState(this.selectedObject === null);
 		this.animationField.setDisabledState(this.selectedObject === null);
+		this.dmgParameterField.setDisabledState(this.selectedObject === null);
 		this.dmgTypeField.setDisabledState(this.selectedObject === null);
 		this.formulaField.setDisabledState(this.selectedObject === null);
 		this.varianceField.setDisabledState(this.selectedObject === null);
@@ -194,19 +253,21 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 				this.itemTypeField.setValue = this.selectedObject.typeId;
 				this.itemSellableField.setValue = this.selectedObject.sellable;
 				this.itemCostField.setValue = this.selectedObject.sellValue;
-				// this.skillTechnicalCostField.setValue = this.selectedSkill.expCurve;
 				this.scopeField.setValue = this.selectedObject.scope;
 				this.occasionField.setValue = this.selectedObject.occasion;
 				this.speedField.setValue = this.selectedObject.speed;
 				this.successRateField.setValue = this.selectedObject.successRate;
-				this.repeatField.setValue = this.selectedObject.repaet;
-				// this.magicCostGain.setValue = this.selectedSkill.expCurve;
-				// this.hitTypeField.setValue = this.selectedSkill.hitType;
-				// this.animationField.setValue = this.selectedSkill.expCurve;
+				this.repeatField.setValue = this.selectedObject.repeat;
+				this.dmgParameterField.setValue = this.selectedObject.dmgParameter;
 				this.dmgTypeField.setValue = this.selectedObject.dmgType;
 				this.formulaField.setValue = this.selectedObject.formula;
 				this.varianceField.setValue = this.selectedObject.variance;
 				this.critField.setValue = this.selectedObject.critical;
+
+				// this.skillTechnicalCostField.setValue = this.selectedSkill.expCurve;
+				// this.magicCostGain.setValue = this.selectedSkill.expCurve;
+				// this.hitTypeField.setValue = this.selectedSkill.hitType;
+				// this.animationField.setValue = this.selectedSkill.expCurve;
 
 				// second parameter specifying whether to perform 'AND' or 'OR' search
 				// (meaning all columns should contain search query or at least one)
@@ -219,6 +280,41 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	public onSendForm()
 	{
 
+
+		if(this.formComponent.isValid)
+		{
+			const dbClass = this.table.find(this.selectedObject.id) as ISkill;
+			const event = {
+				data: dbClass,
+				newData: null,
+				confirm: {
+					resolve: () => {
+						this.table.update(dbClass, this.selectedObject).then();
+						return true;
+					},
+					reject: (): boolean => true,
+				},
+			};
+
+			this.selectedObject.name[this.selectedLanguage] = this.itemNameField.getValue;
+			this.selectedObject.description[this.selectedLanguage] = this.itemDescriptionField.getValue;
+			this.selectedObject.typeId = this.itemTypeField.getValue;
+			this.selectedObject.sellable = this.itemSellableField.getValue;
+			this.selectedObject.sellValue = this.itemCostField.getValue;
+			// this.selectedObject.scope = this.scopeField.getValue;
+			// this.selectedObject.occasion = this.occasionField.getValue;
+			this.selectedObject.speed = this.speedField.getValue;
+			this.selectedObject.successRate = this.successRateField.getValue;
+			this.selectedObject.repeat = this.repeatField.getValue;
+			this.selectedObject.dmgParameter = this.dmgParameterField.getValue;
+			this.selectedObject.dmgType = this.dmgTypeField.getValue;
+			this.selectedObject.formula = this.formulaField.getValue;
+			this.selectedObject.variance = this.varianceField.getValue;
+			this.selectedObject.critical = this.critField.getValue;
+
+			event.newData = this.selectedObject;
+			this.onEditConfirm(event,true);
+		}
 	}
 
 	protected initForm()
@@ -244,16 +340,16 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Item description',
 			placeholder: 'Item description',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
 		this.formComponent.addInput<string>(this.itemTypeField, {
 			controlType: 'dropdown',
 			value: '',
-			name: 'item-type',
-			text: 'Item Type',
-			placeholder: 'Item type',
+			name: 'item-inventory-type',
+			text: 'Item inventory Type',
+			placeholder: 'Item inventory type',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
@@ -277,7 +373,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Consumable',
 			placeholder: 'Consumable',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -288,7 +384,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Sellable',
 			placeholder: 'Sellable',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -299,7 +395,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Scope',
 			placeholder: 'Scope',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -310,51 +406,40 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Occasion',
 			placeholder: 'Occasion',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.speedField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput<number>(this.speedField, {
+			controlType: 'number',
+			value: 0,
 			name: 'speed',
 			text: 'Speed',
 			placeholder: 'Speed',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.successRateField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput(this.successRateField, {
+			controlType: 'number',
+			value: 0,
 			name: 'success-rate',
 			text: 'Success rate',
 			placeholder: 'Success rate',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.repeatField, {
-			controlType: 'dropdown',
-			value: '',
+		this.formComponent.addInput<number>(this.repeatField, {
+			controlType: 'number',
+			value: 0,
 			name: 'repeat',
 			text: 'Repeat',
 			placeholder: 'Repeat',
 			errorText: 'This must be filled in',
-			required: true,
-			disabled: true,
-		});
-
-		this.formComponent.addInput<string>(this.magicCostGain, {
-			controlType: 'textbox',
-			value: '',
-			name: 'magic-gain',
-			text: 'Magic cost gain',
-			placeholder: 'Magic cost gain',
-			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -365,7 +450,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Hit Type',
 			placeholder: 'Hit Type',
 			errorText: 'This must be filled in',
-			required: true,
+			required: false,
 			disabled: true,
 		});
 
@@ -376,19 +461,47 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			text: 'Animation',
 			placeholder: 'Animation',
 			errorText: 'This must be filled in',
+			required: false,
+			disabled: true,
+		});
+
+		this.formComponent.addInput(this.dmgParameterField, {
+			controlType: 'dropdown',
+			value: 0,
+			name: 'damage-parameter',
+			text: 'Damage parameter',
+			placeholder: 'Damage parameter',
+			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.dmgTypeField, {
+		this.formComponent.addInput<number>(this.dmgTypeField, {
 			controlType: 'dropdown',
-			value: '',
+			value: 0,
 			name: 'damage-type',
 			text: 'Damage type',
 			placeholder: 'Damage type',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
+			options$: new BehaviorSubject<Option<number>[]>([
+				new Option({
+					key: 'Damage',
+					value: DmgType.Damage,
+					selected: true,
+				}),
+				new Option({
+					key: 'Recover',
+					value: DmgType.Recover,
+					selected: false,
+				}),
+				new Option({
+					key: 'Drain',
+					value: DmgType.Drain,
+					selected: false,
+				}),
+			]),
 		});
 
 		/**
@@ -419,9 +532,9 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.varianceField, {
-			controlType: 'textbox',
-			value: '',
+		this.formComponent.addInput(this.varianceField, {
+			controlType: 'number',
+			value: 0,
 			name: 'variance',
 			text: 'Variance',
 			placeholder: 'Variance',
@@ -430,15 +543,27 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 			disabled: true,
 		});
 
-		this.formComponent.addInput<string>(this.critField, {
+		this.formComponent.addInput<boolean>(this.critField, {
 			controlType: 'dropdown',
-			value: '',
+			value: false,
 			name: 'critical',
 			text: 'Critical Hits',
 			placeholder: 'Critical hits',
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
+			options$: new BehaviorSubject<Option<boolean>[]>([
+				new Option({
+					key: 'false',
+					value: false,
+					selected: true,
+				}),
+				new Option({
+					key: 'true',
+					value: true,
+					selected: false,
+				}),
+			]),
 		});
 	}
 }

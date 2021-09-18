@@ -11,7 +11,7 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import {
-	IEnemy,
+	IEnemy, IEnemyActionPattern,
 	IEnemyCategory, IEnemyParameterCurve,
 	IItem,
 	IItemDrop,
@@ -57,45 +57,8 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 		fields: {},
 	};
 
-	public actionSettings: ISettings = {
-		mode: 'external',
-		selectMode: '', // 'multi';
-		noDataMessage: 'No items found', // default: -> 'No data found'
-		actions: {
-			add: true,
-			edit: true,
-			delete: true,
-			position: 'right',
-		},
-		add: {
-			addButtonContent: '<i class="nb-plus"></i>',
-			createButtonContent: '<i class="nb-checkmark"></i>',
-			cancelButtonContent: '<i class="nb-close"></i>',
-			confirmCreate: true,
-			width: '50px',
-		},
-		edit: {
-			editButtonContent: '<i class="nb-edit"></i>',
-			saveButtonContent: '<i class="nb-checkmark"></i>',
-			cancelButtonContent: '<i class="nb-close"></i>',
-			confirmSave: true,
-			width: '50px',
-		},
-		delete: {
-			deleteButtonContent: '<i class="nb-trash"></i>',
-			confirmDelete: true,
-			width: '50px',
-		},
-		columns: {
-			type: {
-				title: 'Type',
-			},
-			content: {
-				title: 'Content',
-			},
-		},
-	};
-	public actionSource: LocalDataSource = new LocalDataSource();
+	public actionSettings: ISettings = new BaseSettings();
+	public enemyActionPatterns: Table<IEnemyActionPattern> = new Table();
 
 	public itemDropsSettings: ISettings = new BaseSettings();
 	public itemDrops: Table<IItemDrop> = new Table();
@@ -123,7 +86,7 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 			userPreferencesService, tableService, firebaseRelationService, languageService, themeService, '-MTtv20-DUBlnoyImVZu',
 		);
 
-		this.includedTables.push('enemycategories', 'itemdrops');
+		this.includedTables.push('enemycategories', 'enemyactionpatterns', 'itemdrops');
 	}
 
 	public ngOnInit()
@@ -200,6 +163,14 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 				this.validate();
 			}
 		} else this.validate();
+
+		this.enemyActionPatterns.getSource.setFilter([
+			// fields we want to include in the search
+			{
+				field: 'enemyId',
+				search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
+			},
+		], false);
 
 		this.itemDrops.getSource.setFilter([
 			// fields we want to include in the search
@@ -280,9 +251,45 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 			);
 		}
 
+		if(value.metadata.title.toLowerCase() === 'enemyactionpatterns')
+		{
+			this.enemyActionPatterns = <Table<IEnemyActionPattern>>value;
+
+			this.enemyActionPatterns.getSource.setFilter([
+				// fields we want to include in the search
+				{
+					field: 'enemyId',
+					search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
+				},
+			], false);
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.enemyActionPatterns, ['child_added']),
+			);
+
+			// this.itemDropsSettings.actions.add = true;
+			const newItemSettings = this.processTableData(
+				this.enemyActionPatterns, true, this.actionSettings,
+			);
+			this.actionSettings = Object.assign({}, newItemSettings);
+			this.validateSettings(this.actionSettings, true);
+
+			if(this.itemSmartTableComponent)
+				this.itemSmartTableComponent.initGrid();
+		}
+
 		if(value.metadata.title.toLowerCase() === 'itemdrops')
 		{
 			this.itemDrops = <Table<IItemDrop>>value;
+
+			this.itemDrops.getSource.setFilter([
+				// fields we want to include in the search
+				{
+					field: 'enemyId',
+					search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
+				},
+			], false);
 
 			// Listen to incoming data
 			this.mainSubscription.add(
@@ -298,24 +305,6 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 
 			if(this.itemSmartTableComponent)
 				this.itemSmartTableComponent.initGrid();
-		}
-	}
-
-	protected override onDataReceived(tableData: Table)
-	{
-		// Filter is being reset, that is why this function exist.
-		super.onDataReceived(tableData);
-
-		if(
-			tableData.hasOwnProperty('data') && Object.values(tableData.data).length !== 0
-		) {
-			this.itemDrops.getSource.setFilter([
-				// fields we want to include in the search
-				{
-					field: 'enemyId',
-					search: this.selectedObject !== null ? this.selectedObject.id.toString() : 'NaN',
-				},
-			], false);
 		}
 	}
 

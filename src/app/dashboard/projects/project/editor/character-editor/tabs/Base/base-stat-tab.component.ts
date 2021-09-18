@@ -254,7 +254,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 				this.curves.push(stat);
 				this.eChartsOptions.push({});
 				stats.push({
-					name: stat.paramName,
+					name: this.languageService.getLanguageFromProperty(stat.paramName, this.selectedLanguage),
 					type: 'line',
 					stack: 'Total amount',
 					data: [],
@@ -381,7 +381,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 						left: 'left',
 						data: Object.values(this.curves).filter((s, idx) => {
 							return idx === index;
-						}).map((s) => s.paramName),
+						}).map((s) => this.languageService.getLanguageFromProperty(s.paramName, this.selectedLanguage)),
 						textStyle: {
 							color: echarts.textColor,
 						},

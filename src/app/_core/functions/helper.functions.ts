@@ -95,6 +95,19 @@ export function createItem(): IItem
 		typeId: Number.MAX_SAFE_INTEGER,
 		sellValue: 0,
 		sellable: true,
+
+		scope: 0,
+		occasion: 0,
+		speed: 0,
+		successRate: 100,
+
+		critical: false,
+		dmgParameter: 0,
+		dmgType: 0,
+		formula: '',
+		repeat: 0,
+		variance: 0,
+
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,
 	};
