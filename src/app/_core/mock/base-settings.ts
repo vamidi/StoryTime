@@ -28,7 +28,7 @@ export interface Column {
 	},
 	renderComponent?: Type<ViewCell>,
 	onComponentInitFunction?: (instance: ViewCell) => void,
-	valuePrepareFunction?: (cell , row) => string,
+	valuePrepareFunction?: (cell , row) => string | number,
 }
 
 export interface ISettings

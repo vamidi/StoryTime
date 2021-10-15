@@ -124,6 +124,11 @@ export class FirebaseRelationService
 			Pair('class', new StringPair('classes', 'className', true)),
 		]);
 
+		const characterEquipments: RelationPair = new Map([
+			Pair('name', new StringPair('equipments', 'name', true)),
+			Pair('characterId', new StringPair('characters', 'name', true)),
+		])
+
 		const storyCharacterDialogues: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
 			Pair('childId', new StringPair('dialogues', 'text', true)),
@@ -165,15 +170,16 @@ export class FirebaseRelationService
 		]);
 
 		const equipments: RelationPair = new Map([
-			Pair('characterId', new StringPair('characters', 'name', true)),
-			Pair('equipment', new StringPair('items', 'name', true)),
-			Pair('typeId', new StringPair('itemTypes', 'name', true)),
+			Pair('classId', new StringPair('classes', 'className', true)),
+			Pair('categoryId', new StringPair('equipmentTypes', 'category', true)),
+			Pair('typeId', new StringPair('equipmentTypes', 'type', true)),
 		]);
 
 		const parameterCurves: RelationPair = new Map([
 			Pair('classId', new StringPair('classes', 'className', true)),
 			Pair('enemyId', new StringPair('enemies', 'name', true)),
 			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
+			Pair('equipmentId', new StringPair('equipments', 'name', true)),
 		]);
 
 		/* Shop System */
@@ -230,6 +236,7 @@ export class FirebaseRelationService
 			Pair('dialogueEvents', dialogueEvents),
 
 			Pair('characters', characters),
+			Pair('characterEquipments', characterEquipments),
 
 			Pair('items', itemEffectTypeItemTypes),
 			Pair('itemDrops', itemDrops),

@@ -501,7 +501,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			// Listen to incoming data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.dialogues.id}/data`, ['child_added'])
-				.subscribe(({ snapshots }) =>
+				.subscribe((snapshots) =>
 					{
 						for(let i = 0; i < snapshots.length; i++)
 						{
@@ -537,7 +537,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.characters.id}/data`, ['child_added'])
-				.subscribe(({ snapshots }) =>
+				.subscribe((snapshots) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{

@@ -358,12 +358,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 					},
 				);
 
-				event.confirm.resolve();
+				event.confirm?.resolve();
 				return;
 			}
 		}
 
-		event.confirm.reject().then();
+		event.confirm?.reject().then();
 	}
 
 	public saveForm($event: any)
@@ -652,7 +652,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		// get the table data
 		// make a separate function in order to get a reference to this.
 		const fetchTable$: Observable<Table> = this.firebaseService.getTableData$(`tables/${tbl}`).pipe(
-			map(({ key, snapshots }) =>
+			map((snapshots) =>
 			{
 				const table: Table = new Table();
 				table.id = tbl;

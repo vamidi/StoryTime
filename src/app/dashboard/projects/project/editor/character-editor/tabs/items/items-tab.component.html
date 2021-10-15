@@ -9,14 +9,14 @@
 				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Item</button>
 				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
-					<nb-option *ngFor="let item of getTable; let i = index;" [value]="i">
+					<nb-option *ngFor="let item of getTable; let i = index;" [value]="item.id">
 						000{{ i + 1 }} {{ getLanguageProperty(item.name) }}
 					</nb-option>
 				</nb-select>
 			</nb-card-body>
 		</nb-card>
 
-		<button class="my-2 mr-2" nbButton status="danger">Delete</button>
+		<button class="my-2 mr-2" nbButton [status]="selectedObject ? 'danger' : 'basic'" [disabled]="selectedObject === null" (click)="deleteSelected()">Delete</button>
 		<button nbButton class="my-2"
 		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
 		        (click)="onSendForm()"

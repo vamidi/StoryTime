@@ -92,7 +92,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 			}
 
 			const promise = new QueryablePromise<Table>((resolve, reject) => {
-				this.firebaseService.getTableData$(`tables/${key}`).subscribe(({ snapshots }) => {
+				this.firebaseService.getTableData$(`tables/${key}`).subscribe((snapshots) => {
 					// configure fields
 					snapshots.forEach((snapshot) => {
 						table[snapshot.key] = snapshot.payload.val();
@@ -269,7 +269,7 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 		// TODO make a listener list to see if we don't have duplicates
 		return this.firebaseService.getTableData$(
 			`tables/${table.id}/data`, events)
-			.subscribe(({ snapshots }) => {
+			.subscribe((snapshots) => {
 					for (let i = 0; i < snapshots.length; i++) {
 						const snapshot = snapshots[i];
 						if (!events.includes(snapshot.type as ChildEvent))
@@ -313,7 +313,6 @@ export class TablesService extends TableData implements Iterable<Table>, IPipeli
 
 		return Promise.reject(`314 - Couldn't find table ${key}`);
 	}
-
 
 	/**
 	 * @brief update the data in the table.

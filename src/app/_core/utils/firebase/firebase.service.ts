@@ -159,7 +159,7 @@ export class FirebaseService implements OnDestroy
 	 */
 	public getTableData$<T = any>(
 		tblName: string = '', events: ChildEvent[] = ['child_added', 'child_changed', 'child_removed'],
-	): Observable<{ key: string, snapshots: SnapshotAction<T>[] }>
+	): Observable<SnapshotAction<T>[]>
 	{
 		let tbl = this.tblName;
 
@@ -172,15 +172,7 @@ export class FirebaseService implements OnDestroy
 		const tableRef = this.getList<any>(tbl);
 
 		// assign snapshot changes
-		return tableRef.snapshotChanges(events)
-		.pipe(
-			map((snapshots: SnapshotAction<T>[]) => {
-				return {
-					key: tableRef.query.ref.key,
-					snapshots: snapshots,
-				}
-			}),
-		);
+		return tableRef.snapshotChanges(events);
 	}
 
 	/**

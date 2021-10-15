@@ -13,17 +13,13 @@ import { Table, TablesService } from '@app-core/data/state/tables';
 import {
 	IEnemy, IEnemyActionPattern,
 	IEnemyCategory, IEnemyParameterCurve,
-	IItem,
 	IItemDrop,
 } from '@app-core/data/database/interfaces';
 import { DropDownFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
-import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { Option } from '@app-core/data/forms/form-types';
 import { UtilsService } from '@app-core/utils';
-import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
-import { BehaviourType } from '@app-core/types';
 
 @Component({
 	selector: 'ngx-enemies-tab',

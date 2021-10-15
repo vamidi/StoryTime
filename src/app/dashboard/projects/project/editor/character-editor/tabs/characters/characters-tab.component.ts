@@ -290,6 +290,12 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 		 */
 	}
 
+	public deleteSelected()
+	{
+		if(this.selectedObject)
+			this.onDeleteConfirm({ data: this.selectedObject }, null, this.characters.id);
+	}
+
 	public onCreate(event: { source: LocalDataSource })
 	{
 
@@ -370,6 +376,11 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 			);
 			this.firebaseService.pushRelation(table.title, key, rel);
 
+
+			newSettings.columns[key]['valuePrepareFunction'] = (cell, row) => {
+				console.log(row);
+				return cell.value;
+			}
 			newSettings.columns[key]['type'] = 'custom';
 			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
 			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {

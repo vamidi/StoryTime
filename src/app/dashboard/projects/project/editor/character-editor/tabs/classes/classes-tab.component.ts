@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LineSeriesOption } from 'echarts/types/src/chart/line/LineSeries';
 import { BaseParameterTabComponent } from '@app-dashboard/projects/project/editor/character-editor/tabs/Base/base-stat-tab.component';
 import { UtilsService } from '@app-core/utils';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
@@ -14,11 +13,9 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { ICharacterClass, IClassParameterCurve, ISkill } from '@app-core/data/database/interfaces';
 
 import { DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
-import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { filter } from 'rxjs/operators';
-import { BehaviourType } from '@app-core/types';
 
 @Component({
 	selector: 'ngx-classes-tab',

@@ -18,7 +18,7 @@ import { GameEditorOverviewComponent } from './game-editor-overview.component';
 import {
 	CharactersTabComponent,
 	ClassesTabComponent, SkillsTabComponent,
-	ItemsTabComponent, WeaponsTabComponent, EnemiesTabComponent,
+	ItemsTabComponent, EquipmentsTabComponent, EnemiesTabComponent,
 } from '@app-dashboard/projects/project/editor/character-editor/tabs';
 import { GameEditorRoutingModule } from './game-editor-routing.module';
 import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-editor';
@@ -52,7 +52,7 @@ const TabComponents = [
 	ClassesTabComponent,
 	SkillsTabComponent,
 	ItemsTabComponent,
-	WeaponsTabComponent,
+	EquipmentsTabComponent,
 	EnemiesTabComponent,
 ];
 

@@ -331,7 +331,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.craftables.id}/data`, ['child_added'])
-			.subscribe(({ snapshots }) =>
+			.subscribe((snapshots) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
@@ -374,7 +374,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.tblCraftConditions.id}/data`, ['child_added'])
-			.subscribe(({ snapshots }) =>
+			.subscribe((snapshots) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{
@@ -407,7 +407,7 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 			// listen to changed data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.items.id}/data`, ['child_added'])
-			.subscribe(({ snapshots }) =>
+			.subscribe((snapshots) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{

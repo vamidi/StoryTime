@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { FormContainer } from '@app-core/data/forms/form-model';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { FormQuestionBase } from '@app-core/data/forms/form-types';
+import { FormQuestionBase, NbControlTypes } from '@app-core/data/forms/form-types';
 import { DynamicFormComponent } from '@app-theme/components/form/dynamic-form.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UtilsService } from '@app-core/utils';
@@ -45,6 +45,15 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 {
 	public abstract value: T = null;
 
+	@Input('key')
+	public controlName: string = '';
+
+	@Input('text')
+	public controlText: string = '';
+
+	@Input('type')
+	public controlType: NbControlTypes = null;
+
 	@Input()
 	public parent: DynamicFormComponent = null;
 
@@ -62,6 +71,9 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	@Input()
 	public enableFirstBtn: boolean = true;
+
+	@Input()
+	public showLabels = false;
 
 	@Input()
 	public labelIcon: string = '';
@@ -120,7 +132,6 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	public set Hidden(b: boolean) { this.question.hidden = b; }
 	public get Hidden() { return this.question.hidden; }
-	public showLabels = false;
 
 	protected destroy$ = new Subject<void>();
 
@@ -141,8 +152,16 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	{
 	}
 
+	public ngPreInit() {
+		this.question.key = this.controlName !== '' ? this.controlName : this.question.key;
+		this.question.text = this.controlText !== '' ? this.controlText : this.question.text;
+		this.question.controlType = this.controlType !== null ? this.controlType : this.question.controlType;
+	}
+
 	public ngOnInit()
 	{
+		this.ngPreInit();
+
 		if(this.parent)
 			this.myFormGroup = this.parent.formContainer.form;
 

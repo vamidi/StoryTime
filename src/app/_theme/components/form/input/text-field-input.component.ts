@@ -159,7 +159,7 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	{
 		this.question.value = this.value = value;
 
-		if(this.parent.formContainer.get(this.question.key))
+		if(this.parent && this.parent.formContainer.get(this.question.key))
 		{
 			const control = this.parent.formContainer.get(this.question.key);
 			control.setValue(this.value);

@@ -234,9 +234,11 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 				if(dataSize !== Object.keys(value).length) {
 					// UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					/*
 					UtilsService.onDebug(
 						`${key} data size is not equal in table ${ this.id }`, DebugType.WARN, dataSize, this.data[0],
 					);
+					 */
 				}
 			}
 		}
@@ -265,7 +267,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	/** ITERATIONS **/
 	public find(id: number, columnName: string = 'id', dataSearch: boolean = false): T | null
 	{
-		if(this.empty) return null;
+		if(this.empty || id === Number.MAX_SAFE_INTEGER) return null;
 
 		if(!dataSearch)
 			return this.filteredData.find((r: T) => r[columnName] === id);

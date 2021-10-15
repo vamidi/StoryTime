@@ -547,10 +547,13 @@ export class LanguageService
 {
 	public static GetLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
 	{
-		if(prop.hasOwnProperty(lang))
+		if(prop === null)
+			console.trace(prop);
+
+		if(prop && prop.hasOwnProperty(lang))
 			return prop[lang];
 
-		if(prop.hasOwnProperty(this.fallBackLanguage))
+		if(prop && prop.hasOwnProperty(this.fallBackLanguage))
 			return prop[this.fallBackLanguage];
 
 		return '';

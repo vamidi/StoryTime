@@ -10,6 +10,12 @@ export enum DmgType {
 	Drain,
 }
 
+export enum StatType {
+	Flat = 100, // Flexible to create values in between values if the user wants to.
+	PercentAdd = 200,
+	PercentMulti = 300,
+}
+
 export interface IDialogue extends ProxyObject {
 	characterId: number,
 	nextId: number,
@@ -93,7 +99,7 @@ export interface IItem extends ProxyObject {
 	variance: number,               // How off we can be when we calculate the value.
 	critical: boolean,              // Can this item critical hit.
 
-	typeId: number, /** @type IItemType */
+	typeId: number,                 /** @type IItemType */
 }
 
 export interface IItemDrop extends ProxyObject
@@ -212,13 +218,12 @@ export interface IItemType extends ProxyObject {
 	// Ingredient,
 	// Customisation,
 	// Dish,
-	inventoryType: number, // The type what the item represent in the inventory
+	inventoryType: number, // The type what the item represent in the inventory.
 }
 
 export interface IEquipment extends ProxyObject {
 	name: KeyLanguageObject,    // The name of this equipment.  item name type --> armor, sword
-	/** @type ICharacter - The character that is linked to this equipment. */
-	characterId: number,
+	description: KeyLanguageObject,
 	/**
 	 * Weapon,
 	 * Shield,
@@ -238,5 +243,37 @@ export interface IEquipment extends ProxyObject {
 	 * Spear,
 	 * Necklace,
 	 */
-	typeId: number,     // The type of weapon/armor/accessory this equipment is.
+	typeId: number,                 // The type of weapon/armor/accessory this equipment is.
+	classId: number,                // The class where this equipment belongs to.
+
+	sellValue: number,              // Sell value of the item
+	sellable: boolean,              // To see if the item is sellable.
+
+	dmgParameter: number,           // Which parameter we are going to use for adding or subtracting.
+	dmgType: number,                // What kind of damage is this. damage, drain, recover.
+	formula: string,                // formula we are going to use for this item.
+	variance: number,               // How off we can be when we calculate the value.
 }
+
+export interface IEquipmentType extends ProxyObject {
+	category: KeyLanguageObject,
+	type: KeyLanguageObject,
+}
+
+/**
+ * @brief - Parameters that belongs to an enemy.
+ * TODO add ability to set parameter curves for enemy categories as well.
+ */
+export interface IEquipmentParameterCurve extends IParameterCurve {
+	equipmentId: number,        // Where the curve belongs to.
+	statType: StatType,         // What kind of stats will this give to the user.
+}
+
+export interface ICharacterEquipment extends ProxyObject
+{
+	name: number,          // The name of the equipment,
+	/** @type ICharacter - The character that is linked to this equipment. */
+	characterId: number,
+}
+
+export declare type NbParameterCurves = IClassParameterCurve | IEnemyParameterCurve | IEquipmentParameterCurve;

@@ -1,13 +1,14 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
+import { Ng2SmartTableComponent } from '@vamidicreations/ng2-smart-table';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { StringPair } from '@app-core/data/base/string-pair.class';
-import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { UtilsService } from '@app-core/utils';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { BehaviourType } from '@app-core/types';
@@ -24,11 +25,11 @@ import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
-import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
 	template: '',
@@ -40,7 +41,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public abstract changeTableSettings: ChangeTableSettingsComponent;
 
-	public abstract smartTableComponent: any;
+	public abstract smartTableComponent: Ng2SmartTableComponent = null;
 
 	public AddTitle: string = '';
 	public DeletedTittle: string = '';
@@ -112,7 +113,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 			}
 		}));
 
-		this.getTableData(this.settings)
+		this.getTableData(this.settings);
 	}
 
 	public ngOnDestroy()
@@ -137,6 +138,12 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 			UtilsService.removeElFromArray(firebaseFilterConfig.columnFilters, index);
 			index = firebaseFilterConfig.columnFilters.findIndex((t) => t.table === this.tableId);
 		}
+	}
+
+	public onRowSelect(event: any)
+	{
+		console.log(event);
+		// this.smartTableComponent.onExpandRow(event);
 	}
 
 	public onCreateConfirm(event: any)
@@ -416,9 +423,8 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 		this.table.getSource.setPaging(this.currentPaging.page, this.currentPaging.perPage);
 
-		if (this.smartTableComponent)
+		if (this.smartTableComponent) {
 			this.smartTableComponent.initGrid();
-
-		this.table.getSource.setPaging(this.currentPaging.page, this.currentPaging.perPage);
+		}
 	}
 }

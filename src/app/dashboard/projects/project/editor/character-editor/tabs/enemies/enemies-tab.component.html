@@ -17,7 +17,7 @@
 				<label class="formHeading w-100 d-flex" for="select-enemy"><span class="flex-grow-1">Select an enemy</span></label>
 				<nb-select fullWidth id="select-enemy" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
-					<nb-option *ngFor="let enemy of getTable; let i = index;" [value]="i">
+					<nb-option *ngFor="let enemy of getTable; let i = index;" [value]="enemy.id">
 						000{{ i + 1 }} {{ getLanguageProperty(enemy.name) }}
 					</nb-option>
 				</nb-select>
@@ -26,7 +26,7 @@
 			</nb-card-body>
 		</nb-card>
 
-		<button class="my-2 mr-2" nbButton status="danger">Delete</button>
+		<button class="my-2 mr-2" nbButton [status]="selectedObject ? 'danger' : 'basic'" [disabled]="selectedObject === null" (click)="deleteSelected()">Delete</button>
 		<button nbButton class="my-2"
 		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
 		        (click)="onSendForm()"

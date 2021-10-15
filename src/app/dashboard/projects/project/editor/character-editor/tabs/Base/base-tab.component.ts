@@ -138,6 +138,12 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 		return this.languageService.getLanguageFromProperty(prop, this.selectedLanguage);
 	}
 
+	public deleteSelected()
+	{
+		if(this.selectedObject)
+			this.onDeleteConfirm({ data: this.selectedObject });
+	}
+
 	public onChangelogConfirm(event)
 	{
 

@@ -1,0 +1,22 @@
+<div class="form-group" [formGroup]="myFormGroup">
+<!--	<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>-->
+	<button nbButton status="primary" (click)="add()">add</button>
+	<ng-container formArrayName="skills">
+		<div *ngFor="let _ of formArray.controls; index as i">
+			<ng-container [formGroupName]="i">
+				<div class="row my-2">
+					<div class="col-sm-4">
+						<ngx-text-field type="number" hidden="true" [showLabels]="true" text="Stat ID" [myFormGroup]="formArray.controls[i]" key="stat-id"></ngx-text-field>
+						<ngx-dropdown-field [options]="stats" [showLabels]="true" text="Stat modifier" [myFormGroup]="formArray.controls[i]" key="stat-modifier"></ngx-dropdown-field>
+					</div>
+					<div class="col-sm-4">
+						<ngx-text-field [showLabels]="true" type="number" text="Stat value" [myFormGroup]="formArray.controls[i]" key="stat-input"></ngx-text-field>
+					</div>
+					<div class="col-sm-4">
+						<ngx-dropdown-field [options]="statTypes" [showLabels]="true" text="Stat Type" [myFormGroup]="formArray.controls[i]" key="stat-type"></ngx-dropdown-field>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+	</ng-container>
+</div>

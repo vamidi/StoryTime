@@ -6,13 +6,22 @@
 	<div class="col-lg-2">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
-				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Class</button>
-				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
+				<label class="formHeading w-100 d-flex" for="localization"><span class="flex-grow-1">Localization</span></label>
+				<nb-select id="localization" fullWidth selected="en"
+				           (selectedChange)="onLanguageChange($event)">
+					<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+				</nb-select>
+
+				<!-- Equipment selection -->
+
+				<label class="formHeading w-100 d-flex" for="select-equipment"><span class="flex-grow-1">Select an equipment</span></label>
+				<nb-select fullWidth id="select-equipment" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
-					<nb-option *ngFor="let charClass of getTable; let i = index;" [value]="charClass.id">
-						000{{ i + 1 }} {{ getLanguageProperty(charClass.className) }}
+					<nb-option *ngFor="let equipment of getTable; let i = index;" [value]="equipment.id">
+						000{{ i + 1 }} {{ getLanguageProperty(equipment.name) }}
 					</nb-option>
 				</nb-select>
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Equipment</button>
 			</nb-card-body>
 		</nb-card>
 
@@ -33,11 +42,33 @@
 				<nb-accordion-item-body>
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<div class="row my-2">
-							<div class="col-sm-5">
-								<ngx-text-field #classNameField></ngx-text-field>
+							<div class="col-sm-12">
+								<ngx-text-field #equipmentNameField></ngx-text-field>
 							</div>
-							<div class="col-sm-7">
-								<ngx-text-field #classExperienceCurveField></ngx-text-field>
+							<div class="col-sm-12">
+								<ngx-text-field #equipmentDescriptionField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentClassField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentCategoryField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentTypeField></ngx-dropdown-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #animationField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #equipmentCostField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-checkbox-field #equipmentSellableField></ngx-checkbox-field>
 							</div>
 						</div>
 					</ngx-dynamic-form>
@@ -45,43 +76,19 @@
 			</nb-accordion-item>
 
 			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-				<nb-accordion-item-header nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic">
+				<nb-accordion-item-header nbTooltip="This section defines the stats that the equipment will add to the character" nbTooltipPlacement="top" nbTooltipStatus="basic">
 					Stat Curves
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<div class="row" *ngIf="selectedObject === null">
+					<div class="row">
+						<!-- START Equipment Stats -->
+
 						<div class="col-lg-12">
-							<h5>No class selected!</h5>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-lg-12" *ngIf="eCharLevelOptions !== null">
-							<h5>Experience Curve</h5>
-
-							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-								<nb-card-body>
-									<ngx-echarts-area-stack [options]="eCharLevelOptions"></ngx-echarts-area-stack>
-								</nb-card-body>
-							</nb-card>
-						</div>
-					</div>
-
-					<div class="row">
-						<!-- START Character Stats -->
-
-						<div class="col-lg-12" *ngIf="curves.length > 0">
 							<h5>Parameter Curves</h5>
 						</div>
 
-						<div class="col-lg-4 d-flex align-items-stretch"  *ngIf="selectedObject !== null">
-							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
-								<nb-card-body>
-									<button style="width: 100%;height: 100%; background: none;border: none;font-size: 5rem; outline: none" (click)="insertStat()">
-										<i class="add-column nb-plus text-basic"></i>
-									</button>
-								</nb-card-body>
-							</nb-card>
+						<div class="col-lg-12">
+							<ngx-array-form [parent]="formComponent" [parameterCurves]="StatCurves"></ngx-array-form>
 						</div>
 
 						<div class="col-lg-4" *ngFor="let curve of curves; let i = index">
@@ -104,20 +111,11 @@
 					</div>
 				</nb-accordion-item-body>
 			</nb-accordion-item>
-
-			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" *ngIf="getSkillTbl">
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" disabled>
 				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
-					Skills
+					Traits <nb-badge text="COMING SOON" status="danger" position="center right" class="mr-5"></nb-badge>
 				</nb-accordion-item-header>
 				<nb-accordion-item-body>
-					<ng2-smart-table
-						[settings]="getSkillSettings" [source]="getSkillTbl.getSource"
-						(createConfirm)="onCreateConfirm($event, getSkillTbl.id)"
-						(editConfirm)="onEditConfirm($event, false, getSkillTbl.id)"
-						(deleteConfirm)="onDeleteConfirm($event, null, getSkillTbl.id)"
-						(custom)="onChangelogConfirm($event)"
-						(onColumnOrderChanged)="onColumnOrderChange($event)">
-					</ng2-smart-table>
 				</nb-accordion-item-body>
 			</nb-accordion-item>
 		</nb-accordion>

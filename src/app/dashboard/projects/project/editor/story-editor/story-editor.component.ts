@@ -520,7 +520,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			// Listen to incoming data
 			this.mainSubscription.add(this.firebaseService.getTableData$(
 				`tables/${this.tblEvents.id}/data`, ['child_added', 'child_changed'])
-			.subscribe(({ snapshots }) =>
+			.subscribe((snapshots) =>
 				{
 					for(let i = 0; i < snapshots.length; i++)
 					{

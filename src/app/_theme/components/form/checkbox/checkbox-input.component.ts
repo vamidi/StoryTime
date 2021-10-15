@@ -69,10 +69,10 @@ export class CheckboxFieldComponent extends BaseFormInputComponent<boolean>
 
 	public toggle(event: any)
 	{
-		if(this.question !== null) {
-			this.question.value = event;
+		if(this.question !== null)
+		{
+			this.writeValue(event);
 
-			this.question.set(event, this.myFormGroup);
 			this.question.onSelectFunc({key: this.question.key, value: event});
 
 			if(this.onToggleEvent)

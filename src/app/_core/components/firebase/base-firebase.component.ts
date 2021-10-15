@@ -1,4 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ViewCell } from '@vamidicreations/ng2-smart-table';
+import { Row } from '@vamidicreations/ng2-smart-table/lib/lib/data-set/row';
 import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
 import { NbToastrService } from '@nebular/theme';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
@@ -7,7 +9,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { Table, TablesService } from '@app-core/data/state/tables';
-import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
+import { ISettings } from '@app-core/mock/base-settings';
 import {
 	BooleanColumnRenderComponent,
 	LanguageColumnRenderComponent,
@@ -305,6 +307,8 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
 				// firebase, tableName, value => id
 				instance.relation = rel;
+				// TODO make expandable row.
+				// instance.classType = pair.key;
 			};
 
 			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };

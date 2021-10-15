@@ -303,6 +303,9 @@ export class UtilsService
 	{
 		if (!environment.production)
 			console.assert(value, message, optionalParams);
+
+		// TODO fix node assert
+		// assert(value, message);
 	}
 
 	static truncate(text: string, maxLength: number)

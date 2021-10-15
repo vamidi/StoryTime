@@ -4,15 +4,14 @@ import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import {
 	DmgType,
-	ICharacter, ICharacterClass, IClassParameterCurve,
+	ICharacter, ICharacterClass, ICharacterEquipment, IClassParameterCurve,
 	ICraftable, ICraftCondition,
 	IDialogue,
 	IDialogueOption, IEnemy, IEnemyActionPattern, IEnemyParameterCurve, IEquipment, IEvent, IInventoryTabType,
 	IItem,
 	IItemDrop, IITemTabType, IItemType, ISkill,
-	IStory,
+	IStory, NbParameterCurves, StatType,
 } from '@app-core/data/database/interfaces';
-import { KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([
 	Pair('classes', 'Defines the classes a character can have in the game.'),
@@ -380,7 +379,7 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 	 * @brief - Parameter curves
 	 * This can either belong to a class or an enemy.
  	 */
-	Pair<string, { [key: number]: IClassParameterCurve | IEnemyParameterCurve }>('parameterCurves', {
+	Pair<string, { [key: number]: NbParameterCurves }>('parameterCurves', {
 		0: {
 			alias: 'MP',
 			base: 65,
@@ -391,6 +390,8 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			},
 			paramFormula: 'base + (level * level * 6 / 105) + level * 12 * (rate - flat)',
 			rate: 0.12,
+
+			statType: StatType.Flat,                // Stat addition for the user.
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
@@ -407,6 +408,8 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1149999,
 
+			statType: StatType.Flat,                // Stat addition for the user.
+
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
@@ -422,6 +425,8 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1109999,
 
+			statType: StatType.Flat,                // Stat addition for the user.
+
 			deleted: false,
 			created_at: UtilsService.timestamp,
 			updated_at: UtilsService.timestamp,
@@ -436,6 +441,8 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1129999,
+
+			statType: StatType.Flat,                // Stat addition for the user.
 
 			deleted: false,
 			created_at: UtilsService.timestamp,
@@ -616,9 +623,32 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			name: {
 				en: '',
 			},
-			characterId: Number.MAX_SAFE_INTEGER,
+			description: {
+				en: '',
+			},
+
 			categoryId: Number.MAX_SAFE_INTEGER,
 			typeId: Number.MAX_SAFE_INTEGER,
+			classId: Number.MAX_SAFE_INTEGER,
+
+			sellValue: 0,                            // Sell value of the item
+			sellable: false,                         // To see if the item is sellable.
+
+			dmgParameter: Number.MAX_SAFE_INTEGER,  // Which parameter we are going to use for adding or subtracting.
+			dmgType: DmgType.Damage,                // What kind of damage is this. damage, drain, recover.
+			formula: '',                            // formula we are going to use for this item.
+			variance: 0,                            // How off we can be when we calculate the value.
+
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
+	Pair<string, { [key: number]: ICharacterEquipment }>('characterEquipments', {
+		0: {
+			name: Number.MAX_SAFE_INTEGER,
+			characterId: Number.MAX_SAFE_INTEGER,
 
 			deleted: false,
 			created_at: UtilsService.timestamp,

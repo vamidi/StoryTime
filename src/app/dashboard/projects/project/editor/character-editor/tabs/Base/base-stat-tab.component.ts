@@ -3,7 +3,7 @@ import { BaseTabComponent } from './base-tab.component';
 import { ProxyObject } from '@app-core/data/base';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { Table, TablesService } from '@app-core/data/state/tables';
-import { IClassParameterCurve, IEnemyParameterCurve } from '@app-core/data/database/interfaces';
+import { NbParameterCurves } from '@app-core/data/database/interfaces';
 import { EChartsOption } from 'echarts';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
@@ -25,10 +25,10 @@ export abstract class BaseStatTabComponent<T extends ProxyObject> extends BaseTa
 {
 	public eCharLevelOptions: EChartsOption = null;
 
-	public curves: (IClassParameterCurve | IEnemyParameterCurve)[] = [];
+	public curves: NbParameterCurves[] = [];
 	public eChartsOptions: EChartsOption[] = [];
 
-	public constructor(
+	protected constructor(
 		protected route: ActivatedRoute,
 		protected firebaseService: FirebaseService,
 		protected userService: UserService,
@@ -53,10 +53,12 @@ export abstract class BaseStatTabComponent<T extends ProxyObject> extends BaseTa
 @Component({ template: '' })
 export abstract class BaseParameterTabComponent<T extends ProxyObject> extends BaseStatTabComponent<T> implements OnInit
 {
-	protected parameterCurvesSettings: ISettings = new BaseSettings();
-	protected parameterCurves: Table<IClassParameterCurve | IEnemyParameterCurve> = null;
+	public get StatCurves(): Table<NbParameterCurves> { return this.parameterCurves; }
 
 	public cardOptions: Map<number | string, NbMenuItem[]> = new Map<number | string, NbMenuItem[]>();
+
+	protected parameterCurvesSettings: ISettings = new BaseSettings();
+	protected parameterCurves: Table<NbParameterCurves> = null;
 
 	// Health Points or HP - represents the amount of damage a character can take before dying or being knocked out.
 	// Magic Points or MP -
@@ -114,6 +116,26 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 
 	protected includedTables: string[] = ['parametercurves'];
 
+	protected constructor(
+		protected route: ActivatedRoute,
+		protected firebaseService: FirebaseService,
+		protected userService: UserService,
+		protected projectsService: ProjectsService,
+		protected router: Router,
+		protected toastrService: NbToastrService,
+		protected snackbarService: NbSnackbarService,
+		protected dialogService: NbDialogService,
+		protected userPreferencesService: UserPreferencesService,
+		protected tableService: TablesService,
+		protected firebaseRelationService: FirebaseRelationService,
+		protected languageService: LanguageService,
+		protected themeService: NbThemeService,
+		@Inject(String)protected tableId = '',
+	) {
+		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
+			userPreferencesService, tableService, firebaseRelationService, languageService, themeService, tableId);
+	}
+
 	public ngOnInit()
 	{
 		super.ngOnInit();
@@ -137,7 +159,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 		this.eChartsOptions = [];
 	}
 
-	public insertStat(optionalData: any)
+	public insertStat(optionalData: Partial<NbParameterCurves>)
 	{
 		const ref = this.dialogService.open(InsertMultipleDialogComponent,{
 			context: {
@@ -178,7 +200,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 
 	public onCardOptionClicked(title: string, data: any)
 	{
-		const paramCurve = { ...this.parameterCurves.find(data.id) } as IClassParameterCurve;
+		const paramCurve = { ...this.parameterCurves.find(data.id) } as NbParameterCurves;
 		switch(title.toLowerCase())
 		{
 			case 'edit':
@@ -223,7 +245,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 		if (value.metadata.title.toLowerCase() === 'parametercurves')
 		{
 			// store the dialogues.
-			this.parameterCurves = <Table<IClassParameterCurve | IEnemyParameterCurve>>value;
+			this.parameterCurves = <Table<NbParameterCurves>>value;
 
 			// Listen to incoming data
 			this.mainSubscription.add(
@@ -237,7 +259,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 		}
 	}
 
-	protected abstract validateStat(stat: IClassParameterCurve | IEnemyParameterCurve): boolean;
+	protected abstract validateStat(stat: NbParameterCurves): boolean;
 
 	protected configureStats()
 	{

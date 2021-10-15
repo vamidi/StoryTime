@@ -67,6 +67,7 @@ import {
 	TextFieldComponent,
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
+	ArrayFormComponent,
 	FormComponent,
 	DynamicFormComponent,
 
@@ -76,7 +77,7 @@ import {
 	NgxMenuComponent,
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
-	LinkColumnRenderComponent,
+	LinkColumnRenderComponent, ArrayTextFieldComponent,
 } from './components';
 
 import {
@@ -233,6 +234,9 @@ const CUSTOM_FORM_COMPONENTS = [
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
+
+	ArrayFormComponent,
+	ArrayTextFieldComponent,
 
 	BasicTextFieldInputComponent,
 	BasicDropdownFieldInputComponent,

@@ -10,7 +10,7 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { BaseFormInputComponent } from '../form.component';
-import { DropDownQuestion } from '@app-core/data/forms/form-types';
+import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
 import { NB_DOCUMENT, NbSelectComponent } from '@nebular/theme';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ControlValueAccessor } from '@angular/forms';
@@ -63,6 +63,9 @@ export class DropDownFieldComponent<T = string | number | boolean> extends BaseF
 	@Input()
 	public value: T;
 
+	@Input()
+	public options: Option<T>[] = [];
+
 	/**
 	 * Accepts selected item or array of selected items.
 	 *
@@ -114,6 +117,14 @@ export class DropDownFieldComponent<T = string | number | boolean> extends BaseF
 		protected zone: NgZone,
 	) {
 		super(elementRef, cd, renderer, zone);
+	}
+
+	public ngPreInit()
+	{
+		super.ngPreInit();
+
+		if(this.options.length)
+			this.question.options$.next(this.options);
 	}
 
 	public ngOnInit()
