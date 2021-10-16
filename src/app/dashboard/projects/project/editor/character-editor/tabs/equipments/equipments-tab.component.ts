@@ -268,9 +268,9 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 					const curve: NbParameterCurves = {
 						id: value['stat-id'],
 						equipmentId: this.selectedObject.id,
-						alias: oldCurve ? oldCurve.alias : selectedCurve.alias,
+						alias: selectedCurve.alias,
 						base: value['stat-input'],
-						paramName: oldCurve ? oldCurve.paramName : selectedCurve.paramName,
+						paramName: selectedCurve.paramName,
 						paramFormula: oldCurve ? oldCurve.paramFormula : '',
 						rate: oldCurve ? oldCurve.rate : 0,
 						flat: value['stat-input'],
@@ -295,19 +295,17 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 					}
 					else
 					{
-						/* TODO fix me that I am able to update the stats of the equipment
 						this.onEditConfirm({
 							data: oldCurve,
 							newData: curve,
 							confirm: {
 								resolve: () => {
-									this.table.update(oldCurve, curve).then();
+									this.parameterCurves.update(oldCurve, curve).then();
 									return true;
 								},
 								reject: (): boolean => true,
 							},
 						}, false, this.parameterCurves.id);
-						 */
 					}
 
 				}

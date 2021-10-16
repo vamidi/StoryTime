@@ -31,7 +31,7 @@ export class ArrayFormComponent<T= string | number | boolean> extends BaseFormIn
 		if (this.parameterCurves)
 			this.parameterCurves.forEach((curve) => {
 				stats.push(new Option(
-					{ key: LanguageService.GetLanguageFromProperty(curve.paramName, 'en'), value: 0, selected: true },
+					{ key: LanguageService.GetLanguageFromProperty(curve.paramName, 'en'), value: curve.id, selected: false },
 					),
 				);
 			});

@@ -121,7 +121,7 @@ export class FirebaseRelationService
 		]);
 
 		const characters: RelationPair = new Map([
-			Pair('class', new StringPair('classes', 'className', true)),
+			Pair('classId', new StringPair('classes', 'className', true)),
 		]);
 
 		const characterEquipments: RelationPair = new Map([
