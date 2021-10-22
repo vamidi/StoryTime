@@ -1,14 +1,15 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
+import { Ng2SmartTableComponent } from '@vamidicreations/ng2-smart-table';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { StringPair } from '@app-core/data/base/string-pair.class';
-import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
+import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { UtilsService } from '@app-core/utils';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { BehaviourType } from '@app-core/types';
 import {
@@ -24,11 +25,11 @@ import { firebaseFilterConfig } from '@app-core/providers/firebase-filter.config
 import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
-import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { ProxyObject } from '@app-core/data/base';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
 	template: '',
@@ -40,7 +41,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public abstract changeTableSettings: ChangeTableSettingsComponent;
 
-	public abstract smartTableComponent: any;
+	public abstract smartTableComponent: Ng2SmartTableComponent = null;
 
 	public AddTitle: string = '';
 	public DeletedTittle: string = '';
@@ -73,12 +74,12 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected languageService: LanguageService,
 		protected router: Router,
 		protected dialogService: NbDialogService,
-		@Inject(String) protected tableName: string = '',
+		@Inject(String)protected tableId = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
 			toastrService, snackbarService, userService,
 			userPreferencesService, projectService, tableService,
-			languageService, tableName,
+			languageService, tableId,
 		);
 		this.onAddSubscriptions.add(this.firebaseService.onTableAddEvent.subscribe(() => this.onAddTable()));
 	}
@@ -86,16 +87,16 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 	public isTable()
 	{
 		// if the table name is empty false --> true
-		return this.tableName !== 'game-db';
+		return this.tableId !== 'game-db';
 	}
 
 	public ngOnInit(): void
 	{
 		super.ngOnInit();
 
-		this.tableID = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
-		this.tableName = 'tables/' + this.tableID;
-		this.firebaseService.setTblName(this.tableName);
+		let tableID = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
+		this.tableId = tableID;
+		this.firebaseService.setTblName(this.tableId);
 
 		this.mainSubscription.add(this.router.events.subscribe((event) =>
 		{
@@ -104,15 +105,15 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 				// reset the column data in the settings variable
 				this.settings = new BaseSettings();
 
-				this.tableID = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
-				this.tableName = 'tables/' + this.tableID;
-				this.firebaseService.setTblName(this.tableName);
+				tableID = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
+				this.tableId = tableID;
+				this.firebaseService.setTblName(this.tableId);
 
 				this.getTableData(this.settings);
 			}
 		}));
 
-		this.getTableData(this.settings)
+		this.getTableData(this.settings);
 	}
 
 	public ngOnDestroy()
@@ -123,20 +124,26 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		// this.firebaseRelationService.onRelationInserted.unsubscribe();
 
 		// remove the table filters
-		let index = firebaseFilterConfig.tableFilters.findIndex((t) => t.table === this.tableName);
+		let index = firebaseFilterConfig.tableFilters.findIndex((t) => t.table === this.tableId);
 		while(index !== -1)
 		{
 			UtilsService.removeElFromArray(firebaseFilterConfig.tableFilters, index);
-			index = firebaseFilterConfig.tableFilters.findIndex((t) => t.table === this.tableName);
+			index = firebaseFilterConfig.tableFilters.findIndex((t) => t.table === this.tableId);
 		}
 
 		// remove the column filters
-		index = firebaseFilterConfig.columnFilters.findIndex((t) => t.table === this.tableName);
+		index = firebaseFilterConfig.columnFilters.findIndex((t) => t.table === this.tableId);
 		while(index !== -1)
 		{
 			UtilsService.removeElFromArray(firebaseFilterConfig.columnFilters, index);
-			index = firebaseFilterConfig.columnFilters.findIndex((t) => t.table === this.tableName);
+			index = firebaseFilterConfig.columnFilters.findIndex((t) => t.table === this.tableId);
 		}
+	}
+
+	public onRowSelect(event: any)
+	{
+		console.log(event);
+		// this.smartTableComponent.onExpandRow(event);
 	}
 
 	public onCreateConfirm(event: any)
@@ -166,7 +173,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 			case 'changelog':
 				this.dialogService.open(RevisionDialogComponent, {
 					context: {
-						tableName: this.tableName,
+						tableName: this.tableId,
 						id: event.data.id,
 					},
 				});
@@ -186,11 +193,11 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 	public onDeletePressed()
 	{
 		if (confirm('Do you really want to delete this table?')) {
-			this.firebaseService.update(this.tableName, {deleted: true}).then(
+			this.firebaseService.update(this.tableId, {deleted: true}).then(
 				() => UtilsService.showToast(
 					this.toastrService,
 					'Table deleted!',
-					this.tableName + ' has been deleted successfully',
+					this.tableId + ' has been deleted successfully',
 				),
 			);
 		}
@@ -330,7 +337,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		if(event.hasOwnProperty('newData'))
 		{
 			// noinspection JSUnusedGlobalSymbols
-			const newSettings: BaseSettings = { ...this.settings };
+			const newSettings: ISettings = { ...this.settings };
 
 			// We only need this information once
 			const key: string = event.newData?.key;
@@ -349,7 +356,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		if(event.hasOwnProperty('newData'))
 		{
 			// noinspection JSUnusedGlobalSymbols
-			const newSettings: BaseSettings = { ...this.settings };
+			const newSettings: ISettings = { ...this.settings };
 
 			// We only need this information once
 			const key: string = event.newData?.key;
@@ -416,23 +423,8 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 		this.table.getSource.setPaging(this.currentPaging.page, this.currentPaging.perPage);
 
-		this.columnData = this.settings.columns;
-
-		// If the user has a canEdit privileges
-		// then he can make changes to the table,
-		// if the has made the table he is also able to change things
-		// TODO see if we need the action add
-		this.settings.actions.add = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
-		this.settings.actions.edit = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
-		this.settings.actions.delete = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
-
-		this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.userService.isAdmin;
-		this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.userService.isAdmin;
-		this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.userService.isAdmin;
-
-		if (this.smartTableComponent)
+		if (this.smartTableComponent) {
 			this.smartTableComponent.initGrid();
-
-		this.table.getSource.setPaging(this.currentPaging.page, this.currentPaging.perPage);
+		}
 	}
 }

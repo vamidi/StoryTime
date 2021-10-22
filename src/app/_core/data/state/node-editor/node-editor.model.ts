@@ -1,4 +1,4 @@
-import { IStory } from '@app-core/data/standard-tables';
+import { IStory } from '@app-core/data/database/interfaces';
 import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
 import { KeyValue } from '@angular/common';
 import { createStory } from '@app-core/functions/helper.functions';

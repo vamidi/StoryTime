@@ -6,7 +6,7 @@ import {
 	IEvent,
 	IItem,
 	IStory,
-} from '@app-core/data/standard-tables';
+} from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 
 export function Pair<K, V>(k: K, v: V): readonly [K, V] { return [k, v] }
@@ -74,6 +74,9 @@ export function createCharacter(): ICharacter
 		description: {
 			'en': '',
 		},
+		classId: Number.MAX_SAFE_INTEGER,
+		initialLevel: 0,
+		maxLevel: 0,
 	};
 }
 
@@ -89,8 +92,22 @@ export function createItem(): IItem
 		description: {
 			'en': '',
 		},
+		typeId: Number.MAX_SAFE_INTEGER,
 		sellValue: 0,
 		sellable: true,
+
+		scope: 0,
+		occasion: 0,
+		speed: 0,
+		successRate: 100,
+
+		critical: false,
+		dmgParameter: 0,
+		dmgType: 0,
+		formula: '',
+		repeat: 0,
+		variance: 0,
+
 		created_at: UtilsService.timestamp,
 		updated_at: UtilsService.timestamp,
 	};

@@ -10,7 +10,7 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { BaseFormInputComponent } from '../form.component';
-import { DropDownQuestion } from '@app-core/data/forms/form-types';
+import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
 import { NB_DOCUMENT, NbSelectComponent } from '@nebular/theme';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ControlValueAccessor } from '@angular/forms';
@@ -54,23 +54,30 @@ import { ControlValueAccessor } from '@angular/forms';
 		// { provide: NbFormFieldControl, useExisting: TextFieldComponent },
 	],
 })
-export class DropDownFieldComponent extends BaseFormInputComponent<string | number | boolean>
+export class DropDownFieldComponent<T = string | number | boolean> extends BaseFormInputComponent<T>
 	implements OnInit, ControlValueAccessor, OnDestroy
 {
 	@Input()
 	public relationDropDown: boolean = false;
 
 	@Input()
-	public value: string | number | boolean = '';
+	public value: T;
+
+	@Input()
+	public options: Option<T>[] = [];
 
 	/**
 	 * Accepts selected item or array of selected items.
 	 *
 	 */
 	@Input()
-	public set setValue(value: string | number | boolean)
+	public set setValue(value: T)
 	{
 		this.writeValue(value);
+	}
+	public get getValue(): T
+	{
+		return this.value;
 	}
 
 	@Output()
@@ -79,15 +86,18 @@ export class DropDownFieldComponent extends BaseFormInputComponent<string | numb
 	@ViewChild('selectComponent', { static: true })
 	public selectComponent: NbSelectComponent = null;
 
-	public question: DropDownQuestion = new DropDownQuestion({ value: Number.MAX_SAFE_INTEGER });
+	public question: DropDownQuestion<T> = new DropDownQuestion<T>({ value: this.value });
 
-	public defaultValue: string | number | boolean = Number.MAX_SAFE_INTEGER;
+	public defaultValue: number = Number.MAX_SAFE_INTEGER;
 
 	public onOptionsChanged: Function = null;
 
 	public writeValue(value: any): void
 	{
 		this.question.value = this.value = value;
+		this.control.setValue(this.question.value);
+		this.control.markAsDirty();
+		this.myFormGroup.markAsDirty();
 	}
 	public registerOnChange(fn: (_: any) => {}): void
 	{
@@ -109,16 +119,17 @@ export class DropDownFieldComponent extends BaseFormInputComponent<string | numb
 		super(elementRef, cd, renderer, zone);
 	}
 
+	public ngPreInit()
+	{
+		super.ngPreInit();
+
+		if(this.options.length)
+			this.question.options$.next(this.options);
+	}
+
 	public ngOnInit()
 	{
 		super.ngOnInit();
-
-		this.disabled$.subscribe((disabled: boolean) =>
-		{
-			this.question.disabled = disabled;
-			this.question.trigger('disableCheck',
-				{ control: this.myFormGroup.controls[this.question.key], event: this.question.disabled });
-		});
 
 		if(this.onOptionsChanged)
 			this.question.options$.subscribe((options) => this.onOptionsChanged(options));
@@ -137,12 +148,7 @@ export class DropDownFieldComponent extends BaseFormInputComponent<string | numb
 	public onSelect(event: any)
 	{
 		if (this.parent && this.myFormGroup)
-		{
-			this.question.value = event;
-			this.control.setValue(this.question.value);
-			this.control.markAsDirty();
-			this.myFormGroup.markAsDirty();
-		}
+			this.setValue = event;
 
 		this.question.onSelectFunc(event);
 

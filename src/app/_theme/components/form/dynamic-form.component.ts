@@ -98,6 +98,11 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 		return this.Group.valid;
 	}
 
+	public get dirty()
+	{
+		return this.Group.dirty;
+	}
+
 	/**
 	 * @brief - Returning the question of the form
 	 * @param key - key value to search in the map.
@@ -134,6 +139,31 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 	{
 		if(field && !this.source.fields.hasOwnProperty(el.question.key))
 			this.source.fields[el.question.key] = field;
+
+		// assert when text box is not equal text field component
+		const msg = `field: ${field.name}, element: ${field.controlType} does not match the type: ${el.constructor.name}`;
+		UtilsService.onAssert(
+			// text field component can be either be a text box, textarea, number
+			(
+				field.controlType === 'textarea' ||
+				field.controlType === 'number' ||
+				field.controlType === 'textbox'
+			) && el instanceof TextFieldComponent ||
+
+			field.controlType === 'dropdown' && el instanceof DropDownFieldComponent ||
+
+			// checkbox can either be a checkbox or multiple selection field
+			(
+				field.controlType === 'checkbox' ||
+				field.controlType === 'checkbox_multi'
+			)
+			&& el instanceof CheckboxFieldComponent,
+			msg,
+		);
+
+		// UtilsService.onAssert(field.controlType === 'button' && el instanceof ButtonFieldComponent, msg);
+		// UtilsService.onAssert(field.controlType === 'submitbutton' && el instanceof ButtonFieldComponent, msg);
+		// UtilsService.onAssert(field.controlType === 'stepper' && el instanceof ButtonFieldComponent, msg);
 
 		return this.configureFormComponent<T>(el, field);
 	}
@@ -353,7 +383,8 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 
 		el.question.id = ++this.order;
 		el.showLabels = this.showLabels;
-		el.setValue = el.question.value;
+		el.value = el.question.value;
+		// el.setValue = el.question.value;
 
 		if(el instanceof DropDownFieldComponent)
 		{

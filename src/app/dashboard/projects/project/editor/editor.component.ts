@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Project } from '@app-core/data/state/projects';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { BreadcrumbsService } from '@app-core/utils';
 
 @Component({
 	selector: 'ngx-editor',
@@ -22,13 +23,15 @@ export class EditorComponent implements OnInit
 		protected firebaseService: FirebaseService,
 	) { }
 
-	public ngOnInit() {
+	public ngOnInit()
+	{
 		const that = this;
 		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 		const id = map.get('id');
 
 		// We need the project already to exists
 
+		console.log(id);
 		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 		{
 			that.currentState.project.id = id;

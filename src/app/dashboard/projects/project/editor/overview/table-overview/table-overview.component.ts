@@ -89,9 +89,9 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 		{
 
 			const url = this.router.url.split( '/' );
-			this.tableName = url[ url.length - 2 ];
+			this.tableId = url[ url.length - 2 ];
 
-			this.tableRelationData = this.firebaseRelationService.getTableRelationData().get(this.tableName);
+			this.tableRelationData = this.firebaseRelationService.getTableRelationData().get(this.tableId);
 
 			if(!this.tableRelationData)
 				console.error('No data found for this query!');
@@ -170,9 +170,9 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 			// 	this.router.navigate(['../../../'], { relativeTo: this.activatedRoute }).then();
 		} else
 		{
-			this.tableName = this.currentState.table;
+			this.tableId = this.currentState.table;
 
-			this.tableRelationData = this.firebaseRelationService.getTableRelationData().get(this.tableName);
+			this.tableRelationData = this.firebaseRelationService.getTableRelationData().get(this.tableId);
 
 			if(!this.tableRelationData)
 				console.error('No data found for this query!');
@@ -180,8 +180,8 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 			// this.setTblName = this.tableRelationData.tableName;
 			this.setTblName = this.tableRelationData.associatedTable.key;
 
-			// this.tableName = this.tableName === 'dialogues' ? this.tableName : 'tasks';
-			// this.firebaseService.setTblName(this.tableName);
+			// this.tableId = this.tableId === 'dialogues' ? this.tableId : 'tasks';
+			// this.firebaseService.setTblName(this.tableId);
 
 			this.loadFilters();
 
@@ -199,7 +199,7 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 	public isTable()
 	{
 		// if the table name is empty false --> true
-		return this.tableName !== 'game-db';
+		return this.tableId !== 'game-db';
 	}
 
 	public stateLoaded()

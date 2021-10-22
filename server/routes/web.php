@@ -54,7 +54,7 @@ $router->group(['prefix' => 'api/'/*, 'middleware' => 'auth:api'*/], function ()
         // Get the tables of the selected project
         $router->get('/projects/{project}/tables/', FirebaseController::class . '@tables');
         // Get a table inside the project of the user.
-        $router->get('/projects/{project}/tables/{table}', FirebaseController::class . '@table');
+        $router->get('/projects/{project}/tables/{tableID}', FirebaseController::class . '@table');
     });
 });
 

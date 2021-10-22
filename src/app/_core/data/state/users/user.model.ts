@@ -50,7 +50,7 @@ export const onlyReader: NbUserRoles[] = ['reader'];
 export const onlyEdit: NbUserRoles[] = ['superAdmin', 'admin', 'editor', 'author'];
 export const onlyDelete = onlySuper;
 
-interface IUserData {
+export interface IUserData {
 	displayName?: string;
 	email: string;
 	firstName: string;

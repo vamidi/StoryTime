@@ -1,0 +1,139 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="mt-0 mb-4">Character Editor</h1>
+	</div>
+
+	<div class="col-lg-4">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<label class="formHeading w-100 d-flex" for="localization"><span class="flex-grow-1">Localization</span></label>
+				<nb-select id="localization" fullWidth selected="en"
+				           (selectedChange)="onLanguageChange($event)">
+					<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+				</nb-select>
+
+				<!-- Character selection -->
+
+				<label class="formHeading w-100 d-flex" for="select-character"><span class="flex-grow-1">Select a character</span></label>
+				<nb-select fullWidth id="select-character" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
+					<nb-option [value]="defaultValue">None</nb-option>
+					<nb-option *ngFor="let character of characters; let i = index;" [value]="character.id">
+						000{{ i + 1 }} {{ getLanguageProperty(character.name) }}
+					</nb-option>
+				</nb-select>
+
+				<button id="add-character" class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Character</button>
+			</nb-card-body>
+		</nb-card>
+
+		<button class="my-2 mr-2" nbButton [status]="selectedObject ? 'danger' : 'basic'" [disabled]="selectedObject === null" (click)="deleteSelected()">Delete</button>
+		<button nbButton class="my-2"
+		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
+		        (click)="onSendForm()"
+		        type='submit'
+		        [disabled]="formComponent.Form && formComponent.dirty && !formComponent.Form.valid">Save</button>
+	</div>
+
+	<div class="col-lg-8">
+
+		<nb-accordion multi>
+			<!-- Character General settings -->
+
+			<nb-accordion-item class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
+				<nb-accordion-item-header>
+					General settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-text-field #characterNameField></ngx-text-field>
+							</div>
+							<!--						<ngx-text-field medium #nickNameField></ngx-text-field>-->
+							<div class="col-sm-6">
+								<div class="form-control-group">
+									<label class="label" for="input-email">Nickname:</label>
+									<input nbInput
+									       fullWidth
+									       type="email"
+									       name="email"
+									       id="input-email"
+									       pattern=".+@.+\..+"
+									       placeholder="Nickname"
+									       autofocus/>
+									<!--
+										   [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
+										   [required]="getConfigValue('forms.validation.email.required')"
+										   [attr.aria-invalid]="email.invalid && email.touched ? true : null"
+									-->
+								</div>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #classField></ngx-dropdown-field>
+								<div class="form-control-group">
+
+									<!--
+										   [status]="email.dirty ? (email.invalid  ? 'warning' : 'primary') : 'basic'"
+										   [required]="getConfigValue('forms.validation.email.required')"
+										   [attr.aria-invalid]="email.invalid && email.touched ? true : null"
+									-->
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #initialLevelField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #maxLevelField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-12">
+								<ngx-text-field #descriptionField></ngx-text-field>
+							</div>
+						</div>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<!-- Character General settings -->
+
+			<!-- Character equipment -->
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the items that the character will have at the start of the game." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Character Equipment
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="settings" [source]="getSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<!-- Character Traits -->
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" disabled>
+				<nb-accordion-item-header nbTooltip="Traits defines the properties the character will receive in the game immediately" nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Character Traits <nb-badge text="COMING SOON" status="danger" position="center right" class="mr-5"></nb-badge>
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ng2-smart-table
+						[settings]="traitSettings" [source]="traitSource"
+						(createConfirm)="onCreateConfirm($event, getTable.id)"
+						(editConfirm)="onEditConfirm($event, false, getTable.id)"
+						(deleteConfirm)="onDeleteConfirm($event, null, getTable.id)"
+						(custom)="onChangelogConfirm($event)"
+						(onColumnOrderChanged)="onColumnOrderChange($event)">
+					</ng2-smart-table>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+		</nb-accordion>
+	</div>
+</div>

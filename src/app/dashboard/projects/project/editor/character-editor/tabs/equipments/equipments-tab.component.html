@@ -1,0 +1,123 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="mt-0 mb-4">Classes Editor</h1>
+	</div>
+
+	<div class="col-lg-2">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<label class="formHeading w-100 d-flex" for="localization"><span class="flex-grow-1">Localization</span></label>
+				<nb-select id="localization" fullWidth selected="en"
+				           (selectedChange)="onLanguageChange($event)">
+					<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
+				</nb-select>
+
+				<!-- Equipment selection -->
+
+				<label class="formHeading w-100 d-flex" for="select-equipment"><span class="flex-grow-1">Select an equipment</span></label>
+				<nb-select fullWidth id="select-equipment" [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
+					<nb-option [value]="defaultValue">None</nb-option>
+					<nb-option *ngFor="let equipment of getTable; let i = index;" [value]="equipment.id">
+						000{{ i + 1 }} {{ getLanguageProperty(equipment.name) }}
+					</nb-option>
+				</nb-select>
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Equipment</button>
+			</nb-card-body>
+		</nb-card>
+
+		<button class="my-2 mr-2" nbButton [status]="selectedObject ? 'danger' : 'basic'" [disabled]="selectedObject === null" (click)="deleteSelected()">Delete</button>
+		<button nbButton class="my-2"
+		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
+		        (click)="onSendForm()"
+		        type='submit'
+		        [disabled]="formComponent.Form && formComponent.dirty && !formComponent.Form.valid">Save</button>
+	</div>
+
+	<div class="col-lg-10">
+		<nb-accordion multi>
+			<nb-accordion-item class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
+				<nb-accordion-item-header>
+					General settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-12">
+								<ngx-text-field #equipmentNameField></ngx-text-field>
+							</div>
+							<div class="col-sm-12">
+								<ngx-text-field #equipmentDescriptionField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentClassField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentCategoryField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #equipmentTypeField></ngx-dropdown-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #animationField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #equipmentCostField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-checkbox-field #equipmentSellableField></ngx-checkbox-field>
+							</div>
+						</div>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the stats that the equipment will add to the character" nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Stat Curves
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<div class="row">
+						<!-- START Equipment Stats -->
+
+						<div class="col-lg-12">
+							<h5>Parameter Curves</h5>
+						</div>
+
+						<div class="col-lg-12">
+							<ngx-array-form [parent]="formComponent" [attributes]="Attributes"></ngx-array-form>
+						</div>
+
+						<div class="col-lg-4" *ngFor="let curve of curves; let i = index">
+							<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+								<nb-card-header class="d-flex flex-row">
+									<h5>{{ getLanguageProperty(curve.paramName) }}</h5>
+									<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
+									        class="btn-group align-self-start mt-auto ml-auto" aria-controls="dropdown-basic" [nbContextMenu]="getCardOption(curve.id)" nbContextMenuTag="open-parameter-menu">
+										<nb-icon icon="more-vertical-outline" class="text-basic"></nb-icon>
+									</button>
+								</nb-card-header>
+								<nb-card-body>
+									<!-- TODO make a for loop for each of the stat curve that has been made on the character -->
+									<ngx-echarts-area-stack [options]="eChartsOptions[i]"></ngx-echarts-area-stack>
+								</nb-card-body>
+							</nb-card>
+						</div>
+
+						<!-- END Character Stats -->
+					</div>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)" disabled>
+				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Traits <nb-badge text="COMING SOON" status="danger" position="center right" class="mr-5"></nb-badge>
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+		</nb-accordion>
+	</div>
+</div>

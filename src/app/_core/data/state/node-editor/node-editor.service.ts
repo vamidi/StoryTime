@@ -1,12 +1,12 @@
 import { Injectable, Type } from '@angular/core';
 
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 
 import { Component as VisualNEComponent, Engine, NodeEditor, Plugin } from 'visualne';
-import { Data, NodeData, NodesData } from 'visualne/types/core/data';
+import { Data } from 'visualne/types/core/data';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
 import { SelectionPlugin, SelectionParams } from 'visualne-selection-plugin';
@@ -22,7 +22,7 @@ import {
 	InsertStoryComponent,
 	LoadStoryComponent,
 } from '@app-theme/components/firebase-table';
-import { ICharacter, ICraftable, IDialogue, IItem, IStory, IStoryData } from '@app-core/data/standard-tables';
+import { ICharacter, ICraftable, IDialogue, IItem, IStory, IStoryData } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 import { CraftableFileUpload, Table } from '@app-core/data/state/tables';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
