@@ -20,11 +20,11 @@
       "dependencies": {}
     },
     "com.unity.addressables": {
-      "version": "1.18.2",
+      "version": "1.19.4",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.scriptablebuildpipeline": "1.18.0",
+        "com.unity.scriptablebuildpipeline": "1.19.2",
         "com.unity.modules.assetbundle": "1.0.0",
         "com.unity.modules.imageconversion": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
@@ -108,11 +108,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.localization": {
-      "version": "1.0.0-pre.9",
+      "version": "1.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.addressables": "1.18.2"
+        "com.unity.addressables": "1.19.4",
+        "com.unity.nuget.newtonsoft-json": "2.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -176,7 +177,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.18.0",
+      "version": "1.19.2",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
@@ -269,7 +270,7 @@
         "com.unity.animation.rigging": "0.2.7-preview",
         "com.unity.visualeffectgraph": "7.5.3",
         "com.unity.addressables": "1.18.2",
-        "com.unity.localization": "1.0.0-pre.9",
+        "com.unity.localization": "1.0.3",
         "com.unity.probuilder": "4.4.0"
       }
     },
