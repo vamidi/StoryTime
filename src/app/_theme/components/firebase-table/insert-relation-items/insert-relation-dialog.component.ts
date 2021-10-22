@@ -10,7 +10,7 @@ import {
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { Option } from '@app-core/data/forms/form-types';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BehaviourType } from '@app-core/types';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -48,7 +48,7 @@ export class InsertRelationDialogComponent implements
 	 * @brief - This is the settings to generate the bulk form
 	 */
 	@Input()
-	public settings: BaseSettings;
+	public settings: ISettings;
 
 	@Input()
 	public behaviourType$: Subject<BehaviourType>;

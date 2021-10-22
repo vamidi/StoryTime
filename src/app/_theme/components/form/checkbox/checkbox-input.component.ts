@@ -18,14 +18,16 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 	selector: 'ngx-checkbox-field',
 	template:
 		`
-		<div *ngIf="myFormGroup" class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup">
-		<nb-checkbox
-			status="success"
-			[checked]="question.value"
-			[attr.disabled]="question.disabled ? '' : null"
-			(checkedChange)="toggle($event)"
-			[status]="myFormGroup.valid && myFormGroup.dirty ? 'primary' : 'basic'"
-			[ngClass]="question.inputCss">{{ question.text }}</nb-checkbox>
+		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup"
+		     *ngIf="question.controlType !== 'textarea' && question.controlType !== 'autocomplete'">
+				<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
+				<nb-checkbox
+				status="success"
+				[checked]="question.value"
+				[attr.disabled]="question.disabled ? '' : null"
+				(checkedChange)="toggle($event)"
+				[status]="myFormGroup.valid && myFormGroup.dirty ? 'primary' : 'basic'"
+				[ngClass]="question.inputCss">{{ question.text }}</nb-checkbox>
 		</div>
 	`,
 	providers: [
@@ -67,10 +69,10 @@ export class CheckboxFieldComponent extends BaseFormInputComponent<boolean>
 
 	public toggle(event: any)
 	{
-		if(this.question !== null) {
-			this.question.value = event;
+		if(this.question !== null)
+		{
+			this.writeValue(event);
 
-			this.question.set(event, this.myFormGroup);
 			this.question.onSelectFunc({key: this.question.key, value: event});
 
 			if(this.onToggleEvent)

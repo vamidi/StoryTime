@@ -50,11 +50,13 @@ export const breadcrumbsConfig: Config = {
 	// Hide route from breadcrumbs trail
 	hide: [
 		{ route: '/pages' },
+		{ route: '/dashboard/projects/-MCRBgJ4URA6FoKFiklm/editor' },
 	],
 
 	// Hide route regular expression from breadcrumbs trail
 	regexHide: [
-		{ route: `/dashboard/projects/-[a-zA-Z]/tables` },
+		{ route: '/dashboard/projects/-[a-zA-Z]/tables' },
+		{ route: '`<?\\projects\\/-([^/]+)\\/editor`'},
 	],
 
 	// Remove the breadcrumbs component on these routes
@@ -65,6 +67,7 @@ export const breadcrumbsConfig: Config = {
 	// Remove the breadcrumbs component on these routes regular expression
 	regexNoBreadcrumbs: [
 		// {route: ''},
+		{ route: '/dashboard/projects/-[a-zA-Z]/editor'},
 	],
 
 	nameCallbacks: [],

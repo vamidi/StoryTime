@@ -13,7 +13,7 @@ import {
 	ButtonFieldComponent,
 	DynamicFormComponent,
 } from '@app-theme/components/form';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { UserService } from '@app-core/data/state/users';
 import { NbDialogRef, NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
@@ -77,7 +77,7 @@ export class ChangeTableSettingsComponent implements
 	public table: Table = null;
 
 	@Input()
-	public settings: BaseSettings = new BaseSettings();
+	public settings: ISettings = new BaseSettings();
 
 	@Output()
 	public onToggleEvent: EventEmitter<{ key: string, value: boolean }> =

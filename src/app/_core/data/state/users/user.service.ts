@@ -34,7 +34,7 @@ import * as userActions from './user.actions';
 type Action = userActions.All;
 
 import { ProjectsService } from '@app-core/data/state/projects';
-import { TablesService } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { UtilsService } from '@app-core/utils';
 
 import isEmpty from 'lodash.isempty';
@@ -180,12 +180,17 @@ export class UserService extends UserData implements OnDestroy
 		// this.userRoles.filter((role) => role !== onlySuper[0]);
 	}
 
-	public checkTablePermissions(tableService: TablesService): boolean
+	public checkTablePermissions(tableService: TablesService, overrideTable: Table = null): boolean
 	{
 		if(!this.user)
 			return false;
 
-		return this.canEdit || tableService.getTable().metadata.owner === this.user.uid;
+		let tbl = tableService.getTable();
+
+		if(overrideTable)
+			tbl = overrideTable;
+
+		return this.canEdit || tbl.metadata.owner === this.user.uid;
 	}
 
 	public retrieveUserData(authData: firebase.User): Observable<Action>

@@ -231,7 +231,7 @@ class FirebaseController extends Controller
 	}
 
 	/**
-     * @param string $table
+     * @param string $tableID
      * @param string $project
      * @param FirebaseDatabase $firebaseDatabase
      * @param FirebaseStorage $firebaseStorage
@@ -239,7 +239,7 @@ class FirebaseController extends Controller
      * @param string $tableID
      * @return JsonResponse
 	 */
-    public function table(string $table, string $project, FirebaseDatabase $firebaseDatabase, FirebaseStorage $firebaseStorage, Request $request, string $tableID)
+    public function table(string $tableID, string $project, FirebaseDatabase $firebaseDatabase, FirebaseStorage $firebaseStorage, Request $request)
 	{
         $this->setDatabase($firebaseDatabase, $firebaseStorage);
 

@@ -17,7 +17,7 @@ import {
 	NbCardModule,
 	NbContextMenuModule, NbDialogModule,
 	NbIconModule, NbInputModule, NbLayoutModule,
-	NbSelectModule,
+	NbSelectModule, NbTooltipModule,
 	NbTreeGridModule,
 } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
@@ -33,6 +33,7 @@ const LIB_MODULES = [
 	NbTreeGridModule,
 	NbInputModule,
 	NbIconModule,
+	NbTooltipModule,
 	NbContextMenuModule,
 	Ng2SmartTableModule,
 	NbLayoutModule,

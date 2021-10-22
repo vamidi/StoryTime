@@ -17,6 +17,7 @@ export interface Column {
 	addable?: boolean,
 
 	editable?: boolean,
+	filter?: boolean,
 	hidden?: boolean,
 
 	editor?: {
@@ -27,12 +28,50 @@ export interface Column {
 	},
 	renderComponent?: Type<ViewCell>,
 	onComponentInitFunction?: (instance: ViewCell) => void,
-	valuePrepareFunction?: (cell , row) => string,
+	valuePrepareFunction?: (cell , row) => string | number,
 }
 
-export class BaseSettings
+export interface ISettings
 {
-	mode?: string = 'inline'; /* external */
+	mode?: 'inline' | 'external';
+	selectMode?: string;
+	noDataMessage?: string;
+	actions?: {
+		add?: boolean,
+		edit?: boolean,
+		delete?: boolean,
+		position?: 'left' | 'right',
+		width?: string,
+		custom?: {name: string, title: string}[],
+	};
+	add?: {
+		addButtonContent?: string,
+		createButtonContent?: string,
+		cancelButtonContent?: string,
+		confirmCreate?: boolean,
+		width?: string,
+	};
+	edit?: {
+		editButtonContent?: string,
+		saveButtonContent?: string,
+		cancelButtonContent?: string,
+		confirmSave?: boolean,
+		width?: string,
+	},
+	delete?: {
+		deleteButtonContent?: string,
+		confirmDelete?: boolean,
+		width?: string,
+	};
+	columns: { [key: string]: Column };
+
+	// Functions
+	getColumn?: (columnName: string) => Column;
+}
+
+export class BaseSettings implements ISettings
+{
+	mode?: 'inline' | 'external' = 'inline'; /* external */
 	selectMode?: string = ''; // 'multi';
 	noDataMessage?: string = 'No items found'; // default: -> 'No data found'
 	actions?: any = {
@@ -76,6 +115,7 @@ export class BaseSettings
 			editable: false,
 			addable: false,
 			width: '50px',
+			filter:false,
 			hidden: false,
 			defaultValue: Number.MAX_SAFE_INTEGER,
 		},
@@ -84,6 +124,7 @@ export class BaseSettings
 			type: 'string',
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: false,
 			editor: {
@@ -97,6 +138,7 @@ export class BaseSettings
 			renderComponent: DateColumnComponent,
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: Math.floor(Date.now() / 1000),
 		},
@@ -106,8 +148,23 @@ export class BaseSettings
 			renderComponent: DateColumnComponent,
 			editable: false,
 			addable: false,
+			filter:false,
 			hidden: true,
 			defaultValue: Math.floor(Date.now() / 1000),
 		},
 	};
+
+
+	/**
+	 * @brief - Retrieve the column of this object.
+	 * @param columnName
+	 */
+	public getColumn = (columnName: string) => {
+		if(this.columns.hasOwnProperty(columnName))
+		{
+			return this.columns[columnName];
+		}
+
+		return null;
+	}
 }

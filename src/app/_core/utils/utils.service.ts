@@ -16,23 +16,12 @@ import { Observable } from 'rxjs/Observable';
 import { NbAuthResult } from '@nebular/auth';
 
 import cloneDeep from 'lodash.clonedeep';
+import { Parser, Value } from 'expr-eval';
 
 export interface ObjectKeyValue<T>
 {
 	[key: string]: T;
 }
-
-/*
-export function convertToBoolProperty(val: any): boolean {
-	if (typeof val === 'string') {
-		val = val.toLowerCase().trim();
-
-		return (val === 'true' || val === '');
-	}
-
-	return !!val;
-}
-*/
 
 export declare type NbThemeNames = 'default' | 'dark' | 'cosmic' | 'corporate';
 export interface UserPreferences
@@ -99,6 +88,11 @@ export class QueryablePromise<T> extends Promise<T>
 	}
 }
 
+export interface IEvaluation
+{
+	readonly expression: string;
+	evaluate(expression: string, values?: Value): number;
+}
 
 @Injectable()
 export class UtilsService
@@ -124,6 +118,35 @@ export class UtilsService
 	private intervalId: any = null;  // For setting interval time between we check for authorization code or token
 	private loopCount = 600;   // the count until which the check will be done, or after window be closed automatically.
 	private intervalLength = 100;   // the gap in which the check will be done for code.
+
+	/**
+	 * @brief Parser class to transform formula's into equations and return the value.
+	 */
+	static Parser = class
+	{
+		/**
+		 *
+		 * @param expression
+		 */
+		public static parse(expression: string): IEvaluation
+		{
+			return {
+				expression,
+				evaluate: (rex) => Parser.parse(expression).evaluate(rex),
+			};
+		}
+
+		/**
+		 *
+		 * @param expression
+		 * @param rex
+		 * @param debug
+		 */
+		public static evaluate(expression: string, rex?: { [key:string]: number }): number
+		{
+			return Parser.evaluate(expression, rex);
+		}
+	}
 
 	static onDebug(msg: any, type: DebugType = DebugType.LOG, ...optionalParams: any[])
 	{
@@ -166,6 +189,9 @@ export class UtilsService
 	{
 		if (!environment.production)
 			console.assert(value, message, optionalParams);
+
+		// TODO fix node assert
+		// assert(value, message);
 	}
 
 	static truncate(text: string, maxLength: number)
@@ -329,7 +355,7 @@ export class UtilsService
 	 */
 	static replaceCharacter(str: string, regex: string | RegExp, char: string)
 	{
-		if(str !== '' && char !== '') // /\s+/g
+		if(str !== '') // /\s+/g
 			return str.replace(regex, char);
 
 		return str;
@@ -552,5 +578,27 @@ export class UtilsService
 
 		// Cast to a File() type
 		return <File>blobFile;
+	}
+
+	/** ENCRYPTION **/
+
+	/**
+	 * @brief - Hash string
+	 * https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+	 * @param word
+	 */
+	public static hashCode(word: string): number
+	{
+		if(word === null || typeof word === undefined)
+			return 0;
+
+		let hash = 0, i, chr;
+		if (word.length === 0) return hash;
+		for (i = 0; i < word.length; i++) {
+			chr   = word.charCodeAt(i);
+			hash  = ((hash << 5) - hash) + chr;
+			hash |= 0; // Convert to 32 bit integer
+		}
+		return hash;
 	}
 }

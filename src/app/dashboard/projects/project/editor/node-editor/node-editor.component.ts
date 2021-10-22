@@ -21,7 +21,7 @@ import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { BasicTextFieldInputComponent } from '@app-theme/components';
-import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/standard-tables';
+import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
 import { EventsTypes } from 'visualne/types/events';
 import { ProxyObject } from '@app-core/data/base';
 import { switchMap } from 'rxjs/operators';
@@ -147,6 +147,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 		const id = map.get('id');
 
+		console.log(id);
 		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 		{
 			this.currentState.project.id = id;
@@ -312,9 +313,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.dialogues.id}`;
+			this.tableId = `tables/${this.dialogues.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// change the dialogueId
 			// find the current dialogue
@@ -358,9 +359,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.tblDialogueOptions.id}`;
+			this.tableId = `tables/${this.tblDialogueOptions.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			// change the dialogueId
 			// find the dialogue
@@ -394,9 +395,9 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableName = `tables/${this.tblEvents.id}`;
+			this.tableId = `tables/${this.tblEvents.id}`;
 			// Let firebase search with current table name
-			this.firebaseService.setTblName(this.tableName);
+			this.firebaseService.setTblName(this.tableId);
 
 			const customEvent: IEvent = typeof fEvent === 'number'
 				? this.tblEvents.find(fEvent) as IEvent
@@ -459,11 +460,10 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 				promises.push(this.tableService.addIfNotExists(tables[i]));
 			}
 			else this.loadTable(t);
-
 		}
 
-		return new Promise((resolve) => {
-
+		return new Promise((resolve) =>
+		{
 			Promise.all(promises).then((values: Table[] | boolean[]) =>
 			{
 				values.forEach((value: Table | boolean) =>

@@ -32,6 +32,7 @@ import { UtilsService } from '@app-core/utils';
 import isEqual from 'lodash.isequal';
 import isEmpty from 'lodash.isempty';
 import intersection from 'lodash.intersection';
+import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 
 @Component({
 	selector: 'ngx-change-project-settings-dialog',
@@ -76,7 +77,7 @@ export class ChangeProjectSettingsComponent implements
 	public source: BaseFormSettings = {
 		title: 'Project Settings',
 		alias: 'project-settings',
-		requiredText: 'Settings',
+		requiredText: 'Fill all fields',
 		fields: {},
 	};
 
@@ -111,6 +112,36 @@ export class ChangeProjectSettingsComponent implements
 
 	public ngOnInit(): void
 	{
+		// max level field
+		this.source.fields = {
+			projectName: {
+				controlType: 'textbox',
+				value: this.project ? this.project.metadata.title : '',
+				name: 'project-name',
+				text: 'Project name',
+				placeholder: 'Project name',
+				errorText: 'Project name is required',
+				required: true,
+				asyncValidator: [ CustomProjectValidators.validateProject(this.user, this.firebaseService) ],
+			},
+			projectDescription: {
+				controlType: 'textarea',
+				value: this.project ? this.project.metadata.description : '',
+				name: 'project-description',
+				text: 'Project description',
+				placeholder: 'Project description',
+				required: false,
+			},
+			maxLevel: {
+				controlType: 'number',
+				value: this.project.gameStats.maxLevel,
+				name: 'max-level',
+				text: 'Max level',
+				placeholder: 'Set character and enemy max level',
+				required: false,
+			},
+		}
+
 		const columns = Object.entries(this.settings.columns);
 
 		// only include hidden values that we can see
@@ -139,6 +170,14 @@ export class ChangeProjectSettingsComponent implements
 				onSelectEvent: (event: any) => this.OnToggle(event),
 			};
 		}
+
+		this.formComponent.addInput(this.submitQuestion, {
+				name: this.project ? 'update-btn' : 'insert-btn',
+				text: this.project ? 'Update Button' : 'Insert Button',
+				value: this.project ? 'Update' : 'Insert',
+				controlType: 'submitbutton',
+			},
+		);
 
 		this.mainSubscription.add(this.userService.getUser().subscribe((user) => {
 				this.user = user;

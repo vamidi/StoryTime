@@ -13,7 +13,7 @@ import { defaultUser, User, UserModel, UserService } from '@app-core/data/state/
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Project } from '@app-core/data/state/projects';
 import { Table } from '@app-core/data/state/tables';
-import { IEvent, IEventInput } from '@app-core/data/standard-tables';
+import { IEvent, IEventInput } from '@app-core/data/database/interfaces';
 import { createEvent } from '@app-core/functions/helper.functions';
 import { ProxyObject } from '@app-core/data/base';
 

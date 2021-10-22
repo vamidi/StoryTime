@@ -120,6 +120,15 @@ export class FirebaseRelationService
 			Pair('dialogueId', new StringPair('dialogues', 'text', true)),
 		]);
 
+		const characters: RelationPair = new Map([
+			Pair('classId', new StringPair('classes', 'className', true)),
+		]);
+
+		const characterEquipments: RelationPair = new Map([
+			Pair('name', new StringPair('equipments', 'name', true)),
+			Pair('characterId', new StringPair('characters', 'name', true)),
+		])
+
 		const storyCharacterDialogues: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
 			Pair('childId', new StringPair('dialogues', 'text', true)),
@@ -154,6 +163,26 @@ export class FirebaseRelationService
 			Pair('category', new StringPair('enemyCategories', 'name', true)),
 		]);
 
+		const enemyActionPatterns: RelationPair = new Map([
+			Pair('skillId', new StringPair('skills', 'name', true)),
+			Pair('enemyId', new StringPair('enemies', 'name', true)),
+			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
+		]);
+
+		const equipments: RelationPair = new Map([
+			Pair('classId', new StringPair('classes', 'className', true)),
+			Pair('categoryId', new StringPair('equipmentTypes', 'category', true)),
+			Pair('typeId', new StringPair('equipmentTypes', 'type', true)),
+		]);
+
+		const parameterCurves: RelationPair = new Map([
+			Pair('paramId', new StringPair('attributes', 'paramName', true)),
+			Pair('classId', new StringPair('classes', 'className', true)),
+			Pair('enemyId', new StringPair('enemies', 'name', true)),
+			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
+			Pair('equipmentId', new StringPair('equipments', 'name', true)),
+		]);
+
 		/* Shop System */
 		const shopCharacter: RelationPair = new Map([
 			Pair('parentId', new StringPair('characters', 'name', true)),
@@ -175,9 +204,21 @@ export class FirebaseRelationService
 			Pair('childId', new StringPair('items', 'name', true)),
 		]);
 
+		const skills: RelationPair = new Map([
+			Pair('dmgParameter', new StringPair('attributes', 'paramName', true)),
+			Pair('magicCurve', new StringPair('attributes', 'paramName', true)),
+			Pair('classId', new StringPair('classes', 'className', true)),
+		]);
+
 		const itemEffectTypeItemTypes: RelationPair = new Map([
 			Pair('effectTypeId', new StringPair('effectTypes', 'name', true)),
 			Pair('typeId', new StringPair('itemTypes', 'name', true)),
+		]);
+
+		const itemDrops: RelationPair = new Map([
+			Pair('name', new StringPair('items', 'name', true)),
+			Pair('enemyId', new StringPair('enemies', 'name', true)),
+			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
 		]);
 
 		const recipes: RelationPair = new Map([
@@ -196,23 +237,34 @@ export class FirebaseRelationService
 			Pair('dialogueOptions', dialogueOptionDialogues),
 			Pair('dialogueQuests', dialogueQuests),
 			Pair('dialogueEvents', dialogueEvents),
-			Pair('stories', storyCharacterDialogues),
+
+			Pair('characters', characters),
+			Pair('characterEquipments', characterEquipments),
+
+			Pair('items', itemEffectTypeItemTypes),
+			Pair('itemDrops', itemDrops),
+
+			Pair('enemies', enemies),
+			Pair('enemyActionPatterns', enemyActionPatterns),
+			Pair('equipments', equipments),
+
+			Pair('parameterCurves', parameterCurves),
 
 			Pair('quests', questQuestTypes),
 			Pair('questEvents', questEvents),
-			Pair('tasks', taskQuestTaskCompletionTypeTasks),
-			Pair('taskEvents', taskEvents),
-
-			Pair('enemies', enemies),
-
-			Pair('shops', shopCharacter),
-			Pair('shopPrices', shopPricesShopItems),
-			Pair('shopCraftables', shopCraftablesShopItem),
-			Pair('shopCraftConditions', shopCraftConditionsShopCraftablesitems),
-			Pair('items', itemEffectTypeItemTypes),
 
 			Pair('recipes', recipes),
 			Pair('recipeCraftConditions', recipesCraftCondition),
+
+			Pair('shops', shopCharacter),
+			Pair('stories', storyCharacterDialogues),
+			Pair('shopPrices', shopPricesShopItems),
+			Pair('shopCraftables', shopCraftablesShopItem),
+			Pair('shopCraftConditions', shopCraftConditionsShopCraftablesitems),
+			Pair('skills', skills),
+
+			Pair('tasks', taskQuestTaskCompletionTypeTasks),
+			Pair('taskEvents', taskEvents),
 		]);
 
 		const questTableRelation: TableRelation = new TableRelation(

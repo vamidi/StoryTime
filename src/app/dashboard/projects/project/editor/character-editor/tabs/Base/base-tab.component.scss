@@ -1,0 +1,7 @@
+@import '../../../../../../../_theme/styles/themes';
+
+@include nb-install-component() {
+	nb-accordion {
+		box-shadow: none;
+	}
+}

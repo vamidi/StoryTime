@@ -13,88 +13,91 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 
 @Component({
 	selector: 'ngx-text-field',
-	template:
-		`
-		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup"
-			 *ngIf="question.controlType !== 'textarea' && question.controlType !== 'autocomplete'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
+	template: `
+		<!-- <div class="col-sm-6"> -->
+			<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup"
+				 *ngIf="question.controlType !== 'textarea' && question.controlType !== 'autocomplete'">
+				<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
 
-			<!-- TEXT BOX -->
+				<!-- TEXT BOX -->
 
-			<!-- [type]="question.hidden ? 'hidden' : question.controlType" -->
-			<input #inputElement
-				   id="{{ question.key }}--textbox"
-				   [formControlName]="question.key"
-				   (blur)="trySetTouched($event)"
-				   [hidden]="Hidden"
-				   [type]="question.controlType"
-				   [value]="question.value"
-				   [placeholder]="question.text"
-				   [name]="question.name"
-				   [readOnly]="question.readOnly"
-				   [attr.disabled]="question.disabled ? '' : null"
-				   [required]="question.required"
-				   [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
-				   (keyup)="onKeyUpFunc($event)"
-				   nbInput
-				   fullWidth
-			/>
+				<!-- [type]="question.hidden ? 'hidden' : question.controlType" -->
+				<input #inputElement
+					   id="{{ question.key }}--textbox"
+					   [formControlName]="question.key"
+					   (blur)="trySetTouched($event)"
+					   [hidden]="Hidden"
+					   [type]="question.controlType"
+					   [value]="question.value"
+					   [placeholder]="question.text"
+					   [name]="question.name"
+					   [readOnly]="question.readOnly"
+					   [attr.disabled]="question.disabled ? '' : null"
+					   [required]="question.required"
+					   [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
+					   (keyup)="onKeyUpFunc($event)"
+					   nbInput
+					   fullWidth
+					   autofocus
+				/>
 
-			<!-- TODO maybe add dynamic content if needed -->
-			<div [class.hidden]="!showButtons || Hidden">
-				<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
-				<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
+				<!-- TODO maybe add dynamic content if needed -->
+				<div [class.hidden]="!showButtons || Hidden">
+					<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
+					<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
+				</div>
 			</div>
-		</div>
 
-		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'textarea'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
+			<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'textarea'">
+				<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
 
-			<!-- TEXT BOX -->
-			<textarea #inputElement id="{{ question.key }}--area"
-					  [formControlName]="question.key"
-					  (blur)="trySetTouched($event)"
-					  [class.hidden]="question.hidden"
-					  [value]="question.value"
-					  [placeholder]="question.text"
-					  [name]="question.name"
-					  [readOnly]="question.readOnly"
-					  [attr.disabled]="question.disabled ? '' : null"
-					  [required]="question.required"
-					  [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
-					  (keyup)="onKeyUpFunc($event)"
-					  nbInput
-					  fullWidth>
-			</textarea>
+				<!-- TEXT BOX -->
+				<textarea #inputElement id="{{ question.key }}--area"
+						  [formControlName]="question.key"
+						  (blur)="trySetTouched($event)"
+						  [class.hidden]="question.hidden"
+						  [value]="question.value"
+						  [placeholder]="question.text"
+						  [name]="question.name"
+						  [readOnly]="question.readOnly"
+						  [attr.disabled]="question.disabled ? '' : null"
+						  [required]="question.required"
+						  [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
+						  (keyup)="onKeyUpFunc($event)"
+						  nbInput
+						  fullWidth
+						  autofocus>
+				</textarea>
 
-			<!-- TODO maybe add dynamic content if needed -->
-			<div [class.hidden]="!showButtons || Hidden">
-				<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
-				<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
+				<!-- TODO maybe add dynamic content if needed -->
+				<div [class.hidden]="!showButtons || Hidden">
+					<button nbButton status="primary" class="mt-2 mr-2" (click)="onCancelClick.emit()">Cancel</button>
+					<button nbButton status="success" class="mt-2" (click)="onPrimaryClick.emit()">{{ successText }}</button>
+				</div>
 			</div>
-		</div>
 
-		<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'autocomplete'">
-			<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
-			<input *ngIf="question.controlType === 'autocomplete'"
-				   [formControl]="control"
-				   nbInput
-				   fullWidth
-				   type="text"
-				   placeholder="Enter value"
-				   [nbAutocomplete]="auto"/>
+			<div class="form-group {{ question.groupCss }}" [formGroup]="myFormGroup" *ngIf="question.controlType === 'autocomplete'">
+				<ngx-label-field [myFormGroup]="myFormGroup" [question]="question" [showLabels]="showLabels && !Hidden"></ngx-label-field>
+				<input *ngIf="question.controlType === 'autocomplete'"
+					   [formControl]="control"
+					   nbInput
+					   fullWidth
+					   type="text"
+					   placeholder="Enter value"
+					   [nbAutocomplete]="auto"/>
 
-			<nb-autocomplete #auto [handleDisplayFn]="viewHandler" (selectedChange)="onSelected($event)">
+				<nb-autocomplete #auto [handleDisplayFn]="viewHandler" (selectedChange)="onSelected($event)">
 
-				<nb-option *ngFor="let option of question.filteredOptions$ | async" [value]="option.value">
-					{{ option.key }}
-				</nb-option>
+					<nb-option *ngFor="let option of question.filteredOptions$ | async" [value]="option.value">
+						{{ option.key }}
+					</nb-option>
 
-			</nb-autocomplete>
+				</nb-autocomplete>
 
-			<ng-content></ng-content>
+				<ng-content></ng-content>
 
-		</div>
+			</div>
+		<!-- </div> -->
 	`,
 	styleUrls: [
 		'./../form.component.scss',
@@ -138,7 +141,7 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	{
 		if (!this.Hidden)
 		{
-			this.onTouched(event.target.value);
+			this.onTouched(this.validate(event));
 		}
 	}
 
@@ -151,16 +154,12 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	{
 		this.writeValue(value);
 	}
-	public get getValue()
-	{
-		return this.value;
-	}
 
 	public writeValue(value: T): void
 	{
 		this.question.value = this.value = value;
 
-		if(this.parent.formContainer.get(this.question.key))
+		if(this.parent && this.parent.formContainer.get(this.question.key))
 		{
 			const control = this.parent.formContainer.get(this.question.key);
 			control.setValue(this.value);
@@ -181,12 +180,6 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 		// this.onTouched = fn;
 	}
 
-	public setDisabledState(isDisabled: boolean): void
-	{
-		this.disabled = isDisabled;
-		this.cd.markForCheck();
-	}
-
 	public question: TextboxQuestion<T> = new TextboxQuestion<T>({ type: 'text', hidden: false });
 
 	// Events
@@ -197,7 +190,7 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	public onSelect: EventEmitter<any> = new EventEmitter<any>();
 
 	constructor(@Inject(NB_DOCUMENT) protected document,
-				protected hostRef: ElementRef<HTMLElement>,
+	            protected hostRef: ElementRef<HTMLElement>,
 				protected cd: ChangeDetectorRef,
 				protected focusMonitor: FocusMonitor,
 				protected renderer: Renderer2,
@@ -209,6 +202,9 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	public ngOnInit()
 	{
 		super.ngOnInit();
+
+		// nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic"
+
 		this.onTouched = (value: T ) =>
 		{
 			this.writeValue(value);
@@ -223,10 +219,10 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 		{
 			if (this.checkForm() && this.myFormGroup && this.value !== null)
 			{
-				const control = this.parent.formContainer.get(this.question.key);
-				control.setValue(this.value);
-				control.markAsDirty({ onlySelf: true });
-				control.markAsTouched({ onlySelf: true });
+				// const control = this.parent.formContainer.get(this.question.key);
+				// control.setValue(this.value);
+				// control.markAsDirty({ onlySelf: true });
+				// control.markAsTouched({ onlySelf: true });
 			}
 		}, 1000);
 	}
@@ -234,15 +230,17 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	// Events
 	public onKeyUpFunc(event: any)
 	{
+		const newValue: T = this.validate(event) as T;
 		if(this.checkForm() && this.myFormGroup)
 		{
-			this.writeValue(event.target.value);
+			this.writeValue(newValue);
+
 			// this.question.value = event.target.value;
 			// this.myFormGroup.controls[this.question.key].setValue(this.question.value);
 			// this.myFormGroup.controls[this.question.key].markAsDirty();
 		}
 
-		this.question.onKeyUpFunc(event.target.value);
+		this.question.onKeyUpFunc(newValue);
 
 		if(this.onKeyUp)
 			this.onKeyUp.emit(event);
@@ -259,5 +257,14 @@ export class TextFieldComponent<T = string | number> extends BaseFormInputCompon
 	public viewHandle(value: string)
 	{
 		return value;
+	}
+
+	protected validate(event): any
+	{
+		const isNumber = this.question.controlType === 'number';
+		if(event.target.value === '')
+			return event.target.value;
+
+		return isNumber ? event.target.valueAsNumber : event.target.value;
 	}
 }

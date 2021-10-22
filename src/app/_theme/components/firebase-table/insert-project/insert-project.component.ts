@@ -24,7 +24,7 @@ import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { ITable, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
-import { standardTables, standardTablesDescription } from '@app-core/data/standard-tables';
+import { standardTables, standardTablesDescription } from '@app-core/data/database/standard-tables';
 import { BehaviorSubject } from 'rxjs';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { environment } from '../../../../../environments/environment';
