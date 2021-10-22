@@ -3,7 +3,7 @@ import { TableTemplate } from '@app-core/data/state/tables';
 import { Pair } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import {
-	DmgType,
+	DmgType, IAttribute,
 	ICharacter, ICharacterClass, ICharacterEquipment, IClassParameterCurve,
 	ICraftable, ICraftCondition,
 	IDialogue,
@@ -375,19 +375,56 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 
+	Pair<string, { [key: number]: IAttribute }>('attributes', {
+		0: {
+			alias: 'MP',
+			paramName: {
+				en: 'Magic Points',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		1: {
+			alias: 'ATK',
+			paramName: {
+				en: 'Attack',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		2: {
+			alias: 'HP',
+			paramName: {
+				en: 'Health Points',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+		3: {
+			alias: 'DEF',
+			paramName: {
+				en: 'Defense',
+			},
+			deleted: false,
+			created_at: UtilsService.timestamp,
+			updated_at: UtilsService.timestamp,
+		},
+	}),
+
 	/**
 	 * @brief - Parameter curves
 	 * This can either belong to a class or an enemy.
  	 */
 	Pair<string, { [key: number]: NbParameterCurves }>('parameterCurves', {
 		0: {
-			alias: 'MP',
 			base: 65,
+			paramId: 0,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: {
-				en: 'Magic Points',
-			},
+
 			paramFormula: 'base + (level * level * 6 / 105) + level * 12 * (rate - flat)',
 			rate: 0.12,
 
@@ -398,13 +435,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 		1: {
-			alias: 'ATK',
+			paramId: 1,
 			base: 160,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: {
-				en: 'Attack',
-			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1149999,
 
@@ -415,13 +449,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 		2: {
-			alias: 'HP',
+			paramId: 2,
 			base: 540,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: {
-				en: 'Health Points',
-			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1109999,
 
@@ -432,13 +463,10 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 		3: {
-			alias: 'DEF',
+			paramId: 3,
 			base: 140,
 			classId: Number.MAX_SAFE_INTEGER,
 			flat: 0,
-			paramName: {
-				en: 'Defense',
-			},
 			paramFormula: 'level * base + level * level * level * rate',
 			rate: 0.1129999,
 

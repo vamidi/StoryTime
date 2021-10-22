@@ -10,7 +10,7 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { ICharacterClass, IClassParameterCurve, ISkill } from '@app-core/data/database/interfaces';
+import { IAttribute, ICharacterClass, IClassParameterCurve, ISkill } from '@app-core/data/database/interfaces';
 
 import { DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';

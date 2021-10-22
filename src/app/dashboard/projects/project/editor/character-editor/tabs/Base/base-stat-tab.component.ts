@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
+import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
+import { Parser } from 'expr-eval';
 import { BaseTabComponent } from './base-tab.component';
 import { ProxyObject } from '@app-core/data/base';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { Table, TablesService } from '@app-core/data/state/tables';
-import { NbParameterCurves } from '@app-core/data/database/interfaces';
+import { IAttribute, NbParameterCurves } from '@app-core/data/database/interfaces';
 import { EChartsOption } from 'echarts';
-import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 import { BehaviorSubject } from 'rxjs';
 import { BehaviourType } from '@app-core/types';
@@ -16,7 +18,6 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { UserService } from '@app-core/data/state/users';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
-import { NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 
@@ -53,11 +54,12 @@ export abstract class BaseStatTabComponent<T extends ProxyObject> extends BaseTa
 @Component({ template: '' })
 export abstract class BaseParameterTabComponent<T extends ProxyObject> extends BaseStatTabComponent<T> implements OnInit
 {
-	public get StatCurves(): Table<NbParameterCurves> { return this.parameterCurves; }
+	public get Attributes(): Table<IAttribute> { return this.attributes; }
 
 	public cardOptions: Map<number | string, NbMenuItem[]> = new Map<number | string, NbMenuItem[]>();
 
 	protected parameterCurvesSettings: ISettings = new BaseSettings();
+	protected attributes: Table<IAttribute> = null;
 	protected parameterCurves: Table<NbParameterCurves> = null;
 
 	// Health Points or HP - represents the amount of damage a character can take before dying or being knocked out.
@@ -114,7 +116,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 		],
 	};
 
-	protected includedTables: string[] = ['parametercurves'];
+	protected includedTables: string[] = ['attributes', 'parametercurves'];
 
 	protected constructor(
 		protected route: ActivatedRoute,
@@ -187,6 +189,10 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 		});
 	}
 
+	public getAttribute(id: number) {
+		return this.attributes.find(id);
+	}
+
 	public getCardOption(id: number): NbMenuItem[]
 	{
 		if(!this.cardOptions.has(id))
@@ -241,6 +247,17 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 	protected loadTable(value: Table)
 	{
 		if (value === null) return;
+
+		if (value.metadata.title.toLowerCase() === 'attributes')
+		{
+			// store the dialogues.
+			this.attributes = <Table<IAttribute>>value;
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.attributes, ['child_added']),
+			);
+		}
 
 		if (value.metadata.title.toLowerCase() === 'parametercurves')
 		{
@@ -355,7 +372,7 @@ export abstract class BaseParameterTabComponent<T extends ProxyObject> extends B
 								}
 							});
 						}
-						// console.log(stat.formula);
+
 						const calc = UtilsService.Parser.evaluate(stat.paramFormula,
 							{ level, base: stat.base, rate: stat.rate, flat: calculateGrowth },
 						);

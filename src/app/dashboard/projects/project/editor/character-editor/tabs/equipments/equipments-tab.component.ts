@@ -207,9 +207,10 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 				this.parameterCurves.forEach((curve) => {
 					if (curve.equipmentId === this.selectedObject.id)
 					{
+						console.log(curve.paramId);
 						this.formArrayComponent.formArray.push(new FormGroup({
 							'stat-id': new FormControl(curve.id),
-							'stat-modifier': new FormControl(curve.id),
+							'stat-modifier': new FormControl(curve.paramId),
 							'stat-input': new FormControl(curve.flat),
 							'stat-type': new FormControl(curve.statType),
 						}));
@@ -259,18 +260,13 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 			for(let i = 0; i < skills.length; i++)
 			{
 				const value = skills.controls[i].value;
-
-				const selectedCurve: NbParameterCurves = this.parameterCurves.find(value['stat-modifier']);
-
-				if(selectedCurve)
 				{
 					const oldCurve: NbParameterCurves = this.parameterCurves.find(value['stat-id']);
 					const curve: NbParameterCurves = {
 						id: value['stat-id'],
 						equipmentId: this.selectedObject.id,
-						alias: selectedCurve.alias,
+						paramId: value['stat-modifier'],
 						base: value['stat-input'],
-						paramName: selectedCurve.paramName,
 						paramFormula: oldCurve ? oldCurve.paramFormula : '',
 						rate: oldCurve ? oldCurve.rate : 0,
 						flat: value['stat-input'],
@@ -307,7 +303,6 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 							},
 						}, false, this.parameterCurves.id);
 					}
-
 				}
 			}
 			this.onEditConfirm(event,true);

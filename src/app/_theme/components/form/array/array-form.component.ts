@@ -7,7 +7,7 @@ import {
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { BaseFormInputComponent } from '@app-theme/components/form/form.component';
 import { FormQuestionBase, Option } from '@app-core/data/forms/form-types';
-import { NbParameterCurves, StatType } from '@app-core/data/database/interfaces';
+import { IAttribute, NbParameterCurves, StatType } from '@app-core/data/database/interfaces';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService } from '@app-core/data/state/projects';
 
@@ -24,14 +24,14 @@ export class ArrayFormComponent<T= string | number | boolean> extends BaseFormIn
 	];
 
 	@Input()
-	public parameterCurves: Table<NbParameterCurves> = null;
+	public attributes: Table<IAttribute> = null;
 
 	public get stats(): Option<number>[] {
 		const stats: Option<number>[] = [];
-		if (this.parameterCurves)
-			this.parameterCurves.forEach((curve) => {
+		if (this.attributes)
+			this.attributes.forEach((attribute) => {
 				stats.push(new Option(
-					{ key: LanguageService.GetLanguageFromProperty(curve.paramName, 'en'), value: curve.id, selected: false },
+					{ key: LanguageService.GetLanguageFromProperty(attribute.paramName, 'en'), value: attribute.id, selected: false },
 					),
 				);
 			});
@@ -81,7 +81,7 @@ export class ArrayFormComponent<T= string | number | boolean> extends BaseFormIn
 	add() {
 		this.formArray.push(new FormGroup({
 			'stat-id': new FormControl(Number.MAX_SAFE_INTEGER),
-			'stat-modifier': new FormControl('Alias'),
+			'stat-modifier': new FormControl(Number.MAX_SAFE_INTEGER),
 			'stat-input': new FormControl(10),
 			'stat-type': new FormControl(100),
 		}));

@@ -16,6 +16,7 @@ import { Observable } from 'rxjs/Observable';
 import { NbAuthResult } from '@nebular/auth';
 
 import cloneDeep from 'lodash.clonedeep';
+import { Parser, Value } from 'expr-eval';
 
 export interface ObjectKeyValue<T>
 {
@@ -90,7 +91,7 @@ export class QueryablePromise<T> extends Promise<T>
 export interface IEvaluation
 {
 	readonly expression: string;
-	evaluate(rex?: { [key:string]: number }): number;
+	evaluate(expression: string, values?: Value): number;
 }
 
 @Injectable()
@@ -131,7 +132,7 @@ export class UtilsService
 		{
 			return {
 				expression,
-				evaluate: (rex) => UtilsService.Parser.evaluate(expression, rex),
+				evaluate: (rex) => Parser.parse(expression).evaluate(rex),
 			};
 		}
 
@@ -141,124 +142,9 @@ export class UtilsService
 		 * @param rex
 		 * @param debug
 		 */
-		public static evaluate(expression: string, rex?: { [key:string]: number }, debug: boolean = false): number
+		public static evaluate(expression: string, rex?: { [key:string]: number }): number
 		{
-			// trim all whitespaces include trailing ones
-			expression = UtilsService.replaceCharacter(expression.trim(), / /g, '');
-			if(rex)
-			{
-				const keys: string[] = Object.keys(rex);
-				keys.forEach((k) => expression = UtilsService.replaceCharacter(expression, new RegExp(k, 'gi'), rex[k].toString()));
-			}
-			return UtilsService.Parser.parsePlusSeparatedExpression(expression, debug);
-		}
-
-		private static split(expression: string, operator: '-' | '+' | '*' | '/')
-		{
-			const result = [];
-			let braces = 0;
-			let currentChunk = '';
-			for (let i = 0; i < expression.length; ++i)
-			{
-				const curCh = expression[i];
-				if (curCh === '(')
-				{
-					braces++;
-				} else if (curCh === ')') {
-					braces--;
-				}
-				if (braces === 0 && operator === curCh)
-				{
-					result.push(currentChunk);
-					currentChunk = '';
-				} else currentChunk += curCh;
-			}
-			if (currentChunk !== '')
-			{
-				result.push(currentChunk);
-			}
-			return result;
-		};
-
-		private static parseMinusSeparatedExpression(expression, debug: boolean)
-		{
-			const numbersString = UtilsService.Parser.split(expression, '-');
-			const numbers = numbersString.map(noStr =>
-			{
-				if(debug)
-					console.log(noStr);
-
-				if(noStr.includes('/'))
-					return UtilsService.Parser.parseDivisionSeparatedExpression(noStr, debug);
-
-				return UtilsService.Parser.parseMultiplicationSeparatedExpression(noStr, debug);
-			});
-			const initialValue = numbers[0];
-			return numbers.slice(1).reduce((acc, no) => acc - no, initialValue);
-		};
-
-		// * +
-		private static parsePlusSeparatedExpression(expression, debug: boolean)
-		{
-			const numbersString = UtilsService.Parser.split(expression, '+');
-			const numbers = numbersString.map(noStr =>
-			{
-				// debugger
-				if(debug)
-					console.log(noStr);
-
-				return UtilsService.Parser.parseMinusSeparatedExpression(noStr, debug)
-			});
-			const initialValue = 0.0;
-			return numbers.reduce((acc, no) => acc + no, initialValue);
-		};
-
-		// this will only take strings containing * operator [ no + ]
-		private static parseMultiplicationSeparatedExpression(expression: string, debug: boolean)
-		{
-			const numbersString = UtilsService.Parser.split(expression, '*');
-			const numbers = numbersString.map(noStr =>
-			{
-				if (noStr[0] === '(')
-				{
-					const expr = noStr.substr(1, noStr.length - 2);
-
-					// recursive call to the main function
-					return UtilsService.Parser.parsePlusSeparatedExpression(expr, debug);
-				}
-				return +noStr;
-			});
-
-			const initialValue = 1.0;
-			return numbers.reduce((acc, no) =>  acc * no, initialValue);
-		};
-
-		private static parseDivisionSeparatedExpression(expression: string, debug: boolean)
-		{
-			const numbersString = UtilsService.Parser.split(expression, '/');
-			const numbers: number[] = numbersString.map(noStr =>
-			{
-				if (noStr[0] === '(')
-				{
-					const expr = noStr.substr(1, noStr.length - 2);
-
-					// recursive call to the main function
-					return UtilsService.Parser.parsePlusSeparatedExpression(expr, debug);
-				}
-
-				if(noStr.includes('*'))
-					return UtilsService.Parser.parsePlusSeparatedExpression(noStr, debug);
-
-				return +noStr;
-			});
-
-			const initialValue = numbers[0];
-			const accumulated =  numbers
-				.slice(1).reduce((acc, no) => { if(debug) console.log(acc, no); return acc / no }, initialValue);
-			if(debug)
-				console.log(numbers, accumulated);
-
-			return accumulated;
+			return Parser.evaluate(expression, rex);
 		}
 	}
 

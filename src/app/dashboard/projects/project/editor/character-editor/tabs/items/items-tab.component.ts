@@ -22,7 +22,7 @@ import {
 } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import {
-	DmgType,
+	DmgType, IAttribute,
 	IClassParameterCurve,
 	IEnemyParameterCurve,
 	IItem,
@@ -109,7 +109,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		fields: {},
 	};
 
-	protected parameterCurves: Table<IClassParameterCurve | IEnemyParameterCurve> = null;
+	protected attributes: Table<IAttribute> = null;
 	protected itemTypes: Table<IItemType> = null;
 
 	constructor(
@@ -142,7 +142,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		{
 			if(project)
 			{
-				this.tableService.loadTablesFromProject(project, ['itemtypes', 'parametercurves'], (table) => this.loadTable(table))
+				this.tableService.loadTablesFromProject(project, ['itemtypes', 'attributes'], (table) => this.loadTable(table))
 					.then();
 
 				// Important or data will not be caught.
@@ -168,15 +168,15 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	{
 		if(value === null) return;
 
-		if(value.metadata.title.toLowerCase() === 'parametercurves')
+		if(value.metadata.title.toLowerCase() === 'attributes')
 		{
-			this.parameterCurves = <Table<IClassParameterCurve | IEnemyParameterCurve>>value;
+			this.attributes = <Table<IAttribute>>value;
 
 			const options: Option<number>[] = [];
-			this.parameterCurves.forEach((curve) => {
+			this.attributes.forEach((attribute) => {
 				options.push(new Option({
-					key: this.languageService.getLanguageFromProperty(curve.paramName, this.selectedLanguage),
-					value: curve.id,
+					key: this.languageService.getLanguageFromProperty(attribute.paramName, this.selectedLanguage),
+					value: attribute.id,
 					selected: false,
 				}));
 			});
@@ -184,7 +184,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 
 			// Listen to incoming data
 			this.mainSubscription.add(
-				this.tableService.listenToTableData(this.parameterCurves, ['child_added']),
+				this.tableService.listenToTableData(this.attributes, ['child_added']),
 			);
 		}
 

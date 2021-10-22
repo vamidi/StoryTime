@@ -141,11 +141,15 @@ export interface ICharacterClass extends ProxyObject {
 	expCurve: string,               // - Exp curve - How fast this class can evolve.
 }
 
+export interface IAttribute extends ProxyObject {
+	paramName: KeyLanguageObject, // The name of the parameter,
+	alias: string,                // Key value we use for the object in the JSON.
+}
+
 export interface IParameterCurve extends ProxyObject
 {
-	alias: string,                // Key value we use for the object in the JSON.
+	paramId: number,              /** @type IAttribute */
 	base: number,                 // base value we are going to use in our formula.
-	paramName: KeyLanguageObject, // The name of the parameter,
 	paramFormula: string,         // formula that is going to be parsed.
 	rate: number,                 // The rate that we are going to use in our formula, this determines the speed of growth.
 	flat: number,                 // Flat number that we going to add to the value of the formula,

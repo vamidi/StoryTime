@@ -547,8 +547,9 @@ export class LanguageService
 {
 	public static GetLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
 	{
-		if(prop === null)
-			console.trace(prop);
+		if(prop === null) {
+			return '';
+		}
 
 		if(prop && prop.hasOwnProperty(lang))
 			return prop[lang];

@@ -176,6 +176,7 @@ export class FirebaseRelationService
 		]);
 
 		const parameterCurves: RelationPair = new Map([
+			Pair('paramId', new StringPair('attributes', 'paramName', true)),
 			Pair('classId', new StringPair('classes', 'className', true)),
 			Pair('enemyId', new StringPair('enemies', 'name', true)),
 			Pair('enemyCategoryId', new StringPair('enemyCategories', 'name', true)),
@@ -204,6 +205,8 @@ export class FirebaseRelationService
 		]);
 
 		const skills: RelationPair = new Map([
+			Pair('dmgParameter', new StringPair('attributes', 'paramName', true)),
+			Pair('magicCurve', new StringPair('attributes', 'paramName', true)),
 			Pair('classId', new StringPair('classes', 'className', true)),
 		]);
 

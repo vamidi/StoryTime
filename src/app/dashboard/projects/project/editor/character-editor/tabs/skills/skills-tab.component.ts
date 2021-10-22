@@ -16,7 +16,13 @@ import { UserPreferencesService } from '@app-core/utils/user-preferences.service
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { DropDownFieldComponent, DynamicFormComponent, TextFieldComponent } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { DmgType, IClassParameterCurve, IEnemyParameterCurve, ISkill } from '@app-core/data/database/interfaces';
+import {
+	DmgType,
+	IAttribute,
+	IClassParameterCurve,
+	IEnemyParameterCurve,
+	ISkill,
+} from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 import { Option } from '@app-core/data/forms/form-types';
 import { BehaviorSubject } from 'rxjs';
@@ -100,7 +106,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		fields: {},
 	};
 
-	protected parameterCurves: Table<IClassParameterCurve | IEnemyParameterCurve> = null;
+	protected attributes: Table<IAttribute> = null;
 
 	constructor(
 		protected router: Router,
@@ -132,7 +138,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		{
 			if(project)
 			{
-				this.tableService.loadTablesFromProject(project, ['parametercurves'], (table) => this.loadTable(table))
+				this.tableService.loadTablesFromProject(project, ['attributes'], (table) => this.loadTable(table))
 					.then()
 					.finally(() => {
 
@@ -161,15 +167,15 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 	{
 		if(value === null) return;
 
-		if(value.metadata.title.toLowerCase() === 'parametercurves')
+		if(value.metadata.title.toLowerCase() === 'attributes')
 		{
-			this.parameterCurves = <Table<IClassParameterCurve | IEnemyParameterCurve>>value;
+			this.attributes = <Table<IAttribute>>value;
 
 			const options: Option<number>[] = [];
-			this.parameterCurves.forEach((curve) => {
+			this.attributes.forEach((attribute) => {
 				options.push(new Option({
-					key: this.languageService.getLanguageFromProperty(curve.paramName, this.selectedLanguage),
-					value: curve.id,
+					key: this.languageService.getLanguageFromProperty(attribute.paramName, this.selectedLanguage),
+					value: attribute.id,
 					selected: false,
 				}));
 			});
@@ -178,7 +184,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 
 			// Listen to incoming data
 			this.mainSubscription.add(
-				this.tableService.listenToTableData(this.parameterCurves, ['child_added']),
+				this.tableService.listenToTableData(this.attributes, ['child_added']),
 			);
 		}
 	}
