@@ -8,7 +8,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { BehaviourType } from '@app-core/types';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { InsertTableComponent } from '@app-theme/components/firebase-table';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 
@@ -17,7 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { TablesService } from '@app-core/data/state/tables';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { LinkRenderComponent } from '@app-theme/components';
 
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -109,6 +109,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 			const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 			const id = map.get('id');
 
+			console.log(id);
 			this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 			{
 				that.currentState.project.id = id;
@@ -232,7 +233,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 
 	protected configureSettings()
 	{
-		const newSettings: BaseSettings = { ...this.settings };
+		const newSettings: ISettings = { ...this.settings };
 
 		newSettings.actions = {
 			add: false,

@@ -62,6 +62,7 @@
 					<ng2-smart-table *ngIf="!isDeleted"
 									 #smartTableComponent
 									 [settings]="settings" [source]="getSource"
+					                 (userRowSelect)="onRowSelect($event)"
 									 (createConfirm)="onCreateConfirm($event)"
 									 (editConfirm)="onEditConfirm($event)"
 									 (deleteConfirm)="onDeleteConfirm($event)"

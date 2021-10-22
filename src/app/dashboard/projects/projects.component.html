@@ -73,7 +73,10 @@
 				</div>
 				<div class="d-flex flex-row flex-grow-1">
 					<div  class="align-self-end member" *ngFor="let member of project.members | keyvalue; let index = i;">
-						<ngx-avatar [name]="member.key" [round]="true" [size]="33"></ngx-avatar>
+						<ngx-avatar
+							*ngIf="findMember(member.key)" [src]="findAvatar(member.key)" [round]="true" [size]="33"
+							[nbTooltip]="findMember(member.key).displayName" nbTooltipPlacement="top" nbTooltipStatus="basic"
+						></ngx-avatar>
 					</div>
 				</div>
 			</nb-card-body>

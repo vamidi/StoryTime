@@ -45,7 +45,7 @@
 	},
 	"nsis": {
 		"oneClick": false,
-		"perMachine": true,
+		"perMachine": true
 	},
 	"portable": {
 

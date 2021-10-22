@@ -3,7 +3,7 @@ import { NbDialogRef, NbDialogService, NbStepComponent, NbToastrService } from '
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { Option } from '@app-core/data/forms/form-types';
-import { ICharacter, ICraftable, IItem } from '@app-core/data/standard-tables';
+import { ICharacter, ICraftable, IItem } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { DropDownFieldComponent, DynamicFormComponent } from '@app-theme/components/form';
@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
 import { createCharacter, createCraftable, createItem } from '@app-core/functions/helper.functions';
 import { DataSourceColumnHandler } from '@app-core/data/data-source-column-handler';
-import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { UserService } from '@app-core/data/state/users';
@@ -78,8 +78,8 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			fields: {},
 	});
 
-	public craftSettings: BaseSettings = new BaseSettings();
-	public itemSettings: BaseSettings = new BaseSettings();
+	public craftSettings: ISettings = new BaseSettings();
+	public itemSettings: ISettings = new BaseSettings();
 
 	// endregion
 
@@ -175,8 +175,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 				this.craftable[key] = formValue[key];
 			});
 
-			const tblName = `tables/${this.craftables.id}`;
-			return this.firebaseService.insertData(tblName + '/data', this.craftable, tblName)
+			return this.tableService.insertData(this.craftables.id, this.craftable)
 			.then((data) => {
 					UtilsService.showToast(
 						this.toastrService,
@@ -242,9 +241,9 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			// delete the id column
 			UtilsService.deleteProperty(obj, 'id');
 
-			this.tableName = `tables/${this.items.id}`;
+			this.tableId = `tables/${this.items.id}`;
 			// TODO resolve if data is wrong or if we also need to do something with the lastID
-			this.firebaseService.insertData(`${this.tableName}/data`, obj, this.tableName)
+			this.tableService.insertData(this.tableId, obj)
 				.then(() => {
 						UtilsService.showToast(
 							this.toastrService,

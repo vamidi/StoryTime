@@ -1,0 +1,157 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="mt-0 mb-4">Item Editor</h1>
+	</div>
+
+	<div class="col-lg-2">
+		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+			<nb-card-body>
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Item</button>
+				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
+					<nb-option [value]="defaultValue">None</nb-option>
+					<nb-option *ngFor="let item of getTable; let i = index;" [value]="item.id">
+						000{{ i + 1 }} {{ getLanguageProperty(item.name) }}
+					</nb-option>
+				</nb-select>
+			</nb-card-body>
+		</nb-card>
+
+		<button class="my-2 mr-2" nbButton [status]="selectedObject ? 'danger' : 'basic'" [disabled]="selectedObject === null" (click)="deleteSelected()">Delete</button>
+		<button nbButton class="my-2"
+		        [status]="formComponent.isValid && formComponent.dirty ? 'success' : 'basic'"
+		        (click)="onSendForm()"
+		        type='submit'
+		        [disabled]="formComponent.Form && formComponent.dirty && !formComponent.Form.valid">Save</button>
+	</div>
+
+	<div class="col-lg-10">
+		<nb-accordion multi>
+			<nb-accordion-item class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" [collapsed]="false">
+				<nb-accordion-item-header>
+					General settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-12">
+								<ngx-text-field #itemNameField></ngx-text-field>
+							</div>
+							<div class="col-sm-12">
+								<ngx-text-field #itemDescriptionField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<!-- TODO this must be defined -->
+							<div class="col-sm-3">
+								<ngx-dropdown-field #itemTypeField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-3">
+								<ngx-text-field #itemCostField></ngx-text-field>
+							</div>
+							<div class="col-sm-3">
+								<ngx-checkbox-field #itemSellableField></ngx-checkbox-field>
+							</div>
+							<div class="col-sm-3">
+								<ngx-checkbox-field #itemConsumableField></ngx-checkbox-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-dropdown-field #scopeField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-6">
+								<ngx-dropdown-field #occasionField></ngx-dropdown-field>
+							</div>
+						</div>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the stats that the class will have in the game" nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Invocation
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-text-field #speedField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #successRateField></ngx-text-field>
+							</div>
+							<!-- TODO this must be defined -->
+							<div class="col-sm-4">
+								<ngx-text-field #repeatField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #hitTypeField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #animationField></ngx-dropdown-field>
+							</div>
+						</div>
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+
+			<nb-accordion-item class="w-100 rounded-lg mt-4" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+				<nb-accordion-item-header nbTooltip="This section defines the skills that the class will have at a certain level." nbTooltipPlacement="top" nbTooltipStatus="basic">
+					Damage Settings
+				</nb-accordion-item-header>
+				<nb-accordion-item-body>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-dropdown-field #dmgParameterField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-6">
+								<ngx-dropdown-field #dmgTypeField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-12">
+								<ngx-text-field #formulaField
+								                nbTooltip='Atk - user attack - this will include equipments and buffs'
+								                nbTooltipPlacement='top'
+								                nbTooltipStatus='basic'>
+								</ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-6">
+								<ngx-text-field #varianceField></ngx-text-field>
+							</div>
+							<div class="col-sm-6">
+								<ngx-dropdown-field #critField></ngx-dropdown-field>
+							</div>
+						</div>
+						<!--
+						<div class="row my-2">
+							<div class="col-sm-12">
+								<ngx-text-field #successRateField></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #repeatField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #magicCostGain></ngx-text-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-text-field #skillTypeField></ngx-text-field>
+							</div>
+						</div>
+						<div class="row my-2">
+							<div class="col-sm-4">
+								<ngx-dropdown-field #hitTypeField></ngx-dropdown-field>
+							</div>
+							<div class="col-sm-4">
+								<ngx-dropdown-field #animationField></ngx-dropdown-field>
+							</div>
+						</div> -->
+					</ngx-dynamic-form>
+				</nb-accordion-item-body>
+			</nb-accordion-item>
+		</nb-accordion>
+	</div>
+</div>

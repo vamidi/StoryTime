@@ -21,6 +21,8 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
+import { of } from 'rxjs/observable/of';
+import { map } from 'rxjs/operators';
 
 export declare type RelationDictionary<T> = Map<string, T>; // tblName, relation pair
 
@@ -155,7 +157,9 @@ export class FirebaseService implements OnDestroy
 	 * @param tblName - Pass in the table name
 	 * @param events - Events where should listen to.
 	 */
-	public getTableData$<T = any>(tblName: string = '', events: ChildEvent[] = ['child_added', 'child_changed', 'child_removed']): Observable<SnapshotAction<T>[]>
+	public getTableData$<T = any>(
+		tblName: string = '', events: ChildEvent[] = ['child_added', 'child_changed', 'child_removed'],
+	): Observable<SnapshotAction<T>[]>
 	{
 		let tbl = this.tblName;
 
@@ -178,7 +182,7 @@ export class FirebaseService implements OnDestroy
 	public setTblName(newTblName: string)
 	{
 		if(newTblName === '')
-			UtilsService.onError('There is no list defined!');
+			UtilsService.onError('There is no table defined!');
 
 		this.tblName = newTblName;
 	}
@@ -656,6 +660,7 @@ export class FirebaseService implements OnDestroy
 							this.toastrService,
 							'Revision updated!',
 							``,
+							'success',
 						);
 					});
 				});
@@ -671,6 +676,7 @@ export class FirebaseService implements OnDestroy
 						this.toastrService,
 						'Revision inserted!',
 						``,
+						'success',
 					);
 				});
 			}

@@ -94,6 +94,8 @@ $nb-themes: nb-register-theme((
 
 	context-menu-min-width: 15rem,
 	context-menu-max-width: 22rem,
+
+	/*-------------------------- NbTabs -------------------------------------------------*/
 ), default, default);
 
 $nb-themes: nb-register-theme((
@@ -188,6 +190,8 @@ $nb-themes: nb-register-theme((
 	context-menu-min-width: 15rem,
 	context-menu-max-width: 22rem,
 
+	/*-------------------------- NbTabs -------------------------------------------------*/
+
 ), cosmic, cosmic);
 
 $nb-themes: nb-register-theme((
@@ -281,6 +285,9 @@ $nb-themes: nb-register-theme((
 
 	context-menu-min-width: 15rem,
 	context-menu-max-width: 22rem,
+
+	/*-------------------------- NbTabs -------------------------------------------------*/
+
 ), corporate, corporate);
 
 $nb-themes: nb-register-theme((
@@ -434,4 +441,13 @@ $nb-themes: nb-register-theme((
 
 	context-menu-min-width: 15rem,
 	context-menu-max-width: 22rem,
+
+	/*-------------------------- NbTabs -------------------------------------------------*/
+	tabset-tab-active-text-color: color-primary-500,
+	tabset-tab-active-underline-color: tabset-tab-active-text-color,
+
+	tabset-tab-focus-text-color: tabset-tab-active-text-color,
+	tabset-tab-hover-text-color: color-primary-400,
+
+	// vertical-tabset-tab-active-underline-color: tabset-tab-active-underline-color,
 ), dark, dark);

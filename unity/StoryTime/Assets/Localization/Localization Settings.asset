@@ -22,6 +22,11 @@ MonoBehaviour:
     id: 4
   m_StringDatabase:
     id: 5
+  m_Metadata:
+    m_Items: []
+  m_ProjectLocaleIdentifier:
+    m_Code: en
+  m_InitializeSynchronously: 0
   references:
     version: 1
     00000000:
@@ -179,6 +184,7 @@ MonoBehaviour:
         - substr
         m_ParameterDelimiter: 44
         m_NullDisplayString: (null)
+        m_OutOfRangeBehavior: 0
     00000015:
       type: {class: IsMatchFormatter, ns: UnityEngine.Localization.SmartFormat.Extensions,
         asm: Unity.Localization}

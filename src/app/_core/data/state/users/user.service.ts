@@ -17,7 +17,7 @@ import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { environment } from '../../../../../environments/environment';
 
 import {
-	Contacts,
+	Contacts, NbUserRoles,
 	onlyAdmin,
 	onlyEdit,
 	onlyReader,
@@ -34,7 +34,7 @@ import * as userActions from './user.actions';
 type Action = userActions.All;
 
 import { ProjectsService } from '@app-core/data/state/projects';
-import { TablesService } from '@app-core/data/state/tables';
+import { Table, TablesService } from '@app-core/data/state/tables';
 import { UtilsService } from '@app-core/utils';
 
 import isEmpty from 'lodash.isempty';
@@ -122,8 +122,9 @@ export class UserService extends UserData implements OnDestroy
 
 	private firebaseUser: firebase.User = null;
 
-	private userRoles: string[] = [
+	private userRoles: NbUserRoles[] = [
 		'reader',
+		'author',
 	];
 
 	/**
@@ -161,7 +162,7 @@ export class UserService extends UserData implements OnDestroy
 		if(this.user)
 		{
 			if(project)
-				this.userRoles = ['subscriber', ...Object.keys(this.user.projects[project.id].roles)];
+				this.userRoles = ['subscriber', ...Object.keys(this.user.projects[project.id].roles) as NbUserRoles[] ];
 			else
 				this.userRoles = ['subscriber'];
 		}
@@ -179,12 +180,17 @@ export class UserService extends UserData implements OnDestroy
 		// this.userRoles.filter((role) => role !== onlySuper[0]);
 	}
 
-	public checkTablePermissions(tableService: TablesService): boolean
+	public checkTablePermissions(tableService: TablesService, overrideTable: Table = null): boolean
 	{
 		if(!this.user)
 			return false;
 
-		return this.canEdit || tableService.getTable().metadata.owner === this.user.uid;
+		let tbl = tableService.getTable();
+
+		if(overrideTable)
+			tbl = overrideTable;
+
+		return this.canEdit || tbl.metadata.owner === this.user.uid;
 	}
 
 	public retrieveUserData(authData: firebase.User): Observable<Action>
@@ -253,6 +259,8 @@ export class UserService extends UserData implements OnDestroy
 		{
 			this.user = user;
 			this.user$.next(this.user);
+
+			console.log(this.userRoles);
 		}
 	}
 

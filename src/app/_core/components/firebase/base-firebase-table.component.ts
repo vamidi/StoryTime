@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { UtilsService } from '@app-core/utils';
 import { ProxyObject } from '@app-core/data/base';
 import { BehaviourType } from '@app-core/types';
@@ -66,7 +66,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	public get languages() { return this.languageService.ProjectLanguages; }
 
-	public settings: BaseSettings = new BaseSettings();
+	public settings: ISettings = new BaseSettings();
 	/*{
 		mode: 'internal',
 		actions: {
@@ -141,16 +141,20 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	protected userPreferences: UserPreferences = null;
 
-	protected tableID: string = '';
 	protected table: Table = new Table();
 
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
 	protected user: UserModel = defaultUser;
 
-	protected set setTblName(tblName: string)
+	/**
+	 *
+	 * @param tblId
+	 * @protected
+	 */
+	protected set setTblName(tblId: string)
 	{
-		this.tableName = tblName;
-		this.firebaseService.setTblName(this.tableName);
+		this.tableId = tblId;
+		this.firebaseService.setTblName(this.tableId);
 	}
 
 	// Table reference name
@@ -170,11 +174,11 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected languageService: LanguageService,
-		@Inject(String) protected tableName: string = '',
+		@Inject(String)protected tableId = '',
 	) {
 		super(
 			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
-			userService, userPreferencesService, languageService, tableName,
+			userService, userPreferencesService, languageService, tableId,
 		);
 
 		// iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
@@ -188,19 +192,28 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			this.mainSubscription.unsubscribe();
 
 		// unsubscribe listening to the child_added event
-		this.firebaseService.getRef(this.tableName).limitToLast(2).off('child_added');
+		this.firebaseService.getRef(this.tableId).limitToLast(2).off('child_added');
 	}
 
 	/**
 	 * @brief - edit the data of the table
 	 * @param event
 	 * @param undo - To show the undo redo option.
+	 * @param tableId - Override the table if you want to store the data somewhere else.
 	 */
-	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false)
+	public onEditConfirm(
+		event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false, tableId: string = '',
+	)
 	{
 		super.onEditConfirm(event, undo);
 		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
 		{
+			let tblId = this.tableId;
+
+			// if we override the tblName
+			if(tableId !== '')
+				tblId = tableId;
+
 			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
 			const obj: ProxyObject = { ...event.newData };
 
@@ -224,6 +237,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 					'danger',
 					5000,
 				);
+				event.confirm.resolve();
 				return;
 			}
 
@@ -257,7 +271,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 			// TODO resolve if data is wrong or if we also need to do something with the lastID
 			// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
-			this.tableService.updateData(this.tableID, event.newData.id, obj, oldObj).then(
+			this.tableService.updateData(tblId, event.newData.id, obj, oldObj).then(
 				() => {
 					if(typeof undo !== 'undefined' && undo === false) // only show the toast when we already undid the obj
 					{
@@ -265,18 +279,20 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 							this.toastrService,
 							'Row updated!',
 							'Data has been successfully updated',
+							'success',
 						);
 
 						event.confirm.resolve();
 					}
 					else {
 						this.snackbarService.show('Data has been successfully updated', 'UNDO', {
+							duration: 10000,
 							click: () => {
 								this.onEditConfirm({
 									newData: oldObj,
 									data: obj,
 									confirm: event.confirm,
-								}, false);
+								}, false, tblId);
 							},
 						});
 					}
@@ -292,15 +308,22 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	/**
 	 * @brief - Delete a row from the table
-	 * @param event
-	 * @param callback
+	 * @param event - Data
+	 * @param callback - Callback when the deletion is complete.
+	 * @param tableId - Override to delete data somewhere else.
 	 */
-	public onDeleteConfirm(event: { data: ProxyObject, confirm?: any }, callback = () => {})
+	public onDeleteConfirm(event: { data: ProxyObject, confirm?: any }, callback = () => {}, tableId: string = '')
 	{
 		if (event.hasOwnProperty('data') && this.userService.checkTablePermissions(this.tableService))
 		{
 			if (confirm('Are you sure you want to delete this item? This can\'t be undone'))
 			{
+				let tblId = this.tableId;
+
+				// if we override the tblName
+				if(tableId !== '')
+					tblId = tableId;
+
 				const oldObj: ProxyObject = { ...event.data };
 				const obj: ProxyObject = { ...event.data };
 
@@ -308,7 +331,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 				obj.deleted = true;
 
 				// We don't have to make a revision for deleted items.
-				this.tableService.updateData(this.tableID, event.data.id, obj, null, false)
+				this.tableService.updateData(tblId, event.data.id, obj, null, false)
 					.then(() => {
 						UtilsService.showToast(
 							this.toastrService,
@@ -325,20 +348,22 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 									data: obj,
 									newData: oldObj,
 									confirm: event.confirm,
-								}, false);
+								}, false, tblId);
 							},
+							'basic',
+							10000,
 						);
 
 						callback();
 					},
 				);
 
-				event.confirm.resolve();
+				event.confirm?.resolve();
 				return;
 			}
 		}
 
-		event.confirm.reject().then();
+		event.confirm?.reject().then();
 	}
 
 	public saveForm($event: any)
@@ -350,7 +375,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			if ($event['type'] !== undefined) {
 				const type: BehaviourType = $event.type;
 
-				const newSettings: BaseSettings =
+				const newSettings: ISettings =
 				{
 					...this.settings,
 					columns: {
@@ -392,7 +417,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 											const updateData = () =>
 											{
 												d.updated_at = UtilsService.timestamp;
-												return this.tableService.updateData(this.tableID, d.id, d, null, false);
+												return this.tableService.updateData(this.tableId, d.id, d, null, false);
 											};
 
 											this.table.update(d, this.processData(d, key, value, newSettings))
@@ -433,11 +458,11 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 							UtilsService.renameProperty(d, camelCaseOldKey, camelCaseNewKey);
 
 							// we only have to delete the field from each object.
-							this.tableService.deleteData(this.tableID, `${d.id}/${camelCaseOldKey}`, d, null, false).then(() =>
+							this.tableService.deleteData(this.tableId, `${d.id}/${camelCaseOldKey}`, d, null, false).then(() =>
 							{
 								// Update changes in the database
 								// Firebase is efficient enough to only update the field that is changed to a new value.
-								this.tableService.updateData(this.tableID, d.id, d, null, false)
+								this.tableService.updateData(this.tableId, d.id, d, null, false)
 									.catch((error) => this.onError(error));
 							});
 						});
@@ -460,10 +485,10 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 							// this.afd.object('/' + tbl + '/' + String(id))
 
 							// we only have to delete the field from each object.
-							this.tableService.deleteData(this.tableID, `${d.id}/${key}`, d, null, false).then(() =>
+							this.tableService.deleteData(this.tableId, `${d.id}/${key}`, d, null, false).then(() =>
 							{
 								// Firebase is efficient enough to only update the field that is changed to a new value.
-								this.tableService.updateData(this.tableID, d.id, d, null, false)
+								this.tableService.updateData(this.tableId, d.id, d, null, false)
 									.catch((error) => this.onError(error));
 							});
 						});
@@ -526,7 +551,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param value
 	 * @param additionalSettings
 	 */
-	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: BaseSettings)
+	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: ISettings)
 	{
 		if (!obj.hasOwnProperty(key))
 		{
@@ -574,7 +599,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param overrideTitle
 	 * @protected
 	 */
-	protected processColumnData(newSettings: BaseSettings, overrideTitle: string = '')
+	protected processColumnData(newSettings: ISettings, overrideTitle: string = '')
 	{
 		let tbl = this.table.metadata.title;
 
@@ -596,7 +621,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @brief update the settings with latest columns
 	 * @param newSettings
 	 */
-	protected updateSettings(newSettings: BaseSettings)
+	protected updateSettings(newSettings: ISettings)
 	{
 		this.settings = Object.assign({}, newSettings);
 		this.columnData = this.settings.columns;
@@ -612,25 +637,25 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param settings
 	 * @param tblName
 	 */
-	protected getTableData(settings: BaseSettings = null, tblName = '')
+	protected getTableData(settings: ISettings = null, tblName = '')
 	{
-		let tbl = this.tableName;
+		let tbl = this.tableId;
 
 		// if we override the tblName
 		if(tblName !== '')
 			tbl = tblName;
 
 		// check if it does not end with game-db
-		if (this.tableName === 'game-db' || tbl === 'game-db')
+		if (this.tableId === 'game-db' || tbl === 'game-db')
 			return;
 
 		// get the table data
 		// make a separate function in order to get a reference to this.
-		const fetchTable$: Observable<Table> = this.firebaseService.getTableData$(tbl).pipe(
+		const fetchTable$: Observable<Table> = this.firebaseService.getTableData$(`tables/${tbl}`).pipe(
 			map((snapshots) =>
 			{
 				const table: Table = new Table();
-				table.id = this.tableID;
+				table.id = tbl;
 
 				// configure fields
 				snapshots.forEach((snapshot) =>
@@ -652,8 +677,8 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	}
 
 	protected processTableData(
-		tableData: Table, verify: boolean = false, settings: BaseSettings = null, overrideTbl: string = '',
-	): BaseSettings
+		tableData: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
+	): ISettings
 	{
 		const newSettings = super.processTableData(tableData, verify, settings, overrideTbl);
 
@@ -710,7 +735,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			tableData.getSource.setFilter([]);
 
 			const filterFunc: FilterCallback<ProxyObject> =
-				firebaseFilterConfig.tableFilters.find((t) => t.table === this.tableName);
+				firebaseFilterConfig.tableFilters.find((t) => t.table === this.tableId);
 
 			// filter the data if needed
 			tableData.load([
@@ -721,16 +746,41 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 		this.table = this.tableService.setTable(tableData.id, tableData, true);
 		// Get the relations from the database as well.
-		const newSettings: BaseSettings = this.processTableData(this.table, true, this.settings);
+		const newSettings: ISettings = this.processTableData(this.table, true, this.settings);
 		this.settings = Object.assign({}, newSettings);
 	}
 
 	protected onUserReceived(__: User)
 	{
-		this.settings.columns.deleted.hidden = this.settings.columns.deleted.hidden || !this.isAdmin;
-		this.settings.columns.created_at.hidden = this.settings.columns.created_at.hidden || !this.isAdmin;
-		this.settings.columns.updated_at.hidden = this.settings.columns.updated_at.hidden || !this.isAdmin;
+		this.validateSettings(this.settings);
 	}
 
-	protected onTableDataLoaded() { }
+	protected onTableDataLoaded()
+	{
+		this.columnData = this.settings.columns;
+
+		// If the user has a canEdit privileges
+		// then he can make changes to the table,
+		// if the has made the table he is also able to change things
+		// TODO see if we need the action add
+		this.validateSettings(this.settings, true);
+	}
+
+	protected validateSettings(settings: ISettings, verifyUser: boolean = false)
+	{
+		if(verifyUser)
+		{
+			// If the user has a canEdit privileges
+			// then he can make changes to the table,
+			// if the has made the table he is also able to change things
+			// TODO see if we need the action add
+			settings.actions.add    = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+			settings.actions.edit   = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+			settings.actions.delete = this.userService.canEdit || this.userService.checkTablePermissions(this.tableService);
+		}
+
+		settings.columns.deleted.hidden     = settings.columns.deleted.hidden || !this.userService.isAdmin;
+		settings.columns.created_at.hidden  = settings.columns.created_at.hidden || !this.userService.isAdmin;
+		settings.columns.updated_at.hidden  = settings.columns.updated_at.hidden || !this.userService.isAdmin;
+	}
 }

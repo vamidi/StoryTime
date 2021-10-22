@@ -156,11 +156,16 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		return UtilsService.camelize(this.metadata.title);
 	}
 
-	public forEach(callbackfn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
+	/**
+	 * Loop through the filtered data.
+	 * @param callbackFn
+	 * @param thisArg
+	 */
+	public forEach(callbackFn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
 	{
 		this.filteredData.forEach((value, index, arr) =>
 		{
-			callbackfn(value, index, arr);
+			callbackFn(value, index, arr);
 		}, thisArg)
 	}
 
@@ -229,9 +234,11 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 
 				if(dataSize !== Object.keys(value).length) {
 					// UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					/*
 					UtilsService.onDebug(
 						`${key} data size is not equal in table ${ this.id }`, DebugType.WARN, dataSize, this.data[0],
 					);
+					 */
 				}
 			}
 		}
@@ -260,7 +267,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	/** ITERATIONS **/
 	public find(id: number, columnName: string = 'id', dataSearch: boolean = false): T | null
 	{
-		if(this.empty) return null;
+		if(this.empty || id === Number.MAX_SAFE_INTEGER) return null;
 
 		if(!dataSearch)
 			return this.filteredData.find((r: T) => r[columnName] === id);
@@ -345,7 +352,7 @@ export abstract class TableData
 	protected tableData: Collection<Table> = new Collection();
 }
 
-export const onSimpleTableMap = map((snapshots: SnapshotAction<any>[]) =>
+export const onSimpleTableMap = map(({ snapshots }) =>
 {
 	const table: Table = new Table();
 	// table.id = that.tableID;

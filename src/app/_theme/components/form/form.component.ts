@@ -1,17 +1,31 @@
 import {
-	AfterViewInit, ChangeDetectorRef,
+	AfterViewInit,
+	ChangeDetectorRef,
 	Component,
-	ContentChildren, ElementRef,
-	EventEmitter, Input, NgZone, OnChanges,
-	OnInit, Output,
-	QueryList, Renderer2, SimpleChanges,
+	ContentChildren,
+	ElementRef,
+	EventEmitter, HostBinding,
+	Input,
+	NgZone,
+	OnChanges,
+	OnInit,
+	Output,
+	QueryList,
+	Renderer2,
+	SimpleChanges,
 } from '@angular/core';
 import { FormContainer } from '@app-core/data/forms/form-model';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { FormQuestionBase } from '@app-core/data/forms/form-types';
+import { FormQuestionBase, NbControlTypes } from '@app-core/data/forms/form-types';
 import { DynamicFormComponent } from '@app-theme/components/form/dynamic-form.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UtilsService } from '@app-core/utils';
+import {
+	NbDynamicOverlayHandler,
+	NbAdjustment, NbPosition,
+	NbTooltipDirective,
+	NbComponentOrCustomStatus,
+} from '@nebular/theme';
 
 export interface IFormInputField<T>
 {
@@ -31,6 +45,15 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 {
 	public abstract value: T = null;
 
+	@Input('key')
+	public controlName: string = '';
+
+	@Input('text')
+	public controlText: string = '';
+
+	@Input('type')
+	public controlType: NbControlTypes = null;
+
 	@Input()
 	public parent: DynamicFormComponent = null;
 
@@ -48,6 +71,9 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	@Input()
 	public enableFirstBtn: boolean = true;
+
+	@Input()
+	public showLabels = false;
 
 	@Input()
 	public labelIcon: string = '';
@@ -76,7 +102,7 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	public setDisabledState(isDisabled: boolean): void
 	{
-		this.disabled = isDisabled;
+		this.question.disabled = this.disabled =  isDisabled;
 		this.disabled$.next(this.disabled);
 		this.cd.markForCheck();
 	}
@@ -87,6 +113,10 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	 */
 	public abstract set setValue(value: T);
 	public abstract writeValue(value: T);
+	public get getValue(): T
+	{
+		return this.value;
+	}
 
 	/*
   	 * @docs-private
@@ -102,7 +132,6 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 
 	public set Hidden(b: boolean) { this.question.hidden = b; }
 	public get Hidden() { return this.question.hidden; }
-	public showLabels = false;
 
 	protected destroy$ = new Subject<void>();
 
@@ -123,10 +152,26 @@ export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit
 	{
 	}
 
+	public ngPreInit() {
+		this.question.key = this.controlName !== '' ? this.controlName : this.question.key;
+		this.question.text = this.controlText !== '' ? this.controlText : this.question.text;
+		this.question.controlType = this.controlType !== null ? this.controlType : this.question.controlType;
+	}
+
 	public ngOnInit()
 	{
+		this.ngPreInit();
+
 		if(this.parent)
 			this.myFormGroup = this.parent.formContainer.form;
+
+		this.disabled$.subscribe((disabled: boolean) =>
+		{
+			this.question.disabled = this.disabled = disabled;
+			this.question.trigger('disableCheck',
+				{ control: this.myFormGroup.controls[this.question.key], event: this.question.disabled });
+		});
+
 
 		this.question.groupCss = this.groupCss;
 		this.question.inputCss = this.inputCss;

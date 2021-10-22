@@ -46,6 +46,7 @@ import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.com
 import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { NgxInviteComponent } from './pages/invitation/invite.component';
+import { HomeComponent } from '@app-dashboard/home.component';
 
 export function nbNoOpInterceptorFilter(req: HttpRequest<any>) {
 	return req.url === '/refresh';
@@ -66,6 +67,7 @@ const socialLinks: NbAuthSocialLink[] = [];
 @NgModule({
 	declarations: [
 		AppComponent,
+		HomeComponent,
 		NgxFirebaseLoginComponent,
 		NgxFirebaseRegisterComponent,
 		NgxFirebaseLogoutComponent,
