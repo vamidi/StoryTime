@@ -83,7 +83,7 @@
 		"@ngxs/logger-plugin": "^3.7.1",
 		"@ngxs/store": "^3.7.1",
 		"@popperjs/core": "^2.4.0",
-		"@swimlane/ngx-charts": "^18.0.0",
+		"@swimlane/ngx-charts": "^19.0.0",
 		"@vamidicreations/angular2-toaster": "^10.0.1",
 		"@vamidicreations/ng2-smart-table": "1.9.0",
 		"angular-tree-component": "8.5.6",

@@ -1,4 +1,10 @@
-<a name="2020.1.5f1"></a>
+<a name="2020.1.6f2"></a>
+## [2020.1.6f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f2) (2021-23-10)
+
+### Fixes
+- Fix for enemy stat page not showing any stats.
+
+<a name="2020.1.6f1"></a>
 ## [2020.1.6f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f1) (2021-22-10)
 
 ### Breaking changes
