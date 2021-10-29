@@ -27,10 +27,6 @@ const redirectLoggedInToDatabase = () => redirectLoggedInTo(['dashboard/']);
 
 const routes: Routes = [
 	{
-		path: '',
-		component: HomeComponent,
-	},
-	{
 		path: 'dashboard',
 		component: DashboardComponent,
 		loadChildren: () => import('./dashboard/dashboard.module')

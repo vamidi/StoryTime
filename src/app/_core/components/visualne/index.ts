@@ -1,6 +1,6 @@
 import { EventsTypes } from 'visualne/types/events';
 // import { OptionMap } from '@app-core/components/visualne/nodes/data/interfaces';
-import { ICraftable, ICraftCondition, IDialogue, IDialogueOption, IEvent, IItem } from '@app-core/data/standard-tables';
+import { ICraftable, ICraftCondition, IDialogue, IDialogueOption, IEvent, IItem } from '@app-core/data/database/interfaces';
 
 export interface AdditionalEvents extends EventsTypes
 {

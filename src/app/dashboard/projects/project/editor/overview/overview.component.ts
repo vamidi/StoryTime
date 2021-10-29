@@ -15,7 +15,7 @@ import { BehaviourType } from '@app-core/types';
 import { InsertColumnComponent } from '@app-theme/components/firebase-table/insert-column/insert-column.component';
 import { BehaviorSubject } from 'rxjs';
 import { FirebaseTableComponent } from '@app-theme/components/firebase-table/firebase-table.component';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
@@ -91,7 +91,7 @@ export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 
 				this.tableRelData = this.firebaseRelationService.getTableRelationData().get(this.routerTblUrl);
 
-				this.setTblName = this.tableName;
+				this.setTblName = this.tableId;
 
 				this.changeTitle();
 

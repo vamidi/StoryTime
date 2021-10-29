@@ -286,69 +286,16 @@ export class InsertTableComponent implements
 					// insert data in the database
 					if (this.project && val[this.tableNameField.question.key] && val[this.tableNameField.question.key] !== '')
 					{
-						const columnData: { [key:string]: TableColumn } = {};
-						const properties = Object.entries(this.columnObject);
-						for(const [propKey, propValue] of properties)
-						{
-							const columnDefition: TableColumn = {
-								name: UtilsService.title(UtilsService.replaceCharacter(propKey, /_/g, ' ')),
-								description: '',
-								type: null,
-								defaultValue: propValue,
-							};
-
-							// get the type of the column
-							switch(typeof propValue)
-							{
-								case 'undefined':
-									UtilsService.onWarn(`Propertie ${propValue} is undefined`);
-									break;
-								case 'object':
-								case 'boolean':
-								case 'function':
-								case 'symbol':
-								case 'bigint':
-									columnDefition.type = 'custom';
-									break;
-								case 'number':
-									columnDefition.type = 'number';
-									break;
-								case 'string':
-									columnDefition.type = 'string';
-									break;
-							}
-
-							// See if column key exists
-							if(!columnData[propKey])
-								columnData[propKey] = columnDefition;
-						}
-
-
-						const table: ITable = {
-							id: '',
-							projectID: this.project.id,
-							revisions: {},
-							relations: {},
-							data: {
-								0: this.columnObject,
-							},
-							columns: columnData,
-							metadata: {
-								title: UtilsService.camelize(val[this.tableNameField.question.key]),
-								description: val[this.tableDescriptionField.question.key],
-								created_at: UtilsService.timestamp,
-								updated_at: UtilsService.timestamp,
-								owner: this.user.uid,
-								lastUID: 0,
-								private: val[this.tableAccessField.question.key],
-								deleted: false,
-								version: {
-									major: environment.MAJOR,
-									minor: environment.MINOR,
-									release: environment.RELEASE,
-								},
-							},
-						};
+						console.log(Table.toColumns(this.columnObject));
+						const table: ITable = Table.create({
+							project: this.project,
+							columnObject: this.columnObject,
+							title: UtilsService.camelize(val[this.tableNameField.question.key]),
+							description: val[this.tableDescriptionField.question.key],
+							owner: this.user.uid,
+							private: val[this.tableAccessField.question.key],
+							columns: Table.toColumns(this.columnObject),
+						});
 
 						// TODO change this the new method
 						// Insert projects into project in to the projects child.
@@ -368,7 +315,7 @@ export class InsertTableComponent implements
 							this.firebaseService.updateItem(id, data, true, 'projects').then();
 
 							UtilsService.showToast(this.toastrService, 'Table created',
-								`Table ${table.metadata.title} created!`);
+								`Table ${table.metadata.title} created!`, 'success');
 
 							this.firebaseService.onTableAddEvent.emit();
 						}).catch((e) => console.log(e));
@@ -396,7 +343,7 @@ export class InsertTableComponent implements
 						// Insert projects into project in to the projects child.
 						this.firebaseService.updateItem(table.id, table, true, 'tables').then(() => {
 							UtilsService.showToast(this.toastrService, 'Table updated',
-								`Table ${ table.metadata.title } updated!`);
+								`Table ${ table.metadata.title } updated!`, 'success');
 						});
 					}
 				}

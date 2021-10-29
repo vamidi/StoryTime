@@ -4,6 +4,8 @@ export * from './insert-project/insert-project.component';
 export * from './insert-story/insert-story.component';
 export * from './insert-story/load-story.component';
 export * from './insert-column/insert-column.component';
+export * from './insert-equipment/insert-equipment.component';
+export * from './insert-trait/insert-trait.component';
 export * from './insert-items/insert-items-dialog.component';
 export * from './insert-items/insert-craftable.component';
 export * from './insert-multiple-items/insert-multiple-dialog.component';

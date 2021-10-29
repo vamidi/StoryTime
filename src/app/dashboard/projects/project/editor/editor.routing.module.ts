@@ -25,9 +25,9 @@ const routes: Routes = [
 				component: ItemEditorComponent,
 			},
 			{
-				path: 'characters',
-				loadChildren: () => import('./characters/characters.module')
-					.then(m => m.CharactersModule),
+				path: 'game-editor',
+				loadChildren: () => import('./character-editor/game-editor.module')
+					.then(m => m.GameEditorModule),
 			},
 			{
 				path: 'quests',

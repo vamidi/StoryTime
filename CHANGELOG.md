@@ -1,5 +1,24 @@
+<a name="2020.1.6f2"></a>
+## [2020.1.6f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f2) (2021-23-10)
+
+### Fixes
+- Fix for enemy stat page not showing any stats.
+
+<a name="2020.1.6f1"></a>
+## [2020.1.6f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f1) (2021-22-10)
+
+### Features
+- Game editor tab is added to StoryTime. From there you can manipulate the following:
+  - Characters
+  - Enemies
+  - Classes
+  - Skills
+  - Items
+  - Equipments
+- With the game editor you are now also able to add stats to your characters (including enemies).
+
 <a name="2020.1.5f1"></a>
-## [2020.1.5f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f1) (2021-16-07)
+## [2020.1.5f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f3) (2021-16-07)
 
 ### Breaking Changes
 - Minimal required `Angular` version to `12`.

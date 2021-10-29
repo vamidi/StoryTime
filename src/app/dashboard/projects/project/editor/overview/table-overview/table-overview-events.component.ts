@@ -72,7 +72,7 @@ export class TableOverviewEventsComponent extends FirebaseTableFunctionalityComp
 	{
 		this.changeTitle();
 
-		this.tableName = this.tblName;
+		this.tableId = this.tblName;
 
 		//
 		firebaseFilterConfig.tableFilters.push({
@@ -112,7 +112,7 @@ export class TableOverviewEventsComponent extends FirebaseTableFunctionalityComp
 	public isTable()
 	{
 		// if the table name is empty false --> true
-		return this.tableName !== 'game-db';
+		return this.tableId !== 'game-db';
 	}
 
 	/**

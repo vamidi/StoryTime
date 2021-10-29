@@ -1,17 +1,35 @@
 [
 	{
+		"title": "2020.1.5f3 (2021-19-07)", "children": [
+			{ "title": "Changes", "children": [
+				{ "title": "Removal of debug code." },
+				{ "title": "Fix for home page in dashboard." },
+				{ "title": "UI updates" }
+			]
+			}
+		]
+	},
+	{
+		"title": "2020.1.5f2 (2021-19-07)", "children": [
+				{ "title": "Changes", "children": [
+					{ "title": "Electron app update." }
+				]
+			}
+		]
+	},
+	{
 		"title": "2020.1.5f1 (2021-16-07)", "children": [
-		{ "title": "Changes", "children": [
-			{ "title": "Electron app." },
-			{ "title": "Unity3D manager app in StoryTime package to manage all data from one place!" },
-			{ "title": "Added CI/CD features for automated builds." }
+			{ "title": "Changes", "children": [
+				{ "title": "Electron app." },
+				{ "title": "Unity3D manager app in StoryTime package to manage all data from one place!" },
+				{ "title": "Added CI/CD features for automated builds." }
+			]
+			},
+			{ "title": "Fixes", "children": [
+				{ "title": "Bug fixes" }
+			]
+			}
 		]
-		},
-		{ "title": "Fixes", "children": [
-			{ "title": "Bug fixes" }
-		]
-		}
-	]
 	},
 	{
 		"title": "2020.1.4f2 (2021-21-05)", "children": [

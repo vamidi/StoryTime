@@ -10,6 +10,10 @@ import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interfac
 import { DebugType } from '@app-core/utils/utils.service';
 import { FileUpload } from '@app-core/data/file-upload.model';
 import { Type } from '@angular/core';
+import { DEFAULT_LANGUAGE_OBJ, MAX_SAFE_INTEGER, validateLanguageObject } from '@app-core/data/database/constants';
+import { environment } from '../../../../../environments/environment';
+import { IProject } from '@app-core/data/state/projects';
+import { RelationPair } from '@app-core/utils/firebase/firebase.service';
 
 interface IMetaData {
 	created_at: Object;
@@ -27,7 +31,7 @@ export interface ITableData extends IMetaData
 	owner: string;
 	private: boolean;
 	deleted: boolean;
-
+	columns: TableColumnMap,
 	// Pipeline settings
 	version: IVersion;
 }
@@ -55,7 +59,7 @@ export interface IRelation {
 	columns?: { [key: string ]: { key: string, column: string, locked?: boolean } }
 }
 
-export declare type ColumnType = 'number' | 'string' | 'custom'
+export declare type ColumnType = null | 'number' | 'string' | 'custom'
 	// TODO implement more types
 	// 'string' | 'long string' | 'float' | 'int' | 'bool' | 'Single Select'
 	// | 'Multi Select' | 'Line Reference' | 'Sheet Reference' | 'List' | 'File'
@@ -79,6 +83,8 @@ export class Column implements IColumn {
 	defaultValue: any = null;
 }
 
+export declare interface TableColumnMap { [key:string]: Column }
+
 export interface TableTemplate<T extends ProxyObject = ProxyObject>
 {
 	[key: string]: T;
@@ -90,7 +96,6 @@ export interface ITable<T extends ProxyObject = ProxyObject> extends PipelineAss
 	data: TableTemplate<T>,
 	revisions: { [key: string]: Revision<T> },
 	relations: IRelation,
-	columns: { [key:string]: Column },
 	metadata: ITableData,
 }
 
@@ -125,17 +130,12 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 	 * @example
 	 * 	Pair('dialogues', Pair('nextId', new StringPair('dialogues', 'text')));
 	 */
+	// TODO move this to the metadata section.
 	public relations: IRelation = new class implements IRelation {
 		columns: { [p: string]: { key: string; column: string } };
 	};
 
 	public revisions: { [key: string]: Revision<T> } = {};
-
-	/**
-	 * @brief - Column defitions to stricten out the table to
-	 * not add columns that are not defined.
-	 */
-	public columns: { [key:string]: Column } = {}
 
 	/**
 	 * @brief - Meta data of the table
@@ -150,6 +150,11 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		private: false,
 		deleted: false,
 
+		/**
+		 * @brief - Column defitions to stricten out the table to
+		 * not add columns that are not defined.
+		 */
+		columns: {},
 		// Pipeline settings
 		version: {
 			major: 0,
@@ -170,6 +175,108 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		}
 	}
 
+	public static create(data: {
+		project: IProject,
+		columnObject: ProxyObject,
+		title: string,
+		description: string,
+		owner: string,
+		private: boolean,
+		columns: TableColumnMap,
+	}): ITable
+	{
+		return {
+			id: '',
+				projectID: data.project.id,
+			revisions: {},
+			relations: {},
+			data: {
+				0: data.columnObject,
+			},
+			metadata: {
+				title: data.title,
+				description: data.description,
+				created_at: UtilsService.timestamp,
+				updated_at: UtilsService.timestamp,
+				owner: data.owner,
+				lastUID: 0,
+				private: data.private,
+				deleted: false,
+				columns: data.columns,
+				version: {
+				major: environment.MAJOR,
+					minor: environment.MINOR,
+					release: environment.RELEASE,
+				},
+			},
+		};
+	}
+
+	public static toColumn(propKey: string, propValue: any, relationData?: RelationPair): Column
+	{
+		const columnDefinition: Column = {
+			name: UtilsService.title(UtilsService.replaceCharacter(propKey, /_/g, ' ')),
+			description: '',
+			type: null,
+			defaultValue: propValue,
+		};
+
+		// get the type of the column
+		switch(typeof propValue)
+		{
+			case 'undefined':
+				UtilsService.onWarn(`Property ${propValue} is undefined`);
+				break;
+			case 'object':
+			{
+				// We are probably dealing with a language object.
+				columnDefinition.type = 'custom';
+				if(validateLanguageObject(propValue))
+					columnDefinition.defaultValue = DEFAULT_LANGUAGE_OBJ;
+			}
+				// Do something with the other objects.
+				break;
+			case 'boolean':
+				columnDefinition.type = 'custom';
+				columnDefinition.defaultValue = false;
+				break;
+			case 'function':
+			case 'symbol':
+			case 'bigint':
+				columnDefinition.type = 'custom';
+				break;
+			case 'number': {
+				columnDefinition.type = 'number';
+				columnDefinition.defaultValue = 0;
+				// if we are dealing with relational data
+				if (relationData && relationData.has(propKey)) {
+					columnDefinition.defaultValue = MAX_SAFE_INTEGER;
+				}
+			}
+			break;
+			case 'string':
+				columnDefinition.type = 'string';
+				columnDefinition.defaultValue = '';
+				break;
+		}
+
+		return columnDefinition;
+	}
+
+	public static toColumns(columnObject: ProxyObject): TableColumnMap
+	{
+		const columnData: TableColumnMap = {};
+		const properties = Object.entries(columnObject);
+		for(const [propKey, propValue] of properties)
+		{
+			// See if column key exists
+			if(!columnData[propKey])
+				columnData[propKey] = Table.toColumn(propKey, propValue);
+		}
+
+		return columnData;
+	}
+
 	public get empty(): boolean
 	{
 		return this.length === 0;
@@ -188,11 +295,16 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		return UtilsService.camelize(this.metadata.title);
 	}
 
-	public forEach(callbackfn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
+	/**
+	 * Loop through the filtered data.
+	 * @param callbackFn
+	 * @param thisArg
+	 */
+	public forEach(callbackFn: (v: T, idx: number, array: T[]) => void, thisArg?: any): void
 	{
 		this.filteredData.forEach((value, index, arr) =>
 		{
-			callbackfn(value, index, arr);
+			callbackFn(value, index, arr);
 		}, thisArg)
 	}
 
@@ -258,20 +370,21 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 			{
 				entry.id = idx;
 				// get all the keys from the table.
-				const propKeys = Object.keys(this.columns);
-
-				//
-				propKeys.forEach((propKey) => {
-					// see if the entry has the key. if not log it.
-					if(!entry.hasOwnProperty(propKey))
-					{
-						// TODO maybe also delete the prop.
-						UtilsService.onDebug(
-							`${ this.id } - ${propKey} key is not defined.. removing property from entry`, DebugType.WARN, data[idx],
-						);
-						delete data[idx][propKey];
-					}
-				});
+				if(this.metadata.hasOwnProperty('columns')) {
+					const propKeys = Object.keys(this.metadata.columns);
+					//
+					propKeys.forEach((propKey) => {
+						// see if the entry has the key. if not log it.
+						if(!entry.hasOwnProperty(propKey))
+						{
+							// TODO maybe also delete the prop.
+							UtilsService.onDebug(
+								`${ this.id } - ${propKey} key is not defined.. removing property from entry`, DebugType.WARN, data[idx],
+							);
+							delete data[idx][propKey];
+						}
+					});
+				}
 			});
 
 
@@ -280,6 +393,14 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				filters.forEach((filter: FilterCallback<T>) => {
 					if(filter) this.filteredData = data.filter(filter)
 				});
+				// if(dataSize !== Object.keys(value).length) {
+					// UtilsService.onDebug(dataSize, DebugType.LOG, value, this.data[0]);
+					/*
+					UtilsService.onDebug(
+						`${key} data size is not equal in table ${ this.id }`, DebugType.WARN, dataSize, this.data[0],
+					);
+					 */
+				// }
 			}
 		}
 
@@ -296,10 +417,28 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		return promise;
 	}
 
+	public getColumns(): Column[]
+	{
+		return Object.values(this.metadata.columns);
+	}
+
+	public toColumns(data: any, relationData?: RelationPair)
+	{
+		if(!this.metadata.hasOwnProperty('columns'))
+			this.metadata.columns = {};
+
+		for (const [propKey, propValue] of Object.entries(data))
+		{
+			this.metadata.columns[propKey] =  Table.toColumn(propKey, propValue, relationData);
+		}
+
+		console.log(this);
+	}
+
 	/** ITERATIONS **/
 	public find(id: number, columnName: string = 'id', dataSearch: boolean = false): T | null
 	{
-		if(this.empty) return null;
+		if(this.empty || id === Number.MAX_SAFE_INTEGER) return null;
 
 		if(!dataSearch)
 			return this.filteredData.find((r: T) => r[columnName] === id);
@@ -384,7 +523,7 @@ export abstract class TableData
 	protected tableData: Collection<Table> = new Collection();
 }
 
-export const onSimpleTableMap = map((snapshots: SnapshotAction<any>[]) =>
+export const onSimpleTableMap = map(({ snapshots }) =>
 {
 	const table: Table = new Table();
 	// table.id = that.tableID;

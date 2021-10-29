@@ -1,0 +1,22 @@
+<nb-card status="primary" size="large">
+	<nb-card-header>
+		{{ source.title }}
+	</nb-card-header>
+	<nb-card-body>
+		<div class="as-form">
+			<ngx-dynamic-form [source]="source" [showLabels]="true">
+				<!-- ItemType list -->
+				<ngx-dropdown-field #itemTypeListQuestion (onSelectFunc)="this.onItemTypeSelected($event)"></ngx-dropdown-field>
+				<!-- Item list which is based on the selected item type -->
+				<ngx-dropdown-field #itemListQuestion></ngx-dropdown-field>
+			</ngx-dynamic-form>
+
+			<!--			<ngx-form (onSendForm)="onSendForm()" [container]="insertFormContainer"></ngx-form>-->
+		</div>
+	</nb-card-body>
+	<nb-card-footer>
+		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>
+		<ngx-button-field #submitQuestion (onSubmitFunc)="onSendForm()"></ngx-button-field>
+		<ngx-checkbox-field #checkboxQuestion>s</ngx-checkbox-field>
+	</nb-card-footer>
+</nb-card>

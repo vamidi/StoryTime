@@ -14,20 +14,26 @@ import {
 } from '@app-theme/components/form';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { InsertTeamMemberComponent } from '@app-theme/components/firebase-table/insert-team-member/insert-team-member.component';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { Revision } from '@app-core/data/state/tables';
+import { Revision, Table } from '@app-core/data/state/tables';
 import { TablesService } from '@app-core/data/state/tables';
 
 import { IUserTicket, Roles, UserModel, UserService } from '@app-core/data/state/users';
-import { LanguageService, Project } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Option } from '@app-core/data/forms/form-types';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
-import { UtilsService } from '@app-core/utils';
+import { MigrationsService, UtilsService } from '@app-core/utils';
+
+import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
+import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
+import { ButtonColumnRenderComponent } from '@app-theme/components';
+import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
+import { migrations } from '@app-core/data/state/projects/Migrations/project.migrations';
 
 import isEqual from 'lodash.isequal';
 import isEmpty from 'lodash.isempty';
@@ -76,7 +82,7 @@ export class ChangeProjectSettingsComponent implements
 	public source: BaseFormSettings = {
 		title: 'Project Settings',
 		alias: 'project-settings',
-		requiredText: 'Settings',
+		requiredText: 'Fill all fields',
 		fields: {},
 	};
 
@@ -85,6 +91,68 @@ export class ChangeProjectSettingsComponent implements
 	public get revisions(): Map<string, Revision> {
 		return new Map<string, Revision>();
 	}
+
+	public migrationSource: LocalDataSource = new LocalDataSource();
+	public migrationSettings: ISettings = {
+		mode: 'inline',
+		selectMode: '',
+		noDataMessage: 'No migrations',
+		actions: {
+			add: false,
+			edit: false,
+			delete: false,
+			position: 'right',
+			// custom: {name: string, title: string}[],
+		},
+		columns: {
+			id: {
+				title: 'ID',
+				type: 'number',
+				editable: false,
+				addable: false,
+				width: '50px',
+				filter:false,
+				hidden: false,
+				defaultValue: Number.MAX_SAFE_INTEGER,
+			},
+			title: {
+				title: 'Title',
+				type: 'text',
+				editable: false,
+				addable: false,
+				filter:false,
+				hidden: false,
+				defaultValue: '',
+			},
+			description: {
+				title: 'Description',
+				type: 'text',
+				editable: false,
+				addable: false,
+				filter:false,
+				hidden: false,
+				defaultValue: '',
+			},
+			migrate: {
+				title: 'Migrate',
+				type: 'custom',
+				editable: false,
+				addable: false,
+				width: '50px',
+				filter:false,
+				hidden: false,
+				renderComponent: ButtonColumnRenderComponent,
+				onComponentInitFunction: (instance: ButtonColumnRenderComponent) => {
+					instance.emitter.subscribe(() => {
+							const migration = this.migrationService.getMigration(instance.rowData.title);
+							this.migrationService.run(migration.name)
+								.then((dirty) => this.resolve(migration, dirty))
+						},
+					);
+				},
+			},
+		},
+	};
 
 	// Main subscription to all events
 	protected mainSubscription: Subscription = new Subscription();
@@ -99,18 +167,50 @@ export class ChangeProjectSettingsComponent implements
 		protected ref: NbDialogRef<ChangeProjectSettingsComponent>,
 		protected dialogService: NbDialogService,
 		protected toastrService: NbToastrService,
+		protected projectsService: ProjectsService,
 		protected tablesService: TablesService,
 		protected userService: UserService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected languageService: LanguageService,
 		protected dynamicComponentService: DynamicComponentService,
+		protected migrationService: MigrationsService,
 		protected cd: ChangeDetectorRef,
 	) {
 	}
 
 	public ngOnInit(): void
 	{
+		// max level field
+		this.source.fields = {
+			projectName: {
+				controlType: 'textbox',
+				value: this.project ? this.project.metadata.title : '',
+				name: 'project-name',
+				text: 'Project name',
+				placeholder: 'Project name',
+				errorText: 'Project name is required',
+				required: true,
+				asyncValidator: [ CustomProjectValidators.validateProject(this.user, this.firebaseService) ],
+			},
+			projectDescription: {
+				controlType: 'textarea',
+				value: this.project ? this.project.metadata.description : '',
+				name: 'project-description',
+				text: 'Project description',
+				placeholder: 'Project description',
+				required: false,
+			},
+			maxLevel: {
+				controlType: 'number',
+				value: this.project.gameStats.maxLevel,
+				name: 'max-level',
+				text: 'Max level',
+				placeholder: 'Set character and enemy max level',
+				required: false,
+			},
+		}
+
 		const columns = Object.entries(this.settings.columns);
 
 		// only include hidden values that we can see
@@ -139,6 +239,14 @@ export class ChangeProjectSettingsComponent implements
 				onSelectEvent: (event: any) => this.OnToggle(event),
 			};
 		}
+
+		this.formComponent.addInput(this.submitQuestion, {
+				name: this.project ? 'update-btn' : 'insert-btn',
+				text: this.project ? 'Update Button' : 'Insert Button',
+				value: this.project ? 'Update' : 'Insert',
+				controlType: 'submitbutton',
+			},
+		);
 
 		this.mainSubscription.add(this.userService.getUser().subscribe((user) => {
 				this.user = user;
@@ -189,6 +297,16 @@ export class ChangeProjectSettingsComponent implements
 				}
 			});
 		}
+
+		migrations.forEach((migration, idx) => {
+			this.migrationService.addMigration({ ...migration, item: this.project });
+			this.migrationSource.add({
+				id: idx,
+				title: migration.name,
+				description: '',
+				migrate: `Migrate ${migration.name}`,
+			}).then();
+		});
 	}
 
 	public ngAfterViewInit(): void {
@@ -297,5 +415,38 @@ export class ChangeProjectSettingsComponent implements
 	public dismiss()
 	{
 		this.ref.close();
+	}
+
+	private resolve(migration: IPipelineSchedule, dirty: boolean)
+	{
+		if(migration == null || typeof migration === 'undefined') {
+			UtilsService.showToast(
+				this.toastrService,
+				'Migration failed',
+				`Migration is not defined!`,
+				'warning',
+			);
+			return;
+		}
+		if(dirty)
+		{
+			const project: Project = migration.item as Project;
+			this.projectsService.update(project.id).then(() => {
+				UtilsService.showToast(
+					this.toastrService,
+					'Migration completed',
+					`Migration finished!`,
+					'success',
+				);
+			});
+			return;
+		}
+
+		UtilsService.showToast(
+			this.toastrService,
+			'Migration completed',
+			`Migration made no changes!`,
+			'success',
+		);
 	}
 }

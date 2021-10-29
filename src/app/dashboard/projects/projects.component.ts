@@ -4,7 +4,7 @@ import { NbDialogService, NbMenuService, NbToastrService } from '@nebular/theme'
 import { InsertProjectComponent } from '@app-theme/components/firebase-table/insert-project/insert-project.component';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { User, UserData } from '@app-core/data/state/users';
+import { IUserData, User, UserData, UserModel } from '@app-core/data/state/users';
 import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '@app-core/utils';
@@ -16,7 +16,7 @@ import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { BaseSettings } from '@app-core/mock/base-settings';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../environments/environment';
@@ -44,6 +44,8 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 	public source: LocalDataSource = new LocalDataSource();
 
 	protected projectID: string = '';
+
+	protected members: Map<string, IUserData> = new Map<string, IUserData>();
 
 	// protected loadedProjects: string[] = [];
 
@@ -192,6 +194,24 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		);
 	}
 
+	public onColumnOrderChange(event: any)
+	{
+		if(event.hasOwnProperty('columns'))
+		{
+			const container = this.userPreferences.indexColumns;
+
+			if(!container.has(this.indexColumnPrefName))
+				container.set(this.indexColumnPrefName, {});
+
+			for(const key of Object.keys(event.columns))
+			{
+				container.get(this.indexColumnPrefName)[key] = event.columns[key].index;
+			}
+
+			this.userPreferencesService.setUserPreferences(this.userPreferences);
+		}
+	}
+
 	protected onUserReceived(user: User)
 	{
 		super.onUserReceived(user);
@@ -212,6 +232,11 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 							const payload = snapshot.val();
 							const project: Project = { tables: {}, ...payload, id: snapshot.key};
 							this.projectsService.setProject(project.id, project);
+
+							const members = Object.keys(project.members);
+							members.forEach((member) => {
+								this.findMember(member);
+							})
 
 							this.source.load(this.projectsService.getSource([
 								'id', 'title', 'description', 'deleted', 'created_at', 'updated_at',
@@ -254,7 +279,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 
 	protected configureSettings()
 	{
-		const newSettings: BaseSettings = { ...this.settings };
+		const newSettings: ISettings = { ...this.settings };
 
 		newSettings.mode = 'external';
 
@@ -289,27 +314,42 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		}
 
 		// Reorder the columns based on the localstorage if we have them.
-		this.sortColumnData(newSettings, this.indexColumnPrefName);
+		this.processColumnData(newSettings, this.indexColumnPrefName);
 
 		this.settings = Object.assign({}, newSettings);
 	}
 
-	public onColumnOrderChange(event: any)
+	public findMember(memberUID: string): IUserData
 	{
-		if(event.hasOwnProperty('columns'))
+		if(!this.members.has(memberUID))
 		{
-			const container = this.userPreferences.indexColumns;
+			this.firebaseService.getRef(`users/${memberUID}/metadata`).once('value')
+				.then((snapshot) => {
+					if(snapshot.exists())
+					{
+						const metadata: IUserData = {
+							...snapshot.val(),
+						};
 
-			if(!container.has(this.indexColumnPrefName))
-				container.set(this.indexColumnPrefName, {});
+						this.members.set(memberUID, metadata);
+					}
+				});
 
-			for(const key of Object.keys(event.columns))
-			{
-				container.get(this.indexColumnPrefName)[key] = event.columns[key].index;
-			}
-
-			this.userPreferencesService.setUserPreferences(this.userPreferences);
+			return null;
 		}
+
+		return this.members.get(memberUID);
+	}
+
+	public findAvatar(memberUID: string): string
+	{
+		if(this.members.has(memberUID))
+		{
+			const member: IUserData = this.members.get(memberUID);
+			return `https://avatars.dicebear.com/api/bottts/${UtilsService.hashCode(member.displayName)}.svg`
+		}
+
+		return '';
 	}
 
 	private updateFromList(root: NbMenuItem, key: string, tableName: string, hidden: boolean) {

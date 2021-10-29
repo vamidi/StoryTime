@@ -36,16 +36,21 @@ export interface Roles {
 	subscriber?: boolean, // – somebody who can only manage their profile.
 	// TODO see if we need this
 	contributor?: boolean, // – somebody who can write and manage their own tables but cannot publish them.
-	reader?: boolean,
+	reader?: boolean, // somebody that can only read public tables and projects.
 }
 
-export const onlySuper = ['superAdmin']
-export const onlyAdmin = ['admin'];
-export const onlyReader = ['reader'];
-export const onlyEdit = ['superAdmin', 'admin', 'editor'];
+export declare type NbUserRoles =
+	'superAdmin' | 'admin' | 'editor' | 'author' | 'subscriber' | 'contributor' | 'reader';
+
+// super is owner of the project and can handle permissions and everything.
+export const onlySuper: NbUserRoles[] = ['superAdmin'];
+// Admin can do most of the things what the super can except change project name or delete it.
+export const onlyAdmin: NbUserRoles[] = ['admin'];
+export const onlyReader: NbUserRoles[] = ['reader'];
+export const onlyEdit: NbUserRoles[] = ['superAdmin', 'admin', 'editor', 'author'];
 export const onlyDelete = onlySuper;
 
-interface IUserData {
+export interface IUserData {
 	displayName?: string;
 	email: string;
 	firstName: string;

@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Router } from '@angular/router';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { Ng2SmartTableComponent } from '@vamidicreations/ng2-smart-table';
 import { SmartTableData } from '@app-core/data/smart-table';
 import { QuestsSmartTableService } from '@app-core/mock/quests-smart-table.service';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { Router } from '@angular/router';
 import { InsertColumnComponent } from './insert-column/insert-column.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 
-import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NodeEditorComponent } from './node-editor';
 
 import { ChangeTableSettingsComponent } from './change-table-settings/change-table-settings.component';
@@ -43,7 +44,7 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	public nodeEditor: QueryList<NodeEditorComponent> = null;
 
 	@ViewChild('smartTableComponent', { static: false })
-	public smartTableComponent: any = null;
+	public smartTableComponent: Ng2SmartTableComponent = null;
 
 	constructor(
 		public firebaseService: FirebaseService,
@@ -68,7 +69,7 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	public isTable()
 	{
 		// if the table name is empty false --> true
-		return this.tableName !== 'game-db';
+		return this.tableId !== 'game-db';
 	}
 
 	public ngOnInit()
@@ -79,5 +80,18 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 	/**
 	 * After the view has been initialized.
 	 */
-	public ngAfterViewInit(): void {}
+	public ngAfterViewInit(): void { }
+
+	protected onTableDataLoaded()
+	{
+		super.onTableDataLoaded();
+
+		if(this.smartTableComponent)
+		{
+			setTimeout(() => {
+				this.smartTableComponent.selectRow(6);
+				console.log(this.smartTableComponent.grid.getRows());
+			}, 500);
+		}
+	}
 }

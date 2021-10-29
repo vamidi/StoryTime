@@ -22,7 +22,7 @@ import {
 	NbFormFieldModule,
 	NbToggleModule,
 	NbAutocompleteModule,
-	NbStepperModule, NbSpinnerModule,
+	NbStepperModule, NbSpinnerModule, NbTooltipModule, NbOverlayModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -67,6 +67,7 @@ import {
 	TextFieldComponent,
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
+	ArrayFormComponent,
 	FormComponent,
 	DynamicFormComponent,
 
@@ -77,6 +78,8 @@ import {
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
+	ArrayTextFieldComponent,
 } from './components';
 
 import {
@@ -101,7 +104,8 @@ import {
 	ChangeTableSettingsComponent,
 	ChangeProjectSettingsComponent,
 	RevisionDialogComponent,
-	TableColumnRendererComponent,
+	TableColumnRendererComponent, InsertTraitComponent,
+	InsertEquipmentComponent,
 } from './components/firebase-table/index';
 
 import {
@@ -156,6 +160,7 @@ const NB_MODULES = [
 	NbToggleModule,
 	NbAutocompleteModule,
 	NbStepperModule,
+	NbTooltipModule,
 	NbSnackbarModule.forRoot(),
 ];
 
@@ -197,6 +202,8 @@ const COMPONENTS = [
 	InsertItemsDialogComponent,
 	InsertMultipleDialogComponent,
 	InsertColumnComponent,
+	InsertEquipmentComponent,
+	InsertTraitComponent,
 	InsertRelationDialogComponent,
 	InsertProjectComponent,
 	InsertStoryComponent,
@@ -230,6 +237,9 @@ const CUSTOM_FORM_COMPONENTS = [
 	CheckboxFieldComponent,
 	SelectFieldWithBtnComponent,
 
+	ArrayFormComponent,
+	ArrayTextFieldComponent,
+
 	BasicTextFieldInputComponent,
 	BasicDropdownFieldInputComponent,
 ];
@@ -243,6 +253,7 @@ const CUSTOM_RENDER_COMPONENTS = [
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
 	TableColumnRendererComponent,
 	LanguageRenderComponent,
 	LanguageColumnRenderComponent,
@@ -277,6 +288,7 @@ const CUSTOM_ENTRY_COMPONENT = [
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
 	TableColumnRendererComponent,
 	LanguageRenderComponent,
 	LanguageColumnRenderComponent,

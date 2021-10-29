@@ -44,12 +44,26 @@ interface IProjectData
 	version: IVersion;
 }
 
+export interface IGameStats
+{
+	formulaPlayers: string;
+	formulaEnemies: string;
+	maxLevel: number;
+	stats: {
+		[key: string]: {},
+	};
+	modifiers: {
+		[key: string]: {},
+	};
+}
+
 export interface IProject extends PipelineAsset
 {
 	id?: string;
 	tables: ITable;
 	metadata: IProjectData;
 	members: { [key: string]: boolean };
+	gameStats?: IGameStats;
 }
 
 export class Project implements IProject
@@ -90,6 +104,14 @@ export class Project implements IProject
 			minor: 0,
 			release: '0',
 		},
+	}
+
+	public gameStats: IGameStats = {
+		formulaPlayers: '(level - 1) * 156 + (level - 1) * (level - 1) * (level - 1) * 1.265 - 3',
+		formulaEnemies: '(level - 1) * 156 + (level - 1) * (level - 1) * (level - 1) * 1.265 - 3',
+		maxLevel: 200,
+		stats: {},
+		modifiers: {},
 	}
 
 	static find(tClass: any, id: number): any | null

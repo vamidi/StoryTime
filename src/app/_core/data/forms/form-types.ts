@@ -46,6 +46,7 @@ export abstract class FormQuestionBase<T>
 	public onIconClickFunc: Function = () => UtilsService.onDebug('icon clicked');
 	public onFirstBtnClick: Function = () => UtilsService.onDebug('first button clicked');
 
+	/*
 	public set (value, formGroup: FormGroup): AbstractControl
 	{
 		this.value = value;
@@ -57,6 +58,7 @@ export abstract class FormQuestionBase<T>
 	{
 		return formGroup.controls[this.key];
 	}
+	*/
 
 	protected constructor(data: any)
 	{

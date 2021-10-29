@@ -20,7 +20,8 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 @Component({
 	template: '',
 })
-export class BaseSourceDataComponent extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
+export abstract class BaseSourceDataComponent
+	extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
 {
 	public Title: string = '';
 
@@ -36,7 +37,7 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 	 * @param firebaseService - Firebase connection information
 	 * @param firebaseRelationService - Relation service for table relations
 	 * @param languageService -
-	 * @param tableName - table name what firebase should be looking at
+	 * @param tableId - table name what firebase should be looking at
 	 */
 	constructor(
 		protected router: Router,
@@ -49,11 +50,11 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected languageService: LanguageService,
-		@Inject(String) protected tableName: string = '',
+		@Inject(String)protected tableId = '',
 	) {
 		super(
 			router, firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, languageService, tableName,
+			userPreferencesService, projectService, tableService, languageService, tableId,
 		);
 	}
 
@@ -64,7 +65,7 @@ export class BaseSourceDataComponent extends BaseFirebaseTableComponent implemen
 		// Get the stories table
 		// this.tableName = 'characters';
 		// Let firebase search with current table name
-		this.firebaseService.setTblName(this.tableName);
+		this.firebaseService.setTblName(this.tableId);
 	}
 
 	public ngAfterViewInit(): void

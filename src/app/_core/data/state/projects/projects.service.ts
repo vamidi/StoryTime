@@ -13,33 +13,18 @@ import { FilterCallback, firebaseFilterConfig } from '@app-core/providers/fireba
 import { ProxyObject } from '@app-core/data/base';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 
-import pick from 'lodash.pick';
-import { PipelineService } from '@app-core/utils/pipeline.service';
-import { environment } from '../../../../../environments/environment';
-import { KeyLanguage, SystemLanguage, systemLanguages } from '@app-core/data/state/node-editor/languages.model';
+import {
+	KeyLanguage,
+	KeyLanguageObject,
+	SystemLanguage,
+	systemLanguages,
+} from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
+import pick from 'lodash.pick';
 
 @Injectable({ providedIn: 'root'})
-export class ProjectsService extends ProjectData implements Iterable<Project>, IPipelineSchedule
+export class ProjectsService extends ProjectData implements Iterable<Project>
 {
-	name: string = 'ProjectsServiceScheduler';
-
-	public items: Map<string, Project>;
-
-	/**
-	 * @see {PipelineService}
-	 * @brief - function we are going to call in the scheduler
-	 * @param v
-	 * @param idx
-	 * @param array
-	 */
-	callbackFn: (v: Project, key: string, map: Map<string, Project>) => boolean = this.updateProject;
-
-	/**
-	 * @brief - Force the change even when the version is the same.
-	 */
-	force: boolean = false;
-
 	private counter: number = 0;
 
 	private project: Project | null = null;
@@ -63,15 +48,10 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		protected storageService: FirebaseStorageService,
 		protected tablesService: TablesService,
 		protected breadcrumbService: BreadcrumbsService,
-		protected pipelineService: PipelineService,
 		protected router: Router,
 	)
 	{
 		super();
-
-
-		// add to scheduler
-		this.pipelineService.addSchedule(this);
 	}
 
 	/**
@@ -185,6 +165,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		// if we don't have the project, grab it again.
 		if(!this.projects.has(key))
 		{
+			console.log(key);
 			return this.firebaseService.getRef('projects/' + key).once('value')
 			.then((result) =>
 			{
@@ -229,9 +210,6 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			}
 			else {
 				this.projects.set(key, newProject);
-
-				// Add item to the list
-				this.items = new Map<string, Project>(this.projects);
 			}
 		}
 
@@ -248,7 +226,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
 					return {title: UtilsService.title(table.name), data: { method: 'tables', id: t }}
-				}),
+				}).sort((a, b) => UtilsService.sortAlphabeticFunc(a, b, 'title')),
 			);
 
 			this.mainSubscription.add(this.menuService.onItemClick()
@@ -259,6 +237,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			this.breadcrumbService.addCallbackForRouteRegex('/dashboard/projects/-[a-zA-Z]', (id) =>
 				id === this.project.id ? this.project.metadata.title : id);
 
+			console.log(project.id);
 			this.firebaseService.getRef(`projects/${project.id}/metadata/updated_at`).on('value', (snapshot) => {
 				this.project.metadata.updated_at = snapshot.val();
 				this.project$.next(this.project);
@@ -266,9 +245,6 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 
 			// set the project ref in the storage service
 			this.storageService.Project = this.project;
-
-			// Run the scheduler
-			this.pipelineService.run(this.name);
 		}
 
 		return project;
@@ -291,7 +267,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 			return this.firebaseService.updateItem(key, table, true, `projects`);
 		}
 
-		return Promise.reject(`Couldn't find table ${key}`);
+		return Promise.reject(`294 - Couldn't find table ${key}`);
 	}
 
 	public loadProject(key: string, onProjectLoaded: Function)
@@ -448,18 +424,6 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 		};
 	}
 
-	public resolve(dirty: boolean, project: Project, key: string)
-	{
-		if(dirty)
-		{
-			this.projects.set(key, project);
-			this.update(key);
-		}
-
-		// clear the scheduler
-		this.items.clear();
-	}
-
 	protected onCardOptionClicked(item: { title: string, data: { id: string, method: string } })
 	{
 		switch (item.data.method)
@@ -473,71 +437,26 @@ export class ProjectsService extends ProjectData implements Iterable<Project>, I
 				break;
 		}
 	}
-
-	private updateProject(v: Project, key: string, map: Map<string, Project>): boolean
-	{
-		UtilsService.onAssert(map.size === this.projects.size, `Amount of assets ${map.size} is not equal to amount of projects ${this.projects.size}`);
-
-		if(environment.production) // don't run in production
-			return;
-
-		let dirty;
-		dirty = this.updateProjectVersion(key, v);
-		if(dirty)
-			this.updateProjectLanguages(key, v)
-		else
-			dirty = this.updateProjectLanguages(key, v);
-		return dirty;
-	}
-
-	/**
-	 * @brief - Simple scheduler func to update project version
-	 * @private
-	 */
-	private updateProjectVersion(key: string, asset: Project): boolean
-	{
-		// alright we check if the version exists in the project.
-		if(!asset.metadata.hasOwnProperty('version'))
-		{
-			console.log('we dont have a version at all');
-			if(this.projects.has(key))
-			{
-				asset.metadata.version = {
-					major: environment.MAJOR,
-					minor: environment.MINOR,
-					release: environment.RELEASE,
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private updateProjectLanguages(key: string, asset: Project): boolean
-	{
-		// alright we check if the version exists in the project.
-		if(!asset.metadata.hasOwnProperty('languages'))
-		{
-			console.log('we dont have languages at all');
-			if(this.projects.has(key))
-			{
-				asset.metadata.languages = {
-					'en': true,
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
 }
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService
 {
+	public static GetLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
+	{
+		if(prop === null) {
+			return '';
+		}
+
+		if(prop && prop.hasOwnProperty(lang))
+			return prop[lang];
+
+		if(prop && prop.hasOwnProperty(this.fallBackLanguage))
+			return prop[this.fallBackLanguage];
+
+		return '';
+	}
+
 	public set SetLanguage(lang: KeyLanguage)
 	{
 		this.selectedLanguage = lang; this.selectedLanguage$.next(this.selectedLanguage);
@@ -571,5 +490,12 @@ export class LanguageService
 
 	private selectedLanguage: KeyLanguage = null;
 
+	private static fallBackLanguage: KeyLanguage = 'en';
+
 	constructor(protected projectsService: ProjectsService) {}
+
+	public getLanguageFromProperty(prop: KeyLanguageObject, lang: KeyLanguage): string
+	{
+		return LanguageService.GetLanguageFromProperty(prop, lang);
+	}
 }

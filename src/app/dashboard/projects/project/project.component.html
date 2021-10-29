@@ -10,12 +10,12 @@
 	</div>
 
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('game-editor')">
 			<nb-card-header>
-				Character Editor
+				Game Editor
 			</nb-card-header>
 			<nb-card-body>
-				<p>Inside this module you can adjust settings such as stats, classes etc</p>
+				<p>Inside this module you can adjust character settings, stats, classes etc</p>
 			</nb-card-body>
 		</nb-card>
 	</div>
@@ -40,12 +40,12 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
+		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('stats-editor')">
 			<nb-card-header>
-				Dialogue Editor
+				Stats Editor
 			</nb-card-header>
 			<nb-card-body>
-				<p>Inside this module you are able to changes dialogues of characters through the Node editor.</p>
+				<p>Inside this module you are able to change stats that are available in your game.</p>
 			</nb-card-body>
 		</nb-card>
 	</div>

@@ -7,6 +7,8 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { TablesService } from '@app-core/data/state/tables';
 import { Table } from '@app-core/data/state/tables';
 
+import { of } from 'rxjs/observable/of';
+
 import firebase from 'firebase/app';
 
 // TODO see if needed
@@ -54,7 +56,9 @@ export class Relation
 	{
 		if(this.tableId !== '' && this.tableId === this.tblColumnRelation.key)
 		{
-			this.relationReceiver$ = this.tableService.getTable$();
+			// TODO see if this new change breaks anything
+			this.relationReceiver$ = of(this.tableService.getTableById(this.tableId));
+			// this.relationReceiver$ = this.tableService.getTable$();
 		}
 		else
 		{

@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { NotFoundComponent } from '../pages/miscellaneous/not-found/not-found.component';
-import { HomeComponent } from '../home.component';
+import { HomeComponent } from './home.component';
 import { NoPermissionComponent } from '../pages/miscellaneous/no-permissions/no-permission.component';
 
 const routes: Routes = [
