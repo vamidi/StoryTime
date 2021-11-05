@@ -42,6 +42,16 @@ MonoBehaviour:
       Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
+  - m_GUID: 534666bf16d51db429bfbfbbd7b9a6e5
+    m_Address: Assets/Samples/StoryTime/1.6.2-preview/Example Scenes/Localization/ItemData/Item
+      Names/Item Names Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+  - m_GUID: 9d58f987702dcc34ca3102c4bc48a52f
+    m_Address: Assets/Samples/StoryTime/1.6.2-preview/Example Scenes/Localization/ItemData/Item
+      Descriptions/Item Descriptions Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
