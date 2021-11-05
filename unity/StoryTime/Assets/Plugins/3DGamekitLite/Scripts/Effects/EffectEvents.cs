@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-using DatabaseSync.Components;
-
 namespace Gamekit3D
 {
     public class EffectEvents : MonoBehaviour
@@ -36,7 +34,7 @@ namespace Gamekit3D
             if (m_Animator == null)
                 throw new MissingComponentException("EffectEvents requires an animator!");
 
-            SceneLinkedSMB<EffectEvents>.Initialise(m_Animator, this);
+            StoryTime.Components.SceneLinkedSMB<EffectEvents>.Initialise(m_Animator, this);
 
             m_EventLookup.Clear();
             for (int i = 0; i < events.Length; ++i)

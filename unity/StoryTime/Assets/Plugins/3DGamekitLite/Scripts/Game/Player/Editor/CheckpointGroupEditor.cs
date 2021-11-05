@@ -9,7 +9,7 @@ namespace Gamekit3D
         public void OnSceneGUI()
         {
             var cpg = target as CheckpointGroup;
-            var children = cpg.GetComponentsInChildren<DatabaseSync.Components.Checkpoint>();
+            var children = cpg.GetComponentsInChildren<StoryTime.Components.Checkpoint>();
             for (var i = 0; i < children.Length; i++)
             {
                 if (Tools.current == Tool.Scale)
@@ -52,7 +52,7 @@ namespace Gamekit3D
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
-                    var g = new GameObject("Checkpoint (" + children.Length + ")", typeof(SphereCollider), typeof(DatabaseSync.Components.Checkpoint));
+                    var g = new GameObject("Checkpoint (" + children.Length + ")", typeof(SphereCollider), typeof(StoryTime.Components.Checkpoint));
                     Undo.RegisterCreatedObjectUndo(g, "Create Checkpoint");
                     g.transform.position = hit.point;
                     g.transform.parent = cpg.transform;

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-using DatabaseSync.Components;
+using StoryTime.Components;
 
 namespace Gamekit3D
 {
@@ -80,12 +80,12 @@ namespace Gamekit3D
             }
 
             if (fade)
-                yield return StartCoroutine(DatabaseSync.Components.ScreenFader.FadeSceneOut());
+                yield return StartCoroutine(ScreenFader.FadeSceneOut());
 
             transitioningGameObject.transform.position = destinationPosition;
 
             if (fade)
-                yield return StartCoroutine(DatabaseSync.Components.ScreenFader.FadeSceneIn());
+                yield return StartCoroutine(ScreenFader.FadeSceneIn());
 
             if (releaseControl)
             {

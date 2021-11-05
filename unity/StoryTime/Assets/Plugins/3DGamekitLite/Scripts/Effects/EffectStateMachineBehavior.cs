@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gamekit3D
 {
-    public class EffectStateMachineBehavior : DatabaseSync.Components.SceneLinkedSMB<EffectEvents>
+    public class EffectStateMachineBehavior : StoryTime.Components.SceneLinkedSMB<EffectEvents>
     {
         public enum EventType
         {
