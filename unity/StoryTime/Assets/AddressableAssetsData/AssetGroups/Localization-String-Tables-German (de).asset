@@ -17,38 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ba2c959c1d3c6bb429e821782a1f117f
   m_SerializeEntries:
-  - m_GUID: 2ea4ce16e6597fd478e9566d814a04ed
-    m_Address: Navigation_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
-  - m_GUID: 55f7537ed466a414383f41f69dcc20f1
-    m_Address: InventoryTabTypes_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
-  - m_GUID: c98d82e0ab4be754b92f87f128640fb4
-    m_Address: Characters_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
-  - m_GUID: f1322ad45769baa4faf945823bddd0a8
-    m_Address: Interactions_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
   - m_GUID: a6ceddbc89b026d46a981c0a75b6312d
     m_Address: Stat Names_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
-  - m_GUID: 8be70269bca3aca448f91e4dd7857b67
-    m_Address: Item Names_de
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-de
-  - m_GUID: 8eec6b3b97b3a984e8e7bcb1f1b90840
-    m_Address: Item Descriptions_de
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-de
