@@ -22,16 +22,6 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-fr
-  - m_GUID: 0dee24d65328f944e8d2bc2c09ce06d5
-    m_Address: Navigation_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
-  - m_GUID: 6d1833effc5d3544e80aeecc194e8d0b
-    m_Address: InventoryTabTypes_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
