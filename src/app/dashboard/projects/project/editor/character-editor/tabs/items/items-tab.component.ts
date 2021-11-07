@@ -22,9 +22,8 @@ import {
 } from '@app-theme/components';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import {
-	DmgType, IAttribute,
-	IClassParameterCurve,
-	IEnemyParameterCurve,
+	DmgType,
+	IAttribute,
 	IItem,
 	IItemType,
 	ISkill,
@@ -157,8 +156,8 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 	{
 		super.addMultiple({
 			context: {
-				title: 'Add a new skill',
-				tblName: 'skills',
+				title: 'Add a new item',
+				tblName: 'items',
 				settings: this.settings,
 			},
 		});
@@ -253,6 +252,7 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 				this.itemTypeField.setValue = this.selectedObject.typeId;
 				this.itemSellableField.setValue = this.selectedObject.sellable;
 				this.itemCostField.setValue = this.selectedObject.sellValue;
+				// this.itemConsumableField.setValue = this.selectedObject.variance;
 				this.scopeField.setValue = this.selectedObject.scope;
 				this.occasionField.setValue = this.selectedObject.occasion;
 				this.speedField.setValue = this.selectedObject.speed;
