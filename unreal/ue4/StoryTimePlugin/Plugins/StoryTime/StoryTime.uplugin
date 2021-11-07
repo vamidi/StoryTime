@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "StoryTime",
+	"Description": "-- DISCLAIMER --\\nYou will need the StoryTime DB application in order to communicate the game data back and forth.\\n\\nStoryTime is package that provides components to make RPG games.",
+	"Category": "Other",
+	"CreatedBy": "Valencio Hoffman",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "StoryTime",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
