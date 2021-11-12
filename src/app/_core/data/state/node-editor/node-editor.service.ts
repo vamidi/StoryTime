@@ -298,6 +298,7 @@ export class NodeEditorService
 		{
 			if(res !== undefined)
 			{
+				this.nodeEditor.clear();
 				this.currentFileUpload = res;
 				const isStory = this.currentFileUpload instanceof StoryFileUpload;
 				let selectedItem = null;
