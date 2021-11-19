@@ -23,7 +23,7 @@ import { UserService } from '@app-core/data/state/users';
 import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
 import { TablesService } from '@app-core/data/state/tables';
-import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { UserPreferences } from '@app-core/utils/utils.service';
@@ -46,25 +46,24 @@ import isEqual from 'lodash.isequal';
 @Component({
 	template: '',
 })
-export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent implements OnDestroy
-{
+export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent implements OnDestroy {
 	@Input()
 	public gridMode: boolean = true;
 
 	@Output()
 	public toggleView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	public get getTable(): Table
-	{
+	public get getTable(): Table {
 		return this.table;
 	}
 
-	public get getSource(): LocalDataSource
-	{
+	public get getSource(): LocalDataSource {
 		return this.table.getSource;
 	}
 
-	public get languages() { return this.languageService.ProjectLanguages; }
+	public get languages() {
+		return this.languageService.ProjectLanguages;
+	}
 
 	public settings: ISettings = new BaseSettings();
 	/*{
@@ -151,8 +150,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param tblId
 	 * @protected
 	 */
-	protected set setTblName(tblId: string)
-	{
+	protected set setTblName(tblId: string) {
 		this.tableId = tblId;
 		this.firebaseService.setTblName(this.tableId);
 	}
@@ -174,7 +172,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected languageService: LanguageService,
-		@Inject(String)protected tableId = '',
+		@Inject(String) protected tableId = '',
 	) {
 		super(
 			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
@@ -186,9 +184,8 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		// iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
 	}
 
-	public ngOnDestroy()
-	{
-		if(!this.mainSubscription.closed)
+	public ngOnDestroy() {
+		if (!this.mainSubscription.closed)
 			this.mainSubscription.unsubscribe();
 
 		// unsubscribe listening to the child_added event
@@ -203,22 +200,19 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 */
 	public onEditConfirm(
 		event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false, tableId: string = '',
-	)
-	{
+	) {
 		super.onEditConfirm(event, undo);
-		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService))
-		{
+		if (event.hasOwnProperty('newData') && this.userService.checkTablePermissions(this.tableService)) {
 			let tblId = this.tableId;
 
 			// if we override the tblName
-			if(tableId !== '')
+			if (tableId !== '')
 				tblId = tableId;
 
-			const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
-			const obj: ProxyObject = { ...event.newData };
+			const oldObj: ProxyObject = event.hasOwnProperty('data') ? {...event.data} : null;
+			const obj: ProxyObject = {...event.newData};
 
-			if (!event.newData.hasOwnProperty('id'))
-			{
+			if (!event.newData.hasOwnProperty('id')) {
 				UtilsService.showToast(
 					this.toastrService,
 					'Warning!',
@@ -228,8 +222,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 				return;
 			}
 
-			if(isEqual(event.data, event.newData))
-			{
+			if (isEqual(event.data, event.newData)) {
 				UtilsService.showToast(
 					this.toastrService,
 					'Row not updated!',
@@ -245,8 +238,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			obj.deleted = !!+event.newData.deleted;
 
 			// TODO remove when event always has data information.
-			if(event.hasOwnProperty('data'))
-			{
+			if (event.hasOwnProperty('data')) {
 				for (const field of Object.keys(obj)) {
 					const exists = obj.hasOwnProperty(field);
 
@@ -273,7 +265,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
 			this.tableService.updateData(tblId, event.newData.id, obj, oldObj).then(
 				() => {
-					if(typeof undo !== 'undefined' && undo === false) // only show the toast when we already undid the obj
+					if (typeof undo !== 'undefined' && undo === false) // only show the toast when we already undid the obj
 					{
 						UtilsService.showToast(
 							this.toastrService,
@@ -283,8 +275,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 						);
 
 						event.confirm.resolve();
-					}
-					else {
+					} else {
 						this.snackbarService.show('Data has been successfully updated', 'UNDO', {
 							duration: 10000,
 							click: () => {
@@ -312,20 +303,18 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param callback - Callback when the deletion is complete.
 	 * @param tableId - Override to delete data somewhere else.
 	 */
-	public onDeleteConfirm(event: { data: ProxyObject, confirm?: any }, callback = () => {}, tableId: string = '')
-	{
-		if (event.hasOwnProperty('data') && this.userService.checkTablePermissions(this.tableService))
-		{
-			if (confirm('Are you sure you want to delete this item? This can\'t be undone'))
-			{
+	public onDeleteConfirm(event: { data: ProxyObject, confirm?: any }, callback = () => {
+	}, tableId: string = '') {
+		if (event.hasOwnProperty('data') && this.userService.checkTablePermissions(this.tableService)) {
+			if (confirm('Are you sure you want to delete this item? This can\'t be undone')) {
 				let tblId = this.tableId;
 
 				// if we override the tblName
-				if(tableId !== '')
+				if (tableId !== '')
 					tblId = tableId;
 
-				const oldObj: ProxyObject = { ...event.data };
-				const obj: ProxyObject = { ...event.data };
+				const oldObj: ProxyObject = {...event.data};
+				const obj: ProxyObject = {...event.data};
 
 				obj.updated_at = UtilsService.timestamp;
 				obj.deleted = true;
@@ -333,30 +322,30 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 				// We don't have to make a revision for deleted items.
 				this.tableService.updateData(tblId, event.data.id, obj, null, false)
 					.then(() => {
-						UtilsService.showToast(
-							this.toastrService,
-						'Row deleted!',
-						'Row has been successfully deleted',
-						);
+							UtilsService.showToast(
+								this.toastrService,
+								'Row deleted!',
+								'Row has been successfully deleted',
+							);
 
-						UtilsService.showSnackbar(
-							this.snackbarService,
-							'UNDO',
-							'Row has been successfully reverted',
-							() => {
-								this.onEditConfirm({
-									data: obj,
-									newData: oldObj,
-									confirm: event.confirm,
-								}, false, tblId);
-							},
-							'basic',
-							10000,
-						);
+							UtilsService.showSnackbar(
+								this.snackbarService,
+								'UNDO',
+								'Row has been successfully reverted',
+								() => {
+									this.onEditConfirm({
+										data: obj,
+										newData: oldObj,
+										confirm: event.confirm,
+									}, false, tblId);
+								},
+								'basic',
+								10000,
+							);
 
-						callback();
-					},
-				);
+							callback();
+						},
+					);
 
 				event.confirm?.resolve();
 				return;
@@ -366,40 +355,34 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		event.confirm?.reject().then();
 	}
 
-	public saveForm($event: any)
-	{
+	public saveForm($event: any) {
 		// see if we have a valid event
-		if ($event && $event['event'] !== undefined)
-		{
+		if ($event && $event['event'] !== undefined) {
 			// see what kind of behaviour this is
 			if ($event['type'] !== undefined) {
 				const type: BehaviourType = $event.type;
 
 				const newSettings: ISettings =
-				{
-					...this.settings,
-					columns: {
-						...this.settings.columns,
-					},
-				};
+					{
+						...this.settings,
+						columns: {
+							...this.settings.columns,
+						},
+					};
 
-				switch (type)
-				{
+				switch (type) {
 					case BehaviourType.INSERT: // if we want to insert new column
 					{
-						const columns: { [key:string]: Column } = $event.event.columns;
+						const columns: { [key: string]: Column } = $event.event.columns;
 
-						if (columns)
-						{
-							for (const [key, value] of Object.entries(columns))
-							{
-								if (!newSettings.columns.hasOwnProperty(key.toString()))
-								{
+						if (columns) {
+							for (const [key, value] of Object.entries(columns)) {
+								if (!newSettings.columns.hasOwnProperty(key.toString())) {
 									newSettings.columns[key] =
-									{
-										title: value.title,
-										type: value.type,
-									};
+										{
+											title: value.title,
+											type: value.type,
+										};
 
 									if (this.table.length === 0) // if there is no data we need to put in default data
 									{
@@ -410,12 +393,9 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 										}, key, value, newSettings));
 									}
 
-									this.table.forEach((d, index) =>
-									{
-										if (index === this.table.length - 1)
-										{
-											const updateData = () =>
-											{
+									this.table.forEach((d, index) => {
+										if (index === this.table.length - 1) {
+											const updateData = () => {
 												d.updated_at = UtilsService.timestamp;
 												return this.tableService.updateData(this.tableId, d.id, d, null, false);
 											};
@@ -423,9 +403,8 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 											this.table.update(d, this.processData(d, key, value, newSettings))
 												.then(() => updateData())
 												.then(() => this.updateSettings(newSettings)).catch((error) => this.onError(error));
-										}
-										else
-											this.table.update({ ...d }, this.processData({ ...d }, key, value, newSettings))
+										} else
+											this.table.update({...d}, this.processData({...d}, key, value, newSettings))
 												.catch((error) => this.onError(error));
 										// array[index] = this.processData({ ...d }, key, value, newSettings);
 									});
@@ -434,8 +413,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 						}
 					}
 						break;
-					case BehaviourType.UPDATE:
-					{
+					case BehaviourType.UPDATE: {
 						const oldKey = $event.event.oldKey;
 						const newKey = $event.event.newKey;
 
@@ -451,15 +429,13 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 						// Delete the old key from the column list.
 						UtilsService.deleteProperty(newSettings.columns, camelCaseOldKey);
 
-						this.table.forEach((d) =>
-						{
+						this.table.forEach((d) => {
 							d.updated_at = UtilsService.timestamp;
 
 							UtilsService.renameProperty(d, camelCaseOldKey, camelCaseNewKey);
 
 							// we only have to delete the field from each object.
-							this.tableService.deleteData(this.tableId, `${d.id}/${camelCaseOldKey}`, d, null, false).then(() =>
-							{
+							this.tableService.deleteData(this.tableId, `${d.id}/${camelCaseOldKey}`, d, null, false).then(() => {
 								// Update changes in the database
 								// Firebase is efficient enough to only update the field that is changed to a new value.
 								this.tableService.updateData(this.tableId, d.id, d, null, false)
@@ -470,14 +446,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 						this.updateSettings(newSettings);
 					}
 						break;
-					case BehaviourType.DELETE:
-					{
+					case BehaviourType.DELETE: {
 						const key = UtilsService.camelize($event.event.key);
 
 						UtilsService.deleteProperty(newSettings.columns, key);
 
-						this.table.forEach((d) =>
-						{
+						this.table.forEach((d) => {
 							d.updated_at = UtilsService.timestamp;
 
 							UtilsService.deleteProperty(d, key);
@@ -485,8 +459,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 							// this.afd.object('/' + tbl + '/' + String(id))
 
 							// we only have to delete the field from each object.
-							this.tableService.deleteData(this.tableId, `${d.id}/${key}`, d, null, false).then(() =>
-							{
+							this.tableService.deleteData(this.tableId, `${d.id}/${key}`, d, null, false).then(() => {
 								// Firebase is efficient enough to only update the field that is changed to a new value.
 								this.tableService.updateData(this.tableId, d.id, d, null, false)
 									.catch((error) => this.onError(error));
@@ -495,42 +468,36 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 						this.updateSettings(newSettings);
 					}
-					break;
+						break;
 				}
 			}
 		}
 	}
 
-	public toggleColumn(event: { key: string, value: boolean })
-	{
-		if(this.settings.columns[event.key].hidden === event.value)
+	public toggleColumn(event: { key: string, value: boolean }) {
+		if (this.settings.columns[event.key].hidden === event.value)
 			return;
 
 		const container = this.userPreferences.visibleColumns;
 
-		if(!container.has(this.table.metadata.title))
-		{
+		if (!container.has(this.table.metadata.title)) {
 			const o = {};
 			o[event.key] = event.value;
 			container.set(this.table.metadata.title, o);
-		}
-		else
+		} else
 			container.get(this.table.metadata.title)[event.key] = event.value;
 
 		this.userPreferencesService.setUserPreferences(this.userPreferences);
 	}
 
-	public onColumnOrderChange(event: any)
-	{
-		if(event.hasOwnProperty('columns'))
-		{
+	public onColumnOrderChange(event: any) {
+		if (event.hasOwnProperty('columns')) {
 			const container = this.userPreferences.indexColumns;
 
-			if(!container.has(this.table.metadata.title))
+			if (!container.has(this.table.metadata.title))
 				container.set(this.table.metadata.title, {});
 
-			for(const key of Object.keys(event.columns))
-			{
+			for (const key of Object.keys(event.columns)) {
 				container.get(this.table.metadata.title)[key] = event.columns[key].index;
 			}
 
@@ -538,8 +505,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		}
 	}
 
-	public onLanguageChange(event: KeyLanguage)
-	{
+	public onLanguageChange(event: KeyLanguage) {
 		this.languageService.SetLanguage = event;
 	}
 
@@ -551,17 +517,13 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param value
 	 * @param additionalSettings
 	 */
-	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: ISettings)
-	{
-		if (!obj.hasOwnProperty(key))
-		{
-			if (value.type.toLowerCase() === 'string')
-			{
+	protected processData(obj: ProxyObject, key: string, value: any, additionalSettings: ISettings) {
+		if (!obj.hasOwnProperty(key)) {
+			if (value.type.toLowerCase() === 'string') {
 				obj[key] = '';
 			}
 
-			if (value.type.toLowerCase() === 'number')
-			{
+			if (value.type.toLowerCase() === 'number') {
 				// TODO make this value max_integer when this is marked as foreign key.
 				obj[key] = 0;
 				additionalSettings.columns[key] = {
@@ -572,8 +534,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 					},
 				};
 			}
-			if (value.type.toLowerCase() === 'boolean')
-			{
+			if (value.type.toLowerCase() === 'boolean') {
 				obj[key] = false;
 
 				// the column should be string because we render string.
@@ -599,16 +560,14 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param overrideTitle
 	 * @protected
 	 */
-	protected processColumnData(newSettings: ISettings, overrideTitle: string = '')
-	{
+	protected processColumnData(newSettings: ISettings, overrideTitle: string = '') {
 		let tbl = this.table.metadata.title;
 
 		// if we override the tblName
-		if(overrideTitle !== '')
+		if (overrideTitle !== '')
 			tbl = overrideTitle;
 
-		if(this.userPreferences.indexColumns.has(tbl))
-		{
+		if (this.userPreferences.indexColumns.has(tbl)) {
 			const indexColumns = this.userPreferences.indexColumns.get(tbl);
 
 			Object.keys(indexColumns).forEach((key) => {
@@ -621,14 +580,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @brief update the settings with latest columns
 	 * @param newSettings
 	 */
-	protected updateSettings(newSettings: ISettings)
-	{
+	protected updateSettings(newSettings: ISettings) {
 		this.settings = Object.assign({}, newSettings);
 		this.columnData = this.settings.columns;
 	}
 
-	protected onError(error)
-	{
+	protected onError(error) {
 		UtilsService.onError(error);
 	}
 
@@ -637,12 +594,11 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	 * @param settings
 	 * @param tblName
 	 */
-	protected getTableData(settings: ISettings = null, tblName = '')
-	{
+	protected getTableData(settings: ISettings = null, tblName = '') {
 		let tbl = this.tableId;
 
 		// if we override the tblName
-		if(tblName !== '')
+		if (tblName !== '')
 			tbl = tblName;
 
 		// check if it does not end with game-db
@@ -652,14 +608,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		// get the table data
 		// make a separate function in order to get a reference to this.
 		const fetchTable$: Observable<Table> = this.firebaseService.getTableData$(`tables/${tbl}`).pipe(
-			map((snapshots) =>
-			{
+			map((snapshots) => {
 				const table: Table = new Table();
 				table.id = tbl;
 
 				// configure fields
-				snapshots.forEach((snapshot) =>
-				{
+				snapshots.forEach((snapshot) => {
 					table[snapshot.key] = snapshot.payload.val();
 				});
 
@@ -667,40 +621,34 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			}),
 		);
 
-		this.mainSubscription.add(fetchTable$.subscribe((table: Table) =>
-		{
+		this.mainSubscription.add(fetchTable$.subscribe((table: Table) => {
 			this.projectService.set(table.projectID, true).then(() => {
 				this.userService.setUserPermissions(this.projectService);
 				this.onDataReceived(table)
 			});
-		}/*, () => this.router.navigateByUrl('/dashboard/error')*/ ));
+		}/*, () => this.router.navigateByUrl('/dashboard/error')*/));
 	}
 
 	protected processTableData(
 		tableData: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
-	): ISettings
-	{
+	): ISettings {
 		const newSettings = super.processTableData(tableData, verify, settings, overrideTbl);
 
-		for(const key of Object.keys(newSettings.columns))
-		{
+		for (const key of Object.keys(newSettings.columns)) {
 			// Configure hide/non hidden columns
-			if(this.userPreferences.visibleColumns.has(this.table.metadata.title))
-			{
+			if (this.userPreferences.visibleColumns.has(this.table.metadata.title)) {
 				const visibleColumns = this.userPreferences.visibleColumns.get(this.table.metadata.title);
 
-				if(visibleColumns && visibleColumns.hasOwnProperty(key))
-				{
+				if (visibleColumns && visibleColumns.hasOwnProperty(key)) {
 					this.toggleColumn({key: key, value: visibleColumns[key]});
 					newSettings.columns[key].hidden = visibleColumns[key];
 				}
 			}
 
-			if(this.userPreferences.indexColumns.has(this.table.metadata.title))
-			{
+			if (this.userPreferences.indexColumns.has(this.table.metadata.title)) {
 				const indexColumns = this.userPreferences.indexColumns.get(this.table.metadata.title);
 
-				if(indexColumns && indexColumns.hasOwnProperty(key))
+				if (indexColumns && indexColumns.hasOwnProperty(key))
 					newSettings.columns[key].index = indexColumns[key];
 			}
 		}
@@ -726,11 +674,9 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	}
 	 */
 
-	protected onDataReceived(tableData: Table): void
-	{
+	protected onDataReceived(tableData: Table): void {
 		this.table = tableData;
-		if(tableData.hasOwnProperty('data') && Object.values(tableData.data).length !== 0)
-		{
+		if (tableData.hasOwnProperty('data') && Object.values(tableData.data).length !== 0) {
 			// reset the filter as well
 			tableData.getSource.setFilter([]);
 
@@ -750,10 +696,11 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		this.settings = Object.assign({}, newSettings);
 	}
 
-	protected onUserReceived(__: User)
-	{
+	protected onUserReceived(__: User) {
 		this.validateSettings(this.settings);
 	}
+
+	protected onProjectLoaded(_: Project) {}
 
 	protected onTableDataLoaded()
 	{

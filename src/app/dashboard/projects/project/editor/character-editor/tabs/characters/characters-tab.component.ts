@@ -4,7 +4,7 @@ import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 
-import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { UserService } from '@app-core/data/state/users';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
@@ -129,7 +129,7 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 	)
 	{
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-			userPreferencesService, tableService, firebaseRelationService, languageService, '-MhSKPfKb9XeqqYrW74q');
+			userPreferencesService, tableService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit()
@@ -196,7 +196,7 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 		});
 
 		this.mainSubscription.add(this.project$.subscribe((project) => {
-			if(project)
+			if(project) {
 				this.tablesService.loadTablesFromProject(project, ['classes'], (table) => this.loadTable(table))
 					.then(() => {
 						const options: Option<number>[] = [];
@@ -210,8 +210,9 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 						this.classField.question.options$.next(options);
 					});
 
-			// Important or data will not be caught.
-			this.getTableData(this.settings);
+				// Important or data will not be caught.
+				this.getTableData(this.settings);
+			}
 		}));
 	}
 
@@ -435,6 +436,12 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 			event.newData = this.selectedObject;
 			this.onEditConfirm(event,true, this.characters.id);
 		}
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.equipments;
+		this.setTblName = this.tableId;
 	}
 
 	protected override onDataReceived(tableData: Table)

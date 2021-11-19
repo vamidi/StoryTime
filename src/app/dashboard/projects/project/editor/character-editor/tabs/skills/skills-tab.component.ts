@@ -127,7 +127,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 	)
 	{
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-				userPreferencesService, tableService, firebaseRelationService, languageService, '-MhYQ7zqYvJ1lD6I-aSI');
+				userPreferencesService, tableService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit()
@@ -187,6 +187,12 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 				this.tableService.listenToTableData(this.attributes, ['child_added']),
 			);
 		}
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.skills;
+		this.setTblName = this.tableId;
 	}
 
 	protected override validate()

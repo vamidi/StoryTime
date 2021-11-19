@@ -117,6 +117,7 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 			if (project && !_.isEqual(this.project, project) && project.hasOwnProperty('tables'))
 			{
 				this.project = { ...project };
+				this.onProjectLoaded(this.project);
 				this.project$.next(this.project);
 			}
 

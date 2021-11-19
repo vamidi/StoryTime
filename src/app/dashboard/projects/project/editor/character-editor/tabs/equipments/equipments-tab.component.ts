@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { UserService } from '@app-core/data/state/users';
-import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogService, NbMenuService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -93,7 +93,7 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 	)
 	{
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-		userPreferencesService, tableService, firebaseRelationService, languageService, themeService, '-MhSKPfKb9XeqqYrW74q');
+		userPreferencesService, tableService, firebaseRelationService, languageService, themeService);
 
 		this.includedTables.push('classes', 'equipmenttypes');
 	}
@@ -116,78 +116,7 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 		});
 	}
 
-	protected loadTable(value: Table)
-	{
-		super.loadTable(value);
-
-		if (value === null) return;
-
-		if (value.metadata.title.toLowerCase() === 'classes') {
-			this.classes = <Table<ICharacterClass>>value;
-
-			const options: Option<number>[] = [];
-			this.classes.forEach((classObj) => {
-				options.push(new Option({
-					key: this.languageService.getLanguageFromProperty(classObj.className, this.selectedLanguage),
-					value: classObj.id,
-					selected: false,
-				}));
-			});
-			this.equipmentClassField.question.options$.next(options);
-
-			// Listen to incoming data
-			this.mainSubscription.add(
-				this.tableService.listenToTableData(this.classes, ['child_added']),
-			);
-		}
-
-
-		if (value.metadata.title.toLowerCase() === 'equipmenttypes') {
-			this.equipmentTypes = <Table<IEquipmentType>>value;
-
-			const optionCategories: Option<number>[] = [];
-			const optionTypes: Option<number>[] = [];
-
-			this.equipmentTypes.forEach((curve) => {
-				const id: number = curve.id;
-				optionCategories.push(new Option({
-					key: this.languageService.getLanguageFromProperty(curve.category, this.selectedLanguage),
-					value: id,
-					selected: false,
-				}));
-
-				optionTypes.push(new Option({
-					key: this.languageService.getLanguageFromProperty(curve.type, this.selectedLanguage),
-					value: id,
-					selected: false,
-				}));
-			});
-
-			this.equipmentCategoryField.question.options$.next(optionCategories);
-			this.equipmentTypeField.question.options$.next(optionTypes);
-
-			// Listen to incoming data
-			this.mainSubscription.add(
-				this.tableService.listenToTableData(this.equipmentTypes, ['child_added']),
-			);
-		}
-	}
-
-	protected override validate()
-	{
-		super.validate();
-
-		this.equipmentNameField.setDisabledState(this.selectedObject === null);
-		this.equipmentDescriptionField.setDisabledState(this.selectedObject === null);
-		this.equipmentTypeField.setDisabledState(this.selectedObject === null);
-		this.equipmentCategoryField.setDisabledState(this.selectedObject === null);
-		this.equipmentClassField.setDisabledState(this.selectedObject === null);
-		this.equipmentCostField.setDisabledState(this.selectedObject === null);
-		this.equipmentSellableField.setDisabledState(this.selectedObject === null);
-		this.animationField.setDisabledState(this.selectedObject === null);
-	}
-
-	public onActiveSelection(event: number)
+	public override onActiveSelection(event: number)
 	{
 		super.onActiveSelection(event);
 
@@ -401,6 +330,83 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 			required: false,
 			disabled: true,
 		});
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.equipments;
+		this.setTblName = this.tableId;
+	}
+
+	protected override loadTable(value: Table)
+	{
+		super.loadTable(value);
+
+		if (value === null) return;
+
+		if (value.metadata.title.toLowerCase() === 'classes') {
+			this.classes = <Table<ICharacterClass>>value;
+
+			const options: Option<number>[] = [];
+			this.classes.forEach((classObj) => {
+				options.push(new Option({
+					key: this.languageService.getLanguageFromProperty(classObj.className, this.selectedLanguage),
+					value: classObj.id,
+					selected: false,
+				}));
+			});
+			this.equipmentClassField.question.options$.next(options);
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.classes, ['child_added']),
+			);
+		}
+
+
+		if (value.metadata.title.toLowerCase() === 'equipmenttypes') {
+			this.equipmentTypes = <Table<IEquipmentType>>value;
+
+			const optionCategories: Option<number>[] = [];
+			const optionTypes: Option<number>[] = [];
+
+			this.equipmentTypes.forEach((curve) => {
+				const id: number = curve.id;
+				optionCategories.push(new Option({
+					key: this.languageService.getLanguageFromProperty(curve.category, this.selectedLanguage),
+					value: id,
+					selected: false,
+				}));
+
+				optionTypes.push(new Option({
+					key: this.languageService.getLanguageFromProperty(curve.type, this.selectedLanguage),
+					value: id,
+					selected: false,
+				}));
+			});
+
+			this.equipmentCategoryField.question.options$.next(optionCategories);
+			this.equipmentTypeField.question.options$.next(optionTypes);
+
+			// Listen to incoming data
+			this.mainSubscription.add(
+				this.tableService.listenToTableData(this.equipmentTypes, ['child_added']),
+			);
+		}
+	}
+
+	protected override validate()
+	{
+		super.validate();
+
+		this.equipmentNameField.setDisabledState(this.selectedObject === null);
+		this.equipmentDescriptionField.setDisabledState(this.selectedObject === null);
+		this.equipmentTypeField.setDisabledState(this.selectedObject === null);
+		this.equipmentCategoryField.setDisabledState(this.selectedObject === null);
+		this.equipmentClassField.setDisabledState(this.selectedObject === null);
+		this.equipmentCostField.setDisabledState(this.selectedObject === null);
+		this.equipmentSellableField.setDisabledState(this.selectedObject === null);
+		this.animationField.setDisabledState(this.selectedObject === null);
 	}
 
 	protected validateStat(stat: NbParameterCurves): boolean {

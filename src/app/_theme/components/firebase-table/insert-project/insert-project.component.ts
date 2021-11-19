@@ -165,6 +165,13 @@ export class InsertProjectComponent
 							languages: {
 								'en': true,
 							},
+							relatedTables: {
+								items: '',
+								equipments: '',
+								classes: '',
+								enemies: '',
+								skills: '',
+							},
 							version: {
 								major: environment.MAJOR,
 								minor: environment.MINOR,

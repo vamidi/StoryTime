@@ -182,7 +182,7 @@ export class FirebaseService implements OnDestroy
 	public setTblName(newTblName: string)
 	{
 		if(newTblName === '')
-			UtilsService.onError('There is no table defined!');
+			UtilsService.onWarn('There is no table defined!');
 
 		this.tblName = newTblName;
 	}
