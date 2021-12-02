@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { NbToastrService } from '@nebular/theme';
 
@@ -145,6 +145,10 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	protected user$: BehaviorSubject<UserModel> = new BehaviorSubject<UserModel>(null);
 	protected user: UserModel = defaultUser;
 
+	protected get getTblName(): string {
+		return this.tableId
+	}
+
 	/**
 	 *
 	 * @param tblId
@@ -162,7 +166,9 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	protected mainSubscription: Subscription = new Subscription();
 
 	protected constructor(
+		protected route: ActivatedRoute,
 		protected router: Router,
+
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected toastrService: NbToastrService,
@@ -175,7 +181,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		@Inject(String) protected tableId = '',
 	) {
 		super(
-			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
+			route, firebaseService, firebaseRelationService, toastrService, projectService, tableService,
 			userService, userPreferencesService, languageService, tableId,
 		);
 
@@ -602,7 +608,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			tbl = tblName;
 
 		// check if it does not end with game-db
-		if (this.tableId === 'game-db' || tbl === 'game-db')
+		if (this.tableId === 'game-db' || tbl === '' || tbl === 'game-db')
 			return;
 
 		// get the table data
@@ -699,8 +705,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 	protected onUserReceived(__: User) {
 		this.validateSettings(this.settings);
 	}
-
-	protected onProjectLoaded(_: Project) {}
 
 	protected onTableDataLoaded()
 	{

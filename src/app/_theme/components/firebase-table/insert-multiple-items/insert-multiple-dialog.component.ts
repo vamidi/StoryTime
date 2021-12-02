@@ -12,7 +12,7 @@ import {
 import { NbDialogRef } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { FormQuestionBase, Option } from '@app-core/data/forms/form-types';
-import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
+import { Column, ISettings } from '@app-core/mock/base-settings';
 import { BehaviourType } from '@app-core/types';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
 import { BehaviorSubject } from 'rxjs';
@@ -103,7 +103,6 @@ export class InsertMultipleDialogComponent implements
 
 	public ngOnInit()
 	{
-		// super.ngOnInit();
 		this.behaviourType$.subscribe((behaviourType) =>
 		{
 			if(!this.submitQuestion)

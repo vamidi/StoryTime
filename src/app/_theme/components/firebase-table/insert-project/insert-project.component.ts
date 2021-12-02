@@ -8,6 +8,7 @@ import {
 	Output,
 	ViewChild,
 } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BehaviourType } from '@app-core/types';
@@ -26,9 +27,8 @@ import { ITable, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/database/standard-tables';
 import { BehaviorSubject } from 'rxjs';
-import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { environment } from '../../../../../environments/environment';
-import { Validators } from '@angular/forms';
+import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -166,6 +166,7 @@ export class InsertProjectComponent
 								'en': true,
 							},
 							relatedTables: {
+								characters: '',
 								items: '',
 								equipments: '',
 								classes: '',

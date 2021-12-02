@@ -39,6 +39,7 @@ interface IProjectData
 	deleted: boolean;
 
 	relatedTables: {
+		characters: string,
 		items: string,
 		equipments: string,
 		classes: string,
@@ -108,6 +109,7 @@ export class Project implements IProject
 		},
 
 		relatedTables: {
+			characters: '',
 			items: '',
 			equipments: '',
 			classes: '',

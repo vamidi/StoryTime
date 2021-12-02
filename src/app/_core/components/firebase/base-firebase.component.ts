@@ -1,11 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ViewCell } from '@vamidicreations/ng2-smart-table';
-import { Row } from '@vamidicreations/ng2-smart-table/lib/lib/data-set/row';
-import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
+import { ActivatedRoute } from '@angular/router';
+import { AngularFireAction } from '@angular/fire/database';
 import { NbToastrService } from '@nebular/theme';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
 import { Table, TablesService } from '@app-core/data/state/tables';
@@ -22,6 +23,7 @@ import { LanguageService, Project, ProjectsService } from '@app-core/data/state/
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
+
 import isEqual from 'lodash.isequal';
 
 import firebase from 'firebase/app';
@@ -56,10 +58,16 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		this.firebaseService.setTblName(this.tableId);
 	}
 
+	protected project: Project = null;
+	protected project$: BehaviorSubject<Project> = new BehaviorSubject<Project>(null);
+	protected projectId: number = Number.MAX_SAFE_INTEGER;
+
 	// Main subscription to all events
 	protected mainSubscription: Subscription = new Subscription();
 
 	protected constructor(
+		protected route: ActivatedRoute,
+
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected toastrService: NbToastrService,
@@ -70,12 +78,17 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		protected languageService: LanguageService,
 		@Inject(String) protected tableId = '',
 	) {
-		if(tableId !== '')
-			this.firebaseService.setTblName(tableId);
+		if(tableId !== '') this.firebaseService.setTblName(tableId);
 	}
 
 	public ngOnInit(): void
 	{
+		// Get the stories table
+		// this.tableName = 'characters';
+		// Let firebase search with current table name
+		if(this.tableId !== '') this.firebaseService.setTblName(this.tableId);
+
+		// Load the user preferences
 		this.mainSubscription.add(this.userPreferencesService.getUserPreferences().subscribe((userPreferences) =>
 		{
 			this.userPreferences = { ...userPreferences };
@@ -104,17 +117,65 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
 		}));
 
-		this.mainSubscription.add(this.userService.getUser().subscribe((user: User) =>
+		// const map: ParamMap = this.route.snapshot.paramMap;
+		// const tableID = map.get('id');
+		// const id = map.get('charId');
+		this.projectId = Number.parseInt(this.route.parent.snapshot.paramMap.get('id') as string, 0);
+
+		// Load the user
+		this.mainSubscription.add(this.userService.getUser().pipe(
+			switchMap((user: User) => {
+				// Set the user
+				// Only push changed users.
+				if(!isEqual(this.user, user))
+				{
+					this.user = user;
+					this.user$.next(this.user);
+					// const canDelete: boolean = !_.isEmpty(_.intersection( ['admin', 'author'], allowedRoles));
+					this.onUserReceived(user);
+				}
+
+				if(this.projectService.getProject())
+					return this.projectService.getProject$();
+				else if(!isNaN(this.projectId))
+					return this.firebaseService.getItem(this.projectId, `projects`).snapshotChanges();
+				else
+					return of(null)
+			}),
+		).subscribe((snapshot: Project | AngularFireAction<any>) =>
 		{
-			// Only push changed users.
-			if(!isEqual(this.user, user))
+			// console.log(snapshot, typeof snapshot, snapshot instanceof Project);
+			let project = null;
+			if(snapshot !== null )
 			{
-				this.user = user;
-				this.user$.next(this.user);
-				// const canDelete: boolean = !_.isEmpty(_.intersection( ['admin', 'author'], allowedRoles));
-				this.onUserReceived(user);
+				if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+				{
+					project = snapshot;
+				} else if(snapshot.payload.exists())
+				{
+					project = snapshot.payload.val()
+				}
 			}
+
+			if (project && !isEqual(this.project, project) && project.hasOwnProperty('tables'))
+			{
+				this.project = { ...project };
+				this.onProjectLoaded(this.project);
+				this.project$.next(this.project);
+			}
+
+			this.userService.setUserPermissions(this.projectService);
 		}));
+
+		// Important or data will not be cached
+		/*
+		this.firebaseService.getRef(`tables/${tableID}/data/${id}`).on('value', (snapshot) => {
+			if(snapshot.exists())
+			{
+				this.characterData = snapshot.val();
+			}
+		});
+		*/
 	}
 
 	public ngOnDestroy(): void
@@ -123,6 +184,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			this.mainSubscription.unsubscribe();
 	}
 
+	protected onProjectLoaded(_: Project) {}
 
 	/**
 	 * @brief - Process table data to generate columns

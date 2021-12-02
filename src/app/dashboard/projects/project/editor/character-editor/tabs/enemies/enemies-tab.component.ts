@@ -137,6 +137,17 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 		});
 	}
 
+	public override addMultiple()
+	{
+		super.addMultiple({
+			context: {
+				title: 'Add a new enemy',
+				tblName: 'enemies',
+				settings: this.settings,
+			},
+		});
+	}
+
 	public onActiveSelection(event: number)
 	{
 		super.onActiveSelection(event);

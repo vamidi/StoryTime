@@ -6,23 +6,10 @@
 		<nb-tabset fullWidth>
 			<nb-tab tabTitle="Project Settings">
 				<div class="as-form">
-					<nb-accordion multi>
-						<nb-accordion-item>
-							<nb-accordion-item-header>
-							<!-- general info
-								(re)name of the project
-							-->
-								General project settings
-							</nb-accordion-item-header>
-							<nb-accordion-item-body>
-								<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
-									<p>* {{ source.requiredText }}</p>
-								</ngx-dynamic-form>
-
-								<button nbButton status="success" (click)="addNewLanguage()">Add language<nb-icon icon="plus-circle-outline"></nb-icon></button>
-							</nb-accordion-item-body>
-						</nb-accordion-item>
-					</nb-accordion>
+					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
+						<p>* {{ source.requiredText }}</p>
+					</ngx-dynamic-form>
+					<button nbButton status="success" (click)="addNewLanguage()">Add language<nb-icon icon="plus-circle-outline"></nb-icon></button>
 				</div>
 			</nb-tab>
 			<nb-tab tabTitle="User Permissions" *ngIf="isAdmin">

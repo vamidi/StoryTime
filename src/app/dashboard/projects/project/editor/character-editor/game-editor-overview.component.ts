@@ -6,7 +6,7 @@ import { NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { UserService } from '@app-core/data/state/users';
-import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
+import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
@@ -47,8 +47,8 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 		protected router: Router,
 	) {
 		// TODO change this and grab the table which is link to the character table.
-		super(router, toastrService, snackbarService, userService, userPreferencesService, projectService,
-			tableService, firebaseService, firebaseRelationService, languageService, '-MCRBgLEN83fE5mrtXWZ');
+		super(activatedRoute, router, toastrService, snackbarService, userService, userPreferencesService, projectService,
+			tableService, firebaseService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit(): void
@@ -64,5 +64,11 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 
 		// Important or data will not be caught.
 		this.getTableData(this.settings);
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.characters;
+		this.setTblName = this.tableId;
 	}
 }

@@ -27,7 +27,7 @@
 	</button>
 
 	<!-- project settings -->
-	<button nbButton [status]="'basic'" (click)="openSettings()">
+	<button nbButton [status]="'basic'" *ngIf="isAdmin" (click)="openSettings()">
 		<nb-icon icon="settings-outline"></nb-icon>
 	</button>
 </div>

@@ -103,7 +103,7 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 		fields: {},
 	};
 
-	private characterClasses: Table<ICharacterClass> = null;
+	private characterClasses: Table<ICharacterClass> = new Table();
 
 	/**
 	 * @brief -
@@ -128,7 +128,7 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 		protected languageService: LanguageService,
 	)
 	{
-		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
+		super(firebaseService, userService, projectsService, route, router, toastrService, snackbarService, dialogService,
 			userPreferencesService, tableService, firebaseRelationService, languageService);
 	}
 

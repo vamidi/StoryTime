@@ -126,7 +126,7 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 		protected languageService: LanguageService,
 	)
 	{
-		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
+		super(firebaseService, userService, projectsService, route, router, toastrService, snackbarService, dialogService,
 				userPreferencesService, tableService, firebaseRelationService, languageService);
 	}
 

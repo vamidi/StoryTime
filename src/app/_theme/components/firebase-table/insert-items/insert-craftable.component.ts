@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbStepComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
@@ -101,6 +102,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 	private character: ICharacter = createCharacter();
 
 	constructor(
+		protected route: ActivatedRoute,
 		protected ref: NbDialogRef<InsertCraftableComponent>,
 		protected toastrService: NbToastrService,
 		protected dialogService: NbDialogService,
@@ -113,7 +115,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		protected tableService: TablesService,
 		protected cd: ChangeDetectorRef)
 	{
-		super(
+		super(route,
 			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
 			userService, userPreferencesService, languageService,
 		);

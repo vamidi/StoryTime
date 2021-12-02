@@ -1,11 +1,9 @@
-import { Component, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { ICharacter } from '@app-core/data/database/interfaces';
-import { BehaviorSubject, of, Subscription } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { switchMap } from 'rxjs/operators';
-import { AngularFireAction } from '@angular/fire/database';
 import { UserService } from '@app-core/data/state/users';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -13,7 +11,6 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { Table, TablesService } from '@app-core/data/state/tables';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import * as _ from 'lodash';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
@@ -44,19 +41,14 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 
 	protected mainSubscription: Subscription = new Subscription();
 
-	protected project$: BehaviorSubject<Project> = new BehaviorSubject<Project>(null);
-	protected projectId: number = Number.MAX_SAFE_INTEGER;
-
-	protected project: Project = null;
-
 	protected selectedLanguage: KeyLanguage = 'en';
 
 	protected constructor(
-		protected route: ActivatedRoute,
 		protected firebaseService: FirebaseService,
 		protected userService: UserService,
 		protected projectsService: ProjectsService,
 
+		protected route: ActivatedRoute,
 		protected router: Router,
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
@@ -67,62 +59,8 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 		protected languageService: LanguageService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(router, toastrService, snackbarService, userService, userPreferencesService, projectsService,
+		super(route, router, toastrService, snackbarService, userService, userPreferencesService, projectsService,
 			tableService, firebaseService, firebaseRelationService, languageService, tableId);
-	}
-
-	public ngOnInit(): void
-	{
-		super.ngOnInit();
-
-		const map: ParamMap = this.route.snapshot.paramMap;
-		const tableID = map.get('id');
-		const id = map.get('charId');
-		this.projectId = Number.parseInt(this.route.parent.snapshot.paramMap.get('id') as string, 0);
-
-		// Important or data will not be cached
-		/*
-		this.firebaseService.getRef(`tables/${tableID}/data/${id}`).on('value', (snapshot) => {
-			if(snapshot.exists())
-			{
-				this.characterData = snapshot.val();
-			}
-		});
-		*/
-
-		this.mainSubscription.add(this.userService.getUser().pipe(
-			switchMap(() => {
-				if(this.projectService.getProject())
-					return this.projectService.getProject$();
-				else if(!isNaN(this.projectId))
-					return this.firebaseService.getItem(this.projectId, `projects`).snapshotChanges();
-				else
-					return of(null)
-			}),
-		).subscribe((snapshot: Project | AngularFireAction<any>) =>
-		{
-			// console.log(snapshot, typeof snapshot, snapshot instanceof Project);
-			let project = null;
-			if(snapshot !== null )
-			{
-				if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
-				{
-					project = snapshot;
-				} else if(snapshot.payload.exists())
-				{
-					project = snapshot.payload.val()
-				}
-			}
-
-			if (project && !_.isEqual(this.project, project) && project.hasOwnProperty('tables'))
-			{
-				this.project = { ...project };
-				this.onProjectLoaded(this.project);
-				this.project$.next(this.project);
-			}
-
-			this.userService.setUserPermissions(this.projectsService);
-		}));
 	}
 
 	public ngOnDestroy(): void
