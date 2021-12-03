@@ -194,6 +194,8 @@ export class InsertProjectComponent
 
 						this.user.projects[project.id] = { roles: { admin: true, editor: true, author: true, subscriber: true } };
 
+						const relationTableKeys = Object.keys(project.metadata.relatedTables);
+
 						// Add the project also to the user meta data
 						this.firebaseService.updateItem(`${this.user.uid}/projects/${project.id}`, this.user.projects[project.id], true, 'users').then(() =>
 						{
@@ -201,28 +203,28 @@ export class InsertProjectComponent
 							standardTables.forEach((tableData: TableTemplate, strTable: string) =>
 							{
 								const table: ITable =
-									{
-										id: '',
-										projectID: project.id,
-										data: tableData,
-										revisions: {},
-										relations: {},
-										metadata: {
-											title: strTable,
-											description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
-											lastUID: 0,
-											owner: this.user.uid,
-											created_at: UtilsService.timestamp,
-											updated_at: UtilsService.timestamp,
-											private: false,
-											deleted: false,
-											version: {
-												major: environment.MAJOR,
-												minor: environment.MINOR,
-												release: environment.RELEASE,
-											},
+								{
+									id: '',
+									projectID: project.id,
+									data: tableData,
+									revisions: {},
+									relations: {},
+									metadata: {
+										title: strTable,
+										description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
+										lastUID: 0,
+										owner: this.user.uid,
+										created_at: UtilsService.timestamp,
+										updated_at: UtilsService.timestamp,
+										private: false,
+										deleted: false,
+										version: {
+											major: environment.MAJOR,
+											minor: environment.MINOR,
+											release: environment.RELEASE,
 										},
-									};
+									},
+								};
 
 								this.firebaseService.insert(table, 'tables').then((tblResult) =>
 								{
@@ -233,6 +235,12 @@ export class InsertProjectComponent
 										name: table.metadata.title,
 										description: table.metadata.description,
 									};
+
+									// If we can find the relation table set it.
+									if(relationTableKeys.find((key) => key === strTable))
+									{
+										project.metadata.relatedTables[strTable] = table.id;
+									}
 
 									// update the project with newly made tables
 									// Add the project also to the user meta data
