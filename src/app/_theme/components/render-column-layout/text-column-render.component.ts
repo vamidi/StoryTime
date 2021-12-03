@@ -84,7 +84,6 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 						{
 							const relationData: Table = snapshot;
 
-							console.log(this.relation.id);
 							if (relationData && relationData.data[this.relation.id].hasOwnProperty(this.relation.tblColumnRelation.value))
 							{
 								const relData = relationData.data[this.relation.id][this.relation.tblColumnRelation.value];
@@ -129,7 +128,7 @@ export class TextRenderComponent implements ViewCell, OnInit, AfterViewInit, OnD
 						let key = '';
 						for(let i = 0; i < tables.length; i++)
 						{
-							if(project.tables[tables[i]].name === pair.key)
+							if(project.tables[tables[i]].metadata.name === pair.key)
 							{
 								key = tables[i];
 								break;

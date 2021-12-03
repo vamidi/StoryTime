@@ -32,7 +32,7 @@
 					</div>
 				</div>
 			</nb-tab>
-			<nb-tab tabTitle="Revisions">
+			<nb-tab tabTitle="Revisions" *ngIf="isAdmin">
 				<nb-accordion multi>
 					<nb-accordion-item *ngFor="let revision of revisions | ngxKeyValue">
 						<nb-accordion-item-header class="align-items-baseline justify-content-between">
@@ -60,6 +60,11 @@
 					</nb-accordion-item>
 				</nb-accordion>
 				<!-- TODO make a list that grows to show the revisions -->
+			</nb-tab>
+			<nb-tab tabTitle="Migrations" *ngIf="isAdmin">
+				<div class="row">
+					<ng2-smart-table [source]="migrationSource" [settings]="migrationSettings"></ng2-smart-table>
+				</div>
 			</nb-tab>
 		</nb-tabset>
 	</nb-card-body>

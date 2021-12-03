@@ -19,8 +19,6 @@ import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import {
 	DmgType,
 	IAttribute,
-	IClassParameterCurve,
-	IEnemyParameterCurve,
 	ISkill,
 } from '@app-core/data/database/interfaces';
 import { UtilsService } from '@app-core/utils';

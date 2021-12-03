@@ -43,4 +43,10 @@ export class DynamicComponentService
 		// console.log(shift, currentIndex, destinationIndex, componentRef.instance);
 		this.rootViewContainer.move(componentRef.hostView, destinationIndex);
 	}
+
+	delete<T>(componentRef: ComponentRef<T>)
+	{
+		if(this.rootViewContainer.indexOf(componentRef.hostView) !== -1)
+			this.rootViewContainer.detach(this.rootViewContainer.indexOf(componentRef.hostView));
+	}
 }

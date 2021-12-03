@@ -1,7 +1,8 @@
 import { Type } from '@angular/core';
 import { DateColumnComponent } from '@app-theme/components/base-table-layout/base-date-column.component';
-import { BooleanColumnRenderComponent, LinkRenderComponent } from '@app-theme/components/render-column-layout';
+import { BooleanColumnRenderComponent, NumberColumnComponent } from '@app-theme/components/render-column-layout';
 import { DefaultEditor, ViewCell } from '@vamidicreations/ng2-smart-table';
+import { ProxyObject } from '@app-core/data/base';
 
 export interface Column {
 	title: string,
@@ -154,6 +155,54 @@ export class BaseSettings implements ISettings
 		},
 	};
 
+	/**
+	 *
+	 * @brief - Process data to change the settings data.
+	 * @param obj
+	 * @param key
+	 * @param value
+	 * @param additionalSettings
+	 */
+	public static processData(obj: ProxyObject, key: string, value: any, additionalSettings: ISettings = null) {
+		if (!obj.hasOwnProperty(key)) {
+			if (value.type.toLowerCase() === 'string') {
+				obj[key] = '';
+			}
+
+			if (value.type.toLowerCase() === 'number') {
+				// TODO make this value max_integer when this is marked as foreign key.
+				obj[key] = 0;
+				if (additionalSettings) {
+					additionalSettings.columns[key] = {
+						...additionalSettings.columns[key],
+						editor: {
+							type: 'custom',
+							component: NumberColumnComponent,
+						},
+					};
+				}
+			}
+			if (value.type.toLowerCase() === 'boolean') {
+				obj[key] = false;
+
+				if (additionalSettings) {
+					// the column should be string because we render string.
+					// In the end we send true of false bool to the server.
+					additionalSettings.columns[key].type = 'string';
+					additionalSettings.columns[key] = {
+						...additionalSettings.columns[key],
+						editor: {
+							type: 'custom',
+							component: BooleanColumnRenderComponent,
+						},
+					};
+				}
+			}
+
+			obj = Object.assign({}, obj);
+			return obj;
+		}
+	}
 
 	/**
 	 * @brief - Retrieve the column of this object.

@@ -8,6 +8,7 @@ import {
 	Output,
 	ViewChild,
 } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { NbDialogRef, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BehaviourType } from '@app-core/types';
@@ -22,13 +23,14 @@ import { IProject, Project } from '@app-core/data/state/projects';
 import { UserModel } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { ITable, TableTemplate } from '@app-core/data/state/tables';
+import { Column, IColumn, ITable, Table, TableColumnMap, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/database/standard-tables';
 import { BehaviorSubject } from 'rxjs';
-import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { environment } from '../../../../../environments/environment';
-import { Validators } from '@angular/forms';
+import { ProxyObject } from '@app-core/data/base';
+
+const VERSION_CHECK = '2020.1.5f2';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -193,28 +195,28 @@ export class InsertProjectComponent
 							standardTables.forEach((tableData: TableTemplate, strTable: string) =>
 							{
 								const table: ITable =
-									{
-										id: '',
-										projectID: project.id,
-										data: tableData,
-										revisions: {},
-										relations: {},
-										metadata: {
-											title: strTable,
-											description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
-											lastUID: 0,
-											owner: this.user.uid,
-											created_at: UtilsService.timestamp,
-											updated_at: UtilsService.timestamp,
-											private: false,
-											deleted: false,
-											version: {
-												major: environment.MAJOR,
-												minor: environment.MINOR,
-												release: environment.RELEASE,
-											},
+								{
+									id: '',
+									projectID: project.id,
+									data: tableData,
+									revisions: {},
+									relations: {},
+									metadata: {
+										title: strTable,
+										description: standardTablesDescription.has(strTable) ? standardTablesDescription.get(strTable) : '',
+										lastUID: 0,
+										owner: this.user.uid,
+										created_at: UtilsService.timestamp,
+										updated_at: UtilsService.timestamp,
+										private: false,
+										deleted: false,
+										version: {
+											major: environment.MAJOR,
+											minor: environment.MINOR,
+											release: environment.RELEASE,
 										},
-									};
+									},
+								};
 
 								this.firebaseService.insert(table, 'tables').then((tblResult) =>
 								{
@@ -222,8 +224,11 @@ export class InsertProjectComponent
 									table.id = tblResult.key;
 									project.tables[table.id] = {
 										enabled: true,
-										name: table.metadata.title,
-										description: table.metadata.description,
+										metadata: {
+											name: table.metadata.title,
+											description: table.metadata.description,
+											columns: Table.toColumns(tableData[0]),
+										},
 									};
 
 									// update the project with newly made tables

@@ -194,8 +194,8 @@ export class InsertRelationDialogComponent implements
 					}
 					else {
 						options.push(
-							new Option<string>({ key: UtilsService.title(project.tables[tableID].name),
-								value: project.tables[tableID].name,
+							new Option<string>({ key: UtilsService.title(project.tables[tableID].metadata.name),
+								value: project.tables[tableID].metadata.name,
 								selected: false,
 							}),
 						);
@@ -347,7 +347,7 @@ export class InsertRelationDialogComponent implements
 			const project = this.projectService.getProjectById(this.table.projectID);
 			if(project)
 			{
-				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].name === event);
+				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].metadata.name === event);
 				if(key)
 					this.tablesService.addIfNotExists(key)
 						.then((value) => { if(value instanceof Table) this.loadColumns(value) } );
