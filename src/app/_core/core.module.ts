@@ -21,7 +21,7 @@ import {
 	PlayerService,
 	// AuthGuardService,
 	LayoutService,
-	PipelineService,
+	MigrationsService,
 } from './utils';
 import { SmartTableData } from './data/smart-table';
 
@@ -129,7 +129,7 @@ export const CUSTOM_PROVIDERS = [
 	FirebaseRelationService,
 	BreadcrumbsService,
 	NodeEditorService,
-	PipelineService,
+	MigrationsService,
 	LanguageService,
 	LayoutService,
 	PlayerService,

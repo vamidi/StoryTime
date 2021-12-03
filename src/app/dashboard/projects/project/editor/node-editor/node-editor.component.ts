@@ -441,7 +441,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			const t: Table | null = this.tableService.getTableById(tables[i]);
 
 			if(
-				this.includedTables.includes(tbl.name.toLowerCase())
+				this.includedTables.includes(tbl.metadata.name.toLowerCase())
 				&& (t === null || !t.loaded)
 			)
 			{

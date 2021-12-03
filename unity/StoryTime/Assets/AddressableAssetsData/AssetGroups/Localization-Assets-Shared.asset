@@ -17,38 +17,9 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f392da04566e02748ad7b9dd3324c32d
   m_SerializeEntries:
-  - m_GUID: 2256f5f090c60604aa4631bc90e10664
-    m_Address: Assets/Localization/LocalizationData/Dialogues/Dialogues Shared Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: fc90a1e987a8a20469f464540a357200
-    m_Address: Assets/Localization/LocalizationData/Characters/Characters Shared
+  - m_GUID: 8b843dbf27aabc542b25bf918d1f0731
+    m_Address: Assets/Localization/LocalizationData/Classes/Stats/Stat Names Shared
       Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: 5285af1287942c24ebec78435d8f961b
-    m_Address: Assets/Localization/LocalizationData/Stories/Titles/Story Titles Shared
-      Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: 127073b0b1894c94690c34f3178c39c0
-    m_Address: Assets/Localization/LocalizationData/Stories/Descriptions/Story Descriptions
-      Shared Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: aa5b18277a15a4113950a3cc2f1e9909
-    m_Address: Assets/Samples/StoryTime/1.6.3-preview/Placeholders/Localization/Interaction/Interactions
-      Shared Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: 4e7ebdfa10b67e04b97ed9f15524fef8
-    m_Address: Assets/Samples/StoryTime/1.6.3-preview/Placeholders/Localization/Narrative/Navigation/NavigationStates
-      Shared Data.asset
-    m_ReadOnly: 1
-    m_SerializedLabels: []
-  - m_GUID: 342c31ba0a1f3b3448e07ffa97c05d65
-    m_Address: Assets/Samples/StoryTime/1.6.3-preview/Example Scenes/Localization/InventoryData/Tabs/InventoryTabTypes
-      Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
   m_ReadOnly: 1

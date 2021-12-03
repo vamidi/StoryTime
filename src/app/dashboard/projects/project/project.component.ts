@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { NbDialogService, NbMenuItem, NbMenuService, NbToastrService } from '@nebular/theme';
-import { LanguageService, Project } from '@app-core/data/state/projects';
+import { LanguageService, Project, ITableMetadata } from '@app-core/data/state/projects';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
@@ -109,7 +109,6 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 			const map: ParamMap = this.activatedRoute.snapshot.paramMap;
 			const id = map.get('id');
 
-			console.log(id);
 			this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
 			{
 				that.currentState.project.id = id;
@@ -297,20 +296,19 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		const data: { id: string, title: string, deleted: boolean }[] = [];
 		for(const key of Object.keys(this.project.tables))
 		{
-			const t: { enabled: boolean, name: string, description?: string } = this.project.tables[key];
-
+			const t: { enabled: boolean, metadata: ITableMetadata, [key:string]: any } = this.project.tables[key];
 			if(!this.tablesService.getTableById(key))
 			{
 				const table = new Table();
 
 				table.id = key;
-				table.metadata.title = t.name;
-				table.metadata.description = t.description;
+				table.metadata.title = t.metadata.name;
+				table.metadata.description = t.metadata.description;
 				table.metadata.deleted = !t.enabled;
 
 				this.tablesService.setTable(table.id, table);
 			}
-			data.push({id: key, title: t.name, deleted: t.enabled });
+			data.push({id: key, title: t.metadata.name, deleted: t.enabled });
 		}
 
 		// filter alphabetically

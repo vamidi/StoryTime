@@ -19,6 +19,7 @@ import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relat
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
+import { environment } from '../../../../environments/environment';
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
@@ -163,12 +164,12 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		if(overrideTbl !== '')
 			tbl = overrideTbl;
 
-		for(const dataKey of Object.keys(table.data))
+		// if we need to verify we need to check if it is a valid item
+		if (verify)
 		{
-			const dataValue = table.data[dataKey];
-			// if we need to verify we need to check if it is a valid item
-			if (verify)
+			for(const dataKey of Object.keys(table.data))
 			{
+				const dataValue: ProxyObject = table.data[dataKey];
 				for (const [k, value] of Object.entries(dataValue))
 				{
 					const key: string = trim(k);
@@ -259,6 +260,14 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 					}
 				}
 			}
+
+			// Only execute this when we are at the right version.
+			if(UtilsService.versionCompare(environment.appVersion, '2020.1.5f2', { lexicographical: true }) >= 0)
+			{
+				// grab the columns from the table
+				// for(const [columnKey, columnData] of Object.entries<Column>(table.columns))
+				// 	this.processTableData(table, columnKey, columnData, newSettings);
+			}
 		}
 
 		return newSettings;
@@ -288,7 +297,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
 			for(const k of Object.keys(project.tables))
 			{
-				if(project.tables[k].name === pair.key)
+				if(project.tables[k].metadata.name === pair.key)
 				{
 					newPair.key = k;
 					// Add the tables to the service when they not exist
@@ -415,7 +424,16 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 			event.confirm.resolve();
 		} else
+		{
+			UtilsService.showToast(
+				this.toastrService,
+				'Warning!',
+				'Something went wrong',
+				'warning',
+				5000,
+			);
 			event.confirm.reject();
+		}
 	}
 
 
