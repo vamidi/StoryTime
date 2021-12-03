@@ -28,6 +28,10 @@ export class SubHeaderComponent implements OnInit, AfterViewInit, OnChanges, OnD
 	@Input()
 	public projectComponent: ProjectComponent = null;
 
+	public get isAdmin() {
+		return this.userService.isAdmin;
+	}
+
 	public title: string = 'Projects';
 	public addTitle: string = 'Add Project';
 
@@ -192,6 +196,7 @@ export class SubHeaderComponent implements OnInit, AfterViewInit, OnChanges, OnD
 					project: this.projectComponent.getProject,
 					user: this.user,
 				},
+				closeOnEsc: false,
 			});
 		}
 	}

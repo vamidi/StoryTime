@@ -4,7 +4,7 @@ import { NbDialogService, NbMenuService, NbToastrService } from '@nebular/theme'
 import { InsertProjectComponent } from '@app-theme/components/firebase-table/insert-project/insert-project.component';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { IUserData, User, UserData, UserModel } from '@app-core/data/state/users';
+import { IUserData, User } from '@app-core/data/state/users';
 import { Project } from '@app-core/data/state/projects';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from '@app-core/utils';
@@ -16,7 +16,7 @@ import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
+import { ISettings } from '@app-core/mock/base-settings';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../environments/environment';
@@ -69,7 +69,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		protected cd: ChangeDetectorRef,
 	) {
 		super(
-			router, toastrService, snackbarService, userService, userPreferenceService,
+			activatedRoute, router, toastrService, snackbarService, userService, userPreferenceService,
 			projectsService, tableService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}

@@ -47,6 +47,16 @@ interface IProjectData
 	// To see whether the project is deleted
 	deleted: boolean;
 
+	relatedTables: {
+		characters: string,
+		items: string,
+		equipments: string,
+		classes: string,
+		enemies: string,
+		skills: string,
+		[key: string]: string,
+	}
+
 	// To see which languages are in the project
 	languages: { [key in KeyLanguage]?: boolean },
 
@@ -105,6 +115,15 @@ export class Project implements IProject
 		owner: '',
 		languages: {
 			'en': true,
+		},
+
+		relatedTables: {
+			characters: '',
+			items: '',
+			equipments: '',
+			classes: '',
+			enemies: '',
+			skills: '',
 		},
 
 		// Pipeline settings

@@ -70,7 +70,7 @@ export class TableOverviewComponent extends FirebaseTableFunctionalityComponent 
 		protected dynamicComponentService: DynamicComponentService,
 	)
 	{
-		super(firebaseService, firebaseRelationService,
+		super(activatedRoute, firebaseService, firebaseRelationService,
 			service, userService, userPreferenceService, projectService, tableService, toastrService,
 			nbSnackbarService, languageService, router, dialogService,
 		);

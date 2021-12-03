@@ -74,7 +74,7 @@ export class ClassesTabComponent extends BaseParameterTabComponent<ICharacterCla
 		protected languageService: LanguageService,
 	) {
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-			userPreferencesService, tableService, firebaseRelationService, languageService, themeService, '-MhJZ87ovi4ki7Lqdh9o',
+			userPreferencesService, tableService, firebaseRelationService, languageService, themeService,
 		);
 
 		this.includedTables.push('skills');
@@ -186,6 +186,12 @@ export class ClassesTabComponent extends BaseParameterTabComponent<ICharacterCla
 			event.newData = this.selectedObject;
 			this.onEditConfirm(event,true);
 		}
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.classes;
+		this.setTblName = this.tableId;
 	}
 
 	protected override onDataReceived(tableData: Table)

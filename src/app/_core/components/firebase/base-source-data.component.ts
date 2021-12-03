@@ -9,7 +9,7 @@ import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
 /**
@@ -27,6 +27,7 @@ export abstract class BaseSourceDataComponent
 
 	/**
 	 * @brief -
+	 * @param route - Activated route of navigation
 	 * @param router - Router to navigate
 	 * @param toastrService - Toast notifications
 	 * @param snackbarService - Snack bar implementation
@@ -39,7 +40,8 @@ export abstract class BaseSourceDataComponent
 	 * @param languageService -
 	 * @param tableId - table name what firebase should be looking at
 	 */
-	constructor(
+	protected constructor(
+		protected route: ActivatedRoute,
 		protected router: Router,
 		protected toastrService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
@@ -52,25 +54,13 @@ export abstract class BaseSourceDataComponent
 		protected languageService: LanguageService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(
-			router, firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
+		super(route, router,
+			firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
 			userPreferencesService, projectService, tableService, languageService, tableId,
 		);
 	}
 
-	public ngOnInit(): void
-	{
-		super.ngOnInit();
-
-		// Get the stories table
-		// this.tableName = 'characters';
-		// Let firebase search with current table name
-		this.firebaseService.setTblName(this.tableId);
-	}
-
-	public ngAfterViewInit(): void
-	{
-	}
+	public ngAfterViewInit(): void {}
 
 	public ngOnDestroy()
 	{

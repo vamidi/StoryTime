@@ -28,7 +28,6 @@ import { Option } from '@app-core/data/forms/form-types';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { MigrationsService, UtilsService } from '@app-core/utils';
-
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { ButtonColumnRenderComponent } from '@app-theme/components';
@@ -181,26 +180,87 @@ export class ChangeProjectSettingsComponent implements
 
 	public ngOnInit(): void
 	{
+		const tableSelections: Option<string>[] = Object.entries(this.project.tables).map(([key, value]) =>
+		{
+			return new Option<string>(
+				{ key: UtilsService.titleCase(value.name), value: key, selected: false, disabled: !value.enabled },
+			);
+		});
+
 		// max level field
 		console.log(this.project);
 		this.source.fields = {
 			projectName: {
 				controlType: 'textbox',
-				value: this.project ? this.project.metadata.title : '',
+				value: this.project?.metadata.title ?? '',
 				name: 'project-name',
 				text: 'Project name',
 				placeholder: 'Project name',
 				errorText: 'Project name is required',
 				required: true,
-				asyncValidator: [ CustomProjectValidators.validateProject(this.user, this.firebaseService) ],
+				// asyncValidator: [ CustomProjectValidators.validateProject(this.user, this.firebaseService) ],
 			},
 			projectDescription: {
 				controlType: 'textarea',
-				value: this.project ? this.project.metadata.description : '',
+				value: this.project?.metadata.description ?? '',
 				name: 'project-description',
 				text: 'Project description',
 				placeholder: 'Project description',
 				required: false,
+			},
+			characterTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.characters ?? '',
+				name: 'project-character-table',
+				text: 'Project character table',
+				placeholder: 'Project character table',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
+			},
+			itemTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.items ?? '',
+				name: 'project-item-table',
+				text: 'Project item table',
+				placeholder: 'Project item table',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
+			},
+			equipmentTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.equipments ?? '',
+				name: 'project-equipment-table',
+				text: 'Project equipment Table',
+				placeholder: 'Project equipment Table',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
+			},
+			classTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.classes ?? '',
+				name: 'project-class-table',
+				text: 'Project class table',
+				placeholder: 'Project class table',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
+			},
+			enemyTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.enemies ?? '',
+				name: 'project-enemy-table',
+				text: 'Project enemy Table',
+				placeholder: 'Project enemy table',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
+			},
+			skillTable: {
+				controlType: 'dropdown',
+				value: this.project?.metadata?.relatedTables?.skills ?? '',
+				name: 'project-skill-tables',
+				text: 'Project skill Tables',
+				placeholder: 'Project description',
+				required: false,
+				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
 			},
 			maxLevel: {
 				controlType: 'number',
@@ -418,9 +478,43 @@ export class ChangeProjectSettingsComponent implements
 	{
 	}
 
+	/**
+	 * TODO add validation when a table is selected
+	 * that is contains certain columns.
+	 */
 	public onSendForm()
 	{
+		// If the form is valid
+		if(this.formComponent.isValid)
+		{
+			const val = this.formComponent.formContainer.toGroup().value;
 
+			this.project.metadata.title = val.projectName;
+			this.project.metadata.description = val.projectDescription;
+
+			this.project.metadata.relatedTables = {
+				...this.project.metadata.relatedTables,
+				characters: val.characterTable,
+				classes: val.classTable,
+				enemies: val.enemyTable,
+				equipments: val.equipmentTable,
+				items: val.itemTable,
+				skills: val.skillTable,
+			};
+
+			this.project.gameStats.maxLevel = val.maxLevel;
+
+			// Save the project
+			this.projectsService.update(this.project.id).then(() => {
+				UtilsService.showToast(
+					this.toastrService,
+					'Project updated!',
+					'Project has been successfully updated',
+					'success',
+					5000,
+				);
+			});
+		}
 	}
 
 	public dismiss()
