@@ -114,8 +114,8 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		protected cd: ChangeDetectorRef)
 	{
 		super(
-			firebaseService, firebaseRelationService, toastrService, projectService, tableService,
-			userService, userPreferencesService, languageService,
+			firebaseService, firebaseRelationService, toastrService, dialogService,
+			projectService, tableService, userService, userPreferencesService, languageService,
 		);
 	}
 

@@ -455,7 +455,7 @@ export class UtilsService
 		return arr.filter((v, i, a) => a.indexOf(v, i + 1) === -1 );
 	}
 
-	public static excludeDuplicates(arr: any[])
+	public static excludeDuplicates<T>(arr: T[]): T[]
 	{
 		return arr.filter((value, index, self) => self.indexOf(value) === index);
 	}
