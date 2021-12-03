@@ -17,7 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { TablesService } from '@app-core/data/state/tables';
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
-import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
+import { ISettings } from '@app-core/mock/base-settings';
 import { LinkRenderComponent } from '@app-theme/components';
 
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -69,7 +69,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		private location: Location,
 	) {
 		super(
-			router, toasterService, snackbarService, userService, userPreferencesService,
+			router, toasterService, dialogService, snackbarService, userService, userPreferencesService,
 			projectsService, tablesService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}

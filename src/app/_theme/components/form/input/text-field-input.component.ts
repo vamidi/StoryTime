@@ -38,7 +38,6 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 					   (keyup)="onKeyUpFunc($event)"
 					   nbInput
 					   fullWidth
-					   autofocus
 				/>
 
 				<!-- TODO maybe add dynamic content if needed -->
@@ -65,8 +64,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 						  [ngClass]="[myFormGroup.controls[question.key]?.valid ? 'status-success ' : 'status-danger ' + question.inputCss]"
 						  (keyup)="onKeyUpFunc($event)"
 						  nbInput
-						  fullWidth
-						  autofocus>
+						  fullWidth>
 				</textarea>
 
 				<!-- TODO maybe add dynamic content if needed -->

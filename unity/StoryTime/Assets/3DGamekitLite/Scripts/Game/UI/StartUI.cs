@@ -4,7 +4,7 @@ using UnityEngine.Playables;
 using UnityEditor;
 #endif
 
-using DatabaseSync.Components;
+using StoryTime.Components;
 
 namespace Gamekit3D
 {
@@ -67,7 +67,7 @@ namespace Gamekit3D
 
         protected void SwitchPauseState()
         {
-            if (m_InPause && Time.timeScale > 0 || !m_InPause && DatabaseSync.Components.ScreenFader.IsFading)
+            if (m_InPause && Time.timeScale > 0 || !m_InPause && ScreenFader.IsFading)
                 return;
 
             if (!alwaysDisplayMouse)
@@ -89,7 +89,7 @@ namespace Gamekit3D
             }
 
             if(!m_InPause)
-	            DatabaseSync.Components.CameraShake.Stop ();
+				CameraShake.Stop ();
 
             if (m_InPause)
                 PlayerInput.Instance.GainControl();

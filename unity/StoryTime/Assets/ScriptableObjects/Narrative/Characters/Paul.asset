@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337db24c1aa79b747a271427e05da9d2, type: 3}
+  m_Name: Paul
+  m_EditorClassIdentifier: 
+  guid: 
+  id: 10
+  tableName: characters
+  dropdownColumn: name
+  linkID: 4294967295
+  linkedColumn: 
+  linkedTable: 
+  overrideTable: 0
+  collection: {fileID: 0}
+  characterName:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  characterDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  characterClass: {fileID: 0}
+  initialLevel: 0
+  currentLevel: 1
+  maxLevel: 0
+  currentExp: 0
+  maxExp: 0
+  equipments: []
+  references:
+    version: 1

@@ -44,7 +44,7 @@ namespace Gamekit3D
             if (controllerCameraTransform != null)
                 controllerCamera = controllerCameraTransform.GetComponent<CinemachineFreeLook>();
 
-            DatabaseSync.Components.PlayerController playerController = FindObjectOfType<DatabaseSync.Components.PlayerController>();
+            StoryTime.Components.PlayerController playerController = FindObjectOfType<StoryTime.Components.PlayerController>();
             if (playerController != null && playerController.name == "Ellen")
             {
                 follow = playerController.transform;

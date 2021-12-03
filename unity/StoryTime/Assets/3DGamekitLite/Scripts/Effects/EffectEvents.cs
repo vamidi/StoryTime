@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-using DatabaseSync.Components;
+using StoryTime.Components;
 
 namespace Gamekit3D
 {

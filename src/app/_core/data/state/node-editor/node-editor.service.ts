@@ -5,7 +5,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 
-import { Component as VisualNEComponent, Engine, NodeEditor, Plugin } from 'visualne';
+import { Component as VisualNEComponent, Context, Engine, NodeEditor, Plugin } from 'visualne';
 import { Data } from 'visualne/types/core/data';
 import { ContextMenuPlugin, ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin, CommentPluginParams } from 'visualne-comment-plugin';
@@ -33,6 +33,8 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import firebase from 'firebase/app';
 import debounce from 'lodash.debounce';
 import { IFileMetaData } from '@app-core/data/file-upload.model';
+import { AdditionalEvents } from '@app-core/components/visualne';
+import { EventsTypes } from 'visualne/types/events';
 
 // TODO combine all node editor stuff inside a class because then it reflects
 // back to firebase.
@@ -230,21 +232,9 @@ export class NodeEditorService
 
 			this.nodeEditor.on(['process', 'nodecreated', 'noderemoved', 'connectioncreated', 'connectionremoved'],
 				(async () => {
-					await this.engine.abort();
-					await this.engine.process(this.nodeEditor.toJSON());
-				}) as any);
-
-			// TODO see if we need this.
-			// this.nodeEditor.on('import', data => {
-			// 	this.languages = data.languages as string[] || [];
-			// 	this.defaultLanguage = data.defaultLanguage as string || '';
-			// });
-
-			// Saving nodes we need to add character data as well.
-			// this.nodeEditor.on('export', data => {
-			// 	data.languages = this.languages;
-			// 	data.defaultLanguage = this.defaultLanguage;
-			// });
+				await this.engine.abort();
+				await this.engine.process(this.nodeEditor.toJSON());
+			}) as any);
 
 			this.nodeEditor.view.area.zoom(0.8, 0, 0, 'wheel');
 			this.nodeEditor.view.resize();
@@ -298,6 +288,7 @@ export class NodeEditorService
 		{
 			if(res !== undefined)
 			{
+				this.nodeEditor.clear();
 				this.currentFileUpload = res;
 				const isStory = this.currentFileUpload instanceof StoryFileUpload;
 				let selectedItem = null;

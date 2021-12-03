@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
 import { UserService } from '@app-core/data/state/users';
@@ -35,6 +35,7 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 
 	constructor(
 		protected toastrService: NbToastrService,
+		protected dialogService: NbDialogService,
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
@@ -47,7 +48,7 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 		protected router: Router,
 	) {
 		// TODO change this and grab the table which is link to the character table.
-		super(router, toastrService, snackbarService, userService, userPreferencesService, projectService,
+		super(router, toastrService, dialogService, snackbarService, userService, userPreferencesService, projectService,
 			tableService, firebaseService, firebaseRelationService, languageService, '-MCRBgLEN83fE5mrtXWZ');
 	}
 

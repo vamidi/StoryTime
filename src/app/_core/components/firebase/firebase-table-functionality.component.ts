@@ -77,7 +77,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		@Inject(String)protected tableId = '',
 	) {
 		super(router, firebaseService, firebaseRelationService,
-			toastrService, snackbarService, userService,
+			toastrService, dialogService, snackbarService, userService,
 			userPreferencesService, projectService, tableService,
 			languageService, tableId,
 		);

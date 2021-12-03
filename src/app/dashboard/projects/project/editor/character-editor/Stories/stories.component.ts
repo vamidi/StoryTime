@@ -11,7 +11,7 @@ import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-ta
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { BaseSourceDataComponent } from '@app-core/components/firebase/base-source-data.component';
-import { UserData, UserService } from '@app-core/data/state/users';
+import { UserService } from '@app-core/data/state/users';
 import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
@@ -52,7 +52,7 @@ export class StoriesComponent extends BaseSourceDataComponent implements OnInit,
 		private location: Location,
 	) {
 		super(
-			router, toastrService, snackbarService, userService, userPreferencesService,
+			router, toastrService, dialogService, snackbarService, userService, userPreferencesService,
 			projectService, tableService, firebaseService, firebaseRelationService, languageService, 'stories',
 		);
 	}

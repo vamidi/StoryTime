@@ -4,7 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Samples/StoryTime/1.6.3-preview/Example Scenes/Scenes/DialogueExampleScene.unity
+    guid: 6c66c80f55f03d94287299616db584d5
+  - enabled: 1
+    path: Assets/Samples/StoryTime/1.6.3-preview/Example Scenes/Scenes/Gameplay.unity
+    guid: 045bcf2c80de9624fafb5b63dc166216
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 6e4d5cad2b60b5049a2ba23f97f8c84b,
       type: 2}
