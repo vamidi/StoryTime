@@ -59,8 +59,10 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 		protected languageService: LanguageService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(route, router, toastrService, snackbarService, userService, userPreferencesService, projectsService,
-			tableService, firebaseService, firebaseRelationService, languageService, tableId);
+		super(
+			route, router, toastrService, dialogService, snackbarService, userService, userPreferencesService,
+			projectsService, tableService, firebaseService, firebaseRelationService, languageService, tableId,
+		);
 	}
 
 	public ngOnDestroy(): void
@@ -91,15 +93,6 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 	public onActiveSelection(event: number)
 	{
 		this.selectedObject = null;
-	}
-
-	public addMultiple<C>(userConfig?: Partial<NbDialogConfig<Partial<C> | string>>)
-	{
-		const ref = this.dialogService.open(InsertMultipleDialogComponent, userConfig);
-
-		// Otherwise scope will make this undefined in the method
-		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
-			this.onCreateConfirm(event, this.tableId));
 	}
 
 	public onLanguageChange(event: KeyLanguage)

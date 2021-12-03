@@ -6,50 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Samples/StoryTime/1.6.2-preview/Example Scenes/Scenes/DialogueExampleScene.unity
+    path: Assets/Samples/StoryTime/1.6.3-preview/Example Scenes/Scenes/DialogueExampleScene.unity
     guid: 6c66c80f55f03d94287299616db584d5
   - enabled: 1
-    path: Assets/Samples/StoryTime/1.6.2-preview/Example Scenes/Scenes/Gameplay.unity
+    path: Assets/Samples/StoryTime/1.6.3-preview/Example Scenes/Scenes/Gameplay.unity
     guid: 045bcf2c80de9624fafb5b63dc166216
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo01.unity
-    guid: d659b37d0dfa29040bb88a898042b68a
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo02.unity
-    guid: d073f8cc5b06a3241a125639b9de8864
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo03.unity
-    guid: 6769b03c3559d464b80ac62b525e415c
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo04.unity
-    guid: e2bf84c42a9bd5148a7fddf8ea11973b
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo05.unity
-    guid: 9a00979defd83cd4d8350a1d91f8deba
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo06.unity
-    guid: 5c707df5257a7e04fbec27549e795435
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo07.unity
-    guid: 49daf9be90c81a340b9b86ac0582c365
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo08.unity
-    guid: 792de99d0296b554fb3bd457741711e9
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo09.unity
-    guid: 7ee393a7d531fac4a8151e37e8edcf7e
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo10.unity
-    guid: f2089780cbae2b6468cf3a395a62345e
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo11.unity
-    guid: bc396167c80101249bb53c283b53c968
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo12.unity
-    guid: 663c542762fd70847aa4c958e2a45e6a
-  - enabled: 1
-    path: Assets/Plugins/ARPG Effects/Demo/ARPGDemo13.unity
-    guid: b377bc9d3a3bb37429298c58895d7f95
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 6e4d5cad2b60b5049a2ba23f97f8c84b,
       type: 2}

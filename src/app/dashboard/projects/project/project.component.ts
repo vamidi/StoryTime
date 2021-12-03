@@ -69,7 +69,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		private location: Location,
 	) {
 		super(
-			activatedRoute, router, toasterService, snackbarService, userService, userPreferencesService,
+			activatedRoute, router, toasterService, dialogService, snackbarService, userService, userPreferencesService,
 			projectsService, tablesService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}

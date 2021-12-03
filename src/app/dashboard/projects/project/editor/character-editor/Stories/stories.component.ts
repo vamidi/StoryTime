@@ -52,7 +52,7 @@ export class StoriesComponent extends BaseSourceDataComponent implements OnInit,
 		private location: Location,
 	) {
 		super(
-			activatedRoute, router, toastrService, snackbarService, userService, userPreferencesService,
+			activatedRoute, router, toastrService, dialogService, snackbarService, userService, userPreferencesService,
 			projectService, tableService, firebaseService, firebaseRelationService, languageService, 'stories',
 		);
 	}

@@ -1,4 +1,4 @@
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
@@ -30,6 +30,7 @@ export abstract class BaseSourceDataComponent
 	 * @param route - Activated route of navigation
 	 * @param router - Router to navigate
 	 * @param toastrService - Toast notifications
+	 * @param dialogService - Dialog windows
 	 * @param snackbarService - Snack bar implementation
 	 * @param userService - UserService to receive user information
 	 * @param userPreferencesService
@@ -44,6 +45,7 @@ export abstract class BaseSourceDataComponent
 		protected route: ActivatedRoute,
 		protected router: Router,
 		protected toastrService: NbToastrService,
+		protected dialogService: NbDialogService,
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
@@ -54,10 +56,19 @@ export abstract class BaseSourceDataComponent
 		protected languageService: LanguageService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(route, router,
-			firebaseService, firebaseRelationService, toastrService, snackbarService, userService,
-			userPreferencesService, projectService, tableService, languageService, tableId,
+		super(route, router, firebaseService, firebaseRelationService, toastrService, dialogService,
+			snackbarService, userService, userPreferencesService, projectService, tableService, languageService, tableId,
 		);
+	}
+
+	public ngOnInit(): void
+	{
+		super.ngOnInit();
+
+		// Get the stories table
+		// this.tableName = 'characters';
+		// Let firebase search with current table name
+		this.firebaseService.setTblName(this.tableId);
 	}
 
 	public ngAfterViewInit(): void {}

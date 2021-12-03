@@ -1,7 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFireAction } from '@angular/fire/database';
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
@@ -21,6 +22,7 @@ import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
 import { environment } from '../../../../environments/environment';
+import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
@@ -72,6 +74,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected toastrService: NbToastrService,
+		protected dialogService: NbDialogService,
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
 		protected userService: UserService,
@@ -186,6 +189,24 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	}
 
 	protected onProjectLoaded(_: Project) {}
+
+	/**
+	 * @brief - Add objects to the database through a dialog.
+	 * @param userConfig
+	 * @param id - id of the table we want to insert the data into
+	 */
+	public addMultiple<C>(userConfig?: Partial<NbDialogConfig<Partial<C> | string>>, id?: string)
+	{
+		let tableId = this.tableId;
+		if(id !== null || typeof id !== 'undefined')
+			tableId = id;
+
+		const ref = this.dialogService.open(InsertMultipleDialogComponent, userConfig);
+
+		// Otherwise scope will make this undefined in the method
+		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
+			this.onCreateConfirm(event, tableId));
+	}
 
 	/**
 	 * @brief - Process table data to generate columns
@@ -413,8 +434,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 		// TODO resolve if data is wrong or if we also need to do something with the lastID
 		// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
-		return this.firebaseService.updateData(
-			event.newData.id,this.tableId + '/revisions', obj, oldObj, this.tableId + '/data');
+		return this.tableService.updateData(this.tableId, event.newData.id, obj, oldObj);
 	}
 
 

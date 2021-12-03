@@ -11,8 +11,8 @@
 				<div class="col-5">
 					<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info"><i class="edit-column nb-edit"></i></button>
 					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="loadStory()">Load</button>
-					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="saveStory()">Save</button>
-					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="newStory()">New</button>
+					<button *ngIf="hasStory" style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="success" (click)="saveStory()">Save</button>
+					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="success" (click)="newStory()">New</button>
 					<nb-select size="large" selected="en" style="width: 10rem;margin-right:10px;font-size: 24px;"
 					           (selectedChange)="onLanguageChange($event)">
 						<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
@@ -48,33 +48,34 @@
 								  [hidden]="textAreaQuestion.hidden"
 						          (change)="setDialogue = $event">
 						</textarea>
-						<button *ngIf="!textAreaQuestion.hidden" nbButton fullWidth status="success" class="mt-2" (click)="updateDialogue()">Save</button>
 					</div>
 
-					<div class="form-group" *ngIf="CurrentNode && CurrentNode.name === 'Dialogue'">
-						<button nbButton fullWidth status="primary" class="mt-2 flex-grow-1" (click)="addOption()">Add Option</button>
+					<div class="form-group">
+						<label *ngIf="HasOutputs && CurrentNode && CurrentNode.name === 'Dialogue'" class="formHeading">Choices</label>
+						<ng-container #overViewContainer></ng-container>
+						<button *ngIf="CurrentNode && CurrentNode.name === 'Dialogue'" nbButton fullWidth status="primary" class="flex-grow-1" (click)="addOption()">Add Option</button>
+						<button *ngIf="HasOutputs" nbButton fullWidth status="success" class="my-2" (click)="updateOptions()">Save</button>
 					</div>
-
-					<ng-container #overViewContainer></ng-container>
-					<button *ngIf="HasOutputs" nbButton fullWidth status="success" class="mt-2" (click)="updateOptions()">Save</button>
 
 					<!-- character id -->
 					<!-- TODO make character to support multiple character conversation -->
 					<div class="form-group {{ charTextQuestion.groupCss }}">
-						<label *ngIf="!charTextQuestion.hidden" class="formHeading d-flex" for="{{ charTextQuestion.key }}--textbox" >
+						<label *ngIf="!charTextQuestion.hidden" class="formHeading d-flex" for="{{ charTextQuestion.key }}--dropdown">
 							<span class="flex-grow-1">{{ charTextQuestion.text }}</span>
 						</label>
-						<input id="{{ charTextQuestion.key }}--textbox"
-						       [type]="charTextQuestion.hidden ? 'hidden' : charTextQuestion.controlType"
-						       [value]="charTextQuestion.value"
-						       [placeholder]="charTextQuestion.text"
-						       [name]="charTextQuestion.name"
-							   [hidden]="charTextQuestion.hidden"
-						       [readOnly]="charTextQuestion.readOnly"
-						       [attr.disabled]="charTextQuestion.disabled ? '' : null"
-						       nbInput
-						       fullWidth
-						/>
+						<nb-select #charSelectComponent
+							id="{{ charTextQuestion.key }}--dropdown"
+							fullWidth
+							[placeholder]="charTextQuestion.placeholder"
+							[hidden]="charTextQuestion.hidden"
+							[selected]="charTextQuestion.value"
+							[attr.disabled]="charTextQuestion.disabled ? '' : null"
+							(selectedChange)="charTextQuestion.value = $event">
+							<nb-option [value]="9007199254740991">None</nb-option>
+							<nb-option *ngFor="let o of charTextQuestion.options$ | async" [disabled]="o.disabled"
+							           [value]="o.value">{{ o.key }}
+							</nb-option>
+						</nb-select>
 					</div>
 
 					<!-- previous connection -->
@@ -94,7 +95,7 @@
 						></textarea>
 					</div>
 
-
+					<button *ngIf="!textAreaQuestion.hidden" nbButton fullWidth status="success" class="my-2" (click)="updateDialogue()">Save</button>
 
 				</nb-card-body>
 			</nb-card>

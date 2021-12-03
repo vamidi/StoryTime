@@ -132,8 +132,8 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		protected ngZone: NgZone,
 	) {
 		super(
-			activatedRoute, firebaseService, firebaseRelationService, toastrService, projectsService, tableService,
-			userService, userPreferencesService, languageService,
+			activatedRoute, firebaseService, firebaseRelationService, toastrService, dialogService,
+			projectsService, tableService, userService, userPreferencesService, languageService,
 		);
 	}
 
@@ -294,18 +294,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 			this.participants = data.characters || [];
 		});
 
-		// Saving nodes we need to add character data as well.
-		this.nodeEditorService.listen('export', data => {
-			if (this.nodeEditorService.SelectedStory)
-			{
-				data.characters = [
-					// Set the main character that is talking in this array
-					this.nodeEditorService.SelectedStory.parentId,
-					// TODO Add characters that are joining the conversation
-				];
-			}
-		});
-
 		await this.initializeListeners();
 
 		const ctx: Context<AdditionalEvents & EventsTypes> = this.nodeEditorService.Editor;
@@ -313,7 +301,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableId = `tables/${this.dialogues.id}`;
+			this.tableId = this.dialogues.id;
 			// Let firebase search with current table name
 			this.firebaseService.setTblName(this.tableId);
 
@@ -359,7 +347,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableId = `tables/${this.tblDialogueOptions.id}`;
+			this.tableId = this.tblDialogueOptions.id;
 			// Let firebase search with current table name
 			this.firebaseService.setTblName(this.tableId);
 
@@ -395,7 +383,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		{
 			// change the default tblName
 			// Get the stories table
-			this.tableId = `tables/${this.tblEvents.id}`;
+			this.tableId = this.tblEvents.id;
 			// Let firebase search with current table name
 			this.firebaseService.setTblName(this.tableId);
 
@@ -549,7 +537,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 						{
 							this.nodeEditorService.Data = { key: 'characters', value: this.characters };
 						});
-
 					}
 				},
 			));

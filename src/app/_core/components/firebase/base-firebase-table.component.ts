@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 
 import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 
@@ -172,6 +172,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected toastrService: NbToastrService,
+		protected dialogService: NbDialogService,
 		protected snackbarService: NbSnackbarService,
 		protected userService: UserService,
 		protected userPreferencesService: UserPreferencesService,
@@ -181,7 +182,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		@Inject(String) protected tableId = '',
 	) {
 		super(
-			route, firebaseService, firebaseRelationService, toastrService, projectService, tableService,
+			route, firebaseService, firebaseRelationService, toastrService, dialogService, projectService, tableService,
 			userService, userPreferencesService, languageService, tableId,
 		);
 

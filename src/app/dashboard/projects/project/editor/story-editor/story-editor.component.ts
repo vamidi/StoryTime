@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, NgZone, OnInit, ViewChild, Vi
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/storage';
 
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
 
 import { Component as VisualNEComponent, Connection, Context, Input, Node, Output } from 'visualne';
 import { EventsTypes } from 'visualne/types/events';
@@ -15,7 +15,7 @@ import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { NodeEditorService } from '@app-core/data/state/node-editor';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { NodeEditorComponent } from '@app-dashboard/projects/project/editor/node-editor/node-editor.component';
-import { Option, TextboxQuestion } from '@app-core/data/forms/form-types';
+import { DropDownQuestion, Option, TextboxQuestion } from '@app-core/data/forms/form-types';
 import {
 	AdditionalEvents,
 	DialogueNodeComponent,
@@ -23,13 +23,13 @@ import {
 	StartNodeComponent,
 } from '@app-core/components/visualne';
 import { AddComponent } from '@app-core/components/visualne/nodes/add-component';
-import { IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
+import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { InputOutputMap } from '@app-core/components/visualne/nodes/data/interfaces';
 import { BasicTextFieldInputComponent } from '@app-theme/components';
 import { dialogueOptionSocket } from '@app-core/components/visualne/sockets';
 import { ProxyObject } from '@app-core/data/base';
-import { createDialogue, createDialogueOption, createEvent } from '@app-core/functions/helper.functions';
+import { createDialogue, createDialogueOption } from '@app-core/functions/helper.functions';
 import { UtilsService } from '@app-core/utils';
 import { ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
@@ -37,6 +37,7 @@ import { InsertStoryComponent } from '@app-theme/components/firebase-table';
 import { EventNodeComponent } from '@app-core/components/visualne/nodes/events/event-node.component';
 import { DebugType } from '@app-core/utils/utils.service';
 import { EventEditorComponent } from '@app-dashboard/projects/project/editor/story-editor/event-editor.component';
+import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 
 const DIALOGUE_NODE_NAME: string = 'Dialogue';
 const DIALOGUE_OPTION_NODE_NAME: string = 'Dialogue Option';
@@ -62,7 +63,12 @@ const EVENT_NODE_NAME: string = 'Event';
 	],
 	providers: [DynamicComponentService],
 })
-export class StoryEditorComponent extends NodeEditorComponent implements OnInit {
+export class StoryEditorComponent extends NodeEditorComponent implements OnInit
+{
+	public get hasStory(): boolean {
+		return this.nodeEditorService.SelectedStory !== null;
+	}
+
 	// VisualNE Editor
 	@ViewChild('nodeEditor', {static: true})
 	public el: ElementRef<HTMLDivElement>;
@@ -76,6 +82,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 	@ViewChild('eventEditorComponent', {static: true})
 	public eventEditorComponent: EventEditorComponent;
 
+	@ViewChild('charSelectComponent', { static: true })
+	public charSelectComponent: NbSelectComponent = null;
+
 	public set setDialogue(event: any) {
 		this.textAreaQuestion.value = event.target.value as string;
 	}
@@ -83,8 +92,8 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 	public textQuestion: TextboxQuestion = new TextboxQuestion(
 		{text: 'Previous Dialogue Text', value: '', disabled: true, type: 'text'},
 	);
-	public charTextQuestion: TextboxQuestion = new TextboxQuestion(
-		{text: 'Character', value: '', disabled: true, type: 'text'},
+	public charTextQuestion: DropDownQuestion = new DropDownQuestion<number>(
+		{text: 'Character', value: Number.MAX_SAFE_INTEGER, disabled: false, type: 'text'},
 	);
 	public textAreaQuestion: TextboxQuestion = new TextboxQuestion(
 		{text: 'Dialogue', value: '', disabled: true, type: 'text'},
@@ -102,6 +111,8 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		'dialogueOut',
 		'ExecOut',
 	];
+
+	protected characterSettings: ISettings = new BaseSettings();
 
 	protected contextSettings: ContextMenuPluginParams = {
 		searchBar: true, // true by default
@@ -121,7 +132,15 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			return [];
 		},
 		items: {
-			'save': () => this.nodeEditorService.saveStory(),
+			// TODO make uniform
+			'New Character': () => this.addMultiple({
+				context: {
+					title: 'Add a new character',
+					tblName: 'characters',
+					settings: this.characterSettings,
+				},
+			}, this.characters.id),
+			'Save': () => this.nodeEditorService.saveStory(),
 			'Load': () => this.nodeEditorService.loadStory<StoryFileUpload>(),
 		},
 		nodeItems:
@@ -169,9 +188,7 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			if (res) {
 				this.title = res.title[this.nodeEditorService.Language];
 				this.textAreaQuestion.value = this.getQuestionValue(res.childId, this.dialogues);
-				if (res.parentId !== Number.MAX_SAFE_INTEGER && this.characters.find(res.parentId)) {
-					this.charTextQuestion.value = this.getQuestionValue(res.parentId, this.characters, 'name');
-				}
+				this.charTextQuestion.value = res.parentId;
 			}
 		}));
 	}
@@ -389,17 +406,21 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		// If we have a whole new value we need to add it to the option list
 		if (this.currentNode !== null) {
 			const listValue = this.textAreaQuestion.value as string;
+
 			const foundedDialogue: IDialogue = this.dialogues.find(this.currentNode.data.dialogueId as number);
 
 			const dialogue = {
 				id: foundedDialogue.id,
 				text: {...foundedDialogue.text},
+				characterId: this.charTextQuestion.value,
 			}
+
 			dialogue.text[this.nodeEditorService.Language] = listValue as string;
 
 			// find the current dialogue
 			const payload = {currDialogue: dialogue, nextDialogue: null /*, optionMap: null, */}
 			const context: Context<AdditionalEvents & EventsTypes> = this.nodeEditorService.Editor;
+
 			context.trigger('saveDialogue', payload);
 		}
 	}
@@ -458,10 +479,9 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			}
 
 			if (node.name === DIALOGUE_NODE_NAME && !node.data.hasOwnProperty('dialogueId')) {
-				this.tableId = `tables/${this.dialogues.id}`;
+				this.tableId = this.dialogues.id;
 				// Let firebase search with current table name
 				this.firebaseService.setTblName(this.tableId);
-
 				const event: { data: ProxyObject, confirm?: any } = {data: createDialogue()};
 				this.insertFirebaseData(event)
 					.then((data) => {
@@ -551,9 +571,33 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 				},
 			));
 		}
+
+		if(value.metadata.title.toLowerCase() === 'characters')
+		{
+			this.characterSettings.actions.add = true;
+			const newItemSettings = this.processTableData(
+				this.characters, true, this.characterSettings,
+			);
+			this.characterSettings = Object.assign({}, newItemSettings);
+
+			const options: Option<number>[] = [];
+
+			this.characters.forEach((character) => {
+				options.push(new Option({
+					id: character.id,
+					key: character.id + '. ' + UtilsService.truncate(
+						this.languageService.getLanguageFromProperty(character.name, this.nodeEditorService.Language), 50,
+					),
+					value: character.id,
+					selected: false,
+				}));
+			})
+
+			this.charTextQuestion.options$.next(options);
+		}
 	}
 
-	protected loadNodeInPanel(node: Node)
+	protected override loadNodeInPanel(node: Node)
 	{
 		super.loadNodeInPanel(node);
 
@@ -561,10 +605,12 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		this.textAreaQuestion.hidden = false;
 		this.charTextQuestion.hidden = false;
 
-		// this.listQuestion.value = node.data.dialogueId as number ?? Number.MAX_SAFE_INTEGER;
-		// this.selectComponent.selectedChange.emit(this.listQuestion.value);
+		if(node.data.dialogueId as number !== Number.MAX_SAFE_INTEGER)
+		{
+			const dialogue = this.dialogues.find(node.data.dialogueId as number);
+			this.charSelectComponent.selectedChange.emit(dialogue.characterId);
+		}
 
-		// let selectionValue = Number.MAX_SAFE_INTEGER;
 		if (node.name === DIALOGUE_NODE_NAME) {
 			this.nonStartNode = true;
 			this.textAreaQuestion.text = 'Dialogue';
@@ -584,8 +630,6 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 		} else if (node.name === DIALOGUE_OPTION_NODE_NAME) {
 			this.nonStartNode = true;
 			this.textAreaQuestion.text = 'Dialogue Option';
-			// this.listQuestion.options$.next(this.dialogueOptionsList);
-			// selectionValue = node.data.optionId as number ?? Number.MAX_SAFE_INTEGER;
 		} else {
 			this.nonStartNode = false;
 			this.textAreaQuestion.text = 'Start dialogue';
@@ -599,12 +643,6 @@ export class StoryEditorComponent extends NodeEditorComponent implements OnInit 
 			this.textAreaQuestion.hidden = true;
 			this.charTextQuestion.hidden = true;
 		}
-
-		// TODO enable code if use of dialogue option node.
-		// setTimeout(() => {
-		// 	this.listQuestion.value = selectionValue;
-		// 	this.selectComponent.selectedChange.emit(this.listQuestion.value);
-		// }, 100);
 	}
 
 	protected updatePrevious(node: Node) {

@@ -17,8 +17,33 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 01817af8bf3f3cd4c9e80954f89d9bc5
   m_SerializeEntries:
-  - m_GUID: 748a4d93aec92604c96424fb11a9c5f5
-    m_Address: Stat Names_es
+  - m_GUID: d35b948a4e92c6f4bb1afcc0488b6757
+    m_Address: Dialogues_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+  - m_GUID: aea62cc875177a4488e605afc56b4082
+    m_Address: Character Names_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+  - m_GUID: 9105ed92bff4f034b83d96b1095df2d0
+    m_Address: Story Titles_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+  - m_GUID: 803f86d81c7e15a4b97983c22b65ea5d
+    m_Address: Story Descriptions_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+  - m_GUID: c4ff5e4826a4e65429294f7bf32a78b2
+    m_Address: Navigation_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+  - m_GUID: a45a2a1c600434047992488765156bf8
+    m_Address: InventoryTabTypes_es
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-es

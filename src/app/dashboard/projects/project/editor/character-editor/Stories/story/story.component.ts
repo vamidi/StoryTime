@@ -6,7 +6,7 @@ import { NodeEditorComponent } from '@app-theme/components/firebase-table/node-e
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { UtilsService } from '@app-core/utils';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { NbToastrService } from '@nebular/theme';
+import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ProxyObject } from '@app-core/data/base';
 import { UserService } from '@app-core/data/state/users';
 import { TablesService } from '@app-core/data/state/tables';
@@ -57,6 +57,7 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		protected userPreferencesService: UserPreferencesService,
 		protected projectService: ProjectsService,
 		protected tableService: TablesService,
+		protected dialogueService: NbDialogService,
 		protected toasterService: NbToastrService,
 		protected snackbarService: NbSnackbarService,
 		protected languageService: LanguageService,
@@ -65,7 +66,7 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 	)
 	{
 		super(activatedRoute, router, firebaseService, firebaseRelationService, toasterService,
-			snackbarService,
+			dialogueService, snackbarService,
 			userService, userPreferencesService, projectService,
 			tableService, languageService, 'dialogues');
 	}
