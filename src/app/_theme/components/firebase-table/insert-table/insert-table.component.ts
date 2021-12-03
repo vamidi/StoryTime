@@ -294,7 +294,6 @@ export class InsertTableComponent implements
 							description: val[this.tableDescriptionField.question.key],
 							owner: this.user.uid,
 							private: val[this.tableAccessField.question.key],
-							columns: Table.toColumns(this.columnObject),
 						});
 
 						// TODO change this the new method
@@ -303,21 +302,29 @@ export class InsertTableComponent implements
 							// set the new table id
 							table.id = result.key;
 
-							this.project.tables[table.id] =
-								{ enabled: true, name: table.metadata.title, description: table.metadata.description };
+							this.project.tables[table.id] = {
+								enabled: true,
+								metadata: {
+									name: table.metadata.title,
+									description: table.metadata.description,
+									// Add the column data to the project
+									columns: Table.toColumns(this.columnObject),
+								},
+							};
 
+							// TODO validate is this is correct.
 							const id =
 								this.userService.isAdmin || this.userService.isSuper ? this.project.id : `${ this.project.id }/tables`;
 
 							const data = this.userService.isAdmin || this.userService.isSuper ? this.project : this.project.tables;
 
 							// We only have rights to change the tables child in the project if we are not admin or super admin
-							this.firebaseService.updateItem(id, data, true, 'projects').then();
+							this.firebaseService.updateItem(id, data, true, 'projects').then(() => {
+								UtilsService.showToast(this.toastrService, 'Table created',
+									`Table ${table.metadata.title} created!`, 'success');
 
-							UtilsService.showToast(this.toastrService, 'Table created',
-								`Table ${table.metadata.title} created!`, 'success');
-
-							this.firebaseService.onTableAddEvent.emit();
+								this.firebaseService.onTableAddEvent.emit();
+							});
 						}).catch((e) => console.log(e));
 					}
 				}
@@ -344,6 +351,20 @@ export class InsertTableComponent implements
 						this.firebaseService.updateItem(table.id, table, true, 'tables').then(() => {
 							UtilsService.showToast(this.toastrService, 'Table updated',
 								`Table ${ table.metadata.title } updated!`, 'success');
+
+							// Add the column data to the project
+							this.project.tables[table.id].columns = {
+								...this.project.tables[table.id].columns,
+								...Table.toColumns(this.columnObject),
+							};
+
+							// We only have rights to change the tables child in the project if we are not admin or super admin
+							this.firebaseService.updateItem(this.project.id, this.project, true, 'projects').then(() => {
+								UtilsService.showToast(this.toastrService, 'Project updated!',
+									`Project column data updated`, 'success');
+
+								this.firebaseService.onTableAddEvent.emit();
+							});
 						});
 					}
 				}

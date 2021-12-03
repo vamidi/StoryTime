@@ -31,7 +31,6 @@ export interface ITableData extends IMetaData
 	owner: string;
 	private: boolean;
 	deleted: boolean;
-	columns: TableColumnMap,
 	// Pipeline settings
 	version: IVersion;
 }
@@ -150,11 +149,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		private: false,
 		deleted: false,
 
-		/**
-		 * @brief - Column defitions to stricten out the table to
-		 * not add columns that are not defined.
-		 */
-		columns: {},
 		// Pipeline settings
 		version: {
 			major: 0,
@@ -182,7 +176,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		description: string,
 		owner: string,
 		private: boolean,
-		columns: TableColumnMap,
 	}): ITable
 	{
 		return {
@@ -202,7 +195,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				lastUID: 0,
 				private: data.private,
 				deleted: false,
-				columns: data.columns,
 				version: {
 				major: environment.MAJOR,
 					minor: environment.MINOR,
@@ -210,6 +202,20 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				},
 			},
 		};
+	}
+
+	public static toColumns(columnObject: ProxyObject): TableColumnMap
+	{
+		const columnData: TableColumnMap = {};
+		const properties = Object.entries(columnObject);
+		for(const [propKey, propValue] of properties)
+		{
+			// See if column key exists
+			if(!columnData[propKey])
+				columnData[propKey] = Table.toColumn(propKey, propValue);
+		}
+
+		return columnData;
 	}
 
 	public static toColumn(propKey: string, propValue: any, relationData?: RelationPair): Column
@@ -261,20 +267,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		}
 
 		return columnDefinition;
-	}
-
-	public static toColumns(columnObject: ProxyObject): TableColumnMap
-	{
-		const columnData: TableColumnMap = {};
-		const properties = Object.entries(columnObject);
-		for(const [propKey, propValue] of properties)
-		{
-			// See if column key exists
-			if(!columnData[propKey])
-				columnData[propKey] = Table.toColumn(propKey, propValue);
-		}
-
-		return columnData;
 	}
 
 	public get empty(): boolean
@@ -371,6 +363,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 				entry.id = idx;
 				// get all the keys from the table.
 				if(this.metadata.hasOwnProperty('columns')) {
+					/*
 					const propKeys = Object.keys(this.metadata.columns);
 					//
 					propKeys.forEach((propKey) => {
@@ -384,6 +377,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 							delete data[idx][propKey];
 						}
 					});
+					 */
 				}
 			});
 
@@ -415,24 +409,6 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 		}); // refresh list
 
 		return promise;
-	}
-
-	public getColumns(): Column[]
-	{
-		return Object.values(this.metadata.columns);
-	}
-
-	public toColumns(data: any, relationData?: RelationPair)
-	{
-		if(!this.metadata.hasOwnProperty('columns'))
-			this.metadata.columns = {};
-
-		for (const [propKey, propValue] of Object.entries(data))
-		{
-			this.metadata.columns[propKey] =  Table.toColumn(propKey, propValue, relationData);
-		}
-
-		console.log(this);
 	}
 
 	/** ITERATIONS **/

@@ -225,7 +225,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>
 			this.breadcrumbService.addDropdownForRouteRegex(`/dashboard/projects/${this.project.id}/tables`,
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
-					return {title: UtilsService.title(table.name), data: { method: 'tables', id: t }}
+					return {title: UtilsService.title(table.metadata.name), data: { method: 'tables', id: t }}
 				}).sort((a, b) => UtilsService.sortAlphabeticFunc(a, b, 'title')),
 			);
 

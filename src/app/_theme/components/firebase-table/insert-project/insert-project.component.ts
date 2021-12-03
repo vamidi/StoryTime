@@ -210,7 +210,6 @@ export class InsertProjectComponent
 										updated_at: UtilsService.timestamp,
 										private: false,
 										deleted: false,
-										columns: Table.toColumns(tableData[0]),
 										version: {
 											major: environment.MAJOR,
 											minor: environment.MINOR,
@@ -225,8 +224,11 @@ export class InsertProjectComponent
 									table.id = tblResult.key;
 									project.tables[table.id] = {
 										enabled: true,
-										name: table.metadata.title,
-										description: table.metadata.description,
+										metadata: {
+											name: table.metadata.title,
+											description: table.metadata.description,
+											columns: Table.toColumns(tableData[0]),
+										},
 									};
 
 									// update the project with newly made tables

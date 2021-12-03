@@ -868,6 +868,7 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 					Object.keys(project.tables).forEach((tableID) =>
 					{
 						const table = this.tablesService.getTableById(tableID);
+						const metadata = project.tables[tableID].metadata;
 						if(table)
 						{
 							options.push(
@@ -881,14 +882,14 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 						else
 							options.push(
 								new Option<string>({
-									key: UtilsService.title(project.tables[tableID].name),
-									value: project.tables[tableID].name,
+									key: UtilsService.title(metadata.name),
+									value: metadata.name,
 									selected: false,
 								}),
 							);
 
 						if (!found && (
-							table && table.metadata.title === this.cell.getValue() || project.tables[tableID].name === this.cell.getValue())
+							table && table.metadata.title === this.cell.getValue() || metadata.name === this.cell.getValue())
 						) {
 							found = true;
 						}
@@ -930,7 +931,7 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 			console.log(project);
 			if(project)
 			{
-				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].name === event);
+				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].metadata.name === event);
 				console.log(key);
 				if(key)
 				{

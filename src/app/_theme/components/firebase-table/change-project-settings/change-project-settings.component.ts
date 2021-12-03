@@ -182,6 +182,7 @@ export class ChangeProjectSettingsComponent implements
 	public ngOnInit(): void
 	{
 		// max level field
+		console.log(this.project);
 		this.source.fields = {
 			projectName: {
 				controlType: 'textbox',
@@ -203,7 +204,7 @@ export class ChangeProjectSettingsComponent implements
 			},
 			maxLevel: {
 				controlType: 'number',
-				value: this.project.gameStats.maxLevel,
+				value: this.project && this.project.gameStats ? this.project.gameStats.maxLevel : 200,
 				name: 'max-level',
 				text: 'Max level',
 				placeholder: 'Set character and enemy max level',
@@ -298,8 +299,18 @@ export class ChangeProjectSettingsComponent implements
 			});
 		}
 
+		const tables = Object.keys(this.project.tables);
+		const args = { relationData: {} };
+		tables.forEach((tableId) => {
+			args[tableId] = this.firebaseService.getItem(0, `tables/${tableId}/data/`);
+			args.relationData = this.firebaseRelationService.getData().get(this.project.tables[tableId].metadata.name);
+		})
+
 		migrations.forEach((migration, idx) => {
-			this.migrationService.addMigration({ ...migration, item: this.project });
+			this.migrationService.addMigration({
+				...migration, item: this.project,
+				args: args,
+			});
 			this.migrationSource.add({
 				id: idx,
 				title: migration.name,

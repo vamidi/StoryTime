@@ -3,6 +3,7 @@ import { UtilsService } from '@app-core/utils';
 import { environment } from '../../../../../../environments/environment';
 import { DebugType } from '@app-core/utils/utils.service';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
+import { Project } from '@app-core/data/state/projects';
 
 /**
  * @brief - Simple scheduler func to update project version
@@ -90,14 +91,12 @@ async function validateUpdateLocalization(asset: Table): Promise<boolean>
 	return false;
 }
 
-async function validateColumns(asset: Table) { return asset.metadata.hasOwnProperty('columns'); }
-async function addColumnsToTable(asset: Table, args?: any): Promise<boolean>
+async function validateColumns(asset: Table): Promise<boolean> { return asset.metadata.hasOwnProperty('columns'); }
+async function deleteColumnsToTable(asset: Table, args?: any): Promise<boolean>
 {
-	const data = Object.values(asset.data);
-	if(data.length > 0)
+	if(await validateColumns(asset))
 	{
-		const entry = data[0];
-		asset.toColumns(entry, args ? args.relationData : null);
+		UtilsService.deleteProperty(asset.metadata, 'columns');
 		return true;
 	}
 	return false;
@@ -110,8 +109,5 @@ export const migrations: IPipelineSchedule[] = [
 		name: 'Update table localizations',
 		callbackFn: updateDialogueTblForLocalization, validateFn: validateUpdateLocalization, force: false,
 	},
-	{
-		name: 'Insert columns in table',
-		callbackFn: addColumnsToTable, validateFn: validateColumns, force: false,
-	},
+	{ name: 'Delete columns in table', callbackFn: deleteColumnsToTable, validateFn: validateColumns, force: false },
 ];

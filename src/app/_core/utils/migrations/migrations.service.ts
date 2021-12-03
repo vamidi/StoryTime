@@ -55,9 +55,9 @@ export class MigrationsService
 		}
 
 		// Validate before we continue
-		if(await schedule.validateFn(schedule.item))
+		if(await schedule.validateFn(schedule.item) === false)
 		{
-			UtilsService.onDebug(`Schedule finished. Validation returned true for ${schedule.name}`);
+			UtilsService.onDebug(`Schedule finished. Validation returned false for ${schedule.name}`);
 			// if we had nothing to do just return true.
 			return false;
 		}

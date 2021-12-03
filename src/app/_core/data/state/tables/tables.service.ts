@@ -172,7 +172,7 @@ export class TablesService extends TableData implements Iterable<Table>
 
 			if (
 				// if it empty or the name exists in the array.
-				(includedTables.includes(tbl.name.toLowerCase()))
+				(includedTables.includes(tbl.metadata.name.toLowerCase()))
 				&& (t === null || !t.loaded)
 			) {
 				promises.push(this.addIfNotExists(tables[i]));
