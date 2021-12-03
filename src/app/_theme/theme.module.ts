@@ -77,7 +77,9 @@ import {
 	NgxMenuComponent,
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
-	LinkColumnRenderComponent, ArrayTextFieldComponent,
+	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
+	ArrayTextFieldComponent,
 } from './components';
 
 import {
@@ -251,6 +253,7 @@ const CUSTOM_RENDER_COMPONENTS = [
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
 	TableColumnRendererComponent,
 	LanguageRenderComponent,
 	LanguageColumnRenderComponent,
@@ -285,6 +288,7 @@ const CUSTOM_ENTRY_COMPONENT = [
 	BooleanColumnRenderComponent,
 	NumberColumnComponent,
 	LinkColumnRenderComponent,
+	ButtonColumnRenderComponent,
 	TableColumnRendererComponent,
 	LanguageRenderComponent,
 	LanguageColumnRenderComponent,

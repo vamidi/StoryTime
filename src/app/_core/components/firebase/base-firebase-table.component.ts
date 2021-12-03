@@ -18,7 +18,7 @@ import {
 	BooleanColumnRenderComponent,
 } from '@app-theme/components';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { Table } from '@app-core/data/state/tables';
+import { IColumn, Table } from '@app-core/data/state/tables';
 import { UserService } from '@app-core/data/state/users';
 import { User, UserModel, defaultUser } from '@app-core/data/state/users';
 
@@ -403,7 +403,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 									if (this.table.length === 0) // if there is no data we need to put in default data
 									{
-										this.table.push(0, this.processData({
+										this.table.push(0, BaseSettings.processData({
 											created_at: 0,
 											deleted: false,
 											updated_at: 0,
@@ -420,12 +420,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 												return this.tableService.updateData(this.tableId, d.id, d, null, false);
 											};
 
-											this.table.update(d, this.processData(d, key, value, newSettings))
+											this.table.update(d, BaseSettings.processData(d, key, value, newSettings))
 												.then(() => updateData())
 												.then(() => this.updateSettings(newSettings)).catch((error) => this.onError(error));
 										}
 										else
-											this.table.update({ ...d }, this.processData({ ...d }, key, value, newSettings))
+											this.table.update({ ...d }, BaseSettings.processData({ ...d }, key, value, newSettings))
 												.catch((error) => this.onError(error));
 										// array[index] = this.processData({ ...d }, key, value, newSettings);
 									});

@@ -1,14 +1,14 @@
 import {
 	AfterViewInit,
 	ChangeDetectorRef,
-	Component,
+	Component, ComponentRef,
 	EventEmitter,
 	Input,
 	OnInit,
 	Output,
-	ViewChild,
+	ViewChild, ViewContainerRef,
 } from '@angular/core';
-import { NbDialogRef, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { UtilsService } from '@app-core/utils';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
@@ -17,17 +17,21 @@ import {
 	ButtonFieldComponent,
 	CheckboxFieldComponent,
 	TextFieldComponent,
-	DropDownFieldComponent,
+	DropDownFieldComponent, SelectFieldWithBtnComponent, BasicTextFieldInputComponent,
 } from '@app-theme/components/form';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { BehaviorSubject } from 'rxjs';
 import { Option } from '@app-core/data/forms/form-types';
-import { ITable, Table } from '@app-core/data/state/tables';
+import { Column as TableColumn, ITable, Table } from '@app-core/data/state/tables';
 import { Project } from '@app-core/data/state/projects';
 import { BehaviourType } from '@app-core/types';
-import { UserData, UserModel } from '@app-core/data/state/users';
+import { UserModel } from '@app-core/data/state/users';
 import { UserService } from '@app-core/data/state/users';
 import { environment } from '../../../../../environments/environment';
+import { InsertColumnComponent } from '@app-theme/components/firebase-table';
+import { BaseSettings, Column } from '@app-core/mock/base-settings';
+import { BaseFormInputComponent } from '@app-theme/components/form/form.component';
+import { ProxyObject } from '@app-core/data/base';
 
 @Component({
 	selector: 'ngx-insert-table-dialog',
@@ -77,6 +81,9 @@ export class InsertTableComponent implements
 	@ViewChild('checkboxQuestion', { static: true })
 	public checkboxQuestion: CheckboxFieldComponent = null;
 
+	@ViewChild('viewFormContainer', { read: ViewContainerRef, static: true })
+	public viewFormContainer!: ViewContainerRef;
+
 	public source: BaseFormSettings = {
 		title: 'Insert New Table',
 		alias: 'insert-new-table',
@@ -84,9 +91,18 @@ export class InsertTableComponent implements
 		fields: {},
 	};
 
+	private createdFields: ComponentRef<BaseFormInputComponent<any>>[] = [];
+	private columnObject: ProxyObject = {
+		deleted: false,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+	};
+	private columnData: { [key: string]: Column } = {};
+
 	constructor(
 		protected ref: NbDialogRef<InsertTableComponent>,
 		protected toastrService: NbToastrService,
+		protected dialogService: NbDialogService,
 		protected firebaseService: FirebaseService,
 		protected userService: UserService,
 		protected cd: ChangeDetectorRef)
@@ -95,6 +111,7 @@ export class InsertTableComponent implements
 
 	public ngOnInit()
 	{
+
 		this.formComponent.showLabels = true;
 
 		this.formComponent.addInput(this.tableNameField, {
@@ -147,6 +164,8 @@ export class InsertTableComponent implements
 			text: 'Create another',
 			controlType: 'checkbox',
 		});
+
+		this.columnObject = this.table ? this.table.data[0] : this.columnObject;
 	}
 
 	public ngAfterViewInit(): void
@@ -181,6 +200,78 @@ export class InsertTableComponent implements
 		}
 	}
 
+	public addNewColumn()
+	{
+		const ref = this.dialogService.open(InsertColumnComponent,
+			{
+				context: {
+					columnData: this.columnData,
+				},
+			});
+
+		ref.componentRef.instance.saveEvent.subscribe(($event: any) => this.onAddColumn($event));
+		ref.componentRef.instance.closeEvent.subscribe(() => ref.close());
+		ref.componentRef.onDestroy(() => {
+			ref.componentRef.instance.saveEvent.unsubscribe();
+			ref.componentRef.instance.closeEvent.unsubscribe();
+		});
+	}
+
+	public onAddColumn($event)
+	{
+		// see if we have a valid event
+		if ($event && $event['event'] !== undefined)
+		{
+			// Reattach the form to the dynamicFormService.
+			this.formComponent.retach();
+			const newColumnData: { [key: string]: Column } = { ...this.columnData };
+
+			const columns: { [key: string]: Column } = $event.event.columns;
+
+			if (columns)
+			{
+				for (const [key, value] of Object.entries(columns))
+				{
+					if(key === 'deleted')
+						continue;
+
+					if (!newColumnData.hasOwnProperty(key.toString()))
+					{
+						newColumnData[key] =
+						{
+							title: value.title,
+							type: value.type,
+						};
+
+						// name field readonly
+						const textFieldComp = this.formComponent.add(BasicTextFieldInputComponent,
+						{
+							value: value.title,
+							text: 'Column Name',
+							name: key,
+							errorText: '',
+							required: false,
+							readOnly: true,
+							controlType: 'textbox',
+							showFirstBtn: true,
+							onSelectBtnClick: () => {
+								this.formComponent.delete(textFieldComp);
+								delete this.columnData[key];
+								delete this.columnObject[key];
+							},
+						});
+						this.createdFields.push(textFieldComp);
+
+						this.columnObject = BaseSettings.processData(this.columnObject, key, value)
+						this.columnData = newColumnData;
+					}
+				}
+			}
+		}
+
+
+	}
+
 	public onSendForm()
 	{
 		const myForm = this.formComponent.formContainer.toGroup();
@@ -193,35 +284,17 @@ export class InsertTableComponent implements
 				case BehaviourType.INSERT:
 				{
 					// insert data in the database
-					if (this.project && val[this.tableNameField.question.key] && val[this.tableNameField.question.key] !== '') {
-						const table: ITable = {
-							id: '',
-							projectID: this.project.id,
-							revisions: {},
-							relations: {},
-							data: {
-								0: {
-									deleted: false,
-									created_at: UtilsService.timestamp,
-									updated_at: UtilsService.timestamp,
-								},
-							},
-							metadata: {
-								title: UtilsService.camelize(val[this.tableNameField.question.key]),
-								description: val[this.tableDescriptionField.question.key],
-								created_at: UtilsService.timestamp,
-								updated_at: UtilsService.timestamp,
-								owner: this.user.uid,
-								lastUID: 0,
-								private: val[this.tableAccessField.question.key],
-								deleted: false,
-								version: {
-									major: environment.MAJOR,
-									minor: environment.MINOR,
-									release: environment.RELEASE,
-								},
-							},
-						};
+					if (this.project && val[this.tableNameField.question.key] && val[this.tableNameField.question.key] !== '')
+					{
+						console.log(Table.toColumns(this.columnObject));
+						const table: ITable = Table.create({
+							project: this.project,
+							columnObject: this.columnObject,
+							title: UtilsService.camelize(val[this.tableNameField.question.key]),
+							description: val[this.tableDescriptionField.question.key],
+							owner: this.user.uid,
+							private: val[this.tableAccessField.question.key],
+						});
 
 						// TODO change this the new method
 						// Insert projects into project in to the projects child.
@@ -229,21 +302,29 @@ export class InsertTableComponent implements
 							// set the new table id
 							table.id = result.key;
 
-							this.project.tables[table.id] =
-								{ enabled: true, name: table.metadata.title, description: table.metadata.description };
+							this.project.tables[table.id] = {
+								enabled: true,
+								metadata: {
+									name: table.metadata.title,
+									description: table.metadata.description,
+									// Add the column data to the project
+									columns: Table.toColumns(this.columnObject),
+								},
+							};
 
+							// TODO validate is this is correct.
 							const id =
 								this.userService.isAdmin || this.userService.isSuper ? this.project.id : `${ this.project.id }/tables`;
 
 							const data = this.userService.isAdmin || this.userService.isSuper ? this.project : this.project.tables;
 
 							// We only have rights to change the tables child in the project if we are not admin or super admin
-							this.firebaseService.updateItem(id, data, true, 'projects').then();
+							this.firebaseService.updateItem(id, data, true, 'projects').then(() => {
+								UtilsService.showToast(this.toastrService, 'Table created',
+									`Table ${table.metadata.title} created!`, 'success');
 
-							UtilsService.showToast(this.toastrService, 'Table created',
-								`Table ${table.metadata.title} created!`, 'success');
-
-							this.firebaseService.onTableAddEvent.emit();
+								this.firebaseService.onTableAddEvent.emit();
+							});
 						}).catch((e) => console.log(e));
 					}
 				}
@@ -270,6 +351,20 @@ export class InsertTableComponent implements
 						this.firebaseService.updateItem(table.id, table, true, 'tables').then(() => {
 							UtilsService.showToast(this.toastrService, 'Table updated',
 								`Table ${ table.metadata.title } updated!`, 'success');
+
+							// Add the column data to the project
+							this.project.tables[table.id].columns = {
+								...this.project.tables[table.id].columns,
+								...Table.toColumns(this.columnObject),
+							};
+
+							// We only have rights to change the tables child in the project if we are not admin or super admin
+							this.firebaseService.updateItem(this.project.id, this.project, true, 'projects').then(() => {
+								UtilsService.showToast(this.toastrService, 'Project updated!',
+									`Project column data updated`, 'success');
+
+								this.firebaseService.onTableAddEvent.emit();
+							});
 						});
 					}
 				}

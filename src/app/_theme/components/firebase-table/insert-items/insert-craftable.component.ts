@@ -342,7 +342,7 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
 			for(const k of Object.keys(project.tables))
 			{
-				if(project.tables[k].name === pair.key)
+				if(project.tables[k].metadata.name === pair.key)
 				{
 					newPair.key = k;
 					// Add the tables to the service when they not exist

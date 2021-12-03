@@ -2,13 +2,22 @@ import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interfac
 import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { FileUpload } from '@app-core/data/file-upload.model';
 import { Observable } from 'rxjs';
+import { Table, TableColumnMap } from '@app-core/data/state/tables';
+import { RelationPair } from '@app-core/utils/firebase/firebase.service';
+
+export interface ITableMetadata
+{
+	name: string,
+	description?: string,
+	columns: TableColumnMap,
+}
 
 interface ITable
 {
 	[key: string]: {
 		enabled: boolean,
-		name: string,
-		description?: string,
+		metadata: ITableMetadata,
+		[key:string]: any,
 	},
 }
 
@@ -126,6 +135,28 @@ export class Project implements IProject
 	}
 
 	static empty(tClass: any) { return tClass.length === 0; }
+
+	public getColumns(tableId: string): TableColumnMap | null
+	{
+		const tables = Object.keys(this.tables);
+		if(tables.find((table) => table === tableId))
+			return this.tables[tableId].metadata.columns;
+
+		return null;
+	}
+
+	public toColumns(tableId: string, data: any, relationData?: RelationPair)
+	{
+		if(!this.tables.hasOwnProperty('tableId')) {
+			this.tables[tableId].metadata.columns = {};
+		}
+		for (const [propKey, propValue] of Object.entries(data))
+		{
+			this.tables[tableId].metadata.columns[propKey] =  Table.toColumn(propKey, propValue, relationData);
+		}
+
+		console.log(this);
+	}
 }
 
 /**

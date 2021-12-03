@@ -5,7 +5,7 @@ import {
 	EventEmitter,
 	Input, OnDestroy,
 	OnInit,
-	Output,
+	Output, Type,
 	ViewChild,
 } from '@angular/core';
 import { KeyValue } from '@angular/common';
@@ -13,14 +13,14 @@ import {
 	ButtonFieldComponent,
 	DynamicFormComponent,
 } from '@app-theme/components/form';
-import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
+import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { UserService } from '@app-core/data/state/users';
 import { NbDialogRef, NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { IRelation, Revision, Table } from '@app-core/data/state/tables';
-import { DefaultEditor, LocalDataSource } from '@vamidicreations/ng2-smart-table';
+import { DefaultEditor, LocalDataSource, ViewCell } from '@vamidicreations/ng2-smart-table';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
 import { UtilsService } from '@app-core/utils';
@@ -33,10 +33,15 @@ import { environment } from '../../../../../environments/environment';
 import { InsertRelationDialogComponent } from '@app-theme/components/firebase-table/insert-relation-items/insert-relation-dialog.component';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
 
+import { MigrationsService } from '@app-core/utils/migrations/migrations.service';
+import { migrations } from '@app-core/data/state/tables/Migrations/table.migrations';
+import { ButtonColumnRenderComponent } from '@app-theme/components/render-column-layout/button-column-render.component';
+
 import firebase from 'firebase/app'
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
+import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 
 interface ColumnSetting {
 	id: string,
@@ -94,21 +99,6 @@ export class ChangeTableSettingsComponent implements
 		return this.userService.isAdmin;
 	}
 
-	public source: BaseFormSettings = {
-		title: 'Table Settings',
-		alias: 'table-settings',
-		requiredText: 'Settings',
-		fields: {},
-	};
-
-	public relSource: LocalDataSource = new LocalDataSource();
-
-	public relSettings: BaseSettings = new BaseSettings();
-
-	public relations: IRelation = null;
-
-	public currentRevID: number = -1;
-
 	public get revisions(): Map<string, Revision> {
 		const mp: Map<string, Revision> = new Map<string, Revision>();
 		Object.keys(this.table.revisions).map((key) => {
@@ -125,6 +115,83 @@ export class ChangeTableSettingsComponent implements
 		return mp;
 	}
 
+	public source: BaseFormSettings = {
+		title: 'Table Settings',
+		alias: 'table-settings',
+		requiredText: 'Settings',
+		fields: {},
+	};
+
+	public relSource: LocalDataSource = new LocalDataSource();
+
+	public relSettings: BaseSettings = new BaseSettings();
+
+	public relations: IRelation = null;
+
+	public currentRevID: number = -1;
+
+	public migrationSource: LocalDataSource = new LocalDataSource();
+	public migrationSettings: ISettings = {
+		mode: 'inline',
+		selectMode: '',
+		noDataMessage: 'No migrations',
+		actions: {
+			add: false,
+			edit: false,
+			delete: false,
+			position: 'right',
+			// custom: {name: string, title: string}[],
+		},
+		columns: {
+			id: {
+				title: 'ID',
+				type: 'number',
+				editable: false,
+				addable: false,
+				width: '50px',
+				filter:false,
+				hidden: false,
+				defaultValue: Number.MAX_SAFE_INTEGER,
+			},
+			title: {
+				title: 'Title',
+				type: 'text',
+				editable: false,
+				addable: false,
+				filter:false,
+				hidden: false,
+				defaultValue: '',
+			},
+			description: {
+				title: 'Description',
+				type: 'text',
+				editable: false,
+				addable: false,
+				filter:false,
+				hidden: false,
+				defaultValue: '',
+			},
+			migrate: {
+				title: 'Migrate',
+				type: 'custom',
+				editable: false,
+				addable: false,
+				width: '50px',
+				filter:false,
+				hidden: false,
+				renderComponent: ButtonColumnRenderComponent,
+				onComponentInitFunction: (instance: ButtonColumnRenderComponent) => {
+					instance.emitter.subscribe(() => {
+						const migration = this.migrationService.getMigration(instance.rowData.title);
+							this.migrationService.run(migration.name)
+								.then((dirty) => this.resolve(migration, dirty))
+						},
+					);
+				},
+			},
+		},
+	};
+
 	protected columns: Map<string, any> = new Map<string, any>();
 
 	constructor(
@@ -136,6 +203,7 @@ export class ChangeTableSettingsComponent implements
 		protected userService: UserService,
 		protected firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
+		protected migrationService: MigrationsService,
 		protected cd: ChangeDetectorRef,
 	) { }
 
@@ -250,6 +318,18 @@ export class ChangeTableSettingsComponent implements
 		}
 
 		this.relSettings.columns['column'].editor.data.settings = settings;
+		migrations.forEach((migration, idx) => {
+			this.migrationService.addMigration({
+				...migration, item: this.table,
+				args: { relationData: this.firebaseRelationService.getData().get(this.table.metadata.title) },
+			});
+			this.migrationSource.add({
+				id: idx,
+				title: migration.name,
+				description: '',
+				migrate: `Migrate ${migration.name}`,
+			}).then();
+		});
 	}
 
 	public ngAfterViewInit(): void
@@ -642,6 +722,39 @@ export class ChangeTableSettingsComponent implements
 			}).catch((error) => UtilsService.onError(error));
 		}
 	}
+
+	private resolve(migration: IPipelineSchedule, dirty: boolean)
+	{
+		if(migration == null || typeof migration === 'undefined') {
+			UtilsService.showToast(
+				this.toastrService,
+				'Migration failed',
+				`Migration is not defined!`,
+				'warning',
+			);
+			return;
+		}
+		if(dirty)
+		{
+			const table: Table = migration.item as Table;
+			this.tablesService.update(table.id).then(() => {
+				UtilsService.showToast(
+					this.toastrService,
+					'Migration completed',
+					`Migration finished!`,
+					'success',
+				);
+			});
+			return;
+		}
+
+		UtilsService.showToast(
+			this.toastrService,
+			'Migration completed',
+			`Migration made no changes!`,
+			'success',
+		);
+	}
 }
 
 // These render component need a way to talk with each other
@@ -755,6 +868,7 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 					Object.keys(project.tables).forEach((tableID) =>
 					{
 						const table = this.tablesService.getTableById(tableID);
+						const metadata = project.tables[tableID].metadata;
 						if(table)
 						{
 							options.push(
@@ -768,14 +882,14 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 						else
 							options.push(
 								new Option<string>({
-									key: UtilsService.title(project.tables[tableID].name),
-									value: project.tables[tableID].name,
+									key: UtilsService.title(metadata.name),
+									value: metadata.name,
 									selected: false,
 								}),
 							);
 
 						if (!found && (
-							table && table.metadata.title === this.cell.getValue() || project.tables[tableID].name === this.cell.getValue())
+							table && table.metadata.title === this.cell.getValue() || metadata.name === this.cell.getValue())
 						) {
 							found = true;
 						}
@@ -817,7 +931,7 @@ export class TableColumnRendererComponent extends DefaultEditor implements OnIni
 			console.log(project);
 			if(project)
 			{
-				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].name === event);
+				const key = Object.keys(project.tables).find((tableID) => project.tables[tableID].metadata.name === event);
 				console.log(key);
 				if(key)
 				{

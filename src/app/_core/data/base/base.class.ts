@@ -56,35 +56,6 @@ export abstract class BaseRow
 		this.id = id;
 		this.tstamp = tstamp;
 		this.deleted = deleted;
-
-		this.toColumns(this);
-	}
-
-	// public getColumns(): any[]
-	// {
-	// 	return this.columns;
-	// }
-
-	private toColumns(data: any, customData: any = {})
-	{
-		for (const [key, value] of Object.entries(data))
-		{
-			let type: string = '';
-			if (value instanceof String)
-			{
-				type = 'string';
-			}
-
-			if (value instanceof Number)
-			{
-				type = 'number'
-			}
-
-			this.columns[key] = {
-				title: key.toString(),
-				type: type,
-			}
-		}
 	}
 }
 

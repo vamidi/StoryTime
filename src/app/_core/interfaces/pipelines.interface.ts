@@ -27,26 +27,40 @@ export interface IPipelineSchedule<T = PipelineAsset>
 	 * @brief - the name of the schedule
 	 */
 	name: string;
+
+	/**
+	 * @
+	 */
+	description?: string;
+
 	/**
 	 * @brief - Items that are going to be manipulated
 	 */
-	items: Map<string, T>;
+	item?: T;
 
 	/**
-	 * @see {PipelineService}
-	 * @brief - function we are going to call in the scheduler
-	 * @param v
-	 * @param idx
-	 * @param array
+	 * @brief - Additional data that we want to pass around
 	 */
-	callbackFn: (v: T, key: string, map: Map<string, T>) => boolean;
+	args?: any;
+
+	/**
+	 * @see {MigrationsService}
+	 * @brief - function we are going to call in the scheduler
+	 * @param asset - the asset we are going to manipulate
+	 */
+	callbackFn: (asset: T, args?: any) => Promise<boolean>;
+
+	rollbackFn?: (asset: T) => Promise<boolean>;
+
+	/**
+	 * @brief - validate if we need to make a change.
+	 */
+	validateFn: (asset: T) => Promise<boolean>;
 
 	/**
 	 * @brief - Force the change even when the version is the same.
 	 */
 	force: boolean;
-
-	resolve: (dirty: boolean, project: T, key: string) => void;
 }
 
 

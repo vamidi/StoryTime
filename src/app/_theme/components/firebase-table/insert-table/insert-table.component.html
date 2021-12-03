@@ -1,11 +1,12 @@
 <nb-card status="primary" size="large">
 	<nb-card-header>{{ title }}</nb-card-header>
 	<nb-card-body>
-		<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true">
+		<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 			<ngx-text-field #tableNameField></ngx-text-field>
 			<ngx-text-field #tableDescriptionField></ngx-text-field>
 			<ngx-dropdown-field #tableAccessField></ngx-dropdown-field>
 		</ngx-dynamic-form>
+		<button nbButton status="success" (click)="addNewColumn()">Add Column<nb-icon icon="plus-circle-outline"></nb-icon></button>
 	</nb-card-body>
 	<nb-card-footer>
 		<button nbButton ghost status="dismiss" (click)="dismiss()">Dismiss</button>

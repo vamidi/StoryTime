@@ -6,7 +6,7 @@ import {
 	EventEmitter,
 	Input,
 	OnInit,
-	Output,
+	Output, Type,
 	ViewChild,
 	ViewChildren,
 	ViewContainerRef,
@@ -25,6 +25,7 @@ import { FormControl } from '@angular/forms';
 import { Option } from '@app-core/data/forms/form-types';
 import { BehaviorSubject } from 'rxjs';
 import { DebugType } from '@app-core/utils/utils.service';
+import { BasicTextFieldInputComponent } from '@app-theme/components';
 
 /**
  * @brief - We want to make an form that create dynamic forms on the fly
@@ -128,12 +129,31 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 		this.formContainer.clear();
 		this.questions.clear();
 		this.components.forEach((component) => this.removeComponent(component));
+		this.components = [];
 		this.configureFields();
 	}
 
 	public ngAfterContentInit() { }
 
 	public ngAfterViewInit() { }
+
+	public add<T = any>(
+		typeComponent: Type<BaseFormInputComponent<T>>, field: FormField<T> = null,
+	): ComponentRef<BaseFormInputComponent<T>>
+	{
+		const fieldComponent: ComponentRef<BaseFormInputComponent<T>> =
+			this.dynamicComponentService.addDynamicComponent(typeComponent);
+
+		this.addInput(fieldComponent.instance, field);
+
+		this.components.push(fieldComponent);
+		return fieldComponent;
+	}
+
+	public delete(ref: ComponentRef<BaseFormInputComponent<any>>)
+	{
+		this.removeComponent(ref);
+	}
 
 	public addInput<T = any>(el: BaseFormInputComponent<any>, field: FormField<T> = null): FormControl
 	{
@@ -223,6 +243,17 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			}
 			control.setValue(question.value);
 		}
+	}
+
+	/**
+	 * @brief - Normally you won't have to call this, but if you
+	 * call another component on top of the component where you are using this
+	 * and it creates a new dynamicform it will override the service, because
+	 * it is a descendent of the parent.
+	 */
+	public retach()
+	{
+		this.dynamicComponentService.setRootViewContainerRef(this.viewFormContainer);
 	}
 
 	protected configureFields()
@@ -424,7 +455,18 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 	{
 		try
 		{
-			ref.destroy();
+			const index = this.components.indexOf(ref);
+			if (index > -1)
+			{
+				// remove the question from the list
+				this.questions.delete(ref.instance.question.key)
+				// remove the component created from the list.
+				this.components.splice(index, 1);
+				// destroy the ref
+				ref.destroy();
+				// remove the ref from the service.
+				this.dynamicComponentService.delete(ref);
+			}
 		}
 		catch(e)
 		{

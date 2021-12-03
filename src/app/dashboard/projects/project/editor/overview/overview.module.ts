@@ -16,7 +16,6 @@ import { EditorModule } from '../editor.module';
 import { Ng2SmartTableModule } from '@vamidicreations/ng2-smart-table';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TableOverviewEventsComponent } from './table-overview/table-overview-events.component';
-import { InsertColumnComponent } from '@app-theme/components/firebase-table/insert-column/insert-column.component';
 
 @NgModule({
 	imports: [
