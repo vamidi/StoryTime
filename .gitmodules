@@ -4,3 +4,6 @@
 [submodule "unity/StoryTime/Packages/StoryTime"]
 	path = unity/StoryTime/Packages/StoryTime
 	url = https://github.com/vamidi/StoryTime-UPM.git
+[submodule "unreal/ue4/StoryTimePlugin/Plugins/StoryTime"]
+	path = unreal/ue4/StoryTimePlugin/Plugins/StoryTime
+	url = https://github.com/vamidi/StoryTime-plugin-UE4.git
