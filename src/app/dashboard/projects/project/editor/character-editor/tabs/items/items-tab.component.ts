@@ -129,8 +129,8 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		protected languageService: LanguageService,
 	)
 	{
-		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-			userPreferencesService, tableService, firebaseRelationService, languageService, '-MCRBgLCXWHR-OlRa0Sc');
+		super(firebaseService, userService, projectsService, route, router, toastrService, snackbarService, dialogService,
+			userPreferencesService, tableService, firebaseRelationService, languageService);
 	}
 
 	public ngOnInit()
@@ -209,6 +209,12 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		}
 	}
 
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.items;
+		this.setTblName = this.tableId;
+	}
+
 	protected override validate()
 	{
 		super.validate();
@@ -232,7 +238,6 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 		this.varianceField.setDisabledState(this.selectedObject === null);
 		this.critField.setDisabledState(this.selectedObject === null);
 	}
-
 
 	public onActiveSelection(event: number)
 	{

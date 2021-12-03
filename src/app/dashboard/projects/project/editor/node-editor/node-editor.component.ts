@@ -132,7 +132,7 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		protected ngZone: NgZone,
 	) {
 		super(
-			firebaseService, firebaseRelationService, toastrService, dialogService,
+			activatedRoute, firebaseService, firebaseRelationService, toastrService, dialogService,
 			projectsService, tableService, userService, userPreferencesService, languageService,
 		);
 	}

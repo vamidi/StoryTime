@@ -6,13 +6,13 @@
 	<div class="col-lg-2">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
-				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Class</button>
 				<nb-select fullWidth [selected]="defaultValue" (selectedChange)="onActiveSelection($event)">
 					<nb-option [value]="defaultValue">None</nb-option>
 					<nb-option *ngFor="let charClass of getTable; let i = index;" [value]="charClass.id">
 						000{{ i + 1 }} {{ getLanguageProperty(charClass.className) }}
 					</nb-option>
 				</nb-select>
+				<button class="my-2" nbButton fullWidth status="primary" (click)="addMultiple()">Add Class</button>
 			</nb-card-body>
 		</nb-card>
 

@@ -79,7 +79,7 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 		protected languageService: LanguageService,
 	) {
 		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
-			userPreferencesService, tableService, firebaseRelationService, languageService, themeService, '-MTtv20-DUBlnoyImVZu',
+			userPreferencesService, tableService, firebaseRelationService, languageService, themeService,
 		);
 
 		this.includedTables.push('enemycategories', 'enemyactionpatterns', 'itemdrops');
@@ -134,6 +134,17 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 			errorText: 'This must be filled in',
 			required: true,
 			disabled: true,
+		});
+	}
+
+	public override addMultiple()
+	{
+		super.addMultiple({
+			context: {
+				title: 'Add a new enemy',
+				tblName: 'enemies',
+				settings: this.settings,
+			},
 		});
 	}
 
@@ -219,6 +230,12 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 		super.insertStat({
 			enemyId: this.selectedObject ? this.selectedObject.id : Number.MAX_SAFE_INTEGER,
 		});
+	}
+
+	protected override onProjectLoaded(project: Project)
+	{
+		this.tableId = project.metadata.relatedTables.enemies;
+		this.setTblName = this.tableId;
 	}
 
 	protected loadTable(value: Table)

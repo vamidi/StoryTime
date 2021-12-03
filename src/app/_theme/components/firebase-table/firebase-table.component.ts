@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { Ng2SmartTableComponent } from '@vamidicreations/ng2-smart-table';
 import { SmartTableData } from '@app-core/data/smart-table';
@@ -57,11 +57,12 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 		protected toastrService: NbToastrService,
 		protected languageService: LanguageService,
 		protected router: Router,
+		protected route: ActivatedRoute,
 		protected dialogService: NbDialogService,
 		protected snackbarService: NbSnackbarService,
 	) {
 		super(
-			firebaseService, firebaseRelationService, service, userService, userPreferenceService,
+			route, firebaseService, firebaseRelationService, service, userService, userPreferenceService,
 			projectService, tableService, toastrService, snackbarService, languageService, router, dialogService,
 		);
 	}

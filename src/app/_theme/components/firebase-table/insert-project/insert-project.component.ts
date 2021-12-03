@@ -23,14 +23,12 @@ import { IProject, Project } from '@app-core/data/state/projects';
 import { UserModel } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
-import { Column, IColumn, ITable, Table, TableColumnMap, TableTemplate } from '@app-core/data/state/tables';
+import { ITable, Table, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/database/standard-tables';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { ProxyObject } from '@app-core/data/base';
-
-const VERSION_CHECK = '2020.1.5f2';
+import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 
 @Component({
 	selector: ' ngx-insert-project',
@@ -167,6 +165,14 @@ export class InsertProjectComponent
 							languages: {
 								'en': true,
 							},
+							relatedTables: {
+								characters: '',
+								items: '',
+								equipments: '',
+								classes: '',
+								enemies: '',
+								skills: '',
+							},
 							version: {
 								major: environment.MAJOR,
 								minor: environment.MINOR,
@@ -187,6 +193,8 @@ export class InsertProjectComponent
 							this.user = { ...this.user, projects: { } };
 
 						this.user.projects[project.id] = { roles: { admin: true, editor: true, author: true, subscriber: true } };
+
+						const relationTableKeys = Object.keys(project.metadata.relatedTables);
 
 						// Add the project also to the user meta data
 						this.firebaseService.updateItem(`${this.user.uid}/projects/${project.id}`, this.user.projects[project.id], true, 'users').then(() =>
@@ -230,6 +238,12 @@ export class InsertProjectComponent
 											columns: Table.toColumns(tableData[0]),
 										},
 									};
+
+									// If we can find the relation table set it.
+									if(relationTableKeys.find((key) => key === strTable))
+									{
+										project.metadata.relatedTables[strTable] = table.id;
+									}
 
 									// update the project with newly made tables
 									// Add the project also to the user meta data

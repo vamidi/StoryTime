@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { NbMenuItem } from '@nebular/theme/components/menu/menu.service';
-import { Parser } from 'expr-eval';
 import { BaseTabComponent } from './base-tab.component';
 import { ProxyObject } from '@app-core/data/base';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
@@ -46,7 +45,7 @@ export abstract class BaseStatTabComponent<T extends ProxyObject> extends BaseTa
 		protected themeService: NbThemeService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(route, firebaseService, userService, projectsService, router, toastrService, snackbarService, dialogService,
+		super(firebaseService, userService, projectsService, route, router, toastrService, snackbarService, dialogService,
 			userPreferencesService, tableService, firebaseRelationService, languageService, tableId);
 	}
 }

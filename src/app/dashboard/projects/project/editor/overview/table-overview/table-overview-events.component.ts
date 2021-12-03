@@ -4,7 +4,7 @@ import { QuestsSmartTableService } from '@app-core/mock/quests-smart-table.servi
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FirebaseTableFunctionalityComponent } from '@app-core/components/firebase/firebase-table-functionality.component';
 
 import { InsertColumnComponent } from '@app-theme/components/firebase-table/insert-column/insert-column.component';
@@ -59,10 +59,11 @@ export class TableOverviewEventsComponent extends FirebaseTableFunctionalityComp
 		protected snackbarService: NbSnackbarService,
 		protected languageService: LanguageService,
 		protected router: Router,
+		protected route: ActivatedRoute,
 		protected dialogService: NbDialogService,
 	)
 	{
-		super(firebaseService, firebaseRelationService,
+		super(route, firebaseService, firebaseRelationService,
 			service, userService, userPreferenceService, projectService, tableService,
 			toastrService, snackbarService, languageService, router, dialogService,
 		);

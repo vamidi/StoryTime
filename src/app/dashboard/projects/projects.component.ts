@@ -69,7 +69,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		protected cd: ChangeDetectorRef,
 	) {
 		super(
-			router, toastrService, dialogService, snackbarService, userService, userPreferenceService,
+			activatedRoute, router, toastrService, dialogService, snackbarService, userService, userPreferenceService,
 			projectsService, tableService, firebaseService, firebaseRelationService, languageService, 'projects',
 		);
 	}

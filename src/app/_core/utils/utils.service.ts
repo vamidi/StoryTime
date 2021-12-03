@@ -413,6 +413,11 @@ export class UtilsService
 		return obj;
 	}
 
+	public static isNull(obj: any): boolean
+	{
+		return obj === undefined || obj === null;
+	}
+
 	// Array settings
 
 	public static sortAlphabeticFunc(a: any, b: any, key:string)

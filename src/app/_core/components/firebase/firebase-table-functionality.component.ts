@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
 import { Ng2SmartTableComponent } from '@vamidicreations/ng2-smart-table';
@@ -62,6 +62,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 	protected changeTableSettingsDialog: NbDialogRef<ChangeTableSettingsComponent> = null;
 
 	protected constructor(
+		protected route: ActivatedRoute,
 		public firebaseService: FirebaseService,
 		protected firebaseRelationService: FirebaseRelationService,
 		protected service: SmartTableData,
@@ -76,7 +77,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 		protected dialogService: NbDialogService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(router, firebaseService, firebaseRelationService,
+		super(route, router, firebaseService, firebaseRelationService,
 			toastrService, dialogService, snackbarService, userService,
 			userPreferencesService, projectService, tableService,
 			languageService, tableId,

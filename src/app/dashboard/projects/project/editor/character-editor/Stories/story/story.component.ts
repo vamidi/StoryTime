@@ -1,10 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	OnInit, QueryList,
-	ViewChild, ViewChildren,
-} from '@angular/core';
-
+import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Location } from '@angular/common';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -71,10 +65,11 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		protected activatedRoute: ActivatedRoute,
 	)
 	{
-		super(router, firebaseService, firebaseRelationService, toasterService,
-			dialogueService, snackbarService,
-			userService, userPreferencesService, projectService,
-			tableService, languageService, 'dialogues');
+		super(
+			activatedRoute, router, firebaseService, firebaseRelationService, toasterService,
+			dialogueService, snackbarService, userService, userPreferencesService,
+			projectService, tableService, languageService, 'dialogues'
+		);
 	}
 
 	// public isSupported(): boolean

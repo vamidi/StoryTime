@@ -6,9 +6,6 @@
 		<nb-tabset fullWidth>
 			<nb-tab tabTitle="Project Settings">
 				<div class="as-form">
-					<!-- general info
-						(re)name of the project
-					-->
 					<ngx-dynamic-form (onSendForm)="onSendForm()" [source]="source" [showLabels]="true" #viewFormContainer>
 						<p>* {{ source.requiredText }}</p>
 					</ngx-dynamic-form>

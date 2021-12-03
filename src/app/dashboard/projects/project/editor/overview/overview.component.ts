@@ -60,8 +60,9 @@ export class OverviewComponent extends BaseSourceDataComponent implements OnInit
 		protected router: Router,
 	) {
 		super(
-			router, toastrService, dialogService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, firebaseService, firebaseRelationService, languageService);
+			activatedRoute, router, toastrService, dialogService, snackbarService, userService, userPreferencesService,
+			projectService, tableService, firebaseService, firebaseRelationService, languageService,
+		);
 	}
 
 	public ngOnInit(): void
