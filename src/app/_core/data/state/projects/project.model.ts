@@ -166,15 +166,13 @@ export class Project implements IProject
 
 	public toColumns(tableId: string, data: any, relationData?: RelationPair)
 	{
-		if(!this.tables.hasOwnProperty('tableId')) {
+		if(!this.tables.hasOwnProperty('tableId'))
 			this.tables[tableId].metadata.columns = {};
-		}
+
 		for (const [propKey, propValue] of Object.entries(data))
 		{
-			this.tables[tableId].metadata.columns[propKey] =  Table.toColumn(propKey, propValue, relationData);
+			this.tables[tableId].metadata.columns[propKey] = Table.toColumn(propKey, propValue, relationData);
 		}
-
-		console.log(this);
 	}
 }
 

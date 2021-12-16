@@ -629,6 +629,7 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			}),
 		);
 
+		console.trace('loading table');
 		this.mainSubscription.add(fetchTable$.subscribe((table: Table) => {
 			this.projectService.set(table.projectID, true).then(() => {
 				this.userService.setUserPermissions(this.projectService);
@@ -637,6 +638,17 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		}/*, () => this.router.navigateByUrl('/dashboard/error')*/));
 	}
 
+	protected
+
+	/**
+	 * @brief Process the project and the table to create
+	 * table settings for the ng2-smart-table
+	 * @param tableData
+	 * @param verify
+	 * @param settings
+	 * @param overrideTbl
+	 * @protected
+	 */
 	protected processTableData(
 		tableData: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
 	): ISettings {
@@ -706,6 +718,14 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	protected onUserReceived(__: User) {
 		this.validateSettings(this.settings);
+	}
+
+	protected onProjectLoaded(_: Project)
+	{
+		super.onProjectLoaded(_);
+
+		// When we have a project load the settings from that table.
+		this.getTableData(this.settings);
 	}
 
 	protected onTableDataLoaded()
