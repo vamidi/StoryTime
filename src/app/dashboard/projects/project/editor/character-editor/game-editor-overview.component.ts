@@ -71,6 +71,8 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.characters;
 		this.setTblName = this.tableId;
 	}

@@ -334,6 +334,8 @@ export class EquipmentsTabComponent extends BaseParameterTabComponent<IEquipment
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.equipments;
 		this.setTblName = this.tableId;
 	}

@@ -629,7 +629,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			}),
 		);
 
-		console.trace('loading table');
 		this.mainSubscription.add(fetchTable$.subscribe((table: Table) => {
 			this.projectService.set(table.projectID, true).then(() => {
 				this.userService.setUserPermissions(this.projectService);
