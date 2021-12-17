@@ -113,8 +113,6 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 				this.getTableData(this.settings);
 			}
 		}));
-
-		this.getTableData(this.settings);
 	}
 
 	public ngOnDestroy()

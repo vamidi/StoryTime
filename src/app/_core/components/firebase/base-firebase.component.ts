@@ -188,8 +188,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			this.mainSubscription.unsubscribe();
 	}
 
-	protected onProjectLoaded(_: Project) {}
-
 	/**
 	 * @brief - Add objects to the database through a dialog.
 	 * @param userConfig
@@ -210,6 +208,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 	/**
 	 * @brief - Process table data to generate columns
+	 * table settings for the ng2-smart-table
 	 * @param table
 	 * @param verify
 	 * @param settings
@@ -231,6 +230,13 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		// if we need to verify we need to check if it is a valid item
 		if (verify)
 		{
+			console.trace(this.project);
+			if(this.project)
+			{
+				const testKeys = this.project.getColumns(table.id);
+				console.log(testKeys, Object.keys(table.data));
+			}
+
 			for(const dataKey of Object.keys(table.data))
 			{
 				const dataValue: ProxyObject = table.data[dataKey];
@@ -509,4 +515,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false) { }
 
 	protected onUserReceived(__: User) { }
+
+	protected onProjectLoaded(_: Project) { }
 }
