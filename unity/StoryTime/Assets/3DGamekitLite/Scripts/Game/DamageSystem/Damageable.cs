@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Gamekit3D.Message;
 using UnityEngine.Serialization;
 
 namespace Gamekit3D
 {
     public partial class Damageable : MonoBehaviour
     {
-
-        public int maxHitPoints;
+	    public int maxHitPoints;
         [Tooltip("Time that this gameObject is invulnerable for, after receiving damage.")]
         public float invulnerabiltyTime;
 
@@ -69,7 +67,7 @@ namespace Gamekit3D
             m_Collider.enabled = enabled;
         }
 
-        public void ApplyDamage(DamageMessage data)
+        public void ApplyDamage(StoryTime.Components.Damageable.DamageMessage data)
         {
 	        if (currentHitPoints <= 0)
             {//ignore damage if already dead. TODO : may have to change that if we want to detect hit on death...
@@ -100,11 +98,11 @@ namespace Gamekit3D
             else
                 OnReceiveDamage.Invoke();
 
-            var messageType = currentHitPoints <= 0 ? MessageType.DEAD : MessageType.DAMAGED;
+            var messageType = currentHitPoints <= 0 ? StoryTime.Components.MessageType.Dead : StoryTime.Components.MessageType.Damaged;
 
             for (var i = 0; i < onDamageMessageReceivers.Count; ++i)
             {
-                var receiver = onDamageMessageReceivers[i] as IMessageReceiver;
+                var receiver = onDamageMessageReceivers[i] as StoryTime.Components.IMessageReceiver;
                 receiver.OnReceiveMessage(messageType, this, data);
             }
         }

@@ -32,21 +32,6 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
-  - m_GUID: 00e003325b52bee4aa212e00e4845fbc
-    m_Address: Story Descriptions_en
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-en
-  - m_GUID: 213517e8c89090f4e9a667a3be26dc5b
-    m_Address: Navigation_en
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-en
-  - m_GUID: 22a4e3cc7c5a6bc48b0b1b090a95f0be
-    m_Address: InventoryTabTypes_en
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-en
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
