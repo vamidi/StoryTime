@@ -1,5 +1,28 @@
 [
 	{
+		"title": "2020.1.6f3 (2021-23-12)", "children": [
+			{
+				"title": "Changes", "children": [
+				{ "title": "Inside one story you can make it possible to make different characters talk." },
+				{ "title": "Column data is generated from the project instead of the data inside a table." },
+				{ "title": "Add submodule to Unreal Engine 4 project." },
+				{ "title": "Project table selector added for the game editor." },
+				{ "title": "Game editor added for game stats." },
+				{ "title": "Fix for home page in dashboard." },
+				{ "title": "UI updates" }
+			]
+			},
+			{
+				"title": "Fixes",
+				"children": [
+					{ "title": "Fix for enemy stat page not showing any stats." },
+					{ "title": "Fix overuse of observables." },
+					{ "title": "Fix for hardcoded database locations inside the game editor." }
+				]
+			}
+		]
+	},
+	{
 		"title": "2020.1.5f3 (2021-19-07)", "children": [
 			{ "title": "Changes", "children": [
 				{ "title": "Removal of debug code." },
