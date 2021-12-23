@@ -70,7 +70,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 	) {
 		super(
 			activatedRoute, router, toastrService, dialogService, snackbarService, userService, userPreferenceService,
-			projectsService, tableService, firebaseService, firebaseRelationService, languageService, 'projects',
+			projectsService, tableService, firebaseService, firebaseRelationService, languageService,
 		);
 	}
 
@@ -170,7 +170,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 			projectObj = this.projectsService.setProject(projectObj.id, projectObj, true);
 			this.userService.setUserPermissions(this.projectService);
 
-			// TODO update the project timestamp locally
+			// TODO update the project timestamp locally + in the user's account
 			// projectObj.metadata.updated_at = UtilsService.timestamp;
 			// this.projectsService.update(projectObj.id).then(() => {
 				// clear all the tables if we have one
@@ -229,8 +229,8 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 					this.projectsService.loadProject(key, (snapshot: DataSnapshot) => {
 						this.ngZone.run(() =>
 						{
-							const payload = snapshot.val();
-							const project: Project = { tables: {}, ...payload, id: snapshot.key};
+							const payload = { tables: {}, ...snapshot.val(), id: snapshot.key };
+							const project: Project = UtilsService.assignProperties(new Project, payload);
 							this.projectsService.setProject(project.id, project);
 
 							const members = Object.keys(project.members);

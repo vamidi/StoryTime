@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AngularFireAction } from '@angular/fire/database';
+import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
@@ -141,6 +141,9 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			switchMap((params) => {
 				this.projectId = params['id'];
 
+				// TODO create error handling for when accessing the wrong project.
+				// this.router.navigateByUrl('/dashboard/error')
+
 				if(this.projectService.getProject())
 					return this.projectService.getProject$();
 				else if(this.projectId !== '' && !UtilsService.isNull(this.projectId))
@@ -148,18 +151,18 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				else
 					return of(null)
 			}),
-		).subscribe((snapshot: Project | AngularFireAction<any>) =>
+		).subscribe((snapshot: Project | SnapshotAction<any>) =>
 		{
 			// console.log(snapshot, typeof snapshot, snapshot instanceof Project);
 			let project: Project = new Project();
 			if(snapshot !== null )
 			{
-				if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+				if(snapshot instanceof Project)
 				{
 					project = snapshot as Project;
 				} else if(snapshot.payload.exists())
 				{
-					project = UtilsService.assignProperties(project, snapshot.payload.val());
+					project = UtilsService.assignProperties(project, { ...snapshot.payload.val(), id: snapshot.key });
 				}
 			}
 
@@ -311,20 +314,22 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 					const dataValue: TableColumnMap = this.project.getColumns(table.id);
 					// Now we have the information only once.
 					// TODO make this generic.
-					for (const [k, val] of Object.entries<Column>(dataValue)) {
-						console.log(k, val);
-
+					for (const [k, val] of Object.entries<Column>(dataValue))
+					{
 						const key: string = trim(k);
 
+						// We only need this information once
 						if (!newSettings.columns.hasOwnProperty(key.toString()))
 						{
+							const titleName = UtilsService.title(key.toString());
 							const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
 
 							newSettings.columns[key] =
 							{
 								title: val.name,
+								readonly: val.readonly ?? false,
 								defaultValue: val.defaultValue,
-								type: val.type,
+								// type: val.type, // TODO see why this is causing issues.
 								class: 'input input-form-control',
 								filter: false,
 								hidden: false,
@@ -333,7 +338,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 							let type: string = '';
 
-							// TODO generate type from function
 							if (typeof val.defaultValue === 'string') {
 								type = 'html';
 								newSettings.columns[key].valuePrepareFunction = (cell /*, row */) => {
@@ -436,13 +440,13 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
 
 				newSettings.columns[key] =
-					{
-						title: titleName,
-						class: 'input input-form-control',
-						filter: false,
-						hidden: false,
-						editor: {},
-					};
+				{
+					title: titleName,
+					class: 'input input-form-control',
+					filter: false,
+					hidden: false,
+					editor: {},
+				};
 
 				let type: string = '';
 

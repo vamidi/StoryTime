@@ -17,6 +17,7 @@ export interface Column {
 
 	addable?: boolean,
 
+	readonly?: boolean
 	editable?: boolean,
 	filter?: boolean,
 	hidden?: boolean,

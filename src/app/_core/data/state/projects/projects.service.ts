@@ -171,7 +171,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>
 			{
 				if(result.exists())
 				{
-					const project: Project = { ...result.val(), id: result.key };
+					const project: Project = UtilsService.assignProperties(new Project, { ...result.val(), id: result.key });
 
 					return this.setProject(project.id, project, current);
 				}

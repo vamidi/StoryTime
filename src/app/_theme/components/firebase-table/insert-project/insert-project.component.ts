@@ -19,7 +19,7 @@ import {
 	TextFieldComponent,
 } from '@app-theme/components/form';
 import { IBehaviour } from '@app-core/interfaces/behaviour.interface';
-import { IProject, Project } from '@app-core/data/state/projects';
+import { Project } from '@app-core/data/state/projects';
 import { UserModel } from '@app-core/data/state/users';
 import { UtilsService } from '@app-core/utils';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
@@ -148,7 +148,7 @@ export class InsertProjectComponent
 			{
 				case BehaviourType.INSERT:
 				{
-					const project: IProject = {
+					const project: Project = UtilsService.assignProperties(new Project, {
 						id: '',
 						members: {},
 						tables: {},
@@ -178,7 +178,7 @@ export class InsertProjectComponent
 								release: environment.RELEASE,
 							},
 						},
-					};
+					});
 
 					project.members[this.user.uid] = true;
 
@@ -255,7 +255,7 @@ export class InsertProjectComponent
 						});
 
 						// Add the project to the service.
-						this.projectService.setProject(project.id, <Project>(project));
+						this.projectService.setProject(project.id, project);
 					});
 				}
 					break;

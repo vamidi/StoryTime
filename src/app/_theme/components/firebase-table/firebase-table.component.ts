@@ -73,11 +73,6 @@ export class FirebaseTableComponent extends FirebaseTableFunctionalityComponent
 		return this.tableId !== 'game-db';
 	}
 
-	public ngOnInit()
-	{
-		super.ngOnInit();
-	}
-
 	/**
 	 * After the view has been initialized.
 	 */

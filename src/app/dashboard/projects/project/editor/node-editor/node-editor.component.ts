@@ -79,8 +79,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 	public title: string = '';
 	public nodeTitle: string = '';
 
-	protected project: Project = new Project();
-	protected currentState: { project: Project } = { project: new Project() };
 	protected prevNode: Node = null;
 	protected currentNode: Node = null;
 	protected currentOutputCount: number = 0;
@@ -143,37 +141,6 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 
 		//
 		this.timeoutShow = debounce(this.showPanel, 250);
-
-		const map: ParamMap = this.activatedRoute.snapshot.paramMap;
-		const id = map.get('id');
-
-		console.log(id);
-		this.firebaseService.getRef('projects/' + id).on('value', (snapshots) =>
-		{
-			this.currentState.project.id = id;
-			snapshots.forEach((snapshot) =>
-			{
-				if(snapshot.exists())
-				{
-					// const q: any = snapshot.exists ? snapshot.val() : {};
-					this.currentState['project'][snapshot.key] = snapshot.val();
-				}
-			});
-
-			// set this project to the current
-			this.project = this.projectsService.setProject(id, this.currentState.project, true);
-			this.loadEditor();
-		}, () => this.router.navigateByUrl('/dashboard/error'));
-
-		// first we need to get the project.
-		this.mainSubscription.add(this.user$.pipe(
-			switchMap(() => this.projectsService.getProject$()),
-		).subscribe((project) =>
-		{
-			if(project && !isEqual(this.project, project) && project.hasOwnProperty('tables'))
-				this.project = project;
-			this.userService.setUserPermissions(this.projectsService);
-		}));
 	}
 
 	public ngAfterViewInit()
@@ -418,6 +385,13 @@ export abstract class NodeEditorComponent extends BaseFirebaseComponent implemen
 		});
 
 		// open popup to load a story
+	}
+
+	protected override onProjectLoaded(_: Project) {
+		super.onProjectLoaded(_);
+
+
+		this.loadEditor();
 	}
 
 	protected loadEditor()
