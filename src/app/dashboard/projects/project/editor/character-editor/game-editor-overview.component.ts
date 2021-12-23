@@ -26,7 +26,7 @@ import { ICharacter } from '@app-core/data/database/interfaces';
 		`,
 	],
 })
-export class GameEditorOverviewComponent extends BaseSourceDataComponent implements OnInit
+export class GameEditorOverviewComponent extends BaseSourceDataComponent
 {
 	public override get getTable(): Table<ICharacter>
 	{
@@ -48,30 +48,21 @@ export class GameEditorOverviewComponent extends BaseSourceDataComponent impleme
 		protected router: Router,
 	) {
 		super(
-			activatedRoute, router, toastrService, dialogService, snackbarService,
-			userService, userPreferencesService, projectService, tableService, firebaseService, firebaseRelationService,
+			activatedRoute, router, toastrService, dialogService, snackbarService, userService,
+			userPreferencesService, projectService, tableService, firebaseService, firebaseRelationService,
 			languageService,
 		);
 	}
 
-	public ngOnInit(): void
-	{
-		super.ngOnInit();
-
-		// TODO grab the characters from the project.
-		// TODO 1. grab the project
-		// TODO 2. grab the tables
-		// TODO 3. search the name and then look up the table
-		// TODO 4. from the table grab all the characters
-		// TODO 5. On table click go to the editor.
-
-		// Important or data will not be caught.
-		this.getTableData(this.settings);
+	protected override onDataReceived(tableData: Table) {
+		super.onDataReceived(tableData);
 	}
 
 	protected override onProjectLoaded(project: Project)
 	{
 		this.tableId = project.metadata.relatedTables.characters;
 		this.setTblName = this.tableId;
+
+		super.onProjectLoaded(project);
 	}
 }

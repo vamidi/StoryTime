@@ -65,11 +65,10 @@ export class StoryComponent extends BaseFirebaseTableComponent implements OnInit
 		protected activatedRoute: ActivatedRoute,
 	)
 	{
-		super(
-			activatedRoute, router, firebaseService, firebaseRelationService, toasterService,
-			dialogueService, snackbarService, userService, userPreferencesService,
-			projectService, tableService, languageService, 'dialogues'
-		);
+		super(activatedRoute, router, firebaseService, firebaseRelationService, toasterService,
+			dialogueService, snackbarService,
+			userService, userPreferencesService, projectService,
+			tableService, languageService, 'dialogues');
 	}
 
 	// public isSupported(): boolean

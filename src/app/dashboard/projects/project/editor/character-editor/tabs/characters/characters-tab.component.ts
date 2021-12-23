@@ -440,6 +440,8 @@ export class CharactersTabComponent extends BaseTabComponent<ICharacter> impleme
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.equipments;
 		this.setTblName = this.tableId;
 	}

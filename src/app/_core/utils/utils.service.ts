@@ -399,6 +399,16 @@ export class UtilsService
 		return obj;
 	}
 
+	// TODO assign methods to extract the properties and values
+	public static assignProperties<T = any>(obj: T, properties: any): T {
+		// configure fields
+		Object.entries(properties).forEach(([key, prop]) => {
+			obj[key] = prop;
+		});
+
+		return obj;
+	}
+
 	/**
 	 * @brief - Delete a property of an object.
 	 * @param obj

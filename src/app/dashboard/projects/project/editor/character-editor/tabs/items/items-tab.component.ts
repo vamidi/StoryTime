@@ -211,6 +211,8 @@ export class ItemsTabComponent extends BaseTabComponent<IItem> implements OnInit
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.items;
 		this.setTblName = this.tableId;
 	}

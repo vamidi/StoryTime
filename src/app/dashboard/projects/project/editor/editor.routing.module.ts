@@ -29,16 +29,6 @@ const routes: Routes = [
 				loadChildren: () => import('./character-editor/game-editor.module')
 					.then(m => m.GameEditorModule),
 			},
-			{
-				path: 'quests',
-				loadChildren: () => import('./overview/overview.module')
-					.then(m => m.OverviewModule),
-			},
-			{
-				path: 'dialogues',
-				loadChildren: () => import('./overview/overview.module')
-					.then(m => m.OverviewModule),
-			},
 			{ path: '**', component: FirebaseTableComponent },
 		],
 		/*

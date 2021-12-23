@@ -190,6 +190,8 @@ export class ClassesTabComponent extends BaseParameterTabComponent<ICharacterCla
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.classes;
 		this.setTblName = this.tableId;
 	}

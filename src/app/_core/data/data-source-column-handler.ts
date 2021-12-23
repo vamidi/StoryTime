@@ -142,8 +142,16 @@ export class DataSourceColumnHandler
 		let value: T = null;
 		if (column.hasOwnProperty('defaultValue'))
 		{
-			// TODO fix for every key.
-			value = key === 'id' && this.data.hasOwnProperty(key) ? <T>this.data[key] : <T>column.defaultValue;
+			if( key === 'id' && this.data.hasOwnProperty(key))
+			{
+				value =  <T>this.data[key];
+			}
+			else {
+				if(typeof defaultValue === 'string' && typeof column.defaultValue === 'object')
+					value = this.handleLanguageValue(column.defaultValue) as T;
+				else
+					value = column.defaultValue as T;
+			}
 		}
 		else if(this.data.hasOwnProperty(key))
 		{
@@ -163,7 +171,7 @@ export class DataSourceColumnHandler
 			value: value ?? defaultValue,
 			name: column.title.toLowerCase(),
 			controlType: type,
-			readOnly: !!column.defaultValue,
+			readOnly: column.readonly ?? !!column.defaultValue,
 			hidden: column.hidden,
 			disabled: !editable,
 			text: column.title,

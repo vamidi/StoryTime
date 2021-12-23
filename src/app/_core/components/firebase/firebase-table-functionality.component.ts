@@ -93,11 +93,13 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public ngOnInit(): void
 	{
-		super.ngOnInit();
-
+		// TODO make middle class that handles the table id from the url.
+		// First grab the table id from the url
 		let tableID = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
 		this.tableId = tableID;
 		this.firebaseService.setTblName(this.tableId);
+
+		super.ngOnInit();
 
 		this.mainSubscription.add(this.router.events.subscribe((event) =>
 		{
@@ -113,8 +115,6 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 				this.getTableData(this.settings);
 			}
 		}));
-
-		this.getTableData(this.settings);
 	}
 
 	public ngOnDestroy()

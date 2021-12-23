@@ -189,6 +189,8 @@ export class SkillsTabComponent extends BaseTabComponent<ISkill> implements OnIn
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.skills;
 		this.setTblName = this.tableId;
 	}

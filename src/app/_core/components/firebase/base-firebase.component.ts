@@ -1,7 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AngularFireAction } from '@angular/fire/database';
+import { SnapshotAction } from '@angular/fire/database/interfaces';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ObjectKeyValue, UserPreferences, UtilsService } from '@app-core/utils/utils.service';
@@ -9,7 +10,7 @@ import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { User, UserModel, defaultUser, UserService } from '@app-core/data/state/users';
 import { ProxyObject, Relation, StringPair } from '@app-core/data/base';
-import { Table, TablesService } from '@app-core/data/state/tables';
+import { Column, Table, TableColumnMap, TablesService } from '@app-core/data/state/tables';
 import { ISettings } from '@app-core/mock/base-settings';
 import {
 	BooleanColumnRenderComponent,
@@ -20,9 +21,8 @@ import {
 import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
-import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
-import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 import { environment } from '../../../../environments/environment';
+import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 
 import { Util } from 'leaflet';
 import trim = Util.trim;
@@ -40,6 +40,7 @@ import firebase from 'firebase/app';
 })
 export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 {
+
 	public get isAdmin()
 	{
 		return this.userService.isAdmin;
@@ -63,7 +64,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 
 	protected project: Project = null;
 	protected project$: BehaviorSubject<Project> = new BehaviorSubject<Project>(null);
-	protected projectId: number = Number.MAX_SAFE_INTEGER;
+	protected projectId: string = '';
 
 	// Main subscription to all events
 	protected mainSubscription: Subscription = new Subscription();
@@ -121,11 +122,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 				this.userPreferences.indexColumns = new Map<string, ObjectKeyValue<number>>();
 		}));
 
-		// const map: ParamMap = this.route.snapshot.paramMap;
-		// const tableID = map.get('id');
-		// const id = map.get('charId');
-		this.projectId = Number.parseInt(this.route.parent.snapshot.paramMap.get('id') as string, 0);
-
 		// Load the user
 		this.mainSubscription.add(this.userService.getUser().pipe(
 			switchMap((user: User) => {
@@ -139,31 +135,40 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 					this.onUserReceived(user);
 				}
 
+				return this.route.params;
+			}),
+			// load the params from the url
+			switchMap((params) => {
+				this.projectId = params['id'];
+
+				// TODO create error handling for when accessing the wrong project.
+				// this.router.navigateByUrl('/dashboard/error')
+
 				if(this.projectService.getProject())
 					return this.projectService.getProject$();
-				else if(!isNaN(this.projectId))
+				else if(this.projectId !== '' && !UtilsService.isNull(this.projectId))
 					return this.firebaseService.getItem(this.projectId, `projects`).snapshotChanges();
 				else
 					return of(null)
 			}),
-		).subscribe((snapshot: Project | AngularFireAction<any>) =>
+		).subscribe((snapshot: Project | SnapshotAction<any>) =>
 		{
 			// console.log(snapshot, typeof snapshot, snapshot instanceof Project);
-			let project = null;
+			let project: Project = new Project();
 			if(snapshot !== null )
 			{
-				if(!snapshot.hasOwnProperty('payload') || snapshot instanceof Project)
+				if(snapshot instanceof Project)
 				{
-					project = snapshot;
+					project = snapshot as Project;
 				} else if(snapshot.payload.exists())
 				{
-					project = snapshot.payload.val()
+					project = UtilsService.assignProperties(project, { ...snapshot.payload.val(), id: snapshot.key });
 				}
 			}
 
 			if (project && !isEqual(this.project, project) && project.hasOwnProperty('tables'))
 			{
-				this.project = { ...project };
+				this.project = project;
 				this.onProjectLoaded(this.project);
 				this.project$.next(this.project);
 			}
@@ -205,238 +210,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		ref.componentRef.instance.insertEvent.subscribe((event: any) =>
 			this.onCreateConfirm(event, tableId));
 	}
-
-	protected onProjectLoaded(_: Project) {}
-
-	/**
-	 * @brief - Process table data to generate columns
-	 * @param table
-	 * @param verify
-	 * @param settings
-	 * @param overrideTbl
-	 */
-	protected processTableData(
-		table: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
-	): ISettings
-	{
-		// noinspection JSUnusedGlobalSymbols
-		const newSettings: ISettings = { ...settings };
-
-		let tbl: string = table.title;
-
-		// if we override the tblName
-		if(overrideTbl !== '')
-			tbl = overrideTbl;
-
-		// if we need to verify we need to check if it is a valid item
-		if (verify)
-		{
-			for(const dataKey of Object.keys(table.data))
-			{
-				const dataValue: ProxyObject = table.data[dataKey];
-				for (const [k, value] of Object.entries(dataValue))
-				{
-					const key: string = trim(k);
-
-					// We only need this information once
-					if (!newSettings.columns.hasOwnProperty(key.toString()))
-					{
-						const titleName = UtilsService.title(key.toString());
-						const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
-
-						newSettings.columns[key] =
-						{
-							title: titleName,
-							class: 'input input-form-control',
-							filter: false,
-							hidden: false,
-							editor: {},
-						};
-
-						let type: string = '';
-
-						if (typeof value === 'string') {
-							type = 'html';
-							newSettings.columns[key].valuePrepareFunction = (cell /*, row */) => {
-								return UtilsService.replaceCharacter(cell,/<\/>/g, '</b>');
-							}
-						}
-
-						if (typeof value === 'number')
-						{
-							type = 'number';
-							// if entry is not found or
-							// if we don't have a relation found make a number column
-							if ((entry === undefined || entry === null)
-								|| entry && !entry.has(key))
-							{
-								// We need a custom renderer for a number input
-								newSettings.columns[key].editor = {
-									type: 'custom',
-									component: NumberColumnComponent,
-								};
-							}
-						}
-
-						if (typeof value === 'boolean')
-						{
-							type = 'string';
-							newSettings.columns[key].editor = {
-								type: 'custom',
-								component: BooleanColumnRenderComponent,
-							};
-						}
-
-						if(typeof value === 'object')
-						{
-							const keyValue = value as KeyLanguageObject;
-							if(keyValue !== null)
-							{
-								const languages = Object.keys(keyValue);
-								// Are we dealing with a language object
-								if (this.languageService.SystemLanguages.has(languages[0] as KeyLanguage))
-								{
-									type = 'custom';
-									newSettings.columns[key] = {
-										...newSettings.columns[key],
-										renderComponent: LanguageRenderComponent,
-										editor: {
-											type: 'custom',
-											component: LanguageColumnRenderComponent,
-										},
-									};
-
-									// Do nothing for now.
-								}
-							}
-						}
-
-						// if we found an entry link it
-						if (entry)
-						{
-							// if we found the relation
-							const pair: StringPair = entry.get(key);
-							this.processRelation(table, pair, key, newSettings, tbl);
-						}
-
-						if(!newSettings.columns[key].hasOwnProperty('type'))
-							newSettings.columns[key]['type'] = type;
-					}
-				}
-			}
-
-			// Only execute this when we are at the right version.
-			if(UtilsService.versionCompare(environment.appVersion, '2020.1.5f2', { lexicographical: true }) >= 0)
-			{
-				// grab the columns from the table
-				// for(const [columnKey, columnData] of Object.entries<Column>(table.columns))
-				// 	this.processTableData(table, columnKey, columnData, newSettings);
-			}
-		}
-
-		return newSettings;
-	}
-
-	/**
-	 * Process the relation between the columns to other tables
-	 * @param table
-	 * @param pair
-	 * @param key
-	 * @param newSettings
-	 * @param overrideTbl
-	 */
-	protected processRelation(
-		table: Table, pair: StringPair, key: string, newSettings: ISettings, overrideTbl: string = '',
-	): void
-	{
-		if (pair)
-		{
-			let tbl = table.title;
-
-			// if we override the tblName
-			if(overrideTbl !== '')
-				tbl = overrideTbl;
-
-			const project: Project | null = this.projectService.getProjectById(table.projectID);
-			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
-			for(const k of Object.keys(project.tables))
-			{
-				if(project.tables[k].metadata.name === pair.key)
-				{
-					newPair.key = k;
-					// Add the tables to the service when they not exist
-					this.tableService.addIfNotExists(k).then();
-				}
-			}
-
-			// const result = await this.firebaseService.getRef(`tables/${key}/metadata`)
-			// 	.once('value', null, (error) => {
-			// 		UtilsService.onError(error);
-			// 	});
-			//
-			// const tblData: ITableData = result.val();
-			// if(result.exists() && tblData.title === this.tblColumnRelation.key)
-			// {
-			// 	now listen to a certain column
-			// 	'tables'
-			// this.relationRef = this.firebaseService.getItem(+this.id, `tables/${result.ref.parent.key}/data/`);
-			// this.relationReceiver$ = this.relationRef.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
-			// this.relationRef = this.firebaseService.getItem(+this.id, this.tblColumnRelation.key);
-			// console.log(tblData.title, this.tblColumnRelation.key, this.relationReceiver$ !== null);
-			// return Promise.resolve();
-			// }
-
-			if(newPair.key === '')
-				UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
-
-			const rel = new Relation(
-				table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
-			);
-			this.firebaseService.pushRelation(tbl, key, rel);
-
-			newSettings.columns[key]['type'] = 'custom';
-			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
-			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
-				// firebase, tableName, value => id
-				instance.relation = rel;
-				// TODO make expandable row.
-				// instance.classType = pair.key;
-			};
-
-			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };
-
-			newSettings.columns[key]['editor'] =
-			{
-				type: 'custom',
-				component: TextColumnComponent,
-				data: {
-					tblName: tbl, relationTable: pair.key, projectID: table.projectID, tableID: table.id,
-				},
-				config: { /* data: { relation: rel }, */ },
-			}
-		}
-	}
-
-	protected insertFirebaseData(
-		event: { data: ProxyObject, confirm?: any },
-	): Promise<number>
-	{
-		const obj: ProxyObject = { ...event.data };
-		return this.tableService.insertData(this.tableId, obj);
-	}
-
-	protected updateFirebaseData(
-		event: { data: ProxyObject, newData: ProxyObject, confirm?: any },
-	): Promise<void | string | firebase.database.Reference>
-	{
-		const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
-		const obj: ProxyObject = { ...event.newData };
-
-		// TODO resolve if data is wrong or if we also need to do something with the lastID
-		// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
-		return this.tableService.updateData(this.tableId, event.newData.id, obj, oldObj);
-	}
-
 
 	/**
 	 * @brief - Insert new row data
@@ -508,5 +281,345 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 	 */
 	public onEditConfirm(event: { data: ProxyObject, newData: ProxyObject, confirm?: any }, undo: boolean = false) { }
 
+	/**
+	 * @brief - Process table data to generate columns
+	 * table settings for the ng2-smart-table
+	 * @param table
+	 * @param verify
+	 * @param settings
+	 * @param overrideTbl
+	 */
+	protected processTableData(
+		table: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
+	): ISettings
+	{
+		// noinspection JSUnusedGlobalSymbols
+		const newSettings: ISettings = { ...settings };
+
+		let tbl: string = table.title;
+
+		// if we override the tblName
+		if(overrideTbl !== '')
+			tbl = overrideTbl;
+
+		// if we need to verify we need to check if it is a valid item
+		if (verify)
+		{
+			// Only execute this when we are at the right version.
+			if(UtilsService.versionCompare(environment.appVersion, '2020.1.6f1', { lexicographical: true }) >= 0)
+			{
+				if(this.project)
+				{
+					const dataValue: TableColumnMap = this.project.getColumns(table.id);
+					// Now we have the information only once.
+					// TODO make this generic.
+					for (const [k, val] of Object.entries<Column>(dataValue))
+					{
+						const key: string = trim(k);
+
+						// We only need this information once
+						if (!newSettings.columns.hasOwnProperty(key.toString()))
+						{
+							const titleName = UtilsService.title(key.toString());
+							const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
+
+							newSettings.columns[key] =
+							{
+								title: val.name,
+								readonly: val.readonly ?? false,
+								defaultValue: val.defaultValue,
+								// type: val.type, // TODO see why this is causing issues.
+								class: 'input input-form-control',
+								filter: false,
+								hidden: false,
+								editor: {},
+							};
+
+							let type: string = '';
+
+							if (typeof val.defaultValue === 'string') {
+								type = 'html';
+								newSettings.columns[key].valuePrepareFunction = (cell /*, row */) => {
+									return UtilsService.replaceCharacter(cell,/<\/>/g, '</b>');
+								}
+							}
+
+							if (typeof val.defaultValue === 'number')
+							{
+								type = 'number';
+								// if entry is not found or
+								// if we don't have a relation found make a number column
+								if ((entry === undefined || entry === null)
+									|| entry && !entry.has(key))
+								{
+									// We need a custom renderer for a number input
+									newSettings.columns[key].editor = {
+										type: 'custom',
+										component: NumberColumnComponent,
+									};
+								}
+							}
+
+							if (typeof val.defaultValue === 'boolean')
+							{
+								type = 'string';
+								newSettings.columns[key].editor = {
+									type: 'custom',
+									component: BooleanColumnRenderComponent,
+								};
+							}
+
+							if(typeof val.defaultValue === 'object')
+							{
+								const keyValue = val.defaultValue as KeyLanguageObject;
+								if(keyValue !== null)
+								{
+									const languages = Object.keys(keyValue);
+									// Are we dealing with a language object
+									if (this.languageService.SystemLanguages.has(languages[0] as KeyLanguage))
+									{
+										type = 'custom';
+										newSettings.columns[key] = {
+											...newSettings.columns[key],
+											renderComponent: LanguageRenderComponent,
+											editor: {
+												type: 'custom',
+												component: LanguageColumnRenderComponent,
+											},
+										};
+
+										// Do nothing for now.
+									}
+								}
+							}
+
+							// if we found an entry link it
+							if (entry)
+							{
+								// if we found the relation
+								const pair: StringPair = entry.get(key);
+								this.processRelation(table, pair, key, newSettings, tbl);
+							}
+
+							if(!newSettings.columns[key].hasOwnProperty('type'))
+								newSettings.columns[key]['type'] = type;
+						}
+					}
+				}
+				else {
+					if(environment.production === false)
+						throw new Error('Settings could not be generated, because the project is not found!');
+
+					UtilsService.onWarn('Settings could not be generated, because the project is not found!');
+
+					return newSettings;
+				}
+			}
+			else {
+				for(const dataKey of Object.keys(table.data)) {
+					const dataValue: ProxyObject = table.data[dataKey];
+					this.generateSettings(table, newSettings, dataValue, tbl);
+				}
+			}
+		}
+
+		return newSettings;
+	}
+
+	protected generateSettings(table: Table, newSettings: ISettings, dataValue: ProxyObject, tbl: string)
+	{
+		for (const [k, value] of Object.entries(dataValue))
+		{
+			const key: string = trim(k);
+
+			// We only need this information once
+			if (!newSettings.columns.hasOwnProperty(key.toString()))
+			{
+				const titleName = UtilsService.title(key.toString());
+				const entry: RelationPair = this.firebaseRelationService.getData().get(tbl);
+
+				newSettings.columns[key] =
+				{
+					title: titleName,
+					class: 'input input-form-control',
+					filter: false,
+					hidden: false,
+					editor: {},
+				};
+
+				let type: string = '';
+
+				if (typeof value === 'string') {
+					type = 'html';
+					newSettings.columns[key].valuePrepareFunction = (cell /*, row */) => {
+						return UtilsService.replaceCharacter(cell,/<\/>/g, '</b>');
+					}
+				}
+
+				if (typeof value === 'number')
+				{
+					type = 'number';
+					// if entry is not found or
+					// if we don't have a relation found make a number column
+					if ((entry === undefined || entry === null)
+						|| entry && !entry.has(key))
+					{
+						// We need a custom renderer for a number input
+						newSettings.columns[key].editor = {
+							type: 'custom',
+							component: NumberColumnComponent,
+						};
+					}
+				}
+
+				if (typeof value === 'boolean')
+				{
+					type = 'string';
+					newSettings.columns[key].editor = {
+						type: 'custom',
+						component: BooleanColumnRenderComponent,
+					};
+				}
+
+				if(typeof value === 'object')
+				{
+					const keyValue = value as KeyLanguageObject;
+					if(keyValue !== null)
+					{
+						const languages = Object.keys(keyValue);
+						// Are we dealing with a language object
+						if (this.languageService.SystemLanguages.has(languages[0] as KeyLanguage))
+						{
+							type = 'custom';
+							newSettings.columns[key] = {
+								...newSettings.columns[key],
+								renderComponent: LanguageRenderComponent,
+								editor: {
+									type: 'custom',
+									component: LanguageColumnRenderComponent,
+								},
+							};
+
+							// Do nothing for now.
+						}
+					}
+				}
+
+				// if we found an entry link it
+				if (entry)
+				{
+					// if we found the relation
+					const pair: StringPair = entry.get(key);
+					this.processRelation(table, pair, key, newSettings, tbl);
+				}
+
+				if(!newSettings.columns[key].hasOwnProperty('type'))
+					newSettings.columns[key]['type'] = type;
+			}
+		}
+	}
+
+	/**
+	 * Process the relation between the columns to other tables
+	 * @param table
+	 * @param pair
+	 * @param key
+	 * @param newSettings
+	 * @param overrideTbl
+	 */
+	protected processRelation(
+		table: Table, pair: StringPair, key: string, newSettings: ISettings, overrideTbl: string = '',
+	): void
+	{
+		if (pair)
+		{
+			let tbl = table.title;
+
+			// if we override the tblName
+			if(overrideTbl !== '')
+				tbl = overrideTbl;
+
+			const project: Project | null = this.projectService.getProjectById(table.projectID);
+			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
+			for(const k of Object.keys(project.tables))
+			{
+				if(project.tables[k].metadata.name === pair.key)
+				{
+					newPair.key = k;
+					// Add the tables to the service when they not exist
+					this.tableService.addIfNotExists(k).then();
+				}
+			}
+
+			// const result = await this.firebaseService.getRef(`tables/${key}/metadata`)
+			// 	.once('value', null, (error) => {
+			// 		UtilsService.onError(error);
+			// 	});
+			//
+			// const tblData: ITableData = result.val();
+			// if(result.exists() && tblData.title === this.tblColumnRelation.key)
+			// {
+			// 	now listen to a certain column
+			// 	'tables'
+			// this.relationRef = this.firebaseService.getItem(+this.id, `tables/${result.ref.parent.key}/data/`);
+			// this.relationReceiver$ = this.relationRef.snapshotChanges(['child_added', 'child_changed', 'child_removed']);
+			// this.relationRef = this.firebaseService.getItem(+this.id, this.tblColumnRelation.key);
+			// console.log(tblData.title, this.tblColumnRelation.key, this.relationReceiver$ !== null);
+			// return Promise.resolve();
+			// }
+
+			if(newPair.key === '')
+				UtilsService.onError(`Relation not found! Trying to find table "${pair.key}" for column "${pair.value}"`);
+
+			const rel = new Relation(
+				table.id, this.firebaseService, this.firebaseRelationService, this.tableService, newPair,
+			);
+			this.firebaseService.pushRelation(tbl, key, rel);
+
+			newSettings.columns[key]['type'] = 'custom';
+			newSettings.columns[key]['renderComponent'] = TextRenderComponent;
+			newSettings.columns[key]['onComponentInitFunction'] = (instance: TextRenderComponent) => {
+				// firebase, tableName, value => id
+				instance.relation = rel;
+				// TODO make expandable row.
+				// instance.classType = pair.key;
+			};
+
+			newSettings.columns[key]['tooltip'] = { enabled: true, text: 'Relation to ' + pair.key };
+
+			newSettings.columns[key]['editor'] =
+				{
+					type: 'custom',
+					component: TextColumnComponent,
+					data: {
+						tblName: tbl, relationTable: pair.key, projectID: table.projectID, tableID: table.id,
+					},
+					config: { /* data: { relation: rel }, */ },
+				}
+		}
+	}
+
+	protected insertFirebaseData(
+		event: { data: ProxyObject, confirm?: any },
+	): Promise<number>
+	{
+		const obj: ProxyObject = { ...event.data };
+		return this.tableService.insertData(this.tableId, obj);
+	}
+
+	protected updateFirebaseData(
+		event: { data: ProxyObject, newData: ProxyObject, confirm?: any },
+	): Promise<void | string | firebase.database.Reference>
+	{
+		const oldObj: ProxyObject = event.hasOwnProperty('data') ? { ...event.data } : null;
+		const obj: ProxyObject = { ...event.newData };
+
+		// TODO resolve if data is wrong or if we also need to do something with the lastID
+		// console.log({ id: event.newData.id, tbl: this.tableName, obj, oldObj });
+		return this.tableService.updateData(this.tableId, event.newData.id, obj, oldObj);
+	}
+
 	protected onUserReceived(__: User) { }
+
+	protected onProjectLoaded(_: Project) { }
 }

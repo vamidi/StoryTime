@@ -234,6 +234,8 @@ export class EnemiesTabComponent extends BaseParameterTabComponent<IEnemy> imple
 
 	protected override onProjectLoaded(project: Project)
 	{
+		super.onProjectLoaded(project);
+
 		this.tableId = project.metadata.relatedTables.enemies;
 		this.setTblName = this.tableId;
 	}

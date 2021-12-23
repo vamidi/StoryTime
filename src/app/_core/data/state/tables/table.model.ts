@@ -80,6 +80,7 @@ export class Column implements IColumn {
 	description: string = '';
 	type: ColumnType = null;
 	defaultValue: any = null;
+	readonly: boolean = false;
 }
 
 export declare interface TableColumnMap { [key:string]: Column }
@@ -225,6 +226,7 @@ export class Table<T extends ProxyObject = ProxyObject> implements ITable<T>, It
 			description: '',
 			type: null,
 			defaultValue: propValue,
+			readonly: false,
 		};
 
 		// get the type of the column

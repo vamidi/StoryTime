@@ -1,7 +1,7 @@
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { BaseFirebaseTableComponent } from '@app-core/components/firebase/base-firebase-table.component';
 import { UserData, UserService } from '@app-core/data/state/users';
 
@@ -9,8 +9,9 @@ import { Table } from '@app-core/data/state/tables';
 import { LanguageService, ProjectsService } from '@app-core/data/state/projects';
 import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
+import { BaseSettings } from '@app-core/mock/base-settings';
 
 /**
  * This class BaseSourceDataComponent is
@@ -21,7 +22,7 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 	template: '',
 })
 export abstract class BaseSourceDataComponent
-	extends BaseFirebaseTableComponent implements OnInit, AfterViewInit, OnDestroy
+	extends BaseFirebaseTableComponent implements AfterViewInit, OnDestroy
 {
 	public Title: string = '';
 
@@ -56,20 +57,9 @@ export abstract class BaseSourceDataComponent
 		protected languageService: LanguageService,
 		@Inject(String)protected tableId = '',
 	) {
-		super(
-			route, router, firebaseService, firebaseRelationService, toastrService, dialogService,
+		super(route, router, firebaseService, firebaseRelationService, toastrService, dialogService,
 			snackbarService, userService, userPreferencesService, projectService, tableService, languageService, tableId,
 		);
-	}
-
-	public ngOnInit(): void
-	{
-		super.ngOnInit();
-
-		// Get the stories table
-		// this.tableName = 'characters';
-		// Let firebase search with current table name
-		this.firebaseService.setTblName(this.tableId);
 	}
 
 	public ngAfterViewInit(): void {}

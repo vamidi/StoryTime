@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbStepComponent, NbToastrService } from '@nebular/theme';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
@@ -115,10 +115,8 @@ export class InsertCraftableComponent extends BaseFirebaseComponent implements O
 		protected tableService: TablesService,
 		protected cd: ChangeDetectorRef)
 	{
-		super(route,
-			firebaseService, firebaseRelationService, toastrService, dialogService, projectService, tableService,
-			userService, userPreferencesService, languageService,
-		);
+		super(route, firebaseService, firebaseRelationService, toastrService, dialogService,
+			projectService, tableService, userService, userPreferencesService, languageService);
 	}
 
 	public ngOnInit(): void

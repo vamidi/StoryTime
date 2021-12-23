@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -38,6 +38,7 @@ import {
 // } from '@app-theme/components/render-column-layout/language-column-render.component';
 import { BaseFirebaseComponent } from '@app-core/components/firebase/base-firebase.component';
 import isEqual from 'lodash.isequal';
+import { environment } from '../../../../environments/environment';
 
 /**
  * @brief base class to get simple data information
@@ -46,7 +47,7 @@ import isEqual from 'lodash.isequal';
 @Component({
 	template: '',
 })
-export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent implements OnDestroy {
+export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent {
 	@Input()
 	public gridMode: boolean = true;
 
@@ -189,14 +190,6 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		// iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
 		// iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'fa' });
 		// iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-	}
-
-	public ngOnDestroy() {
-		if (!this.mainSubscription.closed)
-			this.mainSubscription.unsubscribe();
-
-		// unsubscribe listening to the child_added event
-		this.firebaseService.getRef(this.tableId).limitToLast(2).off('child_added');
 	}
 
 	/**
@@ -610,8 +603,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 			tbl = tblName;
 
 		// check if it does not end with game-db
-		if (this.tableId === 'game-db' || tbl === '' || tbl === 'game-db')
+		if (this.tableId === 'game-db' || tbl === '' || tbl === 'game-db') {
+			if(!environment.production)
+				UtilsService.onWarn('Not able to fetch the table data');
+
 			return;
+		}
 
 		// get the table data
 		// make a separate function in order to get a reference to this.
@@ -637,6 +634,15 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 		}/*, () => this.router.navigateByUrl('/dashboard/error')*/));
 	}
 
+	/**
+	 * @brief Process the project and the table to create
+	 * table settings for the ng2-smart-table
+	 * @param tableData
+	 * @param verify
+	 * @param settings
+	 * @param overrideTbl
+	 * @protected
+	 */
 	protected processTableData(
 		tableData: Table, verify: boolean = false, settings: ISettings = null, overrideTbl: string = '',
 	): ISettings {
@@ -706,6 +712,14 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent i
 
 	protected onUserReceived(__: User) {
 		this.validateSettings(this.settings);
+	}
+
+	protected onProjectLoaded(_: Project)
+	{
+		super.onProjectLoaded(_);
+
+		// When we have a project load the settings from that table.
+		this.getTableData(this.settings);
 	}
 
 	protected onTableDataLoaded()
