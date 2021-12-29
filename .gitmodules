@@ -7,3 +7,6 @@
 [submodule "unreal/ue4/StoryTimePlugin/Plugins/StoryTime"]
 	path = unreal/ue4/StoryTimePlugin/Plugins/StoryTime
 	url = https://github.com/vamidi/StoryTime-plugin-UE4.git
+[submodule "prisma"]
+	path = next
+	url = https://github.com/vamidi/StoryTime-PRISMA

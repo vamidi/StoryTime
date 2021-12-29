@@ -42,10 +42,30 @@ Lastly StoryTime also wants to provide easy building block for large complex com
 
 ```sh
 # clone our repo
-git clone https://github.com/vamidi/Project-StoryTime.git
+git clone https://github.com/vamidi/StoryTime.git
+
+# if you want to clone everything
+git clone --recursive https://github.com/vamidi/StoryTime.git
 
 # change directory to our repo
-cd project-storytime
+cd StoryTime
+
+# Clone specific submodule
+
+# Local server for testing purposes.
+$ git clone https://github.com/vamidi/StoryTime-UPM.git
+$ cd prisma
+$ git submodule update --init --recursive
+
+# Unity package (Only when you want to change the unity package).
+$ git clone https://github.com/vamidi/StoryTime-UPM.git ./unity/StoryTime/Packages/Storytime
+$ cd unity/StoryTime/Packages/Storytime/
+$ git submodule update --init --recursive
+
+# unreal plugin (Only when you want to make changes to the plugin).
+$ git clone https://github.com/vamidi/StoryTime-plugin-UE4.git ./unity/StoryTime/Packages
+$ cd unreal/ue4/StoryTimePlugin/Plugins/
+$ git submodule update --init --recursive
 
 # install the repo with npm
 npm install
