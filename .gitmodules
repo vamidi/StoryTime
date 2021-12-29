@@ -10,3 +10,6 @@
 [submodule "prisma"]
 	path = next
 	url = https://github.com/vamidi/StoryTime-PRISMA
+[submodule "next"]
+	path = next
+	url = https://github.com/vamidi/StoryTime-PRISMA
