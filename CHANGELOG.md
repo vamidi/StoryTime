@@ -1,3 +1,15 @@
+<a name="2020.1.6f4"></a>
+## [2020.1.6f4](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f4) (2021-30-12)
+
+### Features
+- Game editor now only loads when related tables are set.
+- UI updates
+
+### Fixes
+- Fix for infitie loop while finding members.
+- Fix support for other tables and projects.
+- Fix permission when creating own data.
+
 <a name="2020.1.6f3"></a>
 ## [2020.1.6f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f3) (2021-23-12)
 
