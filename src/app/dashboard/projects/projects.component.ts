@@ -212,12 +212,41 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 		}
 	}
 
+	protected onProjectLoaded(project: Project)
+	{
+		super.onProjectLoaded(project);
+
+		if (project.hasOwnProperty('member'))
+		{
+			const members = Object.entries(project.members)
+			members.forEach(([memberUID, valid]) =>
+			{
+				// we don't have to load our info.
+				if (valid && memberUID !== this.user.uid) {
+					this.firebaseService.getRef(`users/${memberUID}/metadata`).once('value')
+						.then((snapshot) => {
+							if (snapshot.exists()) {
+								const metadata: IUserData = {
+									...snapshot.val(),
+								};
+
+								this.members.set(memberUID, metadata);
+							}
+						},
+					);
+				}
+			});
+		}
+	}
+
 	protected onUserReceived(user: User)
 	{
 		super.onUserReceived(user);
 
 		if(user)
 		{
+			this.members.set(user.uid, user.metadata);
+
 			this.configureSettings();
 
 			if(user.hasOwnProperty('projects'))
@@ -321,24 +350,7 @@ export class ProjectsComponent extends BaseSourceDataComponent implements OnInit
 
 	public findMember(memberUID: string): IUserData
 	{
-		if(!this.members.has(memberUID))
-		{
-			this.firebaseService.getRef(`users/${memberUID}/metadata`).once('value')
-				.then((snapshot) => {
-					if(snapshot.exists())
-					{
-						const metadata: IUserData = {
-							...snapshot.val(),
-						};
-
-						this.members.set(memberUID, metadata);
-					}
-				});
-
-			return null;
-		}
-
-		return this.members.get(memberUID);
+		return this.members.get(memberUID) ?? null;
 	}
 
 	public findAvatar(memberUID: string): string
