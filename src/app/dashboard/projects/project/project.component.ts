@@ -308,9 +308,10 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		super.onUserReceived(user);
 	}
 
-	protected onProjectLoaded(_: Project) {
-		super.onProjectLoaded(_);
+	protected onProjectLoaded(project: Project) {
+		super.onProjectLoaded(project);
 
+		this.projectsService.setProject(project.id, project);
 		this.getProjectInformation().then(() => this.generateBreadcrumbs());
 		this.getTables();
 		this.generateBreadcrumbs();
