@@ -10,9 +10,22 @@
 	</div>
 
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('game-editor')">
+		<nb-card class="h-100 mb-0 rounded-lg pointer" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('game-editor')">
 			<nb-card-header>
-				Game Editor
+				<div class="d-flex flex-row">
+					<div>
+						<h5 class="d-inline-block">Game Editor</h5>
+					</div>
+					<div *ngIf="!validateTable()" class="btn-group align-self-start ml-auto mt-auto">
+						<span style="border:none; background:none; outline:none; font-size: 1.2rem">
+							<nb-icon icon="alert-triangle-outline" class="text-basic"
+							         nbTooltip="Make sure related tables are filled in (see project settings)." nbTooltipStatus="warning" nbButton status="warning">
+							</nb-icon>
+						</span>
+					</div>
+				</div>
+
+
 			</nb-card-header>
 			<nb-card-body>
 				<p>Inside this module you can adjust character settings, stats, classes etc</p>
@@ -20,7 +33,7 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor()">
+		<nb-card class="h-100 mb-0 rounded-lg pointer" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor()">
 			<nb-card-header>
 				Story Editor
 			</nb-card-header>
@@ -30,7 +43,7 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('item-editor')">
+		<nb-card class="h-100 mb-0 rounded-lg pointer" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('item-editor')">
 			<nb-card-header>
 				Item Editor
 			</nb-card-header>
@@ -40,7 +53,7 @@
 		</nb-card>
 	</div>
 	<div class="col-lg-3"> <!--  *ngIf="isAdmin" -->
-		<nb-card class="h-100 mb-0 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('stats-editor')">
+		<nb-card class="h-100 mb-0 rounded-lg pointer" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="openEditor('stats-editor')">
 			<nb-card-header>
 				Stats Editor
 			</nb-card-header>
@@ -61,7 +74,7 @@
 	<div class="col-lg-12">
 		<h6 class="text-hint">From last 7 days</h6>
 	</div>
-	<div class="col-lg-3 d-flex align-items-stretch" *ngIf="isAdmin">
+	<div class="col-lg-3 d-flex align-items-stretch pointer" *ngIf="isAdmin">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)">
 			<nb-card-body>
 <!--			<button nbButton fullWidth status="primary" (click)="open()"><span>Add new Table </span><nb-icon icon="plus"></nb-icon></button>-->
@@ -71,7 +84,7 @@
 			</nb-card-body>
 		</nb-card>
 	</div>
-	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let table of tablesService | timeSlice:7" type="button">
+	<div class="col-lg-3 d-flex align-items-stretch pointer" *ngFor="let table of tablesService | timeSlice:7">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onTableClicked($event, table);">
 			<nb-card-header>
 				<div class="d-flex flex-row">
@@ -98,7 +111,7 @@
 	<div class="col-lg-12">
 		<h6 class="text-hint">Previous 30 days</h6>
 	</div>
-	<div class="col-lg-3 d-flex align-items-stretch" *ngFor="let table of tablesService | orderBy: 'asc': 'title'">
+	<div class="col-lg-3 d-flex align-items-stretch pointer" *ngFor="let table of tablesService | orderBy: 'asc': 'title'">
 		<nb-card class="w-100 rounded-lg" style="border: 1px solid rgba(188, 197, 214, 0.5)" (click)="onTableClicked($event, table);">
 			<nb-card-header>
 				<div class="d-flex flex-row">

@@ -259,8 +259,6 @@ export class UserService extends UserData implements OnDestroy
 		{
 			this.user = user;
 			this.user$.next(this.user);
-
-			console.log(this.userRoles);
 		}
 	}
 

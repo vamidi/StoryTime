@@ -4,6 +4,7 @@ import { MyNodeComponent } from '@app-theme/components/visualne/node.component';
 import { BaseNodeComponent } from '../base-node-component';
 import { AdditionalEvents } from '@app-core/components/visualne';
 import { EventsTypes } from 'visualne/types/events';
+import { UtilsService } from '@app-core/utils';
 
 export class DialogueOptionNodeComponent extends BaseNodeComponent implements OnCreated
 {
@@ -35,7 +36,7 @@ export class DialogueOptionNodeComponent extends BaseNodeComponent implements On
 			const optionOut = currentNode.outputs.get('optionOut');
 
 			if (optionIn) {
-				console.log(inputs['optionIn'] !== undefined && inputs['optionIn'][0] !== undefined);
+				UtilsService.onDebug(inputs['optionIn'] !== undefined && inputs['optionIn'][0] !== undefined);
 				if (inputs['optionIn'] !== undefined && inputs['optionIn'][0] !== undefined) {
 					optionIn.name = 'In ID [' + inputs['optionIn'][0] + ']';
 				} else
@@ -43,7 +44,7 @@ export class DialogueOptionNodeComponent extends BaseNodeComponent implements On
 			}
 
 			if (optionOut) {
-				console.log(currentNode.data);
+				UtilsService.onDebug(currentNode.data);
 				const outputValue: unknown | null = currentNode.data.optionId ?? null
 				const dialogueIdText: string = outputValue as string ?? 'NULL';
 				optionOut.name = `Out ID [${dialogueIdText}]`;

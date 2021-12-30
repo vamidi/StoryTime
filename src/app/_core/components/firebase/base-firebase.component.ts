@@ -306,9 +306,10 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 		if (verify)
 		{
 			// Only execute this when we are at the right version.
-			if(UtilsService.versionCompare(environment.appVersion, '2020.1.6f1', { lexicographical: true }) >= 0)
+			if(this.project)
 			{
-				if(this.project)
+				const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+				if(UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0)
 				{
 					const dataValue: TableColumnMap = this.project.getColumns(table.id);
 					// Now we have the information only once.
@@ -405,21 +406,23 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 								newSettings.columns[key]['type'] = type;
 						}
 					}
-				}
-				else {
-					if(environment.production === false)
-						throw new Error('Settings could not be generated, because the project is not found!');
 
-					UtilsService.onWarn('Settings could not be generated, because the project is not found!');
 
 					return newSettings;
 				}
 			}
+			/*
 			else {
-				for(const dataKey of Object.keys(table.data)) {
-					const dataValue: ProxyObject = table.data[dataKey];
-					this.generateSettings(table, newSettings, dataValue, tbl);
-				}
+				if (environment.production === false)
+					throw new Error('Settings could not be generated, because the project is not found!');
+
+				UtilsService.onWarn('Settings could not be generated, because the project is not found!');
+			}
+			 */
+
+			for(const dataKey of Object.keys(table.data)) {
+				const dataValue: ProxyObject = table.data[dataKey];
+				this.generateSettings(table, newSettings, dataValue, tbl);
 			}
 		}
 
@@ -543,7 +546,11 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			const newPair: StringPair = { key: '', value: pair.value, locked: pair.locked };
 			for(const k of Object.keys(project.tables))
 			{
-				if(project.tables[k].metadata.name === pair.key)
+				const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+				const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
+					project.tables[k].metadata.name : project.tables[k].name;
+
+				if(name === pair.key)
 				{
 					newPair.key = k;
 					// Add the tables to the service when they not exist
