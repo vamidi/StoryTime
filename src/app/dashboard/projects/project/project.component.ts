@@ -281,7 +281,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 
 	protected getProjectInformation(): Promise<void> {
 		if (!this.user)
-			return;
+			return Promise.reject('User not found!');
 
 		const promises: Promise<void>[] = [];
 		const projects = Object.keys(this.user.projects);
