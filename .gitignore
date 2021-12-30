@@ -14,7 +14,7 @@ functions/src/environment/*.ts
 config.json
 
 .env
-.env.*
+*.env.*
 
 # IDEs and editors
 /.idea
