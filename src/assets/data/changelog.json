@@ -1,5 +1,23 @@
 [
 	{
+		"title": "2020.1.6f4 (2021-30-12)", "children": [
+			{
+				"title": "Changes", "children": [
+					{ "title": "Game editor now only loads when related tables are set." },
+					{ "title": "UI updates" }
+				]
+			},
+			{
+				"title": "Fixes",
+				"children": [
+					{ "title": "Fix for infitie loop while finding members." },
+					{ "title": "Fix support for other tables and projects." },
+					{ "title": "Fix permission when creating own data." }
+				]
+			}
+		]
+	},
+	{
 		"title": "2020.1.6f3 (2021-23-12)", "children": [
 			{
 				"title": "Changes", "children": [
