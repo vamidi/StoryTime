@@ -1,3 +1,18 @@
+<a name="2020.1.6f3"></a>
+## [2020.1.6f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f3) (2021-23-12)
+
+### Features
+- Inside one story you can make it possible to make different characters talk.
+- Column data is generated from the project instead of the data inside a table.
+- Add submodule to Unreal Engine 4 project.
+- Project table selector added for the game editor.
+- Game editor added for game stats.
+
+### Fixes
+- Fix for enemy stat page not showing any stats.
+- Fix overuse of observables.
+- Fix for hardcoded database locations inside the game editor.
+
 <a name="2020.1.6f2"></a>
 ## [2020.1.6f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f2) (2021-23-10)
 
