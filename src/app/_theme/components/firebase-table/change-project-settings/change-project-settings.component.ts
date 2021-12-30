@@ -326,17 +326,20 @@ export class ChangeProjectSettingsComponent implements
 			}),
 		);
 
-		if (this.project.metadata.hasOwnProperty('languages'))
-		{
-			const languages: string[] = Object.keys(this.project.metadata.languages);
-			this.languageService.SystemLanguages.forEach((value, key) => this.cachedLanguages.push(
-				new Option<KeyLanguage>({
-					key: value,
-					value: key,
-					selected: false,
-				})),
-			);
+		// load languages
+		this.languageService.SystemLanguages.forEach((value, key) => this.cachedLanguages.push(
+			new Option<KeyLanguage>({
+				key: value,
+				value: key,
+				selected: false,
+			})),
+		);
 
+		if(!this.project.metadata.hasOwnProperty('languages'))
+		{
+			this.project.metadata.languages = {};
+		} else {
+			const languages: string[] = Object.keys(this.project.metadata.languages);
 			languages.forEach((lang) =>
 			{
 				// Whether the languages is enabled.
@@ -386,6 +389,7 @@ export class ChangeProjectSettingsComponent implements
 	}
 
 	public ngAfterViewInit(): void {
+		this.dynamicComponentService.setRootViewContainerRef(this.viewFormContainer);
 		this.cd.detectChanges();
 	}
 
@@ -420,7 +424,7 @@ export class ChangeProjectSettingsComponent implements
 		const component = this.dynamicComponentService.addDynamicComponent(SelectFieldWithBtnComponent);
 		this.formComponent.addInput(component.instance,
 		{
-			value: 'en',
+			value: '',
 			text: `Language ${this.langCounter + 1}`,
 			name: `language_list_${this.langCounter}`,
 			errorText: 'Choose a language',
@@ -438,6 +442,9 @@ export class ChangeProjectSettingsComponent implements
 		if(!this.project.metadata.languages.hasOwnProperty(event))
 			this.project.metadata.languages[event] = true;
 
+		this.projectsService.setProject(this.project.id, this.project);
+
+		// TODO add queue for small changes in the project.
 		this.saveLanguages();
 	}
 
@@ -450,6 +457,8 @@ export class ChangeProjectSettingsComponent implements
 					this.toastrService,
 					'Languages updated',
 					'successfully updated the project',
+					'success',
+					4000,
 				);
 			},
 		);
@@ -459,6 +468,8 @@ export class ChangeProjectSettingsComponent implements
 	{
 		if(this.project.metadata.languages.hasOwnProperty(event))
 			this.project.metadata.languages[event] = false;
+
+		this.projectsService.setProject(this.project.id, this.project);
 
 		this.saveLanguages();
 	}
