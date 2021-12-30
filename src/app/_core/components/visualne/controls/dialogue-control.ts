@@ -125,7 +125,7 @@ export class DialogueControl extends Control implements AngularControl
 
 	setValue(val: ProxyObject)
 	{
-		console.log(val);
+		UtilsService.onDebug(val);
 		this.props.value = val;
 		this.putData(this.key, this.props.value);
 	}

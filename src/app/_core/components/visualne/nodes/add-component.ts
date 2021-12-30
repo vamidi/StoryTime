@@ -5,6 +5,7 @@ import { MyNodeComponent } from '@app-theme/components/visualne/node.component';
 import { AngularComponent } from 'visualne-angular-plugin';
 import { BaseNodeComponent } from './base-node-component';
 import { NodeData, WorkerInputs, WorkerOutputs } from 'visualne/types/core/data';
+import { UtilsService } from '@app-core/utils';
 
 export class AddComponent extends BaseNodeComponent implements AngularComponent, OnCreated
 {
@@ -30,7 +31,7 @@ export class AddComponent extends BaseNodeComponent implements AngularComponent,
 
 	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
 	{
-		console.log(inputs);
+		UtilsService.onDebug(inputs);
 		const n1: number = inputs['num1'].length ? <number>inputs['num1'][0] : <number>node.data.num1;
 		const n2: number = inputs['num2'].length ? <number>inputs['num2'][0] : <number>node.data.num2;
 		const sum = n1 + n2;
