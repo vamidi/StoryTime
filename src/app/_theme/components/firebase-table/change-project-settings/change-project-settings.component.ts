@@ -188,7 +188,7 @@ export class ChangeProjectSettingsComponent implements
 		});
 
 		// max level field
-		console.log(this.project);
+		UtilsService.onDebug(this.project);
 		this.source.fields = {
 			projectName: {
 				controlType: 'textbox',
@@ -258,7 +258,7 @@ export class ChangeProjectSettingsComponent implements
 				value: this.project?.metadata?.relatedTables?.skills ?? '',
 				name: 'project-skill-tables',
 				text: 'Project skill Tables',
-				placeholder: 'Project description',
+				placeholder: 'Project skill table',
 				required: false,
 				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
 			},
@@ -363,7 +363,12 @@ export class ChangeProjectSettingsComponent implements
 		const args = { relationData: {} };
 		tables.forEach((tableId) => {
 			args[tableId] = this.firebaseService.getItem(0, `tables/${tableId}/data/`);
-			args.relationData = this.firebaseRelationService.getData().get(this.project.tables[tableId].metadata.name);
+
+			const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+			const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
+				this.project.tables[tableId].metadata.name : this.project.tables[tableId].name;
+
+			args.relationData = this.firebaseRelationService.getData().get(name);
 		})
 
 		migrations.forEach((migration, idx) => {

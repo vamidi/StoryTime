@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Control } from 'visualne';
 import { AngularControl } from 'visualne-angular-plugin';
+import { UtilsService } from '@app-core/utils';
 
 @Component({
 	template: `<input type="number" [value]="value" [readonly]="readonly" (change)="change(+$event.target.value)">`,
@@ -42,7 +43,7 @@ export class NumberComponent implements OnInit, OnChanges
 
 	ngOnChanges(changes: SimpleChanges)
 	{
-		console.log(changes);
+		UtilsService.onDebug(changes);
 	}
 }
 

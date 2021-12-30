@@ -672,7 +672,7 @@ export class FirebaseService implements OnDestroy
 
 			if(!result.exists())
 			{
-				console.log(`We don\'t have revisions under ${id}`);
+				UtilsService.onDebug(`We don\'t have revisions under ${id}`);
 				// if we don;t have any data on this yet.
 				promise = this.insert(revisionData, tblRef);
 				promise.then(() => {

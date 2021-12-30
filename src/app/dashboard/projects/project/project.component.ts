@@ -153,11 +153,26 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		}
 	}
 
-	public openEditor(location: string = '') {
+	public openEditor(location: string = '')
+	{
+		if(!this.validateTable())
+			return;
+
 		if (!location)
 			this.router.navigate(['./editor'], { relativeTo: this.activatedRoute }).then();
 		else
 			this.router.navigate([`./editor/${location}`], { relativeTo: this.activatedRoute }).then();
+	}
+
+	public validateTable(): boolean
+	{
+		return this.project && UtilsService.hasProperty(this.project.metadata, 'relatedTables') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'characters') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'items') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'equipments') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'classes') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'enemies') &&
+			UtilsService.hasProperty(this.project.metadata.relatedTables, 'skills');
 	}
 
 	protected configureSettings() {
@@ -219,19 +234,34 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 
 		// only show title & description
 		const data: { id: string, title: string, deleted: boolean }[] = [];
-		for (const key of Object.keys(this.project.tables)) {
+		for (const key of Object.keys(this.project.tables))
+		{
 			const t: { enabled: boolean, metadata: ITableMetadata, [key: string]: any } = this.project.tables[key];
+			const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+			const isCurrentVersion = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0;
+			const name = isCurrentVersion ? t.metadata.name : t.name;
+
 			if (!this.tablesService.getTableById(key)) {
 				const table = new Table();
 
 				table.id = key;
-				table.metadata.title = t.metadata.name;
-				table.metadata.description = t.metadata.description;
-				table.metadata.deleted = !t.enabled;
+
+				if(isCurrentVersion)
+				{
+					table.metadata.title = name;
+					table.metadata.description = t.metadata.description;
+					table.metadata.deleted = !t.enabled;
+				}
+				else {
+					table.metadata.title = name;
+					table.metadata.description = t.description;
+					table.metadata.deleted = !t.enabled;
+				}
+
 
 				this.tablesService.setTable(table.id, table);
 			}
-			data.push({ id: key, title: t.metadata.name, deleted: t.enabled });
+			data.push({ id: key, title: name, deleted: t.enabled });
 		}
 
 		// filter alphabetically
