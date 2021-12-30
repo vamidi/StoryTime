@@ -16,22 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: cb1efb13b01a4904ba5333279b8e3bcb
-  m_SerializeEntries:
-  - m_GUID: bff5da144f0cb8144b994ffef963a971
-    m_Address: Dialogues_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
-  - m_GUID: ecc51aac209d84b4f87ecbb30002e36c
-    m_Address: Character Names_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
-  - m_GUID: 213c3917d458a8347b76ac6db1f8593d
-    m_Address: Story Titles_fr
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale-fr
+  m_SerializeEntries: []
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: c2e0e856dcc44f543b503649647e811d, type: 2}
   m_SchemaSet:
