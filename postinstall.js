@@ -28,6 +28,11 @@ const targetPath = isProduction
 	? `./src/environments/environment.prod.ts`
 	: `./src/environments/environment.ts`;
 
+const envPath = isProduction
+	? `./src/environments/environment.ts`
+	: `./src/environments/environment.web.ts`;
+
+
 if (!process.env.FIREBASE_DATABASE_URL) {
 	console.error('All the required environment variables were not provided!');
 	process.exit(-1);
@@ -77,14 +82,14 @@ fs.writeFile(targetPath, environmentFileContent, {flag: 'w', encoding: 'utf8'}, 
 });
 
 // write the content to the respective file
-fs.writeFile('./src/environments/environment.web.ts', environmentFileContent, {
+fs.writeFile(envPath, environmentFileContent, {
 	flag: 'w',
 	encoding: 'utf8'
 }, function (err) {
 	if (err) {
 		console.log(err);
 	}
-	console.log(`Wrote variables to ./src/environments/environment.web.ts`);
+	console.log(`Wrote variables to ${envPath}`);
 });
 
 // write the content also to the config file.
