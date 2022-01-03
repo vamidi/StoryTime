@@ -132,9 +132,8 @@ export class AddDialogueOptionControl extends Control implements AngularControl
 
 	public addNewSocket()
 	{
-
 		// when you add a new one it gets -1, so you can add new options
-		console.log(this.getNode().inputs.get('OptionIn_-1'));
+		UtilsService.onDebug(this.getNode().inputs.get('OptionIn_-1'));
 
 		this.getNode().addInput(new ReteInput(
 			'OptionIn_-1', 'In ID [ undefined ]', dialogueOptionSocket));

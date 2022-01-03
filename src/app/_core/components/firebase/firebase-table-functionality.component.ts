@@ -143,7 +143,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public onRowSelect(event: any)
 	{
-		console.log(event);
+		UtilsService.onDebug(event);
 		// this.smartTableComponent.onExpandRow(event);
 	}
 
@@ -330,7 +330,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 	{
 		// TODO Add new table with the new method
 		// this.data.push(new TableTemplate());
-		console.log(this.projectService);
+		UtilsService.onDebug(this.projectService);
 	}
 
 	protected onRelationCreated(event: any)

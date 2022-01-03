@@ -122,10 +122,7 @@ export class UserService extends UserData implements OnDestroy
 
 	private firebaseUser: firebase.User = null;
 
-	private userRoles: NbUserRoles[] = [
-		'reader',
-		'author',
-	];
+	private userRoles: NbUserRoles[] = onlyAdmin;
 
 	/**
 	 * Service that takes care of the user state
@@ -164,7 +161,9 @@ export class UserService extends UserData implements OnDestroy
 			if(project)
 				this.userRoles = ['subscriber', ...Object.keys(this.user.projects[project.id].roles) as NbUserRoles[] ];
 			else
-				this.userRoles = ['subscriber'];
+				// We are not inside project/table territory, so the user can do everything he wants.
+				// TODO make user permissions per page.
+				this.userRoles = onlyAdmin;
 		}
 
 		// if the user is owner of the project he can do everything
@@ -259,8 +258,6 @@ export class UserService extends UserData implements OnDestroy
 		{
 			this.user = user;
 			this.user$.next(this.user);
-
-			console.log(this.userRoles);
 		}
 	}
 

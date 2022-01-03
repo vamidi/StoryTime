@@ -21,6 +21,7 @@ import {
 } from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseStorageService } from '@app-core/utils/firebase/firebase-storage.service';
 import pick from 'lodash.pick';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({ providedIn: 'root'})
 export class ProjectsService extends ProjectData implements Iterable<Project>
@@ -225,7 +226,11 @@ export class ProjectsService extends ProjectData implements Iterable<Project>
 			this.breadcrumbService.addDropdownForRouteRegex(`/dashboard/projects/${this.project.id}/tables`,
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
-					return {title: UtilsService.title(table.metadata.name), data: { method: 'tables', id: t }}
+					const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+					const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
+						table.metadata.name : table.name;
+
+					return {title: UtilsService.title(name), data: { method: 'tables', id: t }}
 				}).sort((a, b) => UtilsService.sortAlphabeticFunc(a, b, 'title')),
 			);
 
@@ -259,15 +264,16 @@ export class ProjectsService extends ProjectData implements Iterable<Project>
 	{
 		if(this.projects.has(key))
 		{
-			const table: IProject = pick(this.projects.get(key), ['id', 'members', 'tables', 'metadata']);
+			const project: IProject = pick(this.projects.get(key), ['id', 'members', 'tables', 'metadata']);
 
 			if(!this.firebaseService.permissions)
 				return Promise.reject(`No permissions to make changes to ${key}`);
 
-			return this.firebaseService.updateItem(key, table, true, `projects`);
+			console.log(key, project);
+			return this.firebaseService.updateItem(key, project, true, `projects`);
 		}
 
-		return Promise.reject(`294 - Couldn't find table ${key}`);
+		return Promise.reject(`294 - Couldn't find project ${key}`);
 	}
 
 	public loadProject(key: string, onProjectLoaded: Function)

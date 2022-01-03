@@ -1,13 +1,13 @@
 {
 	"name": "story-time",
-	"version": "2020.1.6f2",
+	"version": "2020.1.6f4",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/akveo/ngx-admin.git"
+		"url": "git+https://github.com/vamidi/StoryTime.git"
 	},
 	"bugs": {
-		"url": "https://vamidicreations.nl/akveo/ngx-admin/issues"
+		"url": "https://github.com/vamidi/StoryTime/issues"
 	},
 	"scripts": {
 		"ng": "ng",

@@ -17,6 +17,7 @@ import { NbAuthResult } from '@nebular/auth';
 
 import cloneDeep from 'lodash.clonedeep';
 import { Parser, Value } from 'expr-eval';
+import { IVersion } from '@app-core/interfaces/pipelines.interface';
 
 export interface ObjectKeyValue<T>
 {
@@ -379,6 +380,22 @@ export class UtilsService
 		return value.replace(/\s+/g, replacingChar).toLowerCase();
 	}
 
+	public static hasProperty<T = any>(obj: T, property: string)
+	{
+		if(obj.hasOwnProperty(property))
+		{
+			const prop = obj[property];
+			if(typeof prop === 'string')
+			{
+				return prop !== '';
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * @brief - Rename a property of an object.
 	 * @param obj
@@ -679,6 +696,15 @@ export class UtilsService
 
 		// versions are equal
 		return 0;
+	}
+
+	public static convertToVersion(version: IVersion)
+	{
+		let converted: string = '';
+		if(version.hasOwnProperty('major') && version.hasOwnProperty('minor') && version.hasOwnProperty('release'))
+			converted += version.major + '.' + version.minor + '.' + version.release;
+
+		return converted;
 	}
 
 	/** ENCRYPTION **/

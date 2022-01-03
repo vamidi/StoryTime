@@ -179,13 +179,21 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			)
 			&& el instanceof CheckboxFieldComponent ||
 
-			// checkbox can either be a checkbox or multiple selection field
+			// button can either be a button or multiple button field
 			// 'button' | 'submitbutton' | 'stepper' | 'btn-dropdown';
 			(
 				field.controlType === 'button' ||
-				field.controlType === 'submitbutton'
+				field.controlType === 'submitbutton' ||
+				field.controlType === 'btn-dropdown'
 			)
-			&& el instanceof ButtonFieldComponent,
+			&& el instanceof ButtonFieldComponent ||
+
+			// button can either be a button or multiple button field
+			// 'btn-dropdown';
+			(
+				field.controlType === 'btn-dropdown'
+			)
+			&& el instanceof SelectFieldWithBtnComponent,
 
 			msg,
 		);

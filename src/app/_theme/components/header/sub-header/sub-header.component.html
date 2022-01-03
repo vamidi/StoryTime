@@ -17,7 +17,8 @@
 	</nb-select>
 
 	<!-- Project layout -->
-	<button style="border-radius: 0.25rem 0 0 0.25rem" nbButton [status]="gridMode ? 'basic' : 'primary'" (click)="toggleViewMode(false)" class="action">
+	<button style="border-radius: 0.25rem 0 0 0.25rem" nbButton [status]="gridMode ? 'basic' : 'primary'" (click)="toggleViewMode(false)" class="action"
+	[ngClass]="isAdmin ? '' : 'm-0'">
 		<nb-icon icon="list-outline"></nb-icon>
 	</button>
 

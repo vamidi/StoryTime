@@ -188,7 +188,7 @@ export class ChangeProjectSettingsComponent implements
 		});
 
 		// max level field
-		console.log(this.project);
+		UtilsService.onDebug(this.project);
 		this.source.fields = {
 			projectName: {
 				controlType: 'textbox',
@@ -258,7 +258,7 @@ export class ChangeProjectSettingsComponent implements
 				value: this.project?.metadata?.relatedTables?.skills ?? '',
 				name: 'project-skill-tables',
 				text: 'Project skill Tables',
-				placeholder: 'Project description',
+				placeholder: 'Project skill table',
 				required: false,
 				options$: new BehaviorSubject<Option<any>[]>(tableSelections),
 			},
@@ -326,17 +326,20 @@ export class ChangeProjectSettingsComponent implements
 			}),
 		);
 
-		if (this.project.metadata.hasOwnProperty('languages'))
-		{
-			const languages: string[] = Object.keys(this.project.metadata.languages);
-			this.languageService.SystemLanguages.forEach((value, key) => this.cachedLanguages.push(
-				new Option<KeyLanguage>({
-					key: value,
-					value: key,
-					selected: false,
-				})),
-			);
+		// load languages
+		this.languageService.SystemLanguages.forEach((value, key) => this.cachedLanguages.push(
+			new Option<KeyLanguage>({
+				key: value,
+				value: key,
+				selected: false,
+			})),
+		);
 
+		if(!this.project.metadata.hasOwnProperty('languages'))
+		{
+			this.project.metadata.languages = {};
+		} else {
+			const languages: string[] = Object.keys(this.project.metadata.languages);
 			languages.forEach((lang) =>
 			{
 				// Whether the languages is enabled.
@@ -363,7 +366,12 @@ export class ChangeProjectSettingsComponent implements
 		const args = { relationData: {} };
 		tables.forEach((tableId) => {
 			args[tableId] = this.firebaseService.getItem(0, `tables/${tableId}/data/`);
-			args.relationData = this.firebaseRelationService.getData().get(this.project.tables[tableId].metadata.name);
+
+			const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+			const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
+				this.project.tables[tableId].metadata.name : this.project.tables[tableId].name;
+
+			args.relationData = this.firebaseRelationService.getData().get(name);
 		})
 
 		migrations.forEach((migration, idx) => {
@@ -381,6 +389,7 @@ export class ChangeProjectSettingsComponent implements
 	}
 
 	public ngAfterViewInit(): void {
+		this.dynamicComponentService.setRootViewContainerRef(this.viewFormContainer);
 		this.cd.detectChanges();
 	}
 
@@ -415,7 +424,7 @@ export class ChangeProjectSettingsComponent implements
 		const component = this.dynamicComponentService.addDynamicComponent(SelectFieldWithBtnComponent);
 		this.formComponent.addInput(component.instance,
 		{
-			value: 'en',
+			value: '',
 			text: `Language ${this.langCounter + 1}`,
 			name: `language_list_${this.langCounter}`,
 			errorText: 'Choose a language',
@@ -433,6 +442,9 @@ export class ChangeProjectSettingsComponent implements
 		if(!this.project.metadata.languages.hasOwnProperty(event))
 			this.project.metadata.languages[event] = true;
 
+		this.projectsService.setProject(this.project.id, this.project);
+
+		// TODO add queue for small changes in the project.
 		this.saveLanguages();
 	}
 
@@ -445,6 +457,8 @@ export class ChangeProjectSettingsComponent implements
 					this.toastrService,
 					'Languages updated',
 					'successfully updated the project',
+					'success',
+					4000,
 				);
 			},
 		);
@@ -454,6 +468,8 @@ export class ChangeProjectSettingsComponent implements
 	{
 		if(this.project.metadata.languages.hasOwnProperty(event))
 			this.project.metadata.languages[event] = false;
+
+		this.projectsService.setProject(this.project.id, this.project);
 
 		this.saveLanguages();
 	}

@@ -16,9 +16,13 @@ import {
 export const standardTablesDescription: Map<string, string> = new Map<string, string>([
 	Pair('classes', 'Defines the classes a character can have in the game.'),
 	Pair('itemTypes', 'Represents group for the items'),
+	Pair('equipmentTypes', 'This table defines the kind of the equipments.'),
 ]);
 
 export const standardTables: Map<string, TableTemplate> = new Map<string, TableTemplate>([
+
+	/** @brief Add more to generate automatically. **/
+
 	// Dialogues
 	Pair<string, { [key: number]: IDialogue }>('dialogues', {
 		0: {
@@ -673,6 +677,19 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 		},
 	}),
 
+	Pair('equipmentTypes', {
+		category: {
+			en: '',
+		},
+		type: {
+			en: '',
+		},
+
+		deleted: false,
+		created_at: UtilsService.timestamp,
+		updated_at: UtilsService.timestamp,
+	}),
+
 	Pair<string, { [key: number]: ICharacterEquipment }>('characterEquipments', {
 		0: {
 			name: Number.MAX_SAFE_INTEGER,
@@ -683,6 +700,4 @@ export const standardTables: Map<string, TableTemplate> = new Map<string, TableT
 			updated_at: UtilsService.timestamp,
 		},
 	}),
-
-	/** @brief Add more to generate automatically. **/
 ]);
