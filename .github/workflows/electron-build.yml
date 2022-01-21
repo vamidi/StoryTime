@@ -45,6 +45,9 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GIT_TOKEN }}
 
+          # custom script with need to run
+          build_script_name: "build:electron"
+
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
