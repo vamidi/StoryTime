@@ -30,12 +30,14 @@ jobs:
 
     steps:
       - name: Check out Git repository
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}, NPM and Yarn
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
