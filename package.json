@@ -1,13 +1,15 @@
 {
 	"name": "story-time",
 	"version": "2020.1.6f5",
-	"license": "MIT",
-	"author": "Valencio Hoffman",
-	"description": "",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/vamidi/StoryTime.git"
+	"license": "Apache-2.0",
+	"author": {
+		"name": "Valencio Hoffman",
+		"email": "valencio.hoffman@gmail.com",
+		"url": "https://vamidicreations.nl"
 	},
+	"homepage": "https://vamidicreations.nl",
+	"description": "StoryTime is a structured data management tool that for creating role-playing games. This tool will work with Unity3D & Unreal engine 4",
+	"repository": "github:vamidi/StoryTime",
 	"bugs": {
 		"url": "https://github.com/vamidi/StoryTime/issues"
 	},
