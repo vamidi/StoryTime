@@ -309,7 +309,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			if(this.project)
 			{
 				const version: string = UtilsService.convertToVersion(this.project.metadata.version);
-				if(UtilsService.versionCompare(version, '2020.1.6.1', { lexicographical: true }) >= 0)
+				if(UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0)
 				{
 					const dataValue: TableColumnMap = this.project.getColumns(table.id);
 					// Now we have the information only once.
@@ -547,7 +547,7 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			for(const k of Object.keys(project.tables))
 			{
 				const version: string = UtilsService.convertToVersion(this.project.metadata.version);
-				const name = UtilsService.versionCompare(version, '2020.1.6.1', { lexicographical: true }) >= 0 ?
+				const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
 					project.tables[k].metadata.name : project.tables[k].name;
 
 				if(name === pair.key)

@@ -1,13 +1,18 @@
 {
 	"name": "story-time",
-	"version": "2020.1.6f4",
-	"license": "MIT",
+	"version": "2020.1.6",
+	"release": "6f6",
+	"license": "SEE LICENSE IN license",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/vamidi/StoryTime.git"
 	},
 	"bugs": {
 		"url": "https://github.com/vamidi/StoryTime/issues"
+	},
+	"funding": {
+		"type" : "individual",
+		"url" : "https://www.buymeacoffee.com/vamidicreations"
 	},
 	"scripts": {
 		"ng": "ng",
