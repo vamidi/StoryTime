@@ -16,6 +16,7 @@ declare var $: any;
 
 declare var tinymce: any;
 
+// @ts-ignore
 declare var echarts: any;
 
 declare var Waypoint: any; // Declare the Waypoint class here to access it

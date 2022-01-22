@@ -33,7 +33,6 @@
 		"postinstall": "patch-package && node postinstall-web.js"
 	},
 	"dependencies": {
-		"@agm/core": "^3.0.0-beta.0",
 		"@angular/animations": "^12.1.0",
 		"@angular/cdk": "12.1.0",
 		"@angular/common": "^12.1.0",
@@ -46,7 +45,7 @@
 		"@angular/platform-browser": "^12.1.0",
 		"@angular/platform-browser-dynamic": "^12.1.0",
 		"@angular/router": "^12.1.0",
-		"@asymmetrik/ngx-leaflet": "^7.0.1",
+		"@asymmetrik/ngx-leaflet": "^8.1.0",
 		"@juggle/resize-observer": "^3.3.1",
 		"@nebular/auth": "8.0.0",
 		"@nebular/eva-icons": "8.0.0",
@@ -58,8 +57,8 @@
 		"@ngxs/store": "^3.7.1",
 		"@popperjs/core": "^2.4.0",
 		"@swimlane/ngx-charts": "^19.0.0",
-		"@vamidicreations/angular2-toaster": "^10.0.1",
-		"@vamidicreations/ng2-smart-table": "1.9.0",
+		"@vamidicreations/angular2-toaster": "12.0.0",
+		"@vamidicreations/ng2-smart-table": "1.9.1",
 		"angular-tree-component": "8.5.6",
 		"angular2-chartjs": "0.4.1",
 		"bootstrap": "4.3.1",
@@ -158,7 +157,7 @@
 		"ts-node": "9.1.1",
 		"tslint": "~6.1.0",
 		"tslint-language-service": "^0.9.9",
-		"typescript": "^4.2.3",
+		"typescript": ">=4.2.3 <4.4.0",
 		"yargs": "^16.2.0"
 	}
 }
