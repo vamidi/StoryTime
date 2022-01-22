@@ -363,12 +363,12 @@ export abstract class BaseFirebaseTableComponent extends BaseFirebaseComponent {
 				const type: BehaviourType = $event.type;
 
 				const newSettings: ISettings =
-					{
-						...this.settings,
-						columns: {
-							...this.settings.columns,
-						},
-					};
+				{
+					...this.settings,
+					columns: {
+						...this.settings.columns,
+					},
+				};
 
 				switch (type) {
 					case BehaviourType.INSERT: // if we want to insert new column

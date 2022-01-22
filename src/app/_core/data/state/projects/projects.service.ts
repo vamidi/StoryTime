@@ -227,7 +227,7 @@ export class ProjectsService extends ProjectData implements Iterable<Project>
 				tables.map<NbMenuItem>((t) => {
 					const table = this.project.tables[t];
 					const version: string = UtilsService.convertToVersion(this.project.metadata.version);
-					const name = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0 ?
+					const name = UtilsService.versionCompare(version, '2020.1.6.1', { lexicographical: true }) >= 0 ?
 						table.metadata.name : table.name;
 
 					return {title: UtilsService.title(name), data: { method: 'tables', id: t }}

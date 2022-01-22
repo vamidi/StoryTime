@@ -238,7 +238,7 @@ export class ProjectComponent extends BaseSourceDataComponent implements OnInit,
 		{
 			const t: { enabled: boolean, metadata: ITableMetadata, [key: string]: any } = this.project.tables[key];
 			const version: string = UtilsService.convertToVersion(this.project.metadata.version);
-			const isCurrentVersion = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0;
+			const isCurrentVersion = UtilsService.versionCompare(version, '2020.1.6.1', { lexicographical: true }) >= 0;
 			const name = isCurrentVersion ? t.metadata.name : t.name;
 
 			if (!this.tablesService.getTableById(key)) {
