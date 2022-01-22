@@ -1,17 +1,23 @@
-<a name="2020.1.6f4"></a>
-## [2020.1.6f4](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f4) (2021-30-12)
+<a name="2020.1.6.5"></a>
+## [2020.1.6.5](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6.5) (2022-22-01)
+
+### Fixes
+- Fix electron build.
+
+<a name="2020.1.6.4"></a>
+## [2020.1.6.4](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6.4) (2021-30-12)
 
 ### Features
 - Game editor now only loads when related tables are set.
 - UI updates
 
 ### Fixes
-- Fix for infitie loop while finding members.
+- Fix for infinite loop while finding members.
 - Fix support for other tables and projects.
 - Fix permission when creating own data.
 
-<a name="2020.1.6f3"></a>
-## [2020.1.6f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f3) (2021-23-12)
+<a name="2020.1.6.3"></a>
+## [2020.1.6.3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6.3) (2021-23-12)
 
 ### Features
 - Inside one story you can make it possible to make different characters talk.
@@ -25,14 +31,14 @@
 - Fix overuse of observables.
 - Fix for hardcoded database locations inside the game editor.
 
-<a name="2020.1.6f2"></a>
-## [2020.1.6f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f2) (2021-23-10)
+<a name="2020.1.6.2"></a>
+## [2020.1.6.2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6.2) (2021-23-10)
 
 ### Fixes
 - Fix for enemy stat page not showing any stats.
 
-<a name="2020.1.6f1"></a>
-## [2020.1.6f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f1) (2021-22-10)
+<a name="2020.1.6.1"></a>
+## [2020.1.6.1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6.1) (2021-22-10)
 
 ### Breaking changes
 - Minimal required `electron` version to `13.1.7`.
@@ -47,7 +53,8 @@
   - Equipments
 - With the game editor you are now also able to add stats to your characters (including enemies).
 
-## [2020.1.5f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f3) (2021-16-07)
+<a name="2020.1.5.3"></a>
+## [2020.1.5.3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5.3) (2021-16-07)
 
 ### Breaking Changes
 - Minimal required `Angular` version to `12`.
@@ -61,38 +68,38 @@
 ### Bug Fixes
 - Bug fixes.
 
-<a name="2020.1.4f2"></a>
-## [2020.1.4f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4f2) (2021-21-05)
+<a name="2020.1.4.2"></a>
+## [2020.1.4.2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4.2) (2021-21-05)
 - Quality of life updates.
 - Bug fixes.
 
-<a name="2020.1.4f1"></a>
-## [2020.1.4f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4f1) (2021-20-05)
+<a name="2020.1.4.1"></a>
+## [2020.1.4.1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.4.1) (2021-20-05)
 - Added node editor for craftable items.
 - Added events to the story node editor.
 - Server feature updates.
 
 
-<a name="2020.1.3f2"></a>
-## [2020.1.3f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f2) (2021-31-03)
+<a name="2020.1.3.2"></a>
+## [2020.1.3.2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3.2) (2021-31-03)
 - Readme updated with information about new databases support.
 - Ability to load firebase config from file.
 - Bug fixes
 
-<a name="2020.1.3f1"></a>
-## [2020.1.3f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3f1) (2021-08-03)
+<a name="2020.1.3.1"></a>
+## [2020.1.3.1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.3.1) (2021-08-03)
 
 
-<a name="2020.1.2f2"></a>
-## [2020.1.2f2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.2f2) (2020-11-04)
+<a name="2020.1.2.2"></a>
+## [2020.1.2.2](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.2.2) (2020-11-04)
 
 
 ### Bug Fixes
 * **Angular 10:** Stability fixes.
 
 
-<a name="2020.1.2f1"></a>
-## [2020.1.2f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.2f1) (2020-11-03)
+<a name="2020.1.2.1"></a>
+## [2020.1.2.1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.2.1) (2020-11-03)
 
 
 ### Bug Fixes
