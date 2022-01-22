@@ -1,8 +1,15 @@
 {
 	"name": "story-time",
+	"description": "StoryTime is a structured data management tool that for creating role-playing games. This tool will work with Unity3D & Unreal engine 4",
 	"version": "2020.1.6",
 	"release": "f6",
 	"license": "SEE LICENSE IN license",
+	"author": {
+		"name": "Valencio Hoffman",
+		"email": "valencio.hoffman@gmail.com",
+		"url": "https://vamidicreations.nl"
+	},
+	"homepage": "https://vamidicreations.nl",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/vamidi/StoryTime.git"
@@ -14,6 +21,24 @@
 		"type" : "individual",
 		"url" : "https://www.buymeacoffee.com/vamidicreations"
 	},
+	"keywords": [
+		"Games",
+		"Unity3d",
+		"Unreal",
+		"Engine",
+		"Godot",
+		"angular",
+		"angular 11",
+		"angular 12",
+		"electron",
+		"nodejs",
+		"typescript",
+		"eslint",
+		"sass",
+		"windows",
+		"mac",
+		"linux"
+	],
 	"scripts": {
 		"ng": "ng",
 		"conventional-changelog": "conventional-changelog",
