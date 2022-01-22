@@ -67,7 +67,7 @@ export const environment: IEnvironment = {
    redux: ${process.env.REDUX},
    MAJOR: ${v1parts[0]},
    MINOR: ${v1parts[1]},
-   RELEASE: '${release}',
+   RELEASE: '${v1parts[2]}${release}',
    firebase: {
    		apiKey: '${process.env.FIREBASE_API_KEY}',
 		authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',
@@ -96,7 +96,7 @@ const jsonFileContent = `{
    "redux": ${process.env.REDUX},
    "MAJOR": ${v1parts[0]},
    "MINOR": ${v1parts[1]},
-   "RELEASE": "${release}",
+   "RELEASE": "${v1parts[2]}${release}",
    "provider": "${process.env.DATABASE_PROVIDER}",
    "firebase": {
 \t\t"apiKey": "${process.env.FIREBASE_API_KEY}",
