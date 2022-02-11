@@ -15,8 +15,8 @@
 		"url": "https://github.com/vamidi/StoryTime/issues"
 	},
 	"funding": {
-		"type" : "individual",
-		"url" : "https://www.buymeacoffee.com/vamidicreations"
+		"type": "individual",
+		"url": "https://www.buymeacoffee.com/vamidicreations"
 	},
 	"keywords": [
 		"angular",
@@ -51,7 +51,7 @@
 		"build:electron:prod": "npm run build:electron -- --configuration production --aot",
 		"electron:serve-tsc": "tsc -p tsconfig.serve.json",
 		"electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
-		"electron:build": "npm run build:electron:prod && electron-builder build --publish=never",
+		"electron:build": "npm run build:electron:prod && electron-builder build --publish=onTag",
 		"test": "ng test",
 		"test:coverage": "rimraf coverage && npm run test -- --code-coverage",
 		"lint": "ng lint",

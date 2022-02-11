@@ -41,7 +41,8 @@
 	],
 	"win": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
-		"target": ["nsis"]
+		"target": ["nsis"],
+		"publish": ["github"]
 	},
 	"nsis": {
 		"oneClick": false,
