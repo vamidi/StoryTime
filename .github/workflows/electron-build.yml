@@ -46,7 +46,9 @@ jobs:
           github_token: ${{ secrets.github_token }}
 
           # custom script with need to run
-          build_script_name: "build:electron"
+          build_script_name: "build:electron:prod"
+          
+          args: "-p always"
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
