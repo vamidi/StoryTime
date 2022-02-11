@@ -1,3 +1,9 @@
+<a name="2020.1.6f5"></a>
+## [2020.1.6f5](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f5) (2022-22-01)
+
+### Fixes
+- Fix electron build.
+
 <a name="2020.1.6f4"></a>
 ## [2020.1.6f4](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f4) (2021-30-12)
 
@@ -6,7 +12,7 @@
 - UI updates
 
 ### Fixes
-- Fix for infitie loop while finding members.
+- Fix for infinite loop while finding members.
 - Fix support for other tables and projects.
 - Fix permission when creating own data.
 
@@ -34,6 +40,9 @@
 <a name="2020.1.6f1"></a>
 ## [2020.1.6f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f1) (2021-22-10)
 
+### Breaking changes
+- Minimal required `electron` version to `13.1.7`.
+
 ### Features
 - Game editor tab is added to StoryTime. From there you can manipulate the following:
   - Characters
@@ -44,7 +53,7 @@
   - Equipments
 - With the game editor you are now also able to add stats to your characters (including enemies).
 
-<a name="2020.1.5f1"></a>
+<a name="2020.1.5f3"></a>
 ## [2020.1.5f3](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.5f3) (2021-16-07)
 
 ### Breaking Changes

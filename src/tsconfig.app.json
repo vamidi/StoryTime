@@ -21,6 +21,11 @@
 			]
 		}
 	},
+	"angularCompilerOptions": {
+		"fullTemplateTypeCheck": true,
+		"strictInjectionParameters": true,
+		"preserveWhitespaces": true
+	},
 	"files": [
 		"main.ts",
 		"polyfills.ts",

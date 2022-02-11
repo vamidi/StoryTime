@@ -19,6 +19,7 @@ import { environment } from '../../environments/environment';
 					<p>
 					</p>
 					<h5>How to use</h5>
+					<a href="/dashboard">Go to dashboard</a>
 				</nb-card-body>
 				<!--				<nb-card-footer></nb-card-footer>-->
 			</nb-card>

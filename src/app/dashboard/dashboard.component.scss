@@ -1,0 +1,9 @@
+@import '../_theme/styles/themes';
+
+@include nb-install-component() {
+	nb-card { height: 100% }
+	::ng-deep nb-base-calendar nb-card {
+		width: 100%;
+		height: 100%;
+	}
+}

@@ -211,7 +211,6 @@ export abstract class BaseFirebaseComponent implements OnInit, OnDestroy
 			this.onCreateConfirm(event, tableId));
 	}
 
-
 	/**
 	 * @brief - Insert new row data
 	 * @param event

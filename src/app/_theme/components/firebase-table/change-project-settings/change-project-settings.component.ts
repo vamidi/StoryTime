@@ -13,12 +13,13 @@ import {
 	DynamicFormComponent, SelectFieldWithBtnComponent,
 } from '@app-theme/components/form';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { InsertTeamMemberComponent } from '@app-theme/components/firebase-table/insert-team-member/insert-team-member.component';
 import { BaseSettings, ISettings } from '@app-core/mock/base-settings';
 import { BaseFormSettings } from '@app-core/mock/base-form-settings';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
-import { Revision, Table } from '@app-core/data/state/tables';
+import { Revision } from '@app-core/data/state/tables';
 import { TablesService } from '@app-core/data/state/tables';
 
 import { IUserTicket, Roles, UserModel, UserService } from '@app-core/data/state/users';
@@ -29,7 +30,6 @@ import { KeyLanguage } from '@app-core/data/state/node-editor/languages.model';
 import { DynamicComponentService } from '@app-core/utils/dynamic-component.service';
 import { MigrationsService, UtilsService } from '@app-core/utils';
 import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
-import { LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { ButtonColumnRenderComponent } from '@app-theme/components';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 import { migrations } from '@app-core/data/state/projects/Migrations/project.migrations';

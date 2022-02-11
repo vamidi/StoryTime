@@ -27,6 +27,7 @@ import { ITable, Table, TableTemplate } from '@app-core/data/state/tables';
 import { ProjectsService } from '@app-core/data/state/projects';
 import { standardTables, standardTablesDescription } from '@app-core/data/database/standard-tables';
 import { environment } from '../../../../../environments/environment';
+import { CustomProjectValidators } from '@app-core/validators/custom-project.validators';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
