@@ -182,8 +182,12 @@ export class ChangeProjectSettingsComponent implements
 	{
 		const tableSelections: Option<string>[] = Object.entries(this.project.tables).map(([key, value]) =>
 		{
+			const version: string = UtilsService.convertToVersion(this.project.metadata.version);
+			const isCurrentVersion = UtilsService.versionCompare(version, '2020.1.6f1', { lexicographical: true }) >= 0;
+			const name = isCurrentVersion ? value.metadata.name : value.name;
+
 			return new Option<string>(
-				{ key: UtilsService.titleCase(value.name), value: key, selected: false, disabled: !value.enabled },
+				{ key: UtilsService.titleCase(name), value: key, selected: false, disabled: !value.enabled },
 			);
 		});
 

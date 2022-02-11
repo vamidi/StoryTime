@@ -1,7 +1,6 @@
 import { Project } from '@app-core/data/state/projects';
 import { environment } from '../../../../../../environments/environment';
 import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
-import { Table } from '@app-core/data/state/tables';
 import { AngularFireObject } from '@angular/fire/database/interfaces';
 import { UtilsService } from '@app-core/utils';
 

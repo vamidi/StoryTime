@@ -11,8 +11,8 @@
 				<div class="col-5">
 					<button style="margin-right:10px;margin-bottom:10px;font-size: 24px;padding: 5px;" nbButton status="info"><i class="edit-column nb-edit"></i></button>
 					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="loadCraftable()">Load</button>
-					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="saveCraftable()">Save</button>
-					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="primary" (click)="newCraftable()">New</button>
+					<button *ngIf="hasCraftable" style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="success" (click)="saveCraftable()">Save</button>
+					<button style="margin-right:10px;margin-bottom:10px;padding: 9px;" nbButton status="success" (click)="newCraftable()">New</button>
 					<nb-select size="large" selected="en" style="width: 10rem;margin-right:10px;font-size: 24px;"
 					           (selectedChange)="onLanguageChange($event)">
 						<nb-option *ngFor="let language of languages | async | keyvalue | orderBy: 'asc': 'value'" [value]="language.key">{{ language.value }}</nb-option>
