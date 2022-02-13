@@ -10,6 +10,10 @@ import { MENU_ITEMS } from './pages/pages-menu';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
 import { Table } from '@app-core/data/state/tables';
+import { ElectronService } from '@app-core/utils/electron.service';
+import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
+import { UserPreferences } from '@app-core/utils/utils.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'ngx-app',
@@ -21,7 +25,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy
 
 	public tableItems: KeyValue<string, boolean>[] = [];
 
+	// Main subscription to all events
+	protected mainSubscription: Subscription = new Subscription();
+	protected userPreferences: UserPreferences = null;
+
 	constructor(
+		protected electronService: ElectronService,
+		protected userPreferencesService: UserPreferencesService,
 		private spinnerService: NbSpinnerService,
 		private firebaseService: FirebaseService,
 		private breadcrumbService: BreadcrumbsService,
@@ -35,13 +45,24 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy
 		this.spinnerService.load();
 
 		this.breadcrumbService.addCallbackForRouteRegex('/pages/game-db/[a-zA-Z]', (id) => UtilsService.titleCase(id).replace(/%20/g, ' '));
+
+
+		this.mainSubscription.add(
+			this.userPreferencesService.getUserPreferences().subscribe((userPreferences: UserPreferences) => {
+				this.userPreferences = { ...userPreferences };
+			}),
+		);
 	}
 
 	public ngAfterViewInit()
 	{
+		if(this.userPreferences.introSet && this.electronService.isElectron)
+			this.electronService.ipcRenderer.send('startServer');
 	}
 
-	public ngOnDestroy() {
+	public ngOnDestroy()
+	{
+		this.mainSubscription.unsubscribe();
 	}
 
 	public onDataReceived(tableData: Table)
@@ -72,12 +93,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy
 				} else {
 					// this.updateFromList(firstEl, key, tableName, payload.deleted);
 				}
-
-				// if(typeof payload === 'boolean')
-				// {
-				// this.DeletedTittle = (payload) ? 'This table is deleted' : '';
-				// this.isDeleted = payload;
-				// }
 			}
 		}
 	}

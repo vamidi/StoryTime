@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NbContextMenuModule, NbMenuModule } from '@nebular/theme';
+import { NbContextMenuModule, NbMenuModule, NbStepperModule } from '@nebular/theme';
 
 import { ThemeModule } from '@app-theme/theme.module';
 import { PagesComponent } from './pages.component';
@@ -11,6 +11,7 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 		PagesRoutingModule,
 		ThemeModule,
 		NbMenuModule,
+		NbStepperModule,
 		MiscellaneousModule,
 		NbContextMenuModule,
 	],

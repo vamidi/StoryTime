@@ -1,8 +1,9 @@
-import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { server } from './src/api/server';
+import * as fs from 'fs';
 
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { closeServer, startServer } from './src/api/server';
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -60,9 +61,6 @@ const createWindow: () => BrowserWindow = () =>
 		win = null;
 	});
 
-	// start express for call to prisma
-	server();
-
 	return win;
 }
 
@@ -76,6 +74,8 @@ try {
 
 	// Quit when all windows are closed.
 	app.on('window-all-closed', () => {
+		closeServer();
+
 		// On OS X it is common for applications and their menu bar
 		// to stay active until the user quits explicitly with Cmd + Q
 		if (process.platform !== 'darwin') {
@@ -95,3 +95,22 @@ try {
 	// Catch Error
 	// throw e;
 }
+
+ipcMain.on('saveConfig', (event, args) => {
+	console.log(args);
+
+	// set the new config in the file
+	const PATH_TO_CONFIG = `./src/assets/data/config.json`;
+	fs.writeFile(PATH_TO_CONFIG, JSON.stringify(args, null, '\t'), {flag: 'w', encoding: 'utf8'}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
+
+		// send info back that we have set the config file.
+		event.sender.send('setConfig');
+	});
+});
+
+// start express for call to prisma
+ipcMain.on('startServer', (event, args) => startServer());

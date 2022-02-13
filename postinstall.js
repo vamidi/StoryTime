@@ -54,14 +54,15 @@ const environmentFileContent = `
 import { IEnvironment } from '@app-core/interfaces/environment.interface';
 
 export const environment: IEnvironment = {
-   title: '${name}',
-   production: ${isProduction},
-   appVersion: '${version}',
-   redux: ${process.env.REDUX},
-   MAJOR: ${v1parts[0]},
-   MINOR: ${v1parts[1]},
-   RELEASE: '${v1parts[2]}${release}',
-   firebase: {
+   	title: '${name}',
+   	production: ${isProduction},
+   	appVersion: '${version}',
+   	redux: ${process.env.REDUX},
+   	MAJOR: ${v1parts[0]},
+   	MINOR: ${v1parts[1]},
+   	RELEASE: '${v1parts[2]}${release}',
+  	provider: '${process.env.DATABASE_PROVIDER}',
+   	firebase: {
    		apiKey: '${process.env.FIREBASE_API_KEY}',
 		authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',
 		databaseURL: '${process.env.FIREBASE_DATABASE_URL}',
@@ -69,6 +70,15 @@ export const environment: IEnvironment = {
 		storageBucket: '${process.env.FIREBASE_STORAGE_BUCKET}',
 		messagingSenderId: '${process.env.FIREBASE_MESSAGING_SENDER_ID}',
 		appId: '${process.env.FIREBASE_APP_ID}',
+	},
+	prisma: {
+   		apiKey: '${process.env.FIREBASE_API_KEY}',
+		authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',
+		projectId: '${process.env.FIREBASE_PROJECT_ID}',
+		storageBucket: '${process.env.FIREBASE_STORAGE_BUCKET}',
+		messagingSenderId: '${process.env.FIREBASE_MESSAGING_SENDER_ID}',
+		appId: '${process.env.FIREBASE_APP_ID}',
+		secret: '${process.env.PRISMA_SECRET}',
 	},
 };
 `;
@@ -130,53 +140,6 @@ fs.writeFile(PATH_TO_CONFIG, jsonFileContent, {flag: 'w', encoding: 'utf8'}, fun
 		console.log(err);
 	}
 	console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
-});
-
-const REL_PATH_TO_CONFIG = isProduction ?
-	`
-		let PATH_TO_CONFIG = '';
-		if(!!(window && window.process && window.process.type))
-		{
-		\tconst path = window.require('path');
-		\tPATH_TO_CONFIG = path.join(process.resourcesPath, 'assets/data', 'config.json');
-		}
-	` : 'const PATH_TO_CONFIG = \'./assets/data/config.json\'';
-
-// Write to main.ts file
-const mainFileContent = `/**
- * @license
- * Copyright Akveo. All Rights Reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- *
- * WARNING this file is being replace by postinstall-web.js
- */
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-import { APP_CONFIG } from '@app-core/data/app.config';
-
-${REL_PATH_TO_CONFIG}
-fetch(PATH_TO_CONFIG)
-.then((response) => response.json())
-.then((config) => {
-\tif (environment.production) {
-\t\tenableProdMode()
-\t}
-
-\tplatformBrowserDynamic([{ provide: APP_CONFIG, useValue: config }])
-\t.bootstrapModule(AppModule)
-\t.catch((err) => console.error(err))
-});
-`;
-
-// write the content also to the config file.
-fs.writeFile('src/main.ts', mainFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
-	if (err) {
-		console.log(err);
-	}
-	console.log('Wrote variables to src/main.ts');
 });
 }
 
