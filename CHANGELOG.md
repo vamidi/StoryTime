@@ -1,3 +1,26 @@
+<a name="2020.1.7f1"></a>
+## [2020.1.7f1](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f4) (2021-18-02)
+
+### Features
+- Local server for engines start automatically when set in user preferences.
+- NextJS integrated as local/production server.
+- Electron app now has an intro page to set up Firebase or Prisma.
+
+### code changes
+- QOL for adding multiple form components at once.
+- Ability to check app version.
+
+### Fixes
+- 
+- Fix: Buttonfield is now of type button for the Stepper. 
+- Fix: Login actually sets the theme now.
+- Fix: legacy codes
+
+### Breaking changes
+- Removed `node.sass` and added `sass` to package.
+- `config.json` is not used anymore in angular app.
+- Lumen server removed.
+
 <a name="2020.1.6f5"></a>
 ## [2020.1.6f5](https://github.com/vamidi/storytime/compare/v4.0.0...v2020.1.6f5) (2022-22-01)
 

@@ -1,5 +1,33 @@
 [
 	{
+		"title": "2020.1.7f1 (2021-18-02)", "children": [
+			{
+				"title": "Features", "children": [
+					{ "title": "Local server for engines start automatically when set in user preferences." },
+					{ "title": "NextJS integrated as local/production server." },
+					{ "title": "Electron app now has an intro page to set up Firebase or Prisma." }
+				]
+			},
+			{
+				"title": "Code changes", "children": [
+					{ "title": "QOL for adding multiple form components at once." },
+					{ "title": "Ability to check app version." },
+					{ "title": "Bug fixes" }
+				]
+			},
+			{
+				"title": "Fixes",
+				"children": [
+					{ "title": "Fix: Buttonfield is now of type button for the Stepper." },
+					{ "title": "Removed `node.sass` and added `sass` to package." },
+					{ "title": "`config.json` is not used anymore in angular app." }
+					{ "title": "Login actually sets the theme now." }
+					{ "title": "legacy codes." }
+				]
+			}
+		]
+	},
+	{
 		"title": "2020.1.6f4 (2021-30-12)", "children": [
 			{
 				"title": "Changes", "children": [
