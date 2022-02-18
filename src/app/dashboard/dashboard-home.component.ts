@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User, UserService } from '@app-core/data/state/users';
 import { BehaviorSubject } from 'rxjs';
-import { ElectronService } from '@app-core/utils/electron.service';
 
 @Component({
 	selector: 'ngx-home',
@@ -62,14 +61,10 @@ export class DashboardHomeComponent implements OnInit
 
 	constructor(
 		protected userService: UserService,
-		protected electronService: ElectronService,
 	) {}
 
 	public ngOnInit()
 	{
 		this.user$ = this.userService.getUser();
-
-		if(this.electronService.isElectron)
-			console.log(process.env.FIREBASE_API_KEY);
 	}
 }

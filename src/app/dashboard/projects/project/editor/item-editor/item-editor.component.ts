@@ -18,7 +18,7 @@ import { DynamicComponentService } from '@app-core/utils/dynamic-component.servi
 import { ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
 import { BaseFormSettings, FormField } from '@app-core/mock/base-form-settings';
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
-import { ICraftable, ICraftCondition, IItem } from '@app-core/data/database/interfaces';
+import { ICraftable, ICraftCondition, IItem, IStory } from '@app-core/data/database/interfaces';
 import { DynamicFormComponent } from '@app-theme/components';
 import { DataSourceColumnHandler } from '@app-core/data/data-source-column-handler';
 import { BaseSettings, Column, ISettings } from '@app-core/mock/base-settings';
@@ -56,6 +56,10 @@ const ITEM_MASTER_NODE_NAME: string = 'ItemMaster';
 })
 export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 {
+	public get hasCraftable(): boolean {
+		return this.nodeEditorService.SelectedCraftItem !== null;
+	}
+
 	// VisualNE Editor
 	@ViewChild('nodeEditor', { static: true })
 	public el: ElementRef<HTMLDivElement>;
@@ -186,6 +190,21 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 		this.includedTables.push('items', 'shopcraftables', 'shopcraftconditions');
 	}
 
+	public ngOnInit()
+	{
+		super.ngOnInit();
+
+		this.mainSubscription.add(this.nodeEditorService.craftItemLoaded.subscribe((res: ICraftable) =>
+		{
+			// load the character
+			if (res) {
+				const selectedItem = this.items.find(res.childId);
+
+				this.title = selectedItem.name[this.nodeEditorService.Language];
+			}
+		}));
+	}
+
 	public loadCraftable()
 	{
 		this.nodeEditorService.loadStory('craftables');
@@ -206,18 +225,15 @@ export class ItemEditorComponent extends NodeEditorComponent implements OnInit
 		{
 			if(res !== undefined)
 			{
-				if(this.nodeEditorService.SelectedCraftItem)
-				{
-					const selectedItem = this.items.find(this.nodeEditorService.SelectedCraftItem.childId);
+				const selectedItem = this.items.find(res.childId);
 
-					this.title = selectedItem.name[this.nodeEditorService.Language];
+				this.title = selectedItem.name[this.nodeEditorService.Language];
 
-					// set the start node output data to the new story
-					// this.textAreaQuestion.value =
+				// set the start node output data to the new story
+				// this.textAreaQuestion.value =
 
-					// and save it to the local storage
-					this.nodeEditorService.saveSnippet();
-				}
+				// and save it to the local storage
+				this.nodeEditorService.saveSnippet();
 			}
 		});
 	}

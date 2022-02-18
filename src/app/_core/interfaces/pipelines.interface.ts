@@ -50,6 +50,11 @@ export interface IPipelineSchedule<T = PipelineAsset>
 	 */
 	callbackFn: (asset: T, args?: any) => Promise<boolean>;
 
+	/**
+	 * @brief - function we are going to call if the scheduler
+	 * fails or whether the rollback button is pressed.
+	 * @param asset
+	 */
 	rollbackFn?: (asset: T) => Promise<boolean>;
 
 	/**

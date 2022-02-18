@@ -1,7 +1,7 @@
 @import '../../../_theme/styles/themes';
 
-:host /deep/ ng2-st-tbody-edit-delete,
-:host /deep/ ng2-st-tbody-custom {
+:host ::ng-deep ng2-st-tbody-edit-delete,
+:host ::ng-deep ng2-st-tbody-custom {
 	display: flex !important;
 	height: 0 !important;
 }
