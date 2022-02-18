@@ -12,10 +12,11 @@ import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.compone
 import {
 	// hasCustomClaim,
 	// NbAngularPrismaAuthGuard,
-	AngularFireAuthGuard,
+	// AngularFireAuthGuard,
 	redirectUnauthorizedTo,
 	redirectLoggedInTo,
 } from '@angular/fire/auth-guard';
+import { AuthGuard } from '@app-core/guards/auth-guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
 import { NgxInviteComponent } from './pages/invitation/invite.component';
@@ -26,25 +27,21 @@ const redirectLoggedInToDatabase = () => redirectLoggedInTo(['dashboard/']);
 // const belongsToAccount = (next) => hasCustomClaim(`account-${next.params.id}`);
 
 const routes: Routes = [
-	// {
-	// 	path: '',
-	// 	component: HomeComponent,
-	// },
 	{
 		path: 'dashboard',
 		component: DashboardComponent,
 		loadChildren: () => import('./dashboard/dashboard.module')
 			.then(m => m.DashboardModule),
-		canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
+		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
 		data: { authGuardPipe: redirectUnauthorizedToLogin },
 	},
-	// {
-	// 	path: 'projects',
-	// 	loadChildren: () => import('app/projects/projects.module')
-	// 		.then(m => m.ProjectsModule),
-	// 	canActivate: [ AngularFireAuthGuard ],
-	// 	data: { authGuardPipe: redirectUnauthorizedToLogin },
-	// },
+	{
+		path: 'intro',
+		loadChildren: () => import('./pages/intro/intro.module')
+			.then(m => m.IntroModule),
+		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
+		data: { authGuardPipe: redirectUnauthorizedToLogin },
+	},
 	{
 		path: 'auth',
 		component: NbAuthComponent,
@@ -52,13 +49,13 @@ const routes: Routes = [
 			{
 				path: '',
 				component: NgxFirebaseLoginComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
 				data: { authGuardPipe: redirectLoggedInToDatabase },
 			},
 			{
 				path: 'login',
 				component: NgxFirebaseLoginComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
 				data: { authGuardPipe: redirectLoggedInToDatabase },
 			},
 			{
@@ -77,7 +74,7 @@ const routes: Routes = [
 			{
 				path: 'reset-password',
 				component: NbResetPasswordComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
+				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
 				data: { authGuardPipe: redirectUnauthorizedToLogin },
 			},
 		],
@@ -85,11 +82,10 @@ const routes: Routes = [
 	{
 		path: 'invite',
 		component: NgxInviteComponent,
-		canActivate: [ /* NbAngularPrismaAuthGuard */ AngularFireAuthGuard ],
+		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
 		data: { authGuardPipe: redirectUnauthorizedToLogin },
 	},
 	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-	// { path: '**', redirectTo: 'dashboard' },
 ];
 
 const config: ExtraOptions = {

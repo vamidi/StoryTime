@@ -1,0 +1,35 @@
+<nb-card>
+	<nb-card-header [nbSpinner]="isLoading" nbSpinnerStatus="danger">
+		<h1 id="title" class="title">Welcome to StoryTime</h1>
+	</nb-card-header>
+	<nb-card-body>
+		<h2>Information needed</h2>
+
+		<nb-stepper orientation="horizontal" linear="true" #stepper>
+			<nb-step [stepControl]="formComponent.Group" [label]="labelOne">
+				<ng-template #labelOne>Database setup</ng-template>
+
+				<ngx-dynamic-form class="step-container" [source]="source" [showLabels]="true" (onSendForm)="sendForm()">
+					<ngx-dropdown-field #providerQuestion></ngx-dropdown-field>
+					<ngx-dropdown-field #localServerQuestion></ngx-dropdown-field>
+					<ngx-text-field #apiKey></ngx-text-field>
+					<ngx-text-field #authDomain></ngx-text-field>
+					<ngx-text-field #databaseURL></ngx-text-field>
+					<ngx-text-field #projectId></ngx-text-field>
+					<ngx-text-field #storageBucket></ngx-text-field>
+					<ngx-text-field #messagingSenderId></ngx-text-field>
+					<ngx-text-field #appId></ngx-text-field>
+					<ngx-button-field #nextQuestion></ngx-button-field>
+				</ngx-dynamic-form>
+			</nb-step>
+			<nb-step [label]="labelTwo">
+				<ng-template #labelTwo>Finishing touch</ng-template>
+				<h4 *ngIf="isLoading">Setting up connection</h4>
+				<h4 *ngIf="!isLoading">Connection created!</h4>
+				<button nbButton nbStepperPrevious>prev</button>
+				<button nbButton nbStepperNext [disabled]="this.IntroSet">next</button>
+			</nb-step>
+		</nb-stepper>
+	</nb-card-body>
+</nb-card>
+

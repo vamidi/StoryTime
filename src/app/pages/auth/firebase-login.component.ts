@@ -50,11 +50,12 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 		// this.socialLinks.push(link);
 	}
 
-	public async ngOnInit(): Promise<void>
+	public ngOnInit(): void
 	{
-		const userPreferences = await this.userPreferencesService.getUserPreferences().toPromise();
-		this.themeService.changeTheme(userPreferences.currentTheme);
-
+		const subscription = this.userPreferencesService.getUserPreferences().subscribe((userPreferences) => {
+			this.themeService.changeTheme(userPreferences.currentTheme);
+		});
+		subscription.unsubscribe();
 		// get return url from route parameters or default to '/'
 		this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 	}

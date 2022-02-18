@@ -17,6 +17,8 @@ export class UserPreferencesService
 				recentUsedMenuItems: [],
 				visibleColumns: new Map<string, ObjectKeyValue<boolean>>(),
 				indexColumns: new Map<string, ObjectKeyValue<number>>(),
+				introSet: false,
+				localServer: false,
 			}, true),
 		);
 	}

@@ -140,7 +140,18 @@ export class DataSourceColumnHandler
 	index: number): FormField<T>
 	{
 		let value: T = null;
-		if (column.hasOwnProperty('defaultValue'))
+		if(this.data.hasOwnProperty(key))
+		{
+			// data is existing data we try to manipulate.
+			if(column.type === 'number' || column.type === 'string' || column.type === 'html' || column.type === 'custom')
+			{
+				if(typeof defaultValue === 'string' && typeof this.data[key] === 'object')
+					value = this.handleLanguageValue(this.data[key]) as T;
+				else
+					value = this.data[key];
+			}
+		}
+		else if (column.hasOwnProperty('defaultValue'))
 		{
 			if( key === 'id' && this.data.hasOwnProperty(key))
 			{
@@ -151,17 +162,6 @@ export class DataSourceColumnHandler
 					value = this.handleLanguageValue(column.defaultValue) as T;
 				else
 					value = column.defaultValue as T;
-			}
-		}
-		else if(this.data.hasOwnProperty(key))
-		{
-			// data is existing data we try to manipulate.
-			if(column.type === 'number' || column.type === 'string' || column.type === 'html' || column.type === 'custom')
-			{
-				if(typeof defaultValue === 'string' && typeof this.data[key] === 'object')
-					value = this.handleLanguageValue(this.data[key]) as T;
-				else
-					value = this.data[key];
 			}
 		}
 

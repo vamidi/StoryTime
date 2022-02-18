@@ -36,6 +36,8 @@ export interface UserPreferences
 	visibleColumns: any,
 	// table and all the column layouts
 	indexColumns: any,
+	introSet: boolean,
+	localServer: boolean,
 }
 
 export enum DebugType

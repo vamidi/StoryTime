@@ -122,6 +122,7 @@ import {
 	ThreeColumnsLayoutComponent,
 	TwoColumnsLayoutComponent,
 	SplitViewColumnsLayoutComponent,
+	SingleViewLayoutComponent,
 } from './layouts';
 import { DigitOnlyDirective } from './directives/digit-only.directive';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
@@ -195,6 +196,7 @@ const COMPONENTS = [
 	ThreeColumnsLayoutComponent,
 	TwoColumnsLayoutComponent,
 	SplitViewColumnsLayoutComponent,
+	SingleViewLayoutComponent,
 
 	// Custom components
 	InsertTableComponent,

@@ -25,7 +25,6 @@ import { FormControl } from '@angular/forms';
 import { Option } from '@app-core/data/forms/form-types';
 import { BehaviorSubject } from 'rxjs';
 import { DebugType } from '@app-core/utils/utils.service';
-import { BasicTextFieldInputComponent } from '@app-theme/components';
 
 /**
  * @brief - We want to make an form that create dynamic forms on the fly
@@ -184,7 +183,8 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 			(
 				field.controlType === 'button' ||
 				field.controlType === 'submitbutton' ||
-				field.controlType === 'btn-dropdown'
+				field.controlType === 'btn-dropdown' ||
+				field.controlType === 'stepper'
 			)
 			&& el instanceof ButtonFieldComponent ||
 
@@ -203,6 +203,12 @@ export class DynamicFormComponent implements OnInit, AfterViewInit, AfterContent
 		// UtilsService.onAssert(field.controlType === 'stepper' && el instanceof ButtonFieldComponent, msg);
 
 		return this.configureFormComponent<T>(el, field);
+	}
+
+	public addInputs<T = any>(elements: BaseFormInputComponent<any>[], fields: FormField<T>[])
+	{
+		UtilsService.onAssert(elements.length === fields.length, 'Not equals fields and elements defined!');
+		elements.forEach((el, index) => this.addInput(el, fields[index]));
 	}
 
 	public send()

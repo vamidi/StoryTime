@@ -62,9 +62,6 @@ passwords.txt
 *.ai
 *.ai.meta
 
-# auto generated files
-src/main.ts
-
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
