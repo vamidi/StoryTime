@@ -1,3 +1,5 @@
+export declare type Provider = 'firebase' | 'prisma';
+
 export interface IEnvironment
 {
 	title?: string,

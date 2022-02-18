@@ -1,5 +1,12 @@
 import { NgModule } from '@angular/core';
-import { NbButtonModule, NbCardModule, NbContextMenuModule, NbMenuModule, NbStepperModule } from '@nebular/theme';
+import {
+	NbButtonModule,
+	NbCardModule,
+	NbContextMenuModule,
+	NbMenuModule,
+	NbSpinnerModule,
+	NbStepperModule,
+} from '@nebular/theme';
 
 import { ThemeModule } from '@app-theme/theme.module';
 import { IntroRoutingModule } from './intro-routing.module';
@@ -14,6 +21,7 @@ const NB_MODULES = [
 	NbCardModule,
 	NbButtonModule,
 	NbContextMenuModule,
+	NbSpinnerModule,
 ]
 
 @NgModule({

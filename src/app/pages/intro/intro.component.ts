@@ -13,7 +13,7 @@ import { IEnvironment, Provider } from '../../_core/interfaces/environment.inter
 import { environment } from '../../../environments/environment';
 import { UserPreferencesService } from '../../_core/utils/user-preferences.service';
 import { UserPreferences } from '../../_core/utils/utils.service';
-import { NbStepperComponent } from '@nebular/theme';
+import { NbStepperComponent, NbThemeService } from '@nebular/theme';
 import { Router } from '@angular/router';
 
 
@@ -61,6 +61,8 @@ export class IntroComponent implements OnInit, OnDestroy
 	public appIdQuestion: TextFieldComponent<string> = null;
 
 	public get IntroSet() { return this.userPreferences.introSet }
+
+	public isLoading: boolean = false;
 
 	public source: BaseFormSettings = {
 		title: 'Insert Trait',
@@ -138,6 +140,7 @@ export class IntroComponent implements OnInit, OnDestroy
 		private router: Router,
 		protected electronService: ElectronService,
 		protected userPreferencesService: UserPreferencesService,
+		protected themeService: NbThemeService,
 	) {}
 
 	public ngOnInit()
@@ -145,6 +148,7 @@ export class IntroComponent implements OnInit, OnDestroy
 		this.mainSubscription.add(
 			this.userPreferencesService.getUserPreferences().subscribe((userPreferences: UserPreferences) => {
 				this.userPreferences = { ...userPreferences };
+				this.themeService.changeTheme(userPreferences.currentTheme);
 			}),
 		);
 
@@ -213,6 +217,7 @@ export class IntroComponent implements OnInit, OnDestroy
 	{
 		if(this.formComponent.isValid)
 		{
+			this.isLoading = true;
 			const provider: Provider = this.formComponent.formContainer.get(this.listQuestion.key).value ?? 'firebase';
 			const apiKey = this.formComponent.formContainer.get(this.apiKeyQuestion.key).value ?? '';
 			const authDomain = this.formComponent.formContainer.get(this.authDomainQuestion.key).value ?? '';
@@ -261,10 +266,11 @@ export class IntroComponent implements OnInit, OnDestroy
 
 	public onConfigSet() {
 		this.userPreferences.introSet = true;
-		this.userPreferences.localServer = true;
 		this.userPreferencesService.setUserPreferences(this.userPreferences);
 		this.router.navigate(['/auth/login']).then(() => {
 			if(this.userPreferences.localServer && this.electronService.isElectron) this.electronService.ipcRenderer.send('startServer');
-		})
+		});
+
+		this.isLoading = false;
 	}
 }

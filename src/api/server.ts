@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AddressInfo } from 'net';
-import http from 'http';
+import * as http from 'http';
 
 const express = require('express');
 const cors = require('cors')

@@ -27,8 +27,6 @@ export class AuthGuard extends AngularFireAuthGuard implements CanActivate
 	}
 
 	canActivate = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-		console.log(this.userPreferences, next, state);
-
 		// if we are not on the intro page see if we have set the intro
 		if(!this.userPreferences.introSet)
 		{

@@ -1,5 +1,5 @@
 <nb-card>
-	<nb-card-header>
+	<nb-card-header [nbSpinner]="isLoading" nbSpinnerStatus="danger">
 		<h1 id="title" class="title">Welcome to StoryTime</h1>
 	</nb-card-header>
 	<nb-card-body>
@@ -24,8 +24,8 @@
 			</nb-step>
 			<nb-step [label]="labelTwo">
 				<ng-template #labelTwo>Finishing touch</ng-template>
-				<h4>Setting up connection</h4>
-				<p></p>
+				<h4 *ngIf="isLoading">Setting up connection</h4>
+				<h4 *ngIf="!isLoading">Connection created!</h4>
 				<button nbButton nbStepperPrevious>prev</button>
 				<button nbButton nbStepperNext [disabled]="this.IntroSet">next</button>
 			</nb-step>
