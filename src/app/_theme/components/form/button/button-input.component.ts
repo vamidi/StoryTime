@@ -35,7 +35,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 		<!-- Stepper button -->
 		<div class="form-group {{ question.groupCss }}" [ngStyle]="{ 'display': 'inline-block' }"
 			 [formGroup]="myFormGroup" *ngIf="myFormGroup && question.controlType === 'stepper'">
-			<button nbButton [ghost]="ghost"
+			<button type="button" nbButton [ghost]="ghost"
 				nbStepperNext
 				[attr.disabled]="myFormGroup && (!myFormGroup.valid || !myFormGroup.dirty) || question.disabled ? '' : null"
 				[status]="myFormGroup && myFormGroup.valid && myFormGroup.dirty || !question.disabled ? 'primary' : 'basic'"
