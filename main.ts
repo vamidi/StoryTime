@@ -2,8 +2,64 @@ import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
-import { closeServer, startServer } from './src/api/server';
+const { spawn } = require("child_process");
+
+import { app, BrowserWindow, ipcMain, screen, dialog } from 'electron';
+import { ChildProcess, SpawnOptionsWithoutStdio } from 'child_process';
+
+// TODO move this function to better place.
+// This function will output the lines from the script
+// and will return the full combined output
+// as well as exit code when it's done (using the callback).
+function run_script(command: string, args, options?: SpawnOptionsWithoutStdio, callback?: Function): any {
+	const child = spawn(command, args, options);
+
+	// You can also use a variable to save the output for when the script closes later
+	child.on('error', (error) => {
+		dialog.showMessageBox({
+			title: 'Title',
+			type: 'warning',
+			message: 'Error occured.\r\n' + error
+		});
+	});
+
+	child.stdout.setEncoding('utf8');
+	child.stdout.on('data', (data) => {
+		// Here is the output
+		data = data.toString();
+		console.log(data);
+	});
+
+	child.stderr.setEncoding('utf8');
+	child.stderr.on('data', (data) => {
+		// Return some data to the renderer process with the mainprocess-response ID
+		win.webContents.send('mainprocess-response', data);
+		// Here is the output from the command
+		console.log(data);
+	});
+
+	child.on('close', (code) => {
+		// Here you can get the exit code of the script
+		switch (code) {
+			case 0:
+				dialog.showMessageBox({
+					title: 'Title',
+					type: 'info',
+					message: 'End process.\r\n'
+				});
+			break;
+		}
+	});
+
+	child.on('exit', () => {
+		process.exit()
+	});
+
+	if (typeof callback === 'function')
+		callback();
+
+	return child;
+}
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -15,6 +71,8 @@ require('dotenv').config();
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
 	serve = args.some(val => val === '--serve');
+
+let serverProcess: ChildProcess = null;
 
 const createWindow: () => BrowserWindow = () =>
 {
@@ -74,7 +132,11 @@ try {
 
 	// Quit when all windows are closed.
 	app.on('window-all-closed', () => {
-		closeServer();
+		if(serverProcess) {
+			serverProcess = run_script("npm", ["run start"], { cwd: './next' }, null);
+
+			spawn("taskkill", ["/pid", serverProcess.pid, '/f', '/t']);
+		}
 
 		// On OS X it is common for applications and their menu bar
 		// to stay active until the user quits explicitly with Cmd + Q
@@ -113,4 +175,6 @@ ipcMain.on('saveConfig', (event, args) => {
 });
 
 // start express for call to prisma
-ipcMain.on('startServer', (event, args) => startServer());
+ipcMain.on('startServer', (event, args) => {
+	serverProcess = run_script("npm", ["run start"], { shell: true, cwd: './next' }, null);
+});
