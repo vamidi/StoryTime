@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = function () {
+module.exports = function (createJson = true) {
 	// File 'node_modules/rete/types/socket.d.ts' will be created or overwritten by default.
 	fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) => {
 		if (err) throw err;
@@ -19,29 +19,28 @@ module.exports = function () {
 
 // read environment variables from .env file
 	require('dotenv'
-).
-config(options);
+	).config(options);
 
-const isProduction = environment === 'prod';
+	const isProduction = environment === 'prod';
 
-const targetPath = isProduction
-	? `./src/environments/environment.prod.ts`
-	: `./src/environments/environment.ts`;
+	const targetPath = isProduction
+		? `./src/environments/environment.prod.ts`
+		: `./src/environments/environment.ts`;
 
-const envPath = isProduction
-	? `./src/environments/environment.ts`
-	: `./src/environments/environment.web.ts`;
+	const envPath = isProduction
+		? `./src/environments/environment.ts`
+		: `./src/environments/environment.web.ts`;
 
 
-if (!process.env.FIREBASE_DATABASE_URL) {
-	console.error('All the required environment variables were not provided!');
-	process.exit(-1);
-}
+	if (!process.env.FIREBASE_DATABASE_URL) {
+		console.error('All the required environment variables were not provided!');
+		process.exit(-1);
+	}
 
 
 // we have access to our environment variables
 // in the process.env object thanks to dotenv
-const environmentFileContent = `
+	const environmentFileContent = `
 /**
  * @license
  * Copyright Akveo. All Rights Reserved.
@@ -84,63 +83,65 @@ export const environment: IEnvironment = {
 `;
 
 // write the content to the respective file
-fs.writeFile(targetPath, environmentFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
-	if (err) {
-		console.log(err);
-	}
-	console.log(`Wrote variables to ${targetPath}`);
-});
+	fs.writeFile(targetPath, environmentFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		console.log(`Wrote variables to ${targetPath}`);
+	});
 
 // write the content to the respective file
-fs.writeFile(envPath, environmentFileContent, {
-	flag: 'w',
-	encoding: 'utf8'
-}, function (err) {
-	if (err) {
-		console.log(err);
-	}
-	console.log(`Wrote variables to ${envPath}`);
-});
+	fs.writeFile(envPath, environmentFileContent, {
+		flag: 'w',
+		encoding: 'utf8'
+	}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		console.log(`Wrote variables to ${envPath}`);
+	});
 
-// write the content also to the config file.
-const jsonFileContent = `{
-   "title": "${name}",
-   "production": ${isProduction},
-   "appVersion": "${version}",
-   "redux": ${process.env.REDUX},
-   "MAJOR": ${v1parts[0]},
-   "MINOR": ${v1parts[1]},
-   "RELEASE": "${v1parts[2]}${release}",
-   "provider": "${process.env.DATABASE_PROVIDER}",
-   "firebase": {
-\t\t"apiKey": "${process.env.FIREBASE_API_KEY}",
-\t\t"authDomain": "${process.env.FIREBASE_AUTH_DOMAIN}",
-\t\t"databaseURL": "${process.env.FIREBASE_DATABASE_URL}",
-\t\t"projectId": "${process.env.FIREBASE_PROJECT_ID}",
-\t\t"storageBucket": "${process.env.FIREBASE_STORAGE_BUCKET}",
-\t\t"messagingSenderId": "${process.env.FIREBASE_MESSAGING_SENDER_ID}",
-\t\t"appId": "${process.env.FIREBASE_APP_ID}"
-   },
-   "prisma": {
-\t\t"apiKey": "${process.env.FIREBASE_API_KEY}",
-\t\t"authDomain": "${process.env.PRISMA_AUTH_DOMAIN}",
-\t\t"hostUrl": "${process.env.PRISMA_HOST_URI}",
-\t\t"projectId": "${process.env.FIREBASE_PROJECT_ID}",
-\t\t"storageBucket": "${process.env.FIREBASE_STORAGE_BUCKET}",
-\t\t"messagingSenderId": "${process.env.FIREBASE_MESSAGING_SENDER_ID}",
-\t\t"appId": "${process.env.FIREBASE_APP_ID}",
-\t\t"secret": "${process.env.PRISMA_SECRET}"
-   }
-}
-`;
-
-const PATH_TO_CONFIG = `./src/assets/data/config.json`;
-fs.writeFile(PATH_TO_CONFIG, jsonFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
-	if (err) {
-		console.log(err);
+	if (createJson) {
+		// write the content also to the config file.
+		const jsonFileContent = `{
+	   "title": "${name}",
+	   "production": ${isProduction},
+	   "appVersion": "${version}",
+	   "redux": ${process.env.REDUX},
+	   "MAJOR": ${v1parts[0]},
+	   "MINOR": ${v1parts[1]},
+	   "RELEASE": "${v1parts[2]}${release}",
+	   "provider": "${process.env.DATABASE_PROVIDER}",
+	   "firebase": {
+	\t\t"apiKey": "${process.env.FIREBASE_API_KEY}",
+	\t\t"authDomain": "${process.env.FIREBASE_AUTH_DOMAIN}",
+	\t\t"databaseURL": "${process.env.FIREBASE_DATABASE_URL}",
+	\t\t"projectId": "${process.env.FIREBASE_PROJECT_ID}",
+	\t\t"storageBucket": "${process.env.FIREBASE_STORAGE_BUCKET}",
+	\t\t"messagingSenderId": "${process.env.FIREBASE_MESSAGING_SENDER_ID}",
+	\t\t"appId": "${process.env.FIREBASE_APP_ID}"
+	   },
+	   "prisma": {
+	\t\t"apiKey": "${process.env.FIREBASE_API_KEY}",
+	\t\t"authDomain": "${process.env.PRISMA_AUTH_DOMAIN}",
+	\t\t"hostUrl": "${process.env.PRISMA_HOST_URI}",
+	\t\t"projectId": "${process.env.FIREBASE_PROJECT_ID}",
+	\t\t"storageBucket": "${process.env.FIREBASE_STORAGE_BUCKET}",
+	\t\t"messagingSenderId": "${process.env.FIREBASE_MESSAGING_SENDER_ID}",
+	\t\t"appId": "${process.env.FIREBASE_APP_ID}",
+	\t\t"secret": "${process.env.PRISMA_SECRET}"
+	   }
 	}
-	console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
-});
-}
+	`;
+
+		const PATH_TO_CONFIG = `./src/assets/data/config.json`;
+		fs.writeFile(PATH_TO_CONFIG, jsonFileContent, {flag: 'w', encoding: 'utf8'}, function (err) {
+			if (err) {
+				console.log(err);
+			}
+			console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
+		});
+	}
+};
 
 
