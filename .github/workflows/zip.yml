@@ -30,17 +30,17 @@ jobs:
             - name: Use Node.js ${{ matrix.node-version }}, NPM and Yarn
               working-directory: ./next
               # uses: actions/setup-node@v2
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: 'npm'
+              # with:
+                  # node-version: ${{ matrix.node-version }}
+                  # cache: 'npm'
               run: 'npm install'
 
             - name: Build next
               working-directory: ./next
               # uses: actions/setup-node@v2
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: 'npm'
+              # with:
+                  # node-version: ${{ matrix.node-version }}
+                  # cache: 'npm'
               run: 'npm run build'
 
             - name: Archive Release
