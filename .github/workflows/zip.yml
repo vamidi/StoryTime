@@ -21,7 +21,12 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+            - name: Checkout Electron
+              uses: actions/checkout@v2
+              
+            - name: Checkout NextJS submodule
+              uses: textbook/git-checkout-submodule-action@master
+            
             - name: Archive Release
               uses: thedoctor0/zip-release@master
               with:
