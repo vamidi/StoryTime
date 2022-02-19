@@ -3,14 +3,12 @@
 
 name: Electron Build CI
 on:
-  push:
-    branches: [ master-electron ]
-#   pull_request:
-#     branches: [ master-electron ]
+    workflow_run:
+      workflows: ["Create Archive"]
+      types: [completed] #requested
 
 jobs:
-  build:
-
+  electron-build:
     runs-on: windows-latest
     environment: production
     strategy:
@@ -28,6 +26,7 @@ jobs:
         FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
 
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
@@ -47,7 +46,7 @@ jobs:
 
           # custom script with need to run
           build_script_name: "build:electron:prod"
-          
+
           args: "-p always"
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),

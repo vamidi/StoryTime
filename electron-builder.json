@@ -9,6 +9,10 @@
 			"from": "./src/assets/data",
 			"to": "assets/data",
 			"filter": "**/*"
+		},
+		{
+			"from": "./next/next.zip",
+			"to": "./"
 		}
 	],
 	"appId": "com.vamidicreations.storytime",

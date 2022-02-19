@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Create Archive
+name: Create Archive CI
 
 # Controls when the workflow will run
 on:
@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
     # This workflow contains a single job called "build"
-    build:
+    archiving-next-build:
         # The type of runner that the job will run on
         runs-on: windows-latest
 
@@ -23,14 +23,30 @@ jobs:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - name: Checkout Electron
               uses: actions/checkout@v2
-              
+
             - name: Checkout NextJS submodule
               run: git submodule update --init -- next
-            
+
+            - name: Use Node.js ${{ matrix.node-version }}, NPM and Yarn
+              working-directory: ./next
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: 'npm'
+              run: 'npm install'
+
+            - name: Build next
+              working-directory: ./next
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: 'npm'
+              run: 'npm run build'
+
             - name: Archive Release
               uses: thedoctor0/zip-release@master
               with:
                   type: 'zip'
-                  filename: 'release.zip'
+                  filename: 'next.zip'
                   directory: './next'
                   exclusions: '*.env* .editorconfig'
