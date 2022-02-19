@@ -29,7 +29,7 @@ jobs:
 
             - name: Use Node.js ${{ matrix.node-version }}, NPM and Yarn
               working-directory: ./next
-              uses: actions/setup-node@v2
+              # uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: 'npm'
@@ -37,7 +37,7 @@ jobs:
 
             - name: Build next
               working-directory: ./next
-              uses: actions/setup-node@v2
+              # uses: actions/setup-node@v2
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: 'npm'
