@@ -3,9 +3,11 @@ import * as url from 'url';
 import * as fs from 'fs';
 
 const { spawn } = require("child_process");
+const StreamZip = require('node-stream-zip');
+const zip = new StreamZip.async({ file: './next/next.zip' });
 
 import { app, BrowserWindow, ipcMain, screen, dialog } from 'electron';
-import { ChildProcess, SpawnOptionsWithoutStdio } from 'child_process';
+import { ChildProcess, ChildProcessWithoutNullStreams, SpawnOptionsWithoutStdio } from 'child_process';
 
 // TODO move this function to better place.
 // This function will output the lines from the script
@@ -61,6 +63,42 @@ function run_script(command: string, args, options?: SpawnOptionsWithoutStdio, c
 	return child;
 }
 
+function createConfig(args: string, callback?: Function) {
+	// set the new config in the file
+	const PATH_TO_CONFIG = `./src/assets/data/config.json`;
+
+	if(fs.existsSync(PATH_TO_CONFIG))
+		return;
+
+	fs.writeFile(PATH_TO_CONFIG, JSON.stringify(args, null, '\t'), {flag: 'w', encoding: 'utf8'}, function (err) {
+		if (err) {
+			console.log(err);
+		}
+		console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
+
+		if(callback) callback();
+	});
+}
+
+function startServer() {
+	// if we are serving the application we can
+	// either start the server from the command line
+	// or run it through the npm scripts.
+	if(serve) return;
+
+	// unpack the next zip file for server handling
+	// zip.on('extract', (entry, file) => {
+		// console.log(`Extracted ${entry.name} to ${file}`);
+	// });
+
+	zip.extract(null, './next').then((entry) => {
+		// run server after the extraction
+		serverProcess = run_script("npm", ["run start"], { shell: true, cwd: './next' }, null);
+
+		zip.close().then();
+	});
+}
+
 // Initialize remote module
 require('@electron/remote/main').initialize();
 
@@ -111,6 +149,9 @@ const createWindow: () => BrowserWindow = () =>
 		}));
 	}
 
+	// create config file if not already exist
+	createConfig('{}');
+
 	// Emitted when the window is closed.
 	win.on('closed', () => {
 		// Dereference the window object, usually you would store window
@@ -133,9 +174,8 @@ try {
 	// Quit when all windows are closed.
 	app.on('window-all-closed', () => {
 		if(serverProcess) {
-			serverProcess = run_script("npm", ["run start"], { cwd: './next' }, null);
-
-			spawn("taskkill", ["/pid", serverProcess.pid, '/f', '/t']);
+			const process: ChildProcessWithoutNullStreams = spawn("taskkill", ["/pid", serverProcess.pid, '/f', '/t']);
+			process.kill();
 		}
 
 		// On OS X it is common for applications and their menu bar
@@ -159,16 +199,8 @@ try {
 }
 
 ipcMain.on('saveConfig', (event, args) => {
-	console.log(args);
 
-	// set the new config in the file
-	const PATH_TO_CONFIG = `./src/assets/data/config.json`;
-	fs.writeFile(PATH_TO_CONFIG, JSON.stringify(args, null, '\t'), {flag: 'w', encoding: 'utf8'}, function (err) {
-		if (err) {
-			console.log(err);
-		}
-		console.log(`Wrote variables to ${PATH_TO_CONFIG}`);
-
+	createConfig(args, () => {
 		// send info back that we have set the config file.
 		event.sender.send('setConfig');
 	});
@@ -176,5 +208,5 @@ ipcMain.on('saveConfig', (event, args) => {
 
 // start express for call to prisma
 ipcMain.on('startServer', (event, args) => {
-	serverProcess = run_script("npm", ["run start"], { shell: true, cwd: './next' }, null);
+	startServer();
 });
