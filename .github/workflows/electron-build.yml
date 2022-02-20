@@ -4,7 +4,7 @@
 name: Electron Build CI
 on:
     workflow_run:
-      workflows: ["Create Archive"]
+      workflows: ["Create Archive CI"]
       types: [completed] #requested
 
 jobs:
