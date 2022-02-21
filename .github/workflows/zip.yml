@@ -50,3 +50,7 @@ jobs:
                   filename: 'next.zip'
                   directory: './next'
                   exclusions: '*.env* .editorconfig'
+
+            - name: Run other workflow
+              run: gh workflow run electron-build.yml
+
