@@ -3,33 +3,68 @@
 
 name: Electron Build CI
 on:
-    # Allows you to run this workflow manually from the Actions tab
-    workflow_dispatch:
-#    workflow_run:
-#      workflows: ["Create Archive CI"]
-#      branches: [ master-electron ]
-#      types:
-#        - completed
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: master-electron
+
 jobs:
+  # This job will archive the next server
+  archiving-next-build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Electron
+        uses: actions/checkout@v2
+
+      - name: Checkout NextJS submodule
+        run: git submodule update --init -- next
+
+      - name: Use Node.js ${{ matrix.node-version }}, NPM and Yarn
+        working-directory: ./next
+          # uses: actions/setup-node@v2
+          # with:
+        # node-version: ${{ matrix.node-version }}
+        # cache: 'npm'
+        run: 'npm install'
+
+      - name: Build next
+        working-directory: ./next
+          # uses: actions/setup-node@v2
+          # with:
+        # node-version: ${{ matrix.node-version }}
+        # cache: 'npm'
+        run: 'npm run build'
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: 'next.zip'
+          directory: './next'
+          exclusions: '*.env* .editorconfig'
+
+  # Create the electron build
   electron-build:
     runs-on: windows-latest
     environment: production
     strategy:
       matrix:
-        node-version: [14.x ]
+        node-version: [ 14.x ]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     env:
-        FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-        FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-        FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-        FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-        FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-        FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+      FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
 
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
