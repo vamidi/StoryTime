@@ -3,10 +3,12 @@
 
 name: Electron Build CI
 on:
+    workflow_dispatch:
     workflow_run:
       workflows: ["Create Archive CI"]
-      types: [completed] #requested
-
+      branches: [ master-electron ]
+      types:
+        - completed
 jobs:
   electron-build:
     runs-on: windows-latest
