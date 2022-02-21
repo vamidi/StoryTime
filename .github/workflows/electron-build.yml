@@ -3,12 +3,13 @@
 
 name: Electron Build CI
 on:
+    # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
-    workflow_run:
-      workflows: ["Create Archive CI"]
-      branches: [ master-electron ]
-      types:
-        - completed
+#    workflow_run:
+#      workflows: ["Create Archive CI"]
+#      branches: [ master-electron ]
+#      types:
+#        - completed
 jobs:
   electron-build:
     runs-on: windows-latest
