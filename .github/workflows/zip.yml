@@ -54,5 +54,5 @@ jobs:
             - name: Run other workflow
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: gh workflow run electron-build.yml
+              run: gh workflow run electron-build.yml --ref master-electron
 
