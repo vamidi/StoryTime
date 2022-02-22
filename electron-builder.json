@@ -45,7 +45,12 @@
 	],
 	"win": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
-		"target": ["nsis"],
+		"target": [
+			{
+				"target": "nsis",
+				"arch": "x64"
+			}
+		],
 		"publish": ["github"]
 	},
 	"nsis": {
@@ -57,7 +62,8 @@
 	},
 	"mac": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
-		"target": ["dmg"]
+		"target": ["dmg"],
+		"publish": ["github"]
 	},
 	"linux": {
 		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
