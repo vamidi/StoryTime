@@ -11,7 +11,6 @@
 - Ability to check app version.
 
 ### Fixes
-- 
 - Fix: Buttonfield is now of type button for the Stepper. 
 - Fix: Login actually sets the theme now.
 - Fix: legacy codes
