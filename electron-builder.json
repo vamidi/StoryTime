@@ -56,7 +56,7 @@
 
 	},
 	"mac": {
-		"icon": "src/assets/icons/StoryTime_logo_001_trans.png",
+		"icon": "src/assets/icons/StoryTime_logo_512x512.png",
 		"target": ["dmg"]
 	},
 	"linux": {
