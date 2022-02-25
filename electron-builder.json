@@ -1,5 +1,6 @@
 {
 	"productName": "Storytime",
+	"buildVersion": "2020.1.7",
 	"directories": {
 		"buildResources": "src/assets",
 		"output": "release/"
@@ -55,10 +56,10 @@
 	},
 	"nsis": {
 		"oneClick": false,
-		"perMachine": true
+		"perMachine": true,
+		"allowToChangeInstallationDirectory": true
 	},
 	"portable": {
-
 	},
 	"mac": {
 		"icon": "src/assets/icons/StoryTime_logo_512x512.png",

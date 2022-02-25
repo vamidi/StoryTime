@@ -64,8 +64,9 @@ function run_script(command: string, args, options?: SpawnOptionsWithoutStdio, c
 }
 
 function createConfig(args: string, callback?: Function) {
+	const resourceFolder: string = serve ? './src' : process.resourcesPath;
 	// set the new config in the file
-	const PATH_TO_CONFIG = `./src/assets/data/config.json`;
+	const PATH_TO_CONFIG = resourceFolder + '/assets/data/config.json';
 
 	if(fs.existsSync(PATH_TO_CONFIG))
 		return;
@@ -148,9 +149,6 @@ const createWindow: () => BrowserWindow = () =>
 			slashes: true,
 		}));
 	}
-
-	// create config file if not already exist
-	createConfig('{}');
 
 	// Emitted when the window is closed.
 	win.on('closed', () => {
