@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {
 	NbButtonModule,
 	NbCardModule,
-	NbContextMenuModule,
+	NbContextMenuModule, NbLayoutModule,
 	NbMenuModule,
 	NbSpinnerModule,
 	NbStepperModule,
@@ -14,6 +14,7 @@ import { MiscellaneousModule } from '../miscellaneous/miscellaneous.module';
 import { IntroComponent } from './intro.component';
 import {HomeComponent} from './home.component';
 import { FormsModule } from '@angular/forms';
+import { LayoutService } from '../../_core/utils';
 
 const NB_MODULES = [
 	NbMenuModule,
@@ -22,7 +23,12 @@ const NB_MODULES = [
 	NbButtonModule,
 	NbContextMenuModule,
 	NbSpinnerModule,
-]
+	NbLayoutModule,
+];
+
+const CUSTOM_PROVIDERS = [
+	LayoutService,
+];
 
 @NgModule({
 	imports: [
@@ -35,6 +41,9 @@ const NB_MODULES = [
 	declarations: [
 		IntroComponent,
 		HomeComponent,
+	],
+	providers: [
+		...CUSTOM_PROVIDERS,
 	],
 })
 export class IntroModule

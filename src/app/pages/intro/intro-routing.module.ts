@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { NotFoundComponent } from '../miscellaneous/not-found/not-found.component';
 import { IntroComponent } from './intro.component';
 import { HomeComponent } from './home.component';
+import { IntroGuard } from '@app-core/guards/intro-guard';
 
 const routes: Routes = [
 	{
@@ -13,6 +14,7 @@ const routes: Routes = [
 			{
 				path: '',
 				component: IntroComponent,
+				canActivate: [ /* NbAngularPrismaAuthGuard */ IntroGuard ],
 			},
 			{
 				path: '**',

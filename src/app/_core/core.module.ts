@@ -79,7 +79,7 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
 	}
 }
 
-export const NB_CORE_PROVIDERS = [
+const NB_CORE_PROVIDERS = [
 	...MockDataModule.forRoot().providers,
 	...DATA_SERVICES,
 	...NbAuthModule.forRoot({
@@ -122,8 +122,8 @@ export const NB_CORE_PROVIDERS = [
 	},
 ];
 
-export const CUSTOM_PROVIDERS = [
-	// Custom made service
+const CUSTOM_PROVIDERS = [
+	// Custom-made service
 	FirebaseService,
 	UserService,
 	FirebaseRelationService,
@@ -134,7 +134,6 @@ export const CUSTOM_PROVIDERS = [
 	LayoutService,
 	PlayerService,
 	// AuthGuardService,
-	// AuthGuard,
 	// AngularPrismaAuth,
 	DatabaseService,
 	DynamicComponentService,

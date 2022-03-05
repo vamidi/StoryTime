@@ -70,7 +70,7 @@ const routes: Routes = [
 			*/
 			{
 				path: '',
-				redirectTo: 'game-db',
+				redirectTo: 'dashboard',
 				pathMatch: 'full',
 			},
 			{

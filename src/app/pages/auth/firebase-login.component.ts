@@ -110,6 +110,7 @@ export class NgxFirebaseLoginComponent extends NbLoginComponent implements OnIni
 				const redirect = this.returnUrl !== '' ? this.returnUrl :  result.getRedirect();
 
 				setTimeout(() => {
+					console.log(redirect);
 					return this.router.navigateByUrl(redirect);
 				}, this.redirectDelay);
 
