@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { Table } from '@app-core/data/state/tables';
 
 @Component({
 	selector: 'ngx-home',

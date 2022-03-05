@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { User, UserService } from '@app-core/data/state/users';
 import { BehaviorSubject } from 'rxjs';
+import { Table } from '@app-core/data/state/tables';
+import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
+import { NbMenuItem } from '@nebular/theme';
+import { KeyValue } from '@angular/common';
+import { MENU_ITEMS } from '../pages/pages-menu';
 
 @Component({
 	selector: 'ngx-home',
@@ -53,18 +58,55 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class DashboardHomeComponent implements OnInit
 {
+	public menu: NbMenuItem[] = MENU_ITEMS;
+
 	public date = new Date();
 
 	public user$: BehaviorSubject<User> = null;
+
+	public tableItems: KeyValue<string, boolean>[] = [];
 
 	public handleDateChange(event) { }
 
 	constructor(
 		protected userService: UserService,
+		protected firebaseService: FirebaseService,
 	) {}
 
 	public ngOnInit()
 	{
 		this.user$ = this.userService.getUser();
+	}
+
+	public onDataReceived(tableData: Table)
+	{
+		for(const [key, value] of Object.entries(tableData.data))
+		{
+			if (!this.firebaseService.getExcludedTables().includes(key))
+			{
+				const payload: any = value;
+
+				let tableName = key;
+				tableName = tableName.replace(/([A-Z])/g, ' $1').trim();
+				tableName = tableName.charAt(0).toUpperCase() + tableName.substr(1);
+
+				const firstEl: NbMenuItem = this.menu[0];
+
+				if (!firstEl.children.find(child => child.title === tableName))
+				{
+					firstEl.children.push(
+						{
+							title: tableName,
+							icon: 'chevron-right-outline',
+							link: '/pages/game-db/' + key,
+							hidden: payload.deleted,
+						});
+
+					this.tableItems.push({key: key, value: payload.deleted});
+				} else {
+					// this.updateFromList(firstEl, key, tableName, payload.deleted);
+				}
+			}
+		}
 	}
 }

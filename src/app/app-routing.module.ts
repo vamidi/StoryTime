@@ -1,90 +1,26 @@
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import {
-	NbAuthComponent,
-	NbRequestPasswordComponent,
-	NbResetPasswordComponent,
-} from '@nebular/auth';
-import { NgxFirebaseLoginComponent } from './pages/auth/firebase-login.component';
-// import { AuthGuardService as AuthGuard } from '@app-core/utils/auth.guard.service';
-import { NgxFirebaseLogoutComponent } from './pages/auth/firebase-logout.component';
-
-import {
-	// hasCustomClaim,
-	// NbAngularPrismaAuthGuard,
-	// AngularFireAuthGuard,
-	redirectUnauthorizedTo,
-	redirectLoggedInTo,
-} from '@angular/fire/auth-guard';
-import { AuthGuard } from '@app-core/guards/auth-guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
-import { NgxInviteComponent } from './pages/invitation/invite.component';
-
-// const adminOnly = () => hasCustomClaim('admin');
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth/login']);
-const redirectLoggedInToDatabase = () => redirectLoggedInTo(['dashboard/']);
-// const belongsToAccount = (next) => hasCustomClaim(`account-${next.params.id}`);
+import { IntroGuard } from '@app-core/guards/intro-guard';
 
 const routes: Routes = [
 	{
 		path: 'dashboard',
-		component: DashboardComponent,
 		loadChildren: () => import('./dashboard/dashboard.module')
 			.then(m => m.DashboardModule),
-		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-		data: { authGuardPipe: redirectUnauthorizedToLogin },
+		canActivate: [ /* NbAngularPrismaAuthGuard */ IntroGuard ],
 	},
 	{
 		path: 'intro',
 		loadChildren: () => import('./pages/intro/intro.module')
 			.then(m => m.IntroModule),
-		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-		data: { authGuardPipe: redirectUnauthorizedToLogin },
+		canActivate: [ /* NbAngularPrismaAuthGuard */ IntroGuard ],
 	},
 	{
 		path: 'auth',
-		component: NbAuthComponent,
-		children: [
-			{
-				path: '',
-				component: NgxFirebaseLoginComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-				data: { authGuardPipe: redirectLoggedInToDatabase },
-			},
-			{
-				path: 'login',
-				component: NgxFirebaseLoginComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-				data: { authGuardPipe: redirectLoggedInToDatabase },
-			},
-			{
-				path: 'register',
-				component: NgxFirebaseRegisterComponent,
-				data: { authGuardPipe: redirectLoggedInToDatabase },
-			},
-			{
-				path: 'logout',
-				component: NgxFirebaseLogoutComponent,
-			},
-			{
-				path: 'request-password',
-				component: NbRequestPasswordComponent,
-			},
-			{
-				path: 'reset-password',
-				component: NbResetPasswordComponent,
-				canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-				data: { authGuardPipe: redirectUnauthorizedToLogin },
-			},
-		],
+		loadChildren: () => import('./pages/auth/auth.module')
+			.then(m => m.AuthModule),
 	},
-	{
-		path: 'invite',
-		component: NgxInviteComponent,
-		canActivate: [ /* NbAngularPrismaAuthGuard */ AuthGuard ],
-		data: { authGuardPipe: redirectUnauthorizedToLogin },
-	},
+	// TODO change home page.
 	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 ];
 

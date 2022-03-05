@@ -1,5 +1,6 @@
-import { NbMenuService } from '@nebular/theme';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+// import { NbMenuService } from '@nebular/theme';
 
 @Component({
 	selector: 'ngx-not-found',
@@ -9,12 +10,17 @@ import { Component } from '@angular/core';
 export class NotFoundComponent
 {
 
-	constructor(private menuService: NbMenuService)
+	constructor(
+		private route: Router,
+		// private menuService: NbMenuService
+	)
 	{
 	}
 
-	goToHome()
+	async goToHome()
 	{
-		this.menuService.navigateHome();
+		return this.route.navigate(['dashboard']);
+		// TODO figure out why this is not working.
+		// this.menuService.navigateHome();
 	}
 }

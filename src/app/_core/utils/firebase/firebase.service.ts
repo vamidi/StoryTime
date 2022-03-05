@@ -21,8 +21,6 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
-import { of } from 'rxjs/observable/of';
-import { map } from 'rxjs/operators';
 
 export declare type RelationDictionary<T> = Map<string, T>; // tblName, relation pair
 
