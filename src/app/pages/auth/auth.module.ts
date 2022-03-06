@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NbFirebasePasswordStrategy, NbFirebasePasswordStrategyOptions } from '@nebular/firebase-auth';
-import { NbAlertModule, NbButtonModule, NbCheckboxModule, NbIconModule, NbInputModule } from '@nebular/theme';
+import {
+	NbAlertModule,
+	NbButtonModule, NbCardModule,
+	NbCheckboxModule,
+	NbIconModule,
+	NbInputModule,
+	NbLayoutModule,
+} from '@nebular/theme';
 import { getDeepFromObject, NbAuthJWTToken, NbAuthModule } from '@nebular/auth';
 import { NbAuthSocialLink } from '@nebular/auth/auth.options';
 import { NgxFirebaseLoginComponent } from './firebase-login.component';
@@ -34,6 +41,8 @@ const NB_MODULES = [
 	NbIconModule,
 	NbCheckboxModule,
 	NbButtonModule,
+	NbLayoutModule,
+	NbCardModule,
 ];
 
 @NgModule({
