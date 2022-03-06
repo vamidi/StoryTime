@@ -67,6 +67,14 @@ jobs:
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
 
+      # TODO remove in future updates
+      DATABASE_PROVIDER: firebase
+
+      PRISMA_AUTH_DOMAIN: ''
+      PRISMA_HOST_URI: ''
+      PRISMA_SECRET: 'secret'
+      REDUX: false
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Check out Git repository

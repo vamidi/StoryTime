@@ -15,7 +15,6 @@ export class IntroGuard implements CanActivate
 		protected userPreferencesService: UserPreferencesService,
 		private route: Router,
 	) {
-		console.log('jere');
 		this.mainSubscription.add(this.userPreferencesService.getUserPreferences().subscribe((userPreferences) => {
 			this.userPreferences = { ...userPreferences };
 		}));
@@ -27,7 +26,6 @@ export class IntroGuard implements CanActivate
 		// if we are not on the intro page see if we have set the intro
 		if(!introSet)
 		{
-			console.log(state.url === '/intro');
 			// if we are not already on the intro page
 			if(state.url !== '/intro')
 				this.route.navigate(['intro']);
