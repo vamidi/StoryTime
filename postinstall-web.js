@@ -15,13 +15,6 @@ fs.readFile(f_angular, 'utf8', function (err, data) {
 	});
 });
 
-// TODO see if we still need to override the socket.d.ts
-// File 'node_modules/rete/types/socket.d.ts' will be created or overwritten by default.
-// fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) => {
-// 	if (err) throw err;
-// 	console.log('socket.d.ts was copied to node_modules/rete/types/socket.d.ts\n');
-// });
-
 /** Create environment file */
 const { argv } = require('yargs');
 const { name, version, release } = require('./package.json');
@@ -90,7 +83,7 @@ export const environment: IEnvironment = {
 		secret: '${process.env.PRISMA_SECRET}',
 	},
 };
-`;
+`
 
 // write the content to the respective file
 fs.writeFile(targetPath, environmentFileContent, { flag: 'w', encoding: 'utf8' }, function (err) {
