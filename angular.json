@@ -25,8 +25,7 @@
 							"@firebase/auth",
 							"@angular/fire/firestore",
 							"rxjs-compat",
-							"rxjs/observable/of",
-							"rete-minimap-plugin"
+							"rxjs/observable/of"
 						],
 						"assets": [
 							"src/assets",
@@ -63,14 +62,7 @@
 							"node_modules/echarts/dist/echarts.min.js",
 							"node_modules/echarts/dist/extension/bmap.min.js",
 							"node_modules/chart.js/dist/Chart.min.js",
-							"node_modules/babel-polyfill/dist/polyfill.min.js",
-							"node_modules/rete/build/rete.min.js",
 							"node_modules/visualne/dist/visualne.min.js",
-							"node_modules/visualne-connection-plugin/dist/visualne-connection-plugin.min.js",
-							"node_modules/visualne-selection-plugin/dist/visualne-selection-plugin.min.js",
-							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
-							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
 							"node_modules/waypoints/lib/noframework.waypoints.min.js"
 						],
 						"vendorChunk": true,
@@ -135,13 +127,7 @@
 							"node_modules/echarts/dist/echarts.min.js",
 							"node_modules/echarts/dist/extension/bmap.min.js",
 							"node_modules/chart.js/dist/Chart.min.js",
-							"node_modules/babel-polyfill/dist/polyfill.min.js",
-							"node_modules/rete/build/rete.min.js",
 							"node_modules/visualne/dist/visualne.min.js",
-							"node_modules/visualne-connection-plugin/dist/visualne-connection-plugin.min.js",
-							"node_modules/visualne-angular-plugin/esm5/visualne-angular-plugin.js",
-							"node_modules/visualne-angular-context-menu-plugin/esm5/visualne-angular-context-menu-plugin.js",
-							"node_modules/rete-minimap-plugin/build/minimap-plugin.min.js",
 							"node_modules/waypoints/lib/noframework.waypoints.min.js"
 						],
 						"styles": [
