@@ -1,12 +1,6 @@
 const fs = require('fs');
 
 module.exports = function (createJson = true) {
-	// File 'node_modules/rete/types/socket.d.ts' will be created or overwritten by default.
-	fs.copyFile('types/socket.d.ts', 'node_modules/rete/types/socket.d.ts', (err) => {
-		if (err) throw err;
-		console.log('socket.d.ts was copied to node_modules/rete/types/socket.d.ts\n');
-	});
-
 	/** Create environment file */
 	const {argv} = require('yargs');
 	const {name, version, release} = require('./package.json');
