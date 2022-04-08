@@ -5,8 +5,6 @@ import { ConnectionPlugin } from 'visualne-connection-plugin';
 import { AngularRenderPlugin } from 'visualne-angular-plugin';
 import { ContextMenuPlugin } from 'visualne-angular-context-menu-plugin';
 import { CommentPlugin } from 'visualne-comment-plugin';
-import MinimapPlugin from 'rete-minimap-plugin';
-import HistoryPlugin from 'rete-history-plugin';
 
 import { StartNodeComponent } from '@app-core/components/visualne/nodes/story-editor/start-node-component';
 import { DialogueNodeComponent } from '@app-core/components/visualne/nodes/story-editor/dialogue-node-component';
@@ -212,10 +210,10 @@ export class NodeEditorComponent implements OnInit, AfterViewInit, OnDestroy
 				{ createAndConnect: { keyCode: 'Control' }, pickConnection: { keyCode: 'KeyD' }, curvature: 0.4 },
 			);
 			this.nodeEditor.use(AngularRenderPlugin); // { component: MyNodeComponent })
-			this.nodeEditor.use(MinimapPlugin);
 			this.nodeEditor.use(ContextMenuPlugin, this.contextSettings); // TODO implement context menu for right click event
 			this.nodeEditor.use(CommentPlugin, { margin: 20 }); // indent for new frame comments by default 30 (px)
-			this.nodeEditor.use(HistoryPlugin, { keyboard: true });
+			// this.nodeEditor.use(MinimapPlugin);
+			// this.nodeEditor.use(HistoryPlugin, { keyboard: true });
 			// this.nodeEditor.use(LifecyclePlugin);
 			/*
 // or disable features
