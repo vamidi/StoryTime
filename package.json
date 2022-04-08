@@ -1,8 +1,8 @@
 {
 	"name": "story-time",
 	"description": "StoryTime is a structured data management tool that for creating role-playing games. This tool will work with Unity3D & Unreal engine 4",
-	"version": "2020.1.7",
-	"release": "f5",
+	"version": "2020.1.8",
+	"release": "f1",
 	"license": "SEE LICENSE IN license",
 	"author": {
 		"name": "Valencio Hoffman",
