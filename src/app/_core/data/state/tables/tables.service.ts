@@ -5,14 +5,13 @@ import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { BreadcrumbsService, UtilsService } from '@app-core/utils';
-import { IColumn, ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
+import { ITable, Table, TableData } from '@app-core/data/state/tables/table.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { QueryablePromise } from '@app-core/utils/utils.service';
-import { environment } from '../../../../../environments/environment';
 
 import { Project } from '@app-core/data/state/projects';
-import { ChildEvent } from '@angular/fire/database/interfaces';
+import { ChildEvent } from '@angular/fire/compat/database/interfaces';
 
 import isEqual from 'lodash.isequal';
 import pick from 'lodash.pick';

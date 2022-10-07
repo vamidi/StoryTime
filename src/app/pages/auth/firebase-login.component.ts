@@ -9,7 +9,7 @@ import { NbThemeService } from '@nebular/theme';
 import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import 'firebase/auth';
 import Persistence = firebase.auth.Auth.Persistence;
 

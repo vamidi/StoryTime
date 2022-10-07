@@ -13,7 +13,7 @@ import {
 	NbPasswordAuthStrategyOptions,
 } from '@nebular/auth/strategies/password/password-strategy-options';
 import { NbAuthStrategyClass } from '@nebular/auth/auth.options';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { NbAuthToken } from '@nebular/auth/services/token/token';
 
 @Injectable()

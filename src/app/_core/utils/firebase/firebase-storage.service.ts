@@ -1,19 +1,19 @@
 import { Injectable, Input } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireStorageReference } from '@angular/fire/compat/storage';
 import { FirebaseService } from '@app-core/utils/firebase/firebase.service';
 import { Project, StoryFileUpload } from '@app-core/data/state/projects';
 import { CraftableFileUpload } from '@app-core/data/state/tables';
 import { UtilsService } from '@app-core/utils';
 import { FileUpload } from '@app-core/data/file-upload.model';
-import { AngularFireList, QueryFn } from '@angular/fire/database/interfaces';
+import { AngularFireList, QueryFn } from '@angular/fire/compat/database/interfaces';
 
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { NbToastrService } from '@nebular/theme';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import 'firebase/storage';
 
 export declare type NbLocationFileType = 'Default' | 'Story' | 'Craftable'

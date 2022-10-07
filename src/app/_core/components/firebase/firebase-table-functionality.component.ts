@@ -41,7 +41,7 @@ export abstract class FirebaseTableFunctionalityComponent extends BaseFirebaseTa
 
 	public abstract changeTableSettings: ChangeTableSettingsComponent;
 
-	public abstract smartTableComponent: Ng2SmartTableComponent = null;
+	public abstract smartTableComponent: Ng2SmartTableComponent;
 
 	public AddTitle: string = '';
 	public DeletedTittle: string = '';

@@ -10,7 +10,7 @@ import { NgxContextMenuComponent } from '@app-theme/components/context-menu/cont
 import { NbButtonModule, NbIconModule, NbMenuModule, NbOverlayModule } from '@nebular/theme';
 import { NgxNotificationsMenuComponent, NgxNotifyMenuItemComponent } from '@app-theme/components';
 import { RouterModule } from '@angular/router';
-import { AvatarModule } from 'ngx-avatar';
+import { AvatarModule } from 'ngx-avatars';
 
 @NgModule({
 	exports: [

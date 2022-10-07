@@ -15,7 +15,7 @@ import {
 	AngularFireAuthGuard,
 	redirectUnauthorizedTo,
 	redirectLoggedInTo,
-} from '@angular/fire/auth-guard';
+} from '@angular/fire/compat/auth-guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgxFirebaseRegisterComponent } from './pages/auth/firebase-register.component';
 import { NgxInviteComponent } from './pages/invitation/invite.component';

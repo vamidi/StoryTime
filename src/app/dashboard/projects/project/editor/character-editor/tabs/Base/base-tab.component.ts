@@ -35,7 +35,7 @@ export abstract class BaseTabComponent<T extends ProxyObject>
 	public defaultValue: number = Number.MAX_SAFE_INTEGER;
 
 	public abstract formComponent: DynamicFormComponent;
-	public abstract source: BaseFormSettings = null;
+	public abstract source: BaseFormSettings;
 
 	protected characterData: ICharacter = null;
 

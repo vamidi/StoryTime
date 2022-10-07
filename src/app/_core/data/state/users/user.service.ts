@@ -8,11 +8,11 @@ import { of as observableOf, Observable, Subscription, BehaviorSubject } from 'r
 import { switchMap, map } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { SnapshotAction } from '@angular/fire/database/interfaces';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { SnapshotAction } from '@angular/fire/compat/database/interfaces';
 
 import { environment } from '../../../../../environments/environment';
 

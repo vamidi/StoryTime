@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireDatabase, SnapshotAction } from '@angular/fire/database';
+import { AngularFireDatabase, SnapshotAction } from '@angular/fire/compat/database';
 import { UtilsService } from '@app-core/utils/utils.service';
 import { Relation } from '@app-core/data/base/relation.class';
 import { StringPair } from '@app-core/data/base/string-pair.class';
@@ -12,12 +12,12 @@ import { IFoundAbleUser, IUserTicket, User, UserService } from '@app-core/data/s
 import { UserData } from '@app-core/data/state/users/user.model';
 
 import { Revision } from '@app-core/data/state/tables';
-import { AngularFireList, AngularFireObject, ChildEvent, QueryFn } from '@angular/fire/database/interfaces';
+import { AngularFireList, AngularFireObject, ChildEvent, QueryFn } from '@angular/fire/compat/database/interfaces';
 
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { environment } from '../../../../environments/environment';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';

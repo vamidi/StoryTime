@@ -10,14 +10,15 @@ import {
 } from '@nebular/theme';
 import { NbIconConfig } from '@nebular/theme/components/icon/icon.component';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import firebase from 'firebase/app'
-import 'firebase/database';
 import { Observable } from 'rxjs/Observable';
 import { NbAuthResult } from '@nebular/auth';
 
-import cloneDeep from 'lodash.clonedeep';
 import { Parser, Value } from 'expr-eval';
 import { IVersion } from '@app-core/interfaces/pipelines.interface';
+
+import cloneDeep from 'lodash.clonedeep';
+import firebase from 'firebase/compat/app'
+import 'firebase/database';
 
 export interface ObjectKeyValue<T>
 {

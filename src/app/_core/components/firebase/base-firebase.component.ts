@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SnapshotAction } from '@angular/fire/database/interfaces';
+import { SnapshotAction } from '@angular/fire/compat/database/interfaces';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogConfig } from '@nebular/theme/components/dialog/dialog-config';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
@@ -21,7 +21,6 @@ import {
 import { KeyLanguage, KeyLanguageObject } from '@app-core/data/state/node-editor/languages.model';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { LanguageService, Project, ProjectsService } from '@app-core/data/state/projects';
-import { environment } from '../../../../environments/environment';
 import { InsertMultipleDialogComponent } from '@app-theme/components/firebase-table';
 
 import { Util } from 'leaflet';
@@ -29,7 +28,7 @@ import trim = Util.trim;
 
 import isEqual from 'lodash.isequal';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
 /**
  * simple base firebase implementation

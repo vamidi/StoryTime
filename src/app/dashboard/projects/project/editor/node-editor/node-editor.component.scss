@@ -13,9 +13,10 @@ $grid-size: 20px;
 
 		.node-editor {
 			background-size: $grid-size $grid-size;
-			background-image: linear-gradient(to right, darken(nb-theme(background-basic-color-3), 4%) 1px, transparent 1px),
-			linear-gradient(to bottom, darken(nb-theme(background-basic-color-3), 4%) 1px, transparent 1px);
-			background-color: nb-theme(background-basic-color-3);
+			// TODO fix with background-basic-color-3
+			background-image: linear-gradient(to right, darken(#212529, 4%) 1px, transparent 1px),
+			linear-gradient(to bottom, darken(#212529, 4%) 1px, transparent 1px);
+			background-color: #212529;
 			//border-radius: 1rem;
 			overflow: hidden;
 			position: relative;

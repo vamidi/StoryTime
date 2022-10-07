@@ -4,7 +4,8 @@ import { from, Observable, of as observableOf } from 'rxjs';
 import { map, take, debounceTime } from 'rxjs/operators';
 import { UtilsService } from '@app-core/utils';
 import { UserModel } from '@app-core/data/state/users';
-import firebase from 'firebase/app';
+
+import firebase from 'firebase/compat/app';
 import DataSnapshot = firebase.database.DataSnapshot;
 
 export class CustomProjectValidators

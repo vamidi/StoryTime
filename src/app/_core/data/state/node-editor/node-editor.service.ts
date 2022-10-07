@@ -1,6 +1,6 @@
 import { Injectable, Type } from '@angular/core';
 
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { NbDialogRef } from '@nebular/theme/components/dialog/dialog-ref';
@@ -30,7 +30,7 @@ import { FirebaseStorageService, NbLocationFileType } from '@app-core/utils/fire
 
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 import debounce from 'lodash.debounce';
 import { IFileMetaData } from '@app-core/data/file-upload.model';
 import { AdditionalEvents } from '@app-core/components/visualne';

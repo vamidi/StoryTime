@@ -5,7 +5,7 @@ import {
 	EventEmitter,
 	Input, OnDestroy,
 	OnInit,
-	Output, Type,
+	Output,
 	ViewChild,
 } from '@angular/core';
 import { KeyValue } from '@angular/common';
@@ -20,7 +20,7 @@ import { NbDialogRef, NbDialogService, NbSelectComponent, NbToastrService } from
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
 import { FirebaseService, RelationPair } from '@app-core/utils/firebase/firebase.service';
 import { IRelation, Revision, Table } from '@app-core/data/state/tables';
-import { DefaultEditor, LocalDataSource, ViewCell } from '@vamidicreations/ng2-smart-table';
+import { DefaultEditor, LocalDataSource } from '@vamidicreations/ng2-smart-table';
 import { ProxyObject, StringPair } from '@app-core/data/base';
 import { DropDownQuestion, Option } from '@app-core/data/forms/form-types';
 import { UtilsService } from '@app-core/utils';
@@ -36,12 +36,12 @@ import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.servi
 import { MigrationsService } from '@app-core/utils/migrations/migrations.service';
 import { migrations } from '@app-core/data/state/tables/Migrations/table.migrations';
 import { ButtonColumnRenderComponent } from '@app-theme/components/render-column-layout/button-column-render.component';
+import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 
-import firebase from 'firebase/app'
+import firebase from 'firebase/compat/app'
 import 'firebase/database';
 
 import isEqual from 'lodash.isequal';
-import { IPipelineSchedule } from '@app-core/interfaces/pipelines.interface';
 
 interface ColumnSetting {
 	id: string,

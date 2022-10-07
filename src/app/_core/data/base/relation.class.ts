@@ -1,6 +1,6 @@
 import { FirebaseService } from '../../utils/firebase/firebase.service';
 import { Observable } from 'rxjs';
-import { SnapshotAction } from '@angular/fire/database';
+import { SnapshotAction } from '@angular/fire/compat/database';
 import { BaseResponse } from '@app-core/data/base/base.class';
 import { StringPair } from '@app-core/data/base/string-pair.class';
 import { FirebaseRelationService } from '@app-core/utils/firebase/firebase-relation.service';
@@ -9,7 +9,7 @@ import { Table } from '@app-core/data/state/tables';
 
 import { of } from 'rxjs/observable/of';
 
-import firebase from 'firebase/app';
+import firebase from 'firebase/compat/app';
 
 // TODO see if needed
 // export enum ERenderComponent

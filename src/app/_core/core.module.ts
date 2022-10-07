@@ -5,10 +5,10 @@ import { NbAuthModule, NbDummyAuthStrategy } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { NbFirebaseAuthModule } from '@nebular/firebase-auth';
 
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireStorageModule } from '@angular/fire/storage'
-import { /* AngularFireDatabase, */ AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage'
+import { /* AngularFireDatabase, */ AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';

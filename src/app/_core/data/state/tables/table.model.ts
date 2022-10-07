@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Collection } from '@app-core/data/collection';
 import { DefaultEditor, LocalDataSource, ViewCell } from '@vamidicreations/ng2-smart-table';
 import { map } from 'rxjs/operators';
-import { SnapshotAction } from '@angular/fire/database/interfaces';
+import { SnapshotAction } from '@angular/fire/compat/database/interfaces';
 import { FilterCallback } from '@app-core/providers/firebase-filter.config';
 import { UtilsService } from '@app-core/utils';
 import { IVersion, PipelineAsset } from '@app-core/interfaces/pipelines.interface';

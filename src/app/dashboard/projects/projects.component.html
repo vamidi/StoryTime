@@ -22,7 +22,7 @@
 			<nb-card-body class="d-flex flex-column">
 				<div class="d-flex flex-row">
 					<div class="my-2">
-						<ngx-avatar [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatar>
+						<ngx-avatars [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatars>
 					</div>
 					<div class="btn-group align-self-start ml-auto" dropdown>
 						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
@@ -40,7 +40,7 @@
 				</div>
 				<div class="d-flex flex-row flex-grow-1">
 					<div  class="align-self-end member" *ngFor="let member of project.members | keyvalue; let index = i;">
-						<ngx-avatar [name]="member.key" [round]="true" [size]="33"></ngx-avatar>
+						<ngx-avatars [name]="member.key" [round]="true" [size]="33"></ngx-avatars>
 					</div>
 				</div>
 			</nb-card-body>
@@ -55,7 +55,7 @@
 			<nb-card-body class="d-flex flex-column">
 				<div class="d-flex flex-row">
 					<div class="my-2">
-						<ngx-avatar [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatar>
+						<ngx-avatars [name]="project.metadata.title" [round]="false" [cornerRadius]="5" ></ngx-avatars>
 					</div>
 					<div class="btn-group align-self-start ml-auto" dropdown>
 						<button id="button-basic" type="button" style="border:none; background:none; outline:none; font-size: 1.2rem"
@@ -73,10 +73,10 @@
 				</div>
 				<div class="d-flex flex-row flex-grow-1">
 					<div  class="align-self-end member" *ngFor="let member of project.members | keyvalue; let index = i;">
-						<ngx-avatar
+						<ngx-avatars
 							*ngIf="findMember(member.key)" [src]="findAvatar(member.key)" [round]="true" [size]="33"
-							[nbTooltip]="findMember(member.key).displayName" nbTooltipPlacement="top" nbTooltipStatus="basic"
-						></ngx-avatar>
+							[nbTooltip]="findMember(member.key).displayName" nbTooltipStatus="basic"
+						></ngx-avatars> <!-- nbTooltipPlacement="top" -->
 					</div>
 				</div>
 			</nb-card-body>

@@ -6,7 +6,7 @@ import { createCraftable, createCraftCondition, createItem } from '@app-core/fun
 import { UtilsService } from '@app-core/utils';
 import { AdditionalEvents, ItemMasterNodeComponent, ItemNodeComponent } from '@app-core/components/visualne';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
 import { UserService } from '@app-core/data/state/users';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
@@ -27,9 +27,10 @@ import { KeyLanguage, KeyLanguageObject, systemLanguages } from '@app-core/data/
 import { InsertCraftableComponent, InsertItemsDialogComponent } from '@app-theme/components/firebase-table';
 import { BehaviorSubject } from 'rxjs';
 import { EventsTypes } from 'visualne/types/events';
-import isEqual from 'lodash.isequal';
-import firebase from 'firebase';
 import { BaseFormInputComponent } from '@app-theme/components/form/form.component';
+
+import isEqual from 'lodash.isequal';
+import firebase from 'firebase/compat/app';
 
 const ITEM_NODE_NAME: string = 'ItemNode';
 const ITEM_MASTER_NODE_NAME: string = 'ItemMaster';

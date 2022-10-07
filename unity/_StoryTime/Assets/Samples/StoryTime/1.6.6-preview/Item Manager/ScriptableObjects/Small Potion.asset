@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e06a1543d880c9f448ae8a0156d534ee, type: 3}
+  m_Name: Small Potion
+  m_EditorClassIdentifier: 
+  guid: c0857205b88237143986311fe8bb7dee
+  id: 4
+  tableName: items
+  dropdownColumn: name
+  linkID: 4294967295
+  linkedColumn: 
+  linkedTable: 
+  overrideTable: 0
+  collection: {fileID: 11400000, guid: 23f31069e95833f44b83e02b2c0cccbe, type: 2}
+  overrideDescriptionTable: 0
+  itemDescriptionCollection: {fileID: 0}
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: GUID:c819b12d184b13448b38de4f8f4f10be
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 5
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: GUID:429b27293c2c5264badacb7519c5a9ce
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 5
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  previewImage: {fileID: 0}
+  itemType: {fileID: 11400000, guid: e99ecf24855d8b74dbd6bef21d5d4660, type: 2}
+  prefab: {fileID: 0}
+  sellable: 0
+  sellValue: 10
+  statModifiers: []
+  localizePreviewImage:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+  isLocalized: 0
+  references:
+    version: 1

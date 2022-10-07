@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "208597693892",
+    "firebase_url": "https://buas-prototype-dev.firebaseio.com",
+    "project_id": "buas-prototype-dev",
+    "storage_bucket": "buas-prototype-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208597693892:android:aeb6d189ff66d715b7e091",
+        "android_client_info": {
+          "package_name": "com.vamidicreations.storytime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "208597693892-9ackp5sc78b81mjukvmgnp82jg8aqtee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPH01RIhcGgU3De9jv4-GvNzzC6BM-49Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "208597693892-9ackp5sc78b81mjukvmgnp82jg8aqtee.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "208597693892-ha0di8sfl2ecjhj2ga1ic51ndo0mv0hv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vamidicreations.storytime"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

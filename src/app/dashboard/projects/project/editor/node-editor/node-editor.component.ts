@@ -3,8 +3,8 @@ import {
 	ElementRef, OnDestroy,
 	OnInit, ViewChild, ViewContainerRef, NgZone, Component,
 } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { NbDialogService, NbSelectComponent, NbToastrService } from '@nebular/theme';
 import { Context, Node, Output } from 'visualne';
 import { ContextMenuPluginParams } from 'visualne-angular-context-menu-plugin';
@@ -24,7 +24,6 @@ import { BasicTextFieldInputComponent } from '@app-theme/components';
 import { ICharacter, IDialogue, IDialogueOption, IEvent, IStory } from '@app-core/data/database/interfaces';
 import { EventsTypes } from 'visualne/types/events';
 import { ProxyObject } from '@app-core/data/base';
-import { switchMap } from 'rxjs/operators';
 
 // VisualNE nodes
 import { Component as VisualNEComponent } from 'visualne';

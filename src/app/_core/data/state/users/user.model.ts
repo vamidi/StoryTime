@@ -1,6 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UtilsService } from '@app-core/utils/utils.service';
-import firebase from 'firebase/app';
 
 export interface IUserTicket
 {

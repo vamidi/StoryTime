@@ -10,7 +10,7 @@ import { ProjectComponent } from './project/project.component';
 import { RouterModule } from '@angular/router';
 import { ThemeModule } from '@app-theme/theme.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { AvatarModule } from 'ngx-avatar';
+import { AvatarModule } from 'ngx-avatars';
 import {
 	NbAccordionModule,
 	NbButtonModule,

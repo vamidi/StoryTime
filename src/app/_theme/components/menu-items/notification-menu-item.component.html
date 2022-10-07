@@ -45,7 +45,7 @@
    (mouseenter)="onHoverItem(menuItem)"
    (click)="$event.preventDefault(); onItemClick(menuItem);">
 	<nb-icon class="menu-icon" [config]="menuItem.icon" *ngIf="menuItem.icon"></nb-icon>
-	<ngx-avatar class="mr-2" name="Pixian Website Redesign" [round]="true" cornerRadius="0" size="30"></ngx-avatar>
+	<ngx-avatars class="mr-2" name="Pixian Website Redesign" [round]="true" cornerRadius="0" size="30"></ngx-avatars>
 	<span class="menu-title text-break">{{ menuItem.title }}</span>
 </a>
 <div class="d-flex justify-content-between w-100" *ngIf="menuItem?.data?.pending">

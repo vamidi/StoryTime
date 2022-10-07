@@ -43,7 +43,7 @@ export interface IFormInputField<T>
 })
 export abstract class BaseFormInputComponent<T> implements OnInit, AfterViewInit, OnChanges, IFormInputField<T>
 {
-	public abstract value: T = null;
+	public abstract value: T;
 
 	@Input('key')
 	public controlName: string = '';

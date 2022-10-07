@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SnapshotAction } from '@angular/fire/database';
+import { SnapshotAction } from '@angular/fire/compat/database';
 import { DefaultEditor, ViewCell } from '@vamidicreations/ng2-smart-table';
 import { Column } from '@vamidicreations/ng2-smart-table/lib/lib/data-set/column';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';

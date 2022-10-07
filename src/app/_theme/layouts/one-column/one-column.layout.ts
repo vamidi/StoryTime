@@ -45,7 +45,7 @@ import { NgxMenuItem } from '@app-theme/components';
 
 					<!-- All recent projects -->
 					<div class="d-flex flex-row align-items-center project" *ngFor="let i of times;">
-						<ngx-avatar name="Pixian Website Redesign" [round]="false" cornerRadius="0" size="20"></ngx-avatar>
+						<ngx-avatars name="Pixian Website Redesign" [round]="false" cornerRadius="0" size="20"></ngx-avatars>
 						<div>
 							<p>Pixian website redesign</p>
 							<nb-icon icon="clock-outline"></nb-icon>

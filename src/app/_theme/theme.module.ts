@@ -28,7 +28,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
 
 import { RouterModule } from '@angular/router';
-import { AvatarModule } from 'ngx-avatar';
+import { AvatarModule } from 'ngx-avatars';
 import { NbSnackbarModule } from '@app-theme/components/snackbar/snackbar.module';
 import { NgxContextMenuModule } from '@app-theme/components/context-menu/context-menu.module';
 import { TimeSlicePipe } from '@app-theme/pipes/time-slice.pipe';

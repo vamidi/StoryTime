@@ -21,7 +21,7 @@ import { TablesService } from '@app-core/data/state/tables';
 import { UserPreferencesService } from '@app-core/utils/user-preferences.service';
 import { environment } from '../../../environments/environment';
 import { NbSnackbarService } from '@app-theme/components/snackbar/snackbar.service';
-import { DataSnapshot } from '@angular/fire/database/interfaces';
+import { DataSnapshot } from '@angular/fire/compat/database/interfaces';
 
 @Component({
 	selector: 'ngx-projects',
