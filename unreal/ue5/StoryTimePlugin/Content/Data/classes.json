@@ -1,0 +1,44 @@
+{
+	"id": "-MhJZ87ovi4ki7Lqdh9o",
+	"metadata":
+	{
+		"created_at": 1629211366063,
+		"deleted": false,
+		"description": "Defines the classes a character can have in the game.",
+		"lastUID": 1,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "classes",
+		"updated_at": 1629211366063,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"className":
+			{
+				"en": "Swordsman"
+			},
+			"created_at": 1629211366063,
+			"deleted": false,
+			"expCurve": "(level - 1) * 156 + (level - 1) * (level - 1) * (level - 1) * 1.265 - 3",
+			"id": 0,
+			"updated_at": 1631956674868
+		},
+		{
+			"className":
+			{
+				"en": "Mage"
+			},
+			"created_at": 1629704375336,
+			"deleted": false,
+			"expCurve": "(level - 1) * 156 + (level - 1) * (level - 1) * (level - 1) * 1.265 - 3",
+			"id": 1,
+			"updated_at": 1629704375336
+		}
+	]
+}

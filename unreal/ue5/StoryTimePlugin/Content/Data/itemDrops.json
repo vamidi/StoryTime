@@ -1,0 +1,44 @@
+{
+	"id": "-MjnP4gr9EgolwQr943C",
+	"metadata":
+	{
+		"created_at": 1631876307885,
+		"deleted": false,
+		"description": "Items that can be retrieved from characters",
+		"lastUID": 1,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "itemDrops",
+		"updated_at": 1631876307885,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"chance": false,
+			"created_at": 1631876307885,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 0,
+			"function": "",
+			"name": 0,
+			"percentage": 0,
+			"updated_at": 1631888171509
+		},
+		{
+			"chance": false,
+			"created_at": 1631888086030,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 0,
+			"function": "",
+			"name": 0,
+			"percentage": 50,
+			"updated_at": 1631888086030
+		}
+	]
+}

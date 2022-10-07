@@ -1,0 +1,57 @@
+{
+	"id": "-MCRBgLNwerO56p7io0g",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 5,
+		"private": false,
+		"title": "taskCompletionTypes",
+		"updated_at": 1594979698
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"deleted": false,
+			"id": 0,
+			"name": "None",
+			"updated_at": 1594979553
+		},
+		{
+			"created_at": 1622648261894,
+			"deleted": false,
+			"id": 1,
+			"name": "Collect",
+			"updated_at": 1622648261894
+		},
+		{
+			"created_at": 1622648268770,
+			"deleted": false,
+			"id": 2,
+			"name": "Defeat",
+			"updated_at": 1622648268770
+		},
+		{
+			"created_at": 1622648276626,
+			"deleted": false,
+			"id": 3,
+			"name": "Talk",
+			"updated_at": 1622648276626
+		},
+		{
+			"created_at": 1622648283088,
+			"deleted": false,
+			"id": 4,
+			"name": "Interact",
+			"updated_at": 1622648283088
+		},
+		{
+			"created_at": 1622648290157,
+			"deleted": false,
+			"id": 5,
+			"name": "Defend",
+			"updated_at": 1622648290157
+		}
+	]
+}

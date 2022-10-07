@@ -1,0 +1,21 @@
+{
+	"id": "-MCRBgLJqTpVXk00Ocf1",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 0,
+		"private": false,
+		"title": "rewardTypes",
+		"updated_at": 1594979698
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"deleted": false,
+			"name": "None",
+			"updated_at": 1594979553
+		}
+	]
+}

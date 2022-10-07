@@ -1,0 +1,28 @@
+{
+	"id": "-MCRBgLQTGOjoyOsE2eH",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 0,
+		"private": false,
+		"title": "effectTypes",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"patch": 3
+		}
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"deleted": false,
+			"id": 0,
+			"name": "None",
+			"updated_at": 1594979553
+		}
+	]
+}

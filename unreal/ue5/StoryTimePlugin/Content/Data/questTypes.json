@@ -1,0 +1,36 @@
+{
+	"id": "-MTk6Dh4jqs3EWe0Dh3h",
+	"metadata":
+	{
+		"created_at": 1613567421692,
+		"deleted": false,
+		"description": "The type of quest we are able to have in the game.",
+		"lastUID": 2,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "questTypes",
+		"updated_at": 1613567421692
+	},
+	"data": [
+		{
+			"created_at": 1613567421692,
+			"deleted": false,
+			"id": 0,
+			"name": "Main",
+			"updated_at": 1613567474722
+		},
+		{
+			"created_at": 1613567455910,
+			"deleted": false,
+			"id": 1,
+			"name": "Sub",
+			"updated_at": 1613567482858
+		},
+		{
+			"created_at": 1626695084867,
+			"deleted": false,
+			"name": "Side Quests",
+			"updated_at": 1626695084867
+		}
+	]
+}

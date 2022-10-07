@@ -1,0 +1,38 @@
+{
+	"id": "-MTtv20-DUBlnoyImVZu",
+	"metadata":
+	{
+		"created_at": 1613731999925,
+		"deleted": false,
+		"description": "Table with a list of enemies.",
+		"lastUID": 1,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "enemies",
+		"updated_at": 1613731999925
+	},
+	"data": [
+		{
+			"category": 0,
+			"created_at": 1613731999925,
+			"deleted": false,
+			"id": 0,
+			"name":
+			{
+				"en": "Small Hillichurl"
+			},
+			"updated_at": 1613732207541
+		},
+		{
+			"category": 0,
+			"created_at": 1613732225515,
+			"deleted": false,
+			"id": 1,
+			"name":
+			{
+				"en": "Hillichurl"
+			},
+			"updated_at": 1613732225515
+		}
+	]
+}

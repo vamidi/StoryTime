@@ -1,0 +1,32 @@
+{
+	"id": "-Mjs8f5jcz1eDLtavtl0",
+	"metadata":
+	{
+		"created_at": 1631955890729,
+		"deleted": false,
+		"description": "Actions that the enemy can perform.",
+		"lastUID": 0,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "enemyActionPatterns",
+		"updated_at": 1631955890729,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"conditionFunction": "",
+			"created_at": 1631955890729,
+			"deleted": false,
+			"enemyCategoryId": 0,
+			"enemyId": 0,
+			"rating": 0,
+			"skillId": 0,
+			"updated_at": 1631955957483
+		}
+	]
+}

@@ -1,0 +1,28 @@
+{
+	"id": "-MCRBgLHLoLtsWkRazLg",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 0,
+		"private": false,
+		"title": "quests",
+		"updated_at": 1594979698
+	},
+	"data": [
+		{
+			"amount": 0,
+			"childId": 0,
+			"created_at": 1594979553,
+			"deleted": false,
+			"description": "The world is changing. A series of events are happening.",
+			"id": 0,
+			"rewardType": 0,
+			"rewardValue": 0,
+			"title": "The good Samaritan",
+			"typeId": 0,
+			"updated_at": 1613747327891
+		}
+	]
+}

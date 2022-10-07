@@ -1,0 +1,469 @@
+{
+	"id": "-MCRBgLCXWHR-OlRa0Sc",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 15,
+		"private": false,
+		"title": "items",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"patch": 3
+		}
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Restores 9% of Max HP to the selected character."
+			},
+			"dmgParameter": 0,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": " ",
+			"id": 0,
+			"name":
+			{
+				"en": "Small health potion"
+			},
+			"repeat": 0,
+			"sellValue": 10,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1631971845059,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1602665987009,
+			"critical": "",
+			"deleted": false,
+			"description":
+			{
+				"en": "Restores 12% of Max HP to the selected character."
+			},
+			"dmgParameter": 0,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 9007199254740991,
+			"formula": "",
+			"id": 1,
+			"name":
+			{
+				"en": "Medium health potion"
+			},
+			"repeat": 0,
+			"sellValue": 20,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 0,
+			"typeId": 3,
+			"updated_at": 1636101262745,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1602676191454,
+			"critical": "",
+			"deleted": false,
+			"description":
+			{
+				"en": "Restores 20% of Max HP to the selected character."
+			},
+			"dmgParameter": 0,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 9007199254740991,
+			"formula": "",
+			"id": 2,
+			"name":
+			{
+				"en": "Large health potion"
+			},
+			"repeat": 0,
+			"sellValue": 40,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 0,
+			"typeId": 3,
+			"updated_at": 1636101287386,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1613746004635,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "This is an editable item"
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 3,
+			"name":
+			{
+				"en": "Apple"
+			},
+			"repeat": 0,
+			"sellValue": 10,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1636101365512,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1613746017044,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "This is an editable item"
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 4,
+			"name":
+			{
+				"en": "Banana"
+			},
+			"repeat": 0,
+			"sellValue": 10,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1613746067586,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1620644618886,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "A block of messy masonry made of intricately interlocked rocks."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 5,
+			"name":
+			{
+				"en": "Stone Wall"
+			},
+			"repeat": 0,
+			"sellValue": 125,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1620644618886,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1621951534117,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "A sword for combat that is made of wood."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 6,
+			"name":
+			{
+				"en": "Wooden sword"
+			},
+			"repeat": 0,
+			"sellValue": 15,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1621951534117,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1623330814677,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "A sword made out of apples and wood."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 32,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 7,
+			"name":
+			{
+				"en": "Apple Sword"
+			},
+			"repeat": 0,
+			"sellValue": 30,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1623330814677,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1623333696341,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Log made out of wood."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 8,
+			"name":
+			{
+				"en": "Wooden Log"
+			},
+			"repeat": 0,
+			"sellValue": 10,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1623333696341,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1623352469834,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "A sword embraced with lightning from Thor."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 9007199254740991,
+			"formula": "",
+			"id": 9,
+			"name":
+			{
+				"en": "Electro sword"
+			},
+			"repeat": 0,
+			"sellValue": 580,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1623352469834,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1623353555669,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "A log that can only be found on a specific location "
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 10,
+			"name":
+			{
+				"en": "Super Log"
+			},
+			"repeat": 0,
+			"sellValue": 0,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1623353555669,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1624519023684,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Key to open doors."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 11,
+			"name":
+			{
+				"en": "Key"
+			},
+			"repeat": 0,
+			"sellValue": -2,
+			"sellable": false,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1624519023684,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1624519162832,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Wood"
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 12,
+			"name":
+			{
+				"en": "Wood"
+			},
+			"repeat": 0,
+			"sellValue": 15,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1624519162832,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1624519288645,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Used to make items from iron"
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": "",
+			"id": 13,
+			"name":
+			{
+				"en": "Iron ingot"
+			},
+			"repeat": 0,
+			"sellValue": 30,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1624519288645,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1624519354305,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Useful to make items from iron."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 9007199254740991,
+			"formula": "",
+			"id": 14,
+			"name":
+			{
+				"en": "Iron ingot"
+			},
+			"repeat": 0,
+			"sellValue": 30,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 0,
+			"updated_at": 1629274102147,
+			"variance": 0,
+			"data": null
+		},
+		{
+			"created_at": 1636197181296,
+			"critical": false,
+			"deleted": false,
+			"description":
+			{
+				"en": "Orange is a recurring consumable item. It restores a portion of the user's HP. It can be used in both combat and while moving."
+			},
+			"dmgParameter": 2,
+			"dmgType": 1,
+			"effectPrimaryValue": 0,
+			"effectTypeId": 0,
+			"formula": " ",
+			"id": 15,
+			"name":
+			{
+				"en": "Orange"
+			},
+			"repeat": 0,
+			"sellValue": 25,
+			"sellable": true,
+			"speed": 0,
+			"successRate": 100,
+			"typeId": 3,
+			"updated_at": 1636200240238,
+			"variance": 0,
+			"data": null
+		}
+	]
+}

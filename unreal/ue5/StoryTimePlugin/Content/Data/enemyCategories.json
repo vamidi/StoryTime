@@ -1,0 +1,26 @@
+{
+	"id": "-MTtvZO76Wbm5WIm_Wwc",
+	"metadata":
+	{
+		"created_at": 1613732136632,
+		"deleted": false,
+		"description": "A list with enemy categories",
+		"lastUID": 0,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "enemyCategories",
+		"updated_at": 1613732136632
+	},
+	"data": [
+		{
+			"created_at": 1613732136632,
+			"deleted": false,
+			"id": 0,
+			"name":
+			{
+				"en": "Hillichurls"
+			},
+			"updated_at": 1613732155250
+		}
+	]
+}
