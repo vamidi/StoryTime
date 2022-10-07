@@ -1,0 +1,208 @@
+{
+	"id": "-MCRBgLEN83fE5mrtXWZ",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 11,
+		"private": false,
+		"title": "characters",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"Major": 2020,
+			"Minor": 1,
+			"Patch": 3
+		}
+	},
+	"data": [
+		{
+			"classId": 0,
+			"created_at": 1594979553,
+			"deleted": false,
+			"description":
+			{
+				"en": ""
+			},
+			"id": 0,
+			"initialLevel": 1,
+			"maxLevel": 99,
+			"name":
+			{
+				"en": "Satorou"
+			},
+			"updated_at": 1629377142879
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1603892589341,
+			"deleted": false,
+			"description":
+			{
+				"en": ""
+			},
+			"id": 1,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Jeremiah"
+			},
+			"updated_at": 1629211698422
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1617722022311,
+			"deleted": false,
+			"description":
+			{
+				"en": ""
+			},
+			"id": 2,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Brook"
+			},
+			"updated_at": 1629211699561
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1617722122543,
+			"deleted": false,
+			"description":
+			{
+				"en": ""
+			},
+			"id": 3,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Sojiro"
+			},
+			"updated_at": 1629211700830
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1622381627175,
+			"deleted": false,
+			"description":
+			{
+				"en": "Is the husband of Edith"
+			},
+			"id": 4,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Guy"
+			},
+			"updated_at": 1629211702067
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1622649050674,
+			"deleted": false,
+			"description":
+			{
+				"en": "Is the wife of Guy"
+			},
+			"id": 5,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Edith"
+			},
+			"updated_at": 1629211703518
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1626693956695,
+			"deleted": true,
+			"description":
+			{
+				"en": "A test from demo account"
+			},
+			"id": 6,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "demo"
+			},
+			"updated_at": 1634284468133
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1626694011157,
+			"deleted": false,
+			"description":
+			{
+				"en": "Another sync test"
+			},
+			"id": 7,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "demo"
+			},
+			"updated_at": 1629211707591
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1626694992956,
+			"deleted": false,
+			"description":
+			{
+				"en": "another test"
+			},
+			"id": 8,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "demotest"
+			},
+			"updated_at": 1629210993497
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1636717256919,
+			"deleted": false,
+			"description":
+			{
+				"en": ""
+			},
+			"id": 9,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Kent"
+			},
+			"updated_at": 1636717256919
+		},
+		{
+			"classId": 9007199254740991,
+			"created_at": 1636722671238,
+			"deleted": false,
+			"description":
+			{
+				"en": "Paul is a man that is the friend of Kent."
+			},
+			"id": 10,
+			"initialLevel": 0,
+			"maxLevel": 0,
+			"name":
+			{
+				"en": "Paul"
+			},
+			"updated_at": 1636722671238
+		}
+	]
+}

@@ -1,0 +1,25 @@
+{
+	"id": "-MToph-jcyXweiwlWuk0",
+	"metadata":
+	{
+		"created_at": 1613646713010,
+		"deleted": false,
+		"description": "Characters that can't be controlled by the player.",
+		"lastUID": 0,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "nonPlayableCharacters",
+		"updated_at": 1613646713010
+	},
+	"data": [
+		{
+			"childId": 0,
+			"created_at": 1613646713010,
+			"deleted": false,
+			"description": "Monster that moves very fast",
+			"id": 0,
+			"name": "Centipede",
+			"updated_at": 1613647268246
+		}
+	]
+}

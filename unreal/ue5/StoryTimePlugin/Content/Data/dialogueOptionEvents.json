@@ -1,0 +1,31 @@
+{
+	"id": "-MCRBgLGcUy9InOgvIIn",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 0,
+		"private": false,
+		"title": "dialogueOptionEvents",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"patch": 3
+		}
+	},
+	"data": [
+		{
+			"characterId": 0,
+			"created_at": 1594979553,
+			"deleted": false,
+			"dialogueOptionId": 0,
+			"id": 0,
+			"name": "",
+			"updated_at": 1594979553,
+			"value": 0
+		}
+	]
+}

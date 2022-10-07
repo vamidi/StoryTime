@@ -1,0 +1,127 @@
+{
+	"id": "-MhXsR5Sw9ppITHrnk7M",
+	"metadata":
+	{
+		"created_at": 1629451567639,
+		"deleted": false,
+		"description": "Parameters that belongs to classes",
+		"lastUID": 6,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": true,
+		"title": "parameterCurves",
+		"updated_at": 1629451567639,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"base": 540,
+			"classId": 0,
+			"created_at": 1629451567639,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "level * base + level * level * level * rate",
+			"paramId": 2,
+			"rate": 0.1109999,
+			"statType": 100,
+			"updated_at": 1629452610818
+		},
+		{
+			"base": 160,
+			"classId": 0,
+			"created_at": 1629453839351,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "level * base + level * level * level * rate",
+			"paramId": 1,
+			"rate": 0.1149999,
+			"statType": 100,
+			"updated_at": 1632476603494
+		},
+		{
+			"base": 65,
+			"classId": 0,
+			"created_at": 1629453950164,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "base + (level * level * 6 / 105) + level * 12 * (rate - flat)",
+			"paramId": 0,
+			"rate": 0.12,
+			"statType": 100,
+			"updated_at": 1632476605138
+		},
+		{
+			"base": 140,
+			"classId": 0,
+			"created_at": 1629454001455,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "level * base + level * level * level * rate",
+			"paramId": 3,
+			"rate": 0.1129999,
+			"statType": 100,
+			"updated_at": 1632476607197
+		},
+		{
+			"base": 540,
+			"classId": 1,
+			"created_at": 1629707699540,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "level * base + level * level * level * rate",
+			"paramId": 2,
+			"rate": 0.1109999,
+			"statType": 100,
+			"updated_at": 1632476609533
+		},
+		{
+			"base": 540,
+			"classId": 9007199254740991,
+			"created_at": 1631880931195,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 0,
+			"equipmentId": 9007199254740991,
+			"flat": 0,
+			"paramFormula": "level * base + level * level * level * rate",
+			"paramId": 2,
+			"rate": 0.12,
+			"statType": 0,
+			"updated_at": 1634300395365
+		},
+		{
+			"base": 24,
+			"classId": 9007199254740991,
+			"created_at": 1634385414445,
+			"deleted": false,
+			"enemyCategoryId": 9007199254740991,
+			"enemyId": 9007199254740991,
+			"equipmentId": 0,
+			"flat": 24,
+			"paramFormula": "",
+			"paramId": 1,
+			"rate": 0,
+			"statType": 100,
+			"updated_at": 1634385414445
+		}
+	]
+}

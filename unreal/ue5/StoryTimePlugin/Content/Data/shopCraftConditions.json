@@ -1,0 +1,96 @@
+{
+	"id": "-MCRBgLTgtgS9z8L9Rqp",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 8,
+		"private": false,
+		"title": "shopCraftConditions",
+		"updated_at": 1594979698
+	},
+	"data": [
+		{
+			"amount": 0,
+			"childId": 0,
+			"created_at": 1594979553,
+			"deleted": false,
+			"id": 0,
+			"parentId": 0,
+			"updated_at": 1594979553
+		},
+		{
+			"amount": "65",
+			"childId": 3,
+			"created_at": 1623314905449,
+			"deleted": false,
+			"id": 1,
+			"parentId": 24,
+			"updated_at": 1623314905449
+		},
+		{
+			"amount": 5,
+			"childId": 4,
+			"created_at": 1623314908258,
+			"deleted": false,
+			"id": 2,
+			"parentId": 24,
+			"updated_at": 1623314908258
+		},
+		{
+			"amount": 0,
+			"childId": 5,
+			"created_at": 1623315892576,
+			"deleted": false,
+			"id": 3,
+			"parentId": 24,
+			"updated_at": 1623315892576
+		},
+		{
+			"amount": 0,
+			"childId": 8,
+			"created_at": 1623390546090,
+			"deleted": false,
+			"id": 4,
+			"parentId": 27,
+			"updated_at": 1623390546090
+		},
+		{
+			"amount": 0,
+			"childId": 3,
+			"created_at": 1623390546216,
+			"deleted": false,
+			"id": 5,
+			"parentId": 27,
+			"updated_at": 1623390546216
+		},
+		{
+			"amount": 0,
+			"childId": 10,
+			"created_at": 1623390546220,
+			"deleted": false,
+			"id": 6,
+			"parentId": 27,
+			"updated_at": 1623390546220
+		},
+		{
+			"amount": "25",
+			"childId": 12,
+			"created_at": 1624519178459,
+			"deleted": false,
+			"id": 7,
+			"parentId": 29,
+			"updated_at": 1624519178459
+		},
+		{
+			"amount": "10",
+			"childId": 13,
+			"created_at": 1624519372311,
+			"deleted": false,
+			"id": 8,
+			"parentId": 29,
+			"updated_at": 1624519372311
+		}
+	]
+}

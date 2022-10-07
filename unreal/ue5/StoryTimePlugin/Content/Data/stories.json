@@ -1,0 +1,912 @@
+{
+	"id": "-MCRBgLLdE5La0rHFLiN",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 15,
+		"private": false,
+		"title": "stories",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"patch": 3
+		}
+	},
+	"data": [
+		{
+			"childId": 0,
+			"created_at": 1594979553,
+			"deleted": false,
+			"description":
+			{
+				"en": "The hero will start on his first journey"
+			},
+			"id": 0,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Hero's journey"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1622634472759,
+			"data": null
+		},
+		{
+			"childId": 3,
+			"created_at": 1603892633538,
+			"deleted": false,
+			"description":
+			{
+				"en": "Test"
+			},
+			"id": 1,
+			"parentId": 1,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Jeremiah's journey"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1622634474410,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1614333085765,
+			"deleted": false,
+			"description":
+			{
+				"en": "The Hillchurls have hijacked our food car that was heading to the state."
+			},
+			"id": 2,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "The Shenanigans of the Hillchurls"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1622634476090,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1614334321507,
+			"deleted": false,
+			"description":
+			{
+				"en": "The Hillchurls have hijacked our food car that was heading to the state."
+			},
+			"id": 3,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "The Shenanigans of the Hillchurls"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1622634478279,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1614334754807,
+			"deleted": false,
+			"description":
+			{
+				"en": "The Hillchurls have hijacked our food car that was heading to the state."
+			},
+			"id": 4,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "The Shenanigans of the Hillchurls"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1622634480858,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1620648354743,
+			"deleted": false,
+			"description":
+			{
+				"en": "You have to run arrends for Sojiro"
+			},
+			"id": 5,
+			"parentId": 3,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Sojiro's arrend"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620648354743,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1620648407593,
+			"deleted": false,
+			"description":
+			{
+				"en": "You have to run arrends for Sojiro"
+			},
+			"id": 6,
+			"parentId": 3,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Sojiro's arrend"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620648407593,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1620825806119,
+			"deleted": false,
+			"description":
+			{
+				"en": "bfhfh"
+			},
+			"id": 7,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "The story of the amazing character"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620825806119,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1620825834251,
+			"deleted": false,
+			"description":
+			{
+				"en": "gfbfgbb"
+			},
+			"id": 8,
+			"parentId": 2,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Battle of the seasoning"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620825834251,
+			"data": null
+		},
+		{
+			"childId": 1,
+			"created_at": 1620826169794,
+			"deleted": false,
+			"description":
+			{
+				"en": "rrgrtt"
+			},
+			"id": 9,
+			"parentId": 1,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "The story of the amazing character"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620826169794,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1620827654347,
+			"deleted": false,
+			"description":
+			{
+				"en": "fdvdvdf"
+			},
+			"id": 10,
+			"parentId": 0,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "ffv"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1620827654347,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1621422770229,
+			"deleted": false,
+			"description":
+			{
+				"en": "You have to run arrends for Sojiro."
+			},
+			"id": 11,
+			"parentId": 3,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Sojiro's arrend"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1621422770229,
+			"data": null
+		},
+		{
+			"childId": 0,
+			"created_at": 1621422919442,
+			"deleted": false,
+			"description":
+			{
+				"en": "You have to run arrends for Sojiro."
+			},
+			"id": 12,
+			"parentId": 3,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Sojiro's arrend"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1621422919442,
+			"data":
+			{
+				"id": "story@0.2.0",
+				"nodes":
+				{
+					"1":
+					{
+						"id": 1,
+						"data":
+						{
+							"dialogueId": 0
+						},
+						"inputs":
+						{
+						},
+						"outputs":
+						{
+							"dialogueOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 200, 200 ],
+						"name": "Start"
+					}
+				},
+				"comments": [],
+				"characters": [ 3 ]
+			}
+		},
+		{
+			"childId": 10,
+			"created_at": 1622381871555,
+			"deleted": false,
+			"description":
+			{
+				"en": "Guy is waiting for his wife edit but never came back from her trip to get some parts"
+			},
+			"id": 13,
+			"parentId": 4,
+			"taskId": 1,
+			"title":
+			{
+				"en": "A missing person"
+			},
+			"typeId": 1,
+			"updated_at": 1622648438321,
+			"data":
+			{
+				"id": "story@0.2.0",
+				"nodes":
+				{
+					"1":
+					{
+						"id": 1,
+						"data":
+						{
+							"dialogueId": 10
+						},
+						"inputs":
+						{
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": [
+									{
+										"node": 2,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ -579.07744407125756, 265.49644056662191 ],
+						"name": "Start"
+					},
+					"2":
+					{
+						"id": 2,
+						"data":
+						{
+							"options":
+							{
+								"optionOut-0":
+								{
+									"key": 0,
+									"value": 18
+								},
+								"optionOut-1":
+								{
+									"key": 1,
+									"value": 19
+								}
+							},
+							"dialogueId": 11
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 1,
+										"output": "dialogueOut",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": [
+									{
+										"node": 7,
+										"input": "execIn",
+										"data":
+										{
+										}
+									}
+								]
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							},
+							"optionOut-0":
+							{
+								"connections": [
+									{
+										"node": 3,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							},
+							"optionOut-1":
+							{
+								"connections": [
+									{
+										"node": 5,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 211.02913023852136, 121.29414946746802 ],
+						"name": "Dialogue"
+					},
+					"3":
+					{
+						"id": 3,
+						"data":
+						{
+							"options":
+							{
+								"optionOut-0":
+								{
+									"key": 0,
+									"value": 20
+								}
+							},
+							"dialogueId": 13
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 2,
+										"output": "optionOut-0",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							},
+							"optionOut-0":
+							{
+								"connections": [
+									{
+										"node": 4,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 739.40380313214996, 131.05297934298827 ],
+						"name": "Dialogue"
+					},
+					"4":
+					{
+						"id": 4,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 14
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 3,
+										"output": "optionOut-0",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": [
+									{
+										"node": 6,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 1416.5744925565937, 138.80083999335361 ],
+						"name": "Dialogue"
+					},
+					"5":
+					{
+						"id": 5,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 15
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 2,
+										"output": "optionOut-1",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 1702.8405037203679, 490.60603624208898 ],
+						"name": "Dialogue"
+					},
+					"6":
+					{
+						"id": 6,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 16
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 4,
+										"output": "dialogueOut",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 1898.1647478332425, 148.98309881044145 ],
+						"name": "Dialogue"
+					},
+					"7":
+					{
+						"id": 7,
+						"data":
+						{
+							"events":
+							{
+								"inputIn-0":
+								{
+									"key": 0,
+									"value":
+									{
+										"paramName": "MyParamName",
+										"defaultValue": 0,
+										"value": 0
+									}
+								}
+							},
+							"eventId": 15
+						},
+						"inputs":
+						{
+							"execIn":
+							{
+								"connections": [
+									{
+										"node": 2,
+										"output": "ExecOut",
+										"data":
+										{
+										}
+									}
+								]
+							},
+							"targetIn":
+							{
+								"connections": []
+							},
+							"inputIn-0":
+							{
+								"connections": []
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 724.03366909832346, -159.18119454089504 ],
+						"name": "Event"
+					}
+				},
+				"comments": [],
+				"characters": [ 4 ]
+			}
+		},
+		{
+			"childId": 17,
+			"created_at": 1623930718303,
+			"deleted": false,
+			"description":
+			{
+				"en": "Edith is clear from enemies attacking her and she is now safe to continue her journey,"
+			},
+			"id": 14,
+			"parentId": 5,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "Missing Person - Edith"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1623930718303,
+			"data":
+			{
+				"id": "story@0.2.0",
+				"nodes":
+				{
+					"1":
+					{
+						"id": 1,
+						"data":
+						{
+							"dialogueId": 17
+						},
+						"inputs":
+						{
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": [
+									{
+										"node": 2,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 200, 200 ],
+						"name": "Start"
+					},
+					"2":
+					{
+						"id": 2,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 20
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 1,
+										"output": "dialogueOut",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 686.65120107986525, 215.2082424652634 ],
+						"name": "Dialogue"
+					}
+				},
+				"comments": [],
+				"characters": [ 5 ]
+			}
+		},
+		{
+			"childId": 23,
+			"created_at": 1636717317552,
+			"deleted": false,
+			"description":
+			{
+				"en": "Kent and his buddy are looking for a magical create."
+			},
+			"id": 15,
+			"parentId": 10,
+			"taskId": 9007199254740991,
+			"title":
+			{
+				"en": "An interesting story"
+			},
+			"typeId": 9007199254740991,
+			"updated_at": 1636717317552,
+			"data":
+			{
+				"id": "story@0.2.0",
+				"nodes":
+				{
+					"1":
+					{
+						"id": 1,
+						"data":
+						{
+							"dialogueId": 23
+						},
+						"inputs":
+						{
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": [
+									{
+										"node": 4,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 30.000011844721286, 158.75000287408679 ],
+						"name": "Start"
+					},
+					"4":
+					{
+						"id": 4,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 26
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 1,
+										"output": "dialogueOut",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": [
+									{
+										"node": 5,
+										"input": "dialogueIn",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"position": [ 337.37385980698781, 181.11699702008735 ],
+						"name": "Dialogue"
+					},
+					"5":
+					{
+						"id": 5,
+						"data":
+						{
+							"options":
+							{
+							},
+							"dialogueId": 27
+						},
+						"inputs":
+						{
+							"dialogueIn":
+							{
+								"connections": [
+									{
+										"node": 4,
+										"output": "dialogueOut",
+										"data":
+										{
+										}
+									}
+								]
+							}
+						},
+						"outputs":
+						{
+							"ExecOut":
+							{
+								"connections": []
+							},
+							"dialogueOut":
+							{
+								"connections": []
+							}
+						},
+						"position": [ 720.15799370221566, 160.75934870814766 ],
+						"name": "Dialogue"
+					}
+				},
+				"comments": []
+			}
+		}
+	]
+}

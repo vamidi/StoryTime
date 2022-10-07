@@ -1,0 +1,114 @@
+{
+	"id": "-Mmb61K6XsDMmQlo1iCB",
+	"metadata":
+	{
+		"columns":
+		{
+			"alias":
+			{
+				"defaultValue": "",
+				"description": "",
+				"name": "Alias",
+				"type": "string"
+			},
+			"created_at":
+			{
+				"defaultValue": 0,
+				"description": "",
+				"name": "Created at",
+				"type": "number"
+			},
+			"deleted":
+			{
+				"defaultValue": false,
+				"description": "",
+				"name": "Deleted",
+				"type": "custom"
+			},
+			"id":
+			{
+				"defaultValue": 0,
+				"description": "",
+				"name": "Id",
+				"type": "number"
+			},
+			"paramName":
+			{
+				"defaultValue":
+				{
+					"en": ""
+				},
+				"description": "",
+				"name": "Param Name",
+				"type": "custom"
+			},
+			"updated_at":
+			{
+				"defaultValue": 0,
+				"description": "",
+				"name": "Updated at",
+				"type": "number"
+			}
+		},
+		"created_at": 1634891212238,
+		"deleted": false,
+		"description": "defines attributes that can be used in parameters.",
+		"lastUID": 3,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "attributes",
+		"updated_at": 1634891212238,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"alias": "MP",
+			"created_at": 1634891212238,
+			"deleted": false,
+			"id": 0,
+			"paramName":
+			{
+				"en": "Magic Points"
+			},
+			"updated_at": 1634891212238
+		},
+		{
+			"alias": "ATK",
+			"created_at": 1634892213989,
+			"deleted": false,
+			"id": 1,
+			"paramName":
+			{
+				"en": "Attack"
+			},
+			"updated_at": 1634892213989
+		},
+		{
+			"alias": "HP",
+			"created_at": 1634892231290,
+			"deleted": false,
+			"id": 2,
+			"paramName":
+			{
+				"en": "Health Points"
+			},
+			"updated_at": 1634892231290
+		},
+		{
+			"alias": "DEF",
+			"created_at": 1634892239976,
+			"deleted": false,
+			"id": 3,
+			"paramName":
+			{
+				"en": "Defense"
+			},
+			"updated_at": 1634892239976
+		}
+	]
+}

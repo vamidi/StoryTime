@@ -1,0 +1,30 @@
+{
+	"id": "-MkLrTtqWTUUo6RXJPL3",
+	"metadata":
+	{
+		"created_at": 1632471215867,
+		"deleted": false,
+		"description": "This table defines the equipments of the character",
+		"lastUID": 0,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "characterEquipments",
+		"updated_at": 1632471215867,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"characterId": 0,
+			"created_at": 1632471215867,
+			"deleted": false,
+			"id": 0,
+			"name": 0,
+			"updated_at": 1632471608462
+		}
+	]
+}

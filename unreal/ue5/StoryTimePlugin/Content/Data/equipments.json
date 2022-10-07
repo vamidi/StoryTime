@@ -1,0 +1,60 @@
+{
+	"id": "-MhSKPfKb9XeqqYrW74q",
+	"metadata":
+	{
+		"created_at": 1629358500686,
+		"deleted": false,
+		"description": "The equipment of the characters in the game.",
+		"lastUID": 1,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "equipments",
+		"updated_at": 1629358500686,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"categoryId": 0,
+			"classId": 0,
+			"created_at": 1629358500686,
+			"deleted": false,
+			"description":
+			{
+				"en": "Sword made out of wood."
+			},
+			"id": 0,
+			"name":
+			{
+				"en": "Wooden sword"
+			},
+			"sellValue": 100,
+			"sellable": true,
+			"typeId": 0,
+			"updated_at": 1632484540656
+		},
+		{
+			"categoryId": 0,
+			"classId": 0,
+			"created_at": 1629378508445,
+			"deleted": false,
+			"description":
+			{
+				"en": "A sword that uses lightning strikes of the God Zeus"
+			},
+			"id": 1,
+			"name":
+			{
+				"en": "Electro Sword"
+			},
+			"sellValue": 50,
+			"sellable": true,
+			"typeId": 0,
+			"updated_at": 1634307126369
+		}
+	]
+}

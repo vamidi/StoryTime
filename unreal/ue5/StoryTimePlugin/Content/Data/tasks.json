@@ -1,0 +1,89 @@
+{
+	"id": "-MCRBgLMMkV_lyLyNVK0",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 3,
+		"private": false,
+		"title": "tasks",
+		"updated_at": 1594979698,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"patch": 3
+		}
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"deleted": false,
+			"description":
+			{
+				"en": "Defeat the Hillichurls"
+			},
+			"enemyCategory": 0,
+			"hidden": false,
+			"id": 0,
+			"nextId": 0,
+			"npc": 9007199254740991,
+			"parentId": 0,
+			"requiredCount": 0,
+			"typeId": 9007199254740991,
+			"updated_at": 1613747351039
+		},
+		{
+			"created_at": 1622647615793,
+			"deleted": false,
+			"description":
+			{
+				"en": "Defeat the monsters"
+			},
+			"enemyCategory": 0,
+			"hidden": false,
+			"id": 1,
+			"nextId": 2,
+			"npc": 9007199254740991,
+			"parentId": 13,
+			"requiredCount": 3,
+			"typeId": 2,
+			"updated_at": 1622648392250
+		},
+		{
+			"created_at": 1622648200280,
+			"deleted": false,
+			"description":
+			{
+				"en": "Talk to Edith"
+			},
+			"enemyCategory": 9007199254740991,
+			"hidden": false,
+			"id": 2,
+			"nextId": 3,
+			"npc": 0,
+			"parentId": 13,
+			"requiredCount": 0,
+			"typeId": 3,
+			"updated_at": 1622648399513
+		},
+		{
+			"created_at": 1622648376994,
+			"deleted": false,
+			"description":
+			{
+				"en": "Report back to Guy"
+			},
+			"enemyCategory": 9007199254740991,
+			"hidden": false,
+			"id": 3,
+			"nextId": 9007199254740991,
+			"npc": 9007199254740991,
+			"parentId": 13,
+			"requiredCount": 0,
+			"typeId": 3,
+			"updated_at": 1622648376994
+		}
+	]
+}

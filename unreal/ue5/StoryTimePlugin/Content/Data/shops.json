@@ -1,0 +1,23 @@
+{
+	"id": "-MCRBgLRi1vH675SEBUH",
+	"metadata":
+	{
+		"created_at": 1594979698,
+		"deleted": false,
+		"description": "",
+		"lastUID": 0,
+		"private": false,
+		"title": "shops",
+		"updated_at": 1594979698
+	},
+	"data": [
+		{
+			"created_at": 1594979553,
+			"deleted": false,
+			"id": 0,
+			"name": "Random Shopping",
+			"parentId": 0,
+			"updated_at": 1596209159670
+		}
+	]
+}

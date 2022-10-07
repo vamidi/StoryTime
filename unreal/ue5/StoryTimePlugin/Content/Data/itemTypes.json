@@ -1,0 +1,77 @@
+{
+	"id": "-MhNJFuipXcBFLMjSeUn",
+	"metadata":
+	{
+		"created_at": 1629274312490,
+		"deleted": false,
+		"description": "Represents group for the items",
+		"lastUID": 4,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": false,
+		"title": "itemTypes",
+		"updated_at": 1629274312490,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"actionType": 0,
+			"created_at": 1629274312490,
+			"deleted": false,
+			"inventoryType": 0,
+			"name":
+			{
+				"en": "None"
+			},
+			"updated_at": 1629274391810
+		},
+		{
+			"actionType": 1,
+			"created_at": 1629274401848,
+			"deleted": false,
+			"inventoryType": 0,
+			"name":
+			{
+				"en": "Cook"
+			},
+			"updated_at": 1629274401848
+		},
+		{
+			"actionType": 2,
+			"created_at": 1629274416221,
+			"deleted": false,
+			"inventoryType": 2,
+			"name":
+			{
+				"en": "Craft"
+			},
+			"updated_at": 1629274416221
+		},
+		{
+			"actionType": 2,
+			"created_at": 1631968512375,
+			"deleted": false,
+			"inventoryType": 4,
+			"name":
+			{
+				"en": "Use"
+			},
+			"updated_at": 1631968512375
+		},
+		{
+			"actionType": 4,
+			"created_at": 1631968524699,
+			"deleted": false,
+			"inventoryType": 1,
+			"name":
+			{
+				"en": "Equip"
+			},
+			"updated_at": 1631968524699
+		}
+	]
+}

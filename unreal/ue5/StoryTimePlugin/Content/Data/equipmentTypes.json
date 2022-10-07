@@ -1,0 +1,35 @@
+{
+	"id": "-MkLw1z4wTDEJ1_USyZc",
+	"metadata":
+	{
+		"created_at": 1632472412240,
+		"deleted": false,
+		"description": "This table defines the kind of the equipments.",
+		"lastUID": 0,
+		"owner": "EUNf7rkbJcaEVNJhFkwezG9rP1D2",
+		"private": true,
+		"title": "equipmentTypes",
+		"updated_at": 1632472412240,
+		"version":
+		{
+			"major": 2020,
+			"minor": 1,
+			"release": "5f3"
+		}
+	},
+	"data": [
+		{
+			"category":
+			{
+				"en": "Weapon"
+			},
+			"created_at": 1632472412240,
+			"deleted": false,
+			"type":
+			{
+				"en": "Sword"
+			},
+			"updated_at": 1632472412240
+		}
+	]
+}
